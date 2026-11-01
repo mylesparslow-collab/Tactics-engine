@@ -9,40 +9,40 @@
  "animations": {
   "idle": {
    "row": 0,
-   "frames": 4,
-   "fps": 4,
+   "frames": 8,
+   "fps": 8,
    "loop": true
   },
   "move": {
    "row": 1,
-   "frames": 4,
-   "fps": 8,
+   "frames": 8,
+   "fps": 16,
    "loop": true
   },
   "attack": {
    "row": 2,
-   "frames": 4,
-   "fps": 10,
+   "frames": 7,
+   "fps": 18,
    "loop": false,
-   "hitFrame": 2
+   "hitFrame": 4
   },
   "hit": {
    "row": 3,
-   "frames": 2,
-   "fps": 10,
+   "frames": 3,
+   "fps": 15,
    "loop": false
   },
   "death": {
    "row": 4,
-   "frames": 4,
-   "fps": 6,
+   "frames": 7,
+   "fps": 10,
    "loop": false,
    "holdLast": true
   },
   "cast": {
    "row": 5,
-   "frames": 3,
-   "fps": 8,
+   "frames": 5,
+   "fps": 13,
    "loop": false
   }
  }
