@@ -90,7 +90,7 @@ export class Renderer {
     for (const u of game.units) this.hpShown.set(u.uid, u.hp);
     this.seeds = new Uint32Array(game.width * game.height);
     for (let y = 0; y < game.height; y++) for (let x = 0; x < game.width; x++) this.seeds[y * game.width + x] = (((x * 73856093) ^ (y * 19349663) ^ 0x5bd1e995) >>> 0);
-    this.zoom = 1; this.panX = 0; this.panY = 0;
+    this.zoom = 1; this.panX = 0; this.panY = 0; this.userMoved = false;
     this.vt = visualTiles(game); this.painter = new BoardPainter(game, this.view, this.seeds, this.vt);
     onTileArtReady(() => { clearTimeout(this.artTimer); this.artTimer = setTimeout(() => { this.boardDirty = true; }, 120); });
     this.boardDirty = true;
@@ -128,32 +128,52 @@ export class Renderer {
     const { minX, maxX, minY, maxY } = this.bounds();
     const bw = maxX - minX, bh = maxY - minY;
     this.fitScale = Math.max(0.12, Math.min(this.cssW / bw, this.cssH / bh, 1.6)) * 0.97;
-    this.applyView();
+    if (this.userMoved) this.applyView(); else this.defaultView();
   }
+  /** Start view: close enough that about 14 tiles span the screen width, centred on the player's Beacon. */
+  private defaultView() {
+    const target = Math.min(1.1, this.cssW / ((this.cssW > 1000 ? 18 : 12) * TW));
+    this.zoom = Math.max(1, Math.min(4, target / this.fitScale));
+    this.panX = 0; this.panY = 0; this.applyView();
+    const g = this.game, human = g.teams.findIndex(t => t.controller === 'human');
+    const ks = g.units.find(u => u.alive && u.team === Math.max(0, human) && g.def(u).structure)
+      ?? g.units.find(u => u.alive && u.team === Math.max(0, human));
+    if (!ks) return;
+    const p = this.view.project(ks.x, ks.y, this.vt[ks.y][ks.x].height);
+    const sx = p.sx * this.scale + this.ox, sy = (p.sy - 40) * this.scale + this.oy;
+    this.panX = this.cssW / 2 - sx; this.panY = (this.cssH - this.bottomInset) / 2 - sy;
+    this.clampPan(); this.applyView();
+  }
+  private clampPan() {
+    const lim = Math.max(this.cssW, this.cssH) * 0.9 * this.zoom;
+    this.panX = Math.max(-lim, Math.min(lim, this.panX)); this.panY = Math.max(-lim, Math.min(lim, this.panY));
+  }
+  private userMoved = false;
   private applyView() {
     const { minX, maxX, minY, maxY } = this.bounds();
     const bw = maxX - minX, bh = maxY - minY;
     this.scale = this.fitScale * this.zoom;
     this.ox = this.cssW / 2 - (minX + bw / 2) * this.scale + this.panX;
     this.oy = (this.cssH - this.bottomInset) / 2 - (minY + bh / 2) * this.scale + this.panY;
+    const need = Math.min(2, this.scale * this.dpr);
+    if (this.board && need > this.boardK * 1.3) { clearTimeout(this.zoomTimer); this.zoomTimer = setTimeout(() => { this.boardDirty = true; }, 150); }
   }
+  private zoomTimer: ReturnType<typeof setTimeout> | undefined;
   /** Pan by CSS pixels. */
   pan(dx: number, dy: number) {
-    this.panX += dx; this.panY += dy;
-    const lim = Math.max(this.cssW, this.cssH) * 0.9 * this.zoom;
-    this.panX = Math.max(-lim, Math.min(lim, this.panX)); this.panY = Math.max(-lim, Math.min(lim, this.panY));
-    this.applyView();
+    this.panX += dx; this.panY += dy; this.userMoved = true;
+    this.clampPan(); this.applyView();
   }
   /** Multiply zoom, keeping the CSS point (cx,cy) fixed. */
   zoomBy(f: number, cx = this.cssW / 2, cy = this.cssH / 2) {
-    const z0 = this.zoom;
+    const z0 = this.zoom; this.userMoved = true;
     this.zoom = Math.max(0.5, Math.min(4, this.zoom * f));
     const k = this.zoom / z0;
     const wx = (cx - this.ox), wy = (cy - this.oy);
     this.panX += (wx - wx * k) ; this.panY += (wy - wy * k);
     this.applyView();
   }
-  resetView() { this.zoom = 1; this.panX = 0; this.panY = 0; this.applyView(); }
+  resetView() { this.userMoved = false; this.defaultView(); }
   setBottomInset(px: number) { if (px !== this.bottomInset) { this.bottomInset = px; this.applyView(); } }
 
   // ---------- animation scheduling ----------
@@ -348,7 +368,8 @@ export class Renderer {
   private buildBoard() {
     visualTiles(this.game, this.vt);
     const { minX, maxX, minY, maxY } = this.bounds();
-    const k = Math.min(2, Math.max(0.5, this.fitScale * this.dpr * 1.25));
+    const want = Math.min(2, Math.max(0.5, this.scale * this.dpr));
+    const k = Math.min(want, Math.sqrt(12_000_000 / Math.max(1, (maxX - minX) * (maxY - minY)))); // stay under ~12 MP (mobile canvas limits)
     const W = Math.ceil((maxX - minX) * k), H = Math.ceil((maxY - minY) * k);
     if (!this.board || this.board.width !== W || this.board.height !== H) { this.board = document.createElement('canvas'); this.board.width = W; this.board.height = H; }
     const ctx = this.board.getContext('2d')!;
