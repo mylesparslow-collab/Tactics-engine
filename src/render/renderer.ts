@@ -1,9 +1,9 @@
 import type { Game } from '../engine/game';
-import type { GameEvent, Pos, Unit } from '../engine/types';
+import type { GameEvent, Pos, Tile, Unit } from '../engine/types';
 import { GROUND, LV, TH, TW, View, key, mix, rgba } from './iso';
 import { drawUnitSprite, figureHeight } from './sprites';
 import { backdropFor, diamondPath, glowSprite } from './terrain';
-import { BoardPainter, onTileArtReady, type AnimTile } from './board';
+import { BoardPainter, onTileArtReady, visualTiles, type AnimTile } from './board';
 import { clipDuration, clipHitTime, frameFor, unitArt, type AnimState } from './anim';
 
 export interface Preview { text: string; color: string }
@@ -51,7 +51,7 @@ export class Renderer {
   reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   // board cache
   private board: HTMLCanvasElement | null = null;
-  private boardK = 1; private boardX0 = 0; private boardY0 = 0; private boardDirty = true; private artTimer: ReturnType<typeof setTimeout> | undefined;
+  private boardK = 1; private boardX0 = 0; private boardY0 = 0; private boardDirty = true; private vt: Tile[][] = []; private artTimer: ReturnType<typeof setTimeout> | undefined;
   private animTiles: AnimTile[] = [];
   private painter!: BoardPainter;
   private seeds: Uint32Array = new Uint32Array(0);
@@ -90,7 +90,7 @@ export class Renderer {
     this.seeds = new Uint32Array(game.width * game.height);
     for (let y = 0; y < game.height; y++) for (let x = 0; x < game.width; x++) this.seeds[y * game.width + x] = (((x * 73856093) ^ (y * 19349663) ^ 0x5bd1e995) >>> 0);
     this.zoom = 1; this.panX = 0; this.panY = 0;
-    this.painter = new BoardPainter(game, this.view, this.seeds);
+    this.vt = visualTiles(game); this.painter = new BoardPainter(game, this.view, this.seeds, this.vt);
     onTileArtReady(() => { clearTimeout(this.artTimer); this.artTimer = setTimeout(() => { this.boardDirty = true; }, 120); });
     this.boardDirty = true;
     this.resize();
@@ -117,7 +117,7 @@ export class Renderer {
   private bounds() {
     const v = this.view;
     let maxL = 0;
-    for (const row of this.game.tiles) for (const t of row) maxL = Math.max(maxL, t.height);
+    for (const row of this.vt) for (const t of row) maxL = Math.max(maxL, t.height);
     const minX = -(v.rh - 1) * TW / 2 - TW / 2, maxX = (v.rw - 1) * TW / 2 + TW / 2;
     const minY = -TH / 2 - maxL * LV - 120, maxY = (v.rw + v.rh - 2) * TH / 2 + TH / 2 + GROUND + 10;
     return { minX, maxX, minY, maxY };
@@ -342,6 +342,7 @@ export class Renderer {
 
   // ---------- board cache ----------
   private buildBoard() {
+    visualTiles(this.game, this.vt);
     const { minX, maxX, minY, maxY } = this.bounds();
     const k = Math.min(2, Math.max(0.5, this.fitScale * this.dpr * 1.25));
     const W = Math.ceil((maxX - minX) * k), H = Math.ceil((maxY - minY) * k);
@@ -422,7 +423,7 @@ export class Renderer {
     for (const r of this.rings) {
       if (now < r.start) continue;
       const p = (now - r.start) / r.dur;
-      const t = g.tiles[r.pos.y]?.[r.pos.x]; if (!t) continue;
+      const t = this.vt[r.pos.y]?.[r.pos.x]; if (!t) continue;
       const s = this.view.project(r.pos.x, r.pos.y, t.height);
       ctx.save(); ctx.translate(s.sx, s.sy); ctx.scale(1, 0.5);
       if (r.rune) {
@@ -486,7 +487,7 @@ export class Renderer {
 
   private animateTile(at: AnimTile, now: number) {
     const { x, y, kind } = at;
-    const ctx = this.ctx, g = this.game, t = g.tiles[y][x];
+    const ctx = this.ctx, g = this.game, t = this.vt[y][x];
     if (at.frames?.length) {
       const img = at.frames[Math.floor(now / 400) % at.frames.length];
       const { sx, sy } = this.view.project(x, y, t.height);
@@ -544,11 +545,11 @@ export class Renderer {
   }
 
   private drawOverlays(now: number) {
-    const ov = this.overlay, ctx = this.ctx, g = this.game;
+    const ov = this.overlay, ctx = this.ctx;
     const pulse = this.reduced ? 0.8 : 0.72 + 0.18 * Math.sin(now / 300);
     const glow = (k: string, color: string, strength: number) => {
       const [x, y] = k.split(',').map(Number);
-      const t = g.tiles[y]?.[x]; if (!t) return;
+      const t = this.vt[y]?.[x]; if (!t) return;
       const { sx, sy } = this.view.project(x, y, t.height);
       const s = glowSprite(color, strength);
       ctx.drawImage(s, sx - s.width / 4, sy - s.height / 4, s.width / 2, s.height / 2);
@@ -558,10 +559,10 @@ export class Renderer {
     for (const k of ov.targets) glow(k, '#ff6a3d', pulse + 0.1);
     for (const k of ov.area) glow(k, '#ffe14d', 0.9);
     ov.path.forEach((p, pi) => {
-      const t = g.tiles[p.y]?.[p.x]; if (!t) return;
+      const t = this.vt[p.y]?.[p.x]; if (!t) return;
       const { sx, sy } = this.view.project(p.x, p.y, t.height);
       if (pi > 0) {
-        const q = ov.path[pi - 1], tq = g.tiles[q.y][q.x], a = this.view.project(q.x, q.y, tq.height);
+        const q = ov.path[pi - 1], tq = this.vt[q.y][q.x], a = this.view.project(q.x, q.y, tq.height);
         ctx.strokeStyle = 'rgba(220,240,255,0.85)'; ctx.lineWidth = 3; ctx.setLineDash([8, 6]); ctx.lineDashOffset = this.reduced ? 0 : -now / 40;
         ctx.beginPath(); ctx.moveTo(a.sx, a.sy); ctx.lineTo(sx, sy); ctx.stroke(); ctx.setLineDash([]);
       }
@@ -573,7 +574,7 @@ export class Renderer {
       }
     });
     const outline = (p: Pos, color: string, lw: number) => {
-      const t = g.tiles[p.y]?.[p.x]; if (!t) return;
+      const t = this.vt[p.y]?.[p.x]; if (!t) return;
       const { sx, sy } = this.view.project(p.x, p.y, t.height);
       ctx.save(); ctx.shadowColor = color; ctx.shadowBlur = 10; ctx.strokeStyle = color; ctx.lineWidth = lw; diamondPath(ctx, sx, sy, 2); ctx.stroke(); ctx.restore();
     };
@@ -590,7 +591,7 @@ export class Renderer {
     for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
       const x = ux + dx, y = uy + dy;
       if (!g.inBounds(x, y) || (dx === 0 && dy === 0)) continue;
-      const t = g.tiles[y][x];
+      const t = this.vt[y][x];
       if (v.depth(x, y) <= depth || t.height <= Math.floor(d.pz + 0.01)) continue;
       const ts = v.project(x, y, t.height);
       const th = t.height * LV + GROUND;
@@ -666,28 +667,34 @@ export class Renderer {
   }
 
   // ---------- picking ----------
-  /** Front-most tile under a CSS-pixel point (units first, then top faces, then cliff sides). */
+  /** Tile under a CSS-pixel point. Order: the clear middle of a tile's top face (so tiles behind a sprite stay
+   *  clickable), then a unit's body, then the rest of a top face, then cliff sides. */
   pick(cx: number, cy: number): Pos | null {
     const wx = (cx - this.ox) / this.scale, wy = (cy - this.oy) / this.scale;
     const g = this.game, now = performance.now();
     const list = this.cachedDraw.length ? this.cachedDraw : this.buildDrawables(now);
+    const topDist = (x: number, y: number) => {
+      const s = this.view.project(x, y, this.vt[y][x].height);
+      return Math.abs(wx - s.sx) / (TW / 2) + Math.abs(wy - s.sy) / (TH / 2);
+    };
+    // 1) clear middle of a top face, front-most first
+    for (let i = list.length - 1; i >= 0; i--) { const d = list[i]; if (d.kind === 'tile' && topDist(d.x, d.y) <= 0.72) return { x: d.x, y: d.y }; }
+    // 2) unit bodies (generous box)
     for (let i = list.length - 1; i >= 0; i--) {
-      const d = list[i];
-      if (d.kind === 'unit') {
-        if (!d.u.alive) continue;
-        const s = this.view.project(d.px, d.py, d.pz);
-        const fh = figureHeight({ frame: frameFor(unitArt(d.u.defId, g.def(d.u)), 'idle', 0, !!g.def(d.u).structure), def: g.def(d.u) });
-        if (Math.abs(wx - s.sx) <= 26 && wy >= s.sy - fh && wy <= s.sy + 8) return { x: d.u.x, y: d.u.y };
-      } else {
-        const t = g.tiles[d.y][d.x];
-        const s = this.view.project(d.x, d.y, t.height);
-        const dx = wx - s.sx, dy = wy - s.sy;
-        if (Math.abs(dx) / (TW / 2) + Math.abs(dy) / (TH / 2) <= 1) return { x: d.x, y: d.y };
-        const th = t.height * LV + GROUND;
-        if (Math.abs(dx) <= TW / 2) {
-          const edge = dx < 0 ? (TH / 2) * (dx + TW / 2) / (TW / 2) : (TH / 2) * (1 - dx / (TW / 2));
-          if (dy >= edge && dy <= edge + th) return { x: d.x, y: d.y };
-        }
+      const d = list[i]; if (d.kind !== 'unit' || !d.u.alive) continue;
+      const s = this.view.project(d.px, d.py, d.pz);
+      const fh = figureHeight({ frame: frameFor(unitArt(d.u.defId, g.def(d.u)), 'idle', 0, !!g.def(d.u).structure), def: g.def(d.u) });
+      if (Math.abs(wx - s.sx) <= 32 && wy >= s.sy - fh - 6 && wy <= s.sy + 10) return { x: d.u.x, y: d.u.y };
+    }
+    // 3) rest of a top face, then cliff sides
+    for (let i = list.length - 1; i >= 0; i--) {
+      const d = list[i]; if (d.kind !== 'tile') continue;
+      if (topDist(d.x, d.y) <= 1) return { x: d.x, y: d.y };
+      const t = this.vt[d.y][d.x], s = this.view.project(d.x, d.y, t.height);
+      const dx = wx - s.sx, dy = wy - s.sy, th = t.height * LV + GROUND;
+      if (Math.abs(dx) <= TW / 2) {
+        const edge = dx < 0 ? (TH / 2) * (dx + TW / 2) / (TW / 2) : (TH / 2) * (1 - dx / (TW / 2));
+        if (dy >= edge && dy <= edge + th) return { x: d.x, y: d.y };
       }
     }
     return null;

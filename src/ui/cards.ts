@@ -20,7 +20,7 @@ function kindOf(c: Content, id: string): 'unit' | 'spell' | 'equipment' | undefi
 /** Procedural heraldic emblem for cards without art (spells, equipment, units without sprites). */
 export function emblemSvg(id: string, kind: string, color: string, accent: string): string {
   const r = hashStr(id);
-  const pick = (n: number, k: number) => (r >> (k * 4)) % n;
+  const pick = (n: number, k: number) => (r >>> (k * 4)) % n;
   const c2 = mix(color, '#ffffff', 0.35), dark = shade(color, 0.5);
   let body = '';
   if (kind === 'spell') {

@@ -1,7 +1,7 @@
 // Board painter: draws the static terrain layer (cliff sides, tops, decals, edges, fog) in depth order.
 // Uses painted tile art from content when present (terrain[id].tiles), else the procedural painterly fallback.
 import type { Game } from '../engine/game';
-import type { TerrainDef } from '../engine/types';
+import type { TerrainDef, Tile } from '../engine/types';
 import { GROUND, LV, TH, TW, View, mix, rgba, rng, shade } from './iso';
 import { diamondPath, sidePattern, terrainKind, terrainPattern } from './terrain';
 
@@ -28,8 +28,18 @@ const sidePats = new Map<string, CanvasPattern>();
 
 export interface AnimTile { x: number; y: number; kind: ReturnType<typeof terrainKind>; frames?: HTMLImageElement[] }
 
+/** Tiles as drawn: height includes the terrain's visualHeightOffset (walls stand up, trenches sink). Rules use game.tiles. */
+export function visualTiles(game: Game, into?: Tile[][]): Tile[][] {
+  const out = into ?? game.tiles.map(r => r.map(t => ({ ...t })));
+  for (let y = 0; y < game.height; y++) for (let x = 0; x < game.width; x++) {
+    const t = game.tiles[y][x], off = (game.content.terrain[t.terrain] as { visualHeightOffset?: number } | undefined)?.visualHeightOffset ?? 0;
+    out[y][x].terrain = t.terrain; out[y][x].height = Math.max(-0.5, t.height + off);
+  }
+  return out;
+}
+
 export class BoardPainter {
-  constructor(private game: Game, private view: View, private seeds: Uint32Array) {}
+  constructor(private game: Game, private view: View, private seeds: Uint32Array, private vt: Tile[][]) {}
   private art(id: string) { return (this.game.content.terrain[id] as TerrainExt | undefined)?.tiles; }
   private seed(x: number, y: number) { return this.seeds[y * this.game.width + x]; }
 
@@ -41,7 +51,7 @@ export class BoardPainter {
     order.sort((a, b) => a.d - b.d);
     const anim: AnimTile[] = [];
     for (const o of order) {
-      const t = g.tiles[o.y][o.x], def = g.content.terrain[t.terrain] as TerrainExt | undefined;
+      const t = this.vt[o.y][o.x], def = g.content.terrain[t.terrain] as TerrainExt | undefined;
       const kind = terrainKind(t.terrain, def);
       this.sides(ctx, o.x, o.y);
       this.top(ctx, o.x, o.y, t.terrain, def, kind);
@@ -69,7 +79,7 @@ export class BoardPainter {
 
   /** Both cliff faces of a tile, with strata texture, per-level shading and bottom darkening. */
   private sides(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const g = this.game, t = g.tiles[y][x], def = g.content.terrain[t.terrain] as TerrainExt | undefined;
+    const g = this.game, t = this.vt[y][x], def = g.content.terrain[t.terrain] as TerrainExt | undefined;
     const kind = terrainKind(t.terrain, def);
     if (kind === 'trench') return;
     const { sx, sy } = this.view.project(x, y, t.height);
@@ -119,7 +129,7 @@ export class BoardPainter {
   }
 
   private top(ctx: CanvasRenderingContext2D, x: number, y: number, id: string, def: TerrainExt | undefined, kind: ReturnType<typeof terrainKind>) {
-    const { sx, sy } = this.view.project(x, y, this.game.tiles[y][x].height);
+    const { sx, sy } = this.view.project(x, y, this.vt[y][x].height);
     const seed = this.seed(x, y);
     const under = def?.tiles?.underlay ?? def?.underlay;
     ctx.save(); diamondPath(ctx, sx, sy, -0.5); ctx.clip();
@@ -263,14 +273,14 @@ export class BoardPainter {
 
   /** Soft boundary lines where terrain changes, AO under cliffs behind this tile, faint grid elsewhere. */
   private edges(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const g = this.game, v = this.view, t = g.tiles[y][x];
+    const g = this.game, v = this.view, t = this.vt[y][x];
     const { sx, sy } = v.project(x, y, t.height);
     const myDepth = v.depth(x, y);
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
       const nx = x + dx, ny = y + dy;
       if (!g.inBounds(nx, ny)) continue;
       if (v.depth(nx, ny) > myDepth) continue; // neighbour in front draws this edge later
-      const n = g.tiles[ny][nx];
+      const n = this.vt[ny][nx];
       const c = v.project(nx, ny, t.height);
       const mx = (sx + c.sx) / 2, my = (sy + c.sy) / 2, ex = (c.sx - sx) / 2, ey = (c.sy - sy) / 2;
       const ax = mx + ex, ay = my - ey, bx = mx - ex, by = my + ey; // shared edge endpoints at this tile's height
@@ -296,7 +306,7 @@ export class BoardPainter {
   }
   /** Redraw one tile (sides + top + edges), used to re-occlude units behind cliffs. */
   drawTile(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const t = this.game.tiles[y][x], def = this.game.content.terrain[t.terrain] as TerrainExt | undefined;
+    const t = this.vt[y][x], def = this.game.content.terrain[t.terrain] as TerrainExt | undefined;
     this.sides(ctx, x, y); this.top(ctx, x, y, t.terrain, def, terrainKind(t.terrain, def)); this.edges(ctx, x, y);
   }
 }
