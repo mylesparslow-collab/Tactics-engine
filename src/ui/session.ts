@@ -480,7 +480,8 @@ export class GameSession {
       h('div', { class: 'pp-body' },
         h('div', { class: 'pp-name' }, t.name.replace(/^The /, '')),
         h('div', { class: 'pp-row' },
-          h('i', { class: 'tcoin' }), h('div', { class: 'tidebar', title: `${this.L('essence')} ${t.essence}/${max}` }, h('i', { class: 'water', style: `width:${Math.round(fill * 100)}%` }), h('b', null, String(t.essence))),
+          h('span', { class: 'pp-tide num' }, String(t.essence), h('small', null, this.L('essence'))),
+          h('div', { class: 'tidebar', title: `${this.L('essence')} ${t.essence}/${max}` }, h('i', { class: 'water', style: `width:${Math.round(fill * 100)}%` })),
           kf >= 0 ? h('span', { class: 'lamp', style: `--lk:${kf.toFixed(2)}`, title: `${this.L('keystone')} ${ks!.hp}/${g.def(ks!).stats.hp}` }, h('i', { class: 'flame' }), h('i', { class: 'tower' })) : null)));
   }
 
@@ -494,8 +495,8 @@ export class GameSession {
     this.top.append(
       h('div', { class: 'hud-l' }, this.teamGauge(me, 'left')),
       h('div', { class: 'roundmed', style: `--tc:${cur.color}` },
-        h('div', { class: 'rm-ring' }, h('small', null, 'Round'), h('b', null, String(g.round))),
-        h('div', { class: 'rm-ribbon' }, myTurn ? 'Your turn' : this.aiRunning ? `${cur.name.replace(/^The /, '')} acting` : `${cur.name.replace(/^The /, '')}`)),
+        h('div', { class: 'rm-round' }, 'Round ', h('b', { class: 'num' }, String(g.round))),
+        h('div', { class: 'rm-turn' }, myTurn ? 'Your turn' : this.aiRunning ? `${cur.name.replace(/^The /, '')} acting` : `${cur.name.replace(/^The /, '')}`)),
       h('div', { class: 'hud-r' }, ...others.map(i => this.teamGauge(i, 'right')), endBtn,
         h('button', { class: 'iconbtn menubtn soundbtn', title: isMuted() ? 'Sound off (M)' : 'Sound on (M)', onclick: () => { setMuted(!isMuted()); this.renderTop(); } }, glyph(isMuted() ? 'mute' : 'sound')),
         h('button', { class: 'iconbtn menubtn', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, glyph('gear'))));
@@ -545,7 +546,7 @@ export class GameSession {
         h('span', { class: 'chev' + (this.handOpen ? '' : ' up') }, '\u25BE'), h('span', null, this.L('warband')), h('b', null, String(team.hand.length)), team.deck.length ? h('span', { class: 'hdeck', title: `${team.deck.length} cards left to draw` }, `+${team.deck.length}`) : null),
       tabs, h('span', { class: 'hint' }, hintFor()));
     const end = h('button', { id: 'endturn', class: 'endturn-big', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() },
-      h('span', { class: 'et-ring' }), h('span', { class: 'et-text' }, 'End', h('br'), 'Turn'));
+      h('span', { class: 'et-text' }, 'End Turn'), h('span', { class: 'et-key' }, 'Enter \u00D7 2'));
     this.hand.append(strip, h('div', { class: 'hmain' }, row, end));
     this.layoutHand();
     row.scrollLeft = scroll;

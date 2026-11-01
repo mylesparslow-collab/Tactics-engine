@@ -21,13 +21,16 @@ function chartSvg() {
 const KIT = import.meta.glob('./kit/*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 /** URL of a baked UI-kit texture (tools/uikit/bake.py). */
 export const kit = (n: string) => KIT[`./kit/${n}.png`];
+const ILL = import.meta.glob('./kit/ill/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+/** URL of a baked illuminated initial (tools/uikit/illuminate.py), or undefined for non A-Z. */
+export const illum = (ch: string) => ILL[`./kit/ill/${ch.toUpperCase()}.webp`];
 
 export function installArt() {
   if (document.getElementById('ebb-art')) return;
   if (!document.getElementById('ebb-fonts')) {
     const ln = document.createElement('link');
     ln.id = 'ebb-fonts'; ln.rel = 'stylesheet';
-    ln.href = 'https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@1,400;1,500&family=Alegreya+Sans:wght@400;500;700;800;900&display=swap';
+    ln.href = 'https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&display=swap';
     document.head.append(ln);
   }
   const st = document.createElement('style');

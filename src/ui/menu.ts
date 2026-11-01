@@ -5,7 +5,7 @@ import { clear, h } from './dom';
 import { describeObjectives } from './text';
 import { buildSkirmish, playableFactions } from '../engine/skirmish';
 import { artNode } from './cards';
-import { crestSvg, glyph, installArt, kit, teamFaction } from './art';
+import { crestSvg, glyph, illum, installArt, kit, teamFaction } from './art';
 import { Game } from '../engine/game';
 import { Renderer } from '../render/renderer';
 
@@ -65,10 +65,18 @@ function shell(root: HTMLElement, content: Content): HTMLElement {
   return host;
 }
 
+/** A menu heading whose first letter is an illuminated initial; other text is left as is. */
+export function illuminated(text: string) {
+  const m = /^(\W*)([A-Za-z])(.*)$/.exec(text);
+  const src = m && illum(m[2]);
+  if (!m || !src) return [text];
+  return [m[1] || null, h('span', { class: 'ill', role: 'img', 'aria-label': m[2], style: `--ill:url("${src}")` }), m[3]];
+}
+
 function screenHeader(title: string, kicker: string | null, onBack: () => void) {
   return h('header', { class: 'scr-head' },
     h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back')),
-    h('div', { class: 'scr-title' }, kicker ? h('div', { class: 'kicker' }, kicker) : null, h('h1', null, title)),
+    h('div', { class: 'scr-title' }, kicker ? h('div', { class: 'kicker' }, kicker) : null, h('h1', null, ...illuminated(title))),
     h('div', { class: 'scr-head-sp' }));
 }
 
@@ -87,7 +95,7 @@ export function showMenu(root: HTMLElement, content: Content, errors: string[], 
   const campTotal = camps.reduce((n, [, c]) => n + c.missions.length, 0);
   const scen = Object.keys(content.missions).filter(id => !id.startsWith('skirmish:')).length;
   const item = (title: string, sub: string, on: (() => void) | null, extra = '') =>
-    h('button', { class: 'mitem' + extra, disabled: !on, onclick: on ?? undefined }, h('span', { class: 'mi-title' }, title), h('span', { class: 'mi-sub' }, sub));
+    h('button', { class: 'mitem' + extra, disabled: !on, onclick: on ?? undefined }, h('span', { class: 'mi-title' }, ...illuminated(title)), h('span', { class: 'mi-sub' }, sub));
   const scr = h('div', { class: 'scr title-scr' },
     h('div', { class: 'logo-block' },
       h('img', { class: 'logo-img', src: '', alt: L.title ?? 'EBB', draggable: 'false' }),
@@ -99,7 +107,7 @@ export function showMenu(root: HTMLElement, content: Content, errors: string[], 
       item('Collection', 'Soon', null)),
     errors.length ? h('details', { class: 'errbox' }, h('summary', null, `Content check: ${errors.length} problem${errors.length === 1 ? '' : 's'}`),
       h('ul', null, ...errors.slice(0, 30).map(e => h('li', null, e)))) : null,
-    h('footer', { class: 'ver' }, 'Prototype build'));
+    h('footer', { class: 'ver' }, 'Early access'));
   (scr.querySelector('.logo-img') as HTMLImageElement).src = kit('logo');
   host.append(scr);
 }
