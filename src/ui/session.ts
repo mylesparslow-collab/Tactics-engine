@@ -332,7 +332,7 @@ export class GameSession {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const k = e.key.toLowerCase();
     if (k === 'escape') this.cancel();
-    else if (k === 'm') { setMuted(!isMuted()); this.toastMsg(isMuted() ? 'Sound off (M)' : 'Sound on (M)', '#b8913e', this.g.current); }
+    else if (k === 'm') { setMuted(!isMuted()); this.renderTop(); this.toastMsg(isMuted() ? 'Sound off (M)' : 'Sound on (M)', '#b8913e', this.g.current); }
     else if (k === 'enter') { // press twice to end the turn (not 'e': it sits next to WASD)
       e.preventDefault();
       if (performance.now() < this.enterArmed) { this.enterArmed = 0; this.endTurn(); }
@@ -496,6 +496,7 @@ export class GameSession {
         h('div', { class: 'rm-ring' }, h('small', null, 'Round'), h('b', null, String(g.round))),
         h('div', { class: 'rm-ribbon' }, myTurn ? 'Your turn' : this.aiRunning ? `${cur.name.replace(/^The /, '')} acting` : `${cur.name.replace(/^The /, '')}`)),
       h('div', { class: 'hud-r' }, ...others.map(i => this.teamGauge(i, 'right')), endBtn,
+        h('button', { class: 'iconbtn menubtn soundbtn', title: isMuted() ? 'Sound off (M)' : 'Sound on (M)', onclick: () => { setMuted(!isMuted()); this.renderTop(); } }, glyph(isMuted() ? 'mute' : 'sound')),
         h('button', { class: 'iconbtn menubtn', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, glyph('gear'))));
   }
 
