@@ -122,7 +122,7 @@ export class BoardPainter {
     const { sx, sy } = this.view.project(x, y, this.game.tiles[y][x].height);
     const seed = this.seed(x, y);
     const under = def?.tiles?.underlay ?? def?.underlay;
-    ctx.save(); diamondPath(ctx, sx, sy); ctx.clip();
+    ctx.save(); diamondPath(ctx, sx, sy, -0.5); ctx.clip();
     if (under && this.game.content.terrain[under]) {
       if (!this.topArt(ctx, under, sx, sy, seed)) this.proceduralTop(ctx, sx, sy, under, this.game.content.terrain[under], terrainKind(under, this.game.content.terrain[under]), seed);
     }
@@ -132,7 +132,7 @@ export class BoardPainter {
     const props = def?.tiles?.props;
     if (props?.length) {
       const r = rng(seed ^ 0x51ed);
-      const n = r() < 0.55 ? 0 : r() < 0.8 ? 1 : 2;
+      const n = r() < 0.34 ? 1 : 0; // story props stay rare (~1 in 3 eligible tiles)
       for (let i = 0; i < n; i++) {
         const img = tileImage(props[Math.floor(r() * props.length)]); if (!img) continue;
         const u = (r() - 0.5) * 0.9, v = (r() - 0.5) * 0.9;
@@ -248,6 +248,19 @@ export class BoardPainter {
     }
   }
 
+  /** Paint a fading band of another terrain's top into the tile at (tx,ty), along edge A-B. Texture is anchored at (ox,oy). */
+  private blendBand(ctx: CanvasRenderingContext2D, tx: number, ty: number, ax: number, ay: number, bx: number, by: number, id: string, def: TerrainExt | undefined, ox: number, oy: number, seed: number) {
+    const mx = (ax + bx) / 2, my = (ay + by) / 2;
+    let ix = tx - mx, iy = ty - my; const L = Math.hypot(ix, iy) || 1; ix /= L; iy /= L;
+    for (const [w, a] of [[5, 0.13], [3, 0.17], [1.5, 0.22]] as const) {
+      ctx.save(); diamondPath(ctx, tx, ty); ctx.clip();
+      ctx.beginPath(); ctx.moveTo(ax - ix, ay - iy); ctx.lineTo(bx - ix, by - iy); ctx.lineTo(bx + ix * w, by + iy * w); ctx.lineTo(ax + ix * w, ay + iy * w); ctx.closePath(); ctx.clip();
+      ctx.globalAlpha = a;
+      if (!this.topArt(ctx, id, ox, oy, seed, a)) this.proceduralTop(ctx, ox, oy, id, def, terrainKind(id, def), seed);
+      ctx.restore();
+    }
+  }
+
   /** Soft boundary lines where terrain changes, AO under cliffs behind this tile, faint grid elsewhere. */
   private edges(ctx: CanvasRenderingContext2D, x: number, y: number) {
     const g = this.game, v = this.view, t = g.tiles[y][x];
@@ -270,11 +283,12 @@ export class BoardPainter {
         ctx.fillStyle = gr; ctx.fillRect(sx - TW / 2, sy - TH / 2, TW, TH);
         ctx.restore();
       } else if (diffT) {
-        // soft seam without ctx.filter (a filtered draw allocates a full-canvas layer each time)
-        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by);
-        ctx.strokeStyle = 'rgba(25,20,30,0.12)'; ctx.lineWidth = 5; ctx.stroke();
-        ctx.strokeStyle = 'rgba(25,20,30,0.2)'; ctx.lineWidth = 3; ctx.stroke();
-        ctx.strokeStyle = 'rgba(25,20,30,0.22)'; ctx.lineWidth = 1.4; ctx.stroke();
+        if (n.height === t.height) {
+          // soft texture blend across the shared edge, both directions (no seam line)
+          const ndef = g.content.terrain[n.terrain] as TerrainExt | undefined;
+          this.blendBand(ctx, sx, sy, ax, ay, bx, by, n.terrain, ndef, c.sx, c.sy, this.seed(nx, ny));
+          this.blendBand(ctx, c.sx, c.sy, ax, ay, bx, by, t.terrain, g.content.terrain[t.terrain] as TerrainExt | undefined, sx, sy, this.seed(x, y));
+        }
       } else if (n.height === t.height) {
         ctx.strokeStyle = 'rgba(20,16,24,0.055)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
       }

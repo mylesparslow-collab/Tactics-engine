@@ -14,7 +14,10 @@
       "props": [
         "tiles/salt_flat_prop_0.png",
         "tiles/salt_flat_prop_1.png",
-        "tiles/salt_flat_prop_2.png"
+        "tiles/salt_flat_prop_2.png",
+        "tiles/salt_flat_prop_3.png",
+        "tiles/salt_flat_prop_4.png",
+        "tiles/salt_flat_prop_5.png"
       ]
     }
   },
@@ -29,7 +32,14 @@
         "tiles/silt_top_1.png",
         "tiles/silt_top_2.png"
       ],
-      "side": "tiles/silt_side.png"
+      "side": "tiles/silt_side.png",
+      "props": [
+        "tiles/silt_prop_0.png",
+        "tiles/silt_prop_1.png",
+        "tiles/silt_prop_2.png",
+        "tiles/silt_prop_3.png",
+        "tiles/silt_prop_4.png"
+      ]
     }
   },
   "dead_coral": {
