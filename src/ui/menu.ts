@@ -294,23 +294,27 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
   const host = shell(root, content);
   const kicker = choice.campaign ? `${content.campaigns[choice.campaign.id].name} · Mission ${choice.campaign.index + 1}` : 'Skirmish';
   const teams = m.teams.map(t => ({ t, f: missionTeamFaction(content, m, t) }));
+  const story = (m.briefing ?? []).filter(t => t.trim() !== m.description?.trim());
+  const objRow = (kind: 'win' | 'lose', t: string) => h('li', { class: 'bo-row ' + kind }, h('i', { class: 'bo-mark' }), h('span', null, t));
   host.append(h('div', { class: 'scr brief-scr' },
-    screenHeader('Briefing', null, onBack),
-    h('article', { class: 'parchment' },
-      h('div', { class: 'brief-story' },
+    h('header', { class: 'brief-top' }, h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back'))),
+    h('div', { class: 'brief-grid' },
+      h('section', { class: 'brief-story' },
         h('div', { class: 'kicker' }, kicker),
-        h('h1', null, m.name),
-        ornament(),
+        h('h1', { class: 'brief-title' }, ...illuminated(m.name)),
         m.description ? h('p', { class: 'lead' }, m.description) : null,
-        ...(m.briefing ?? []).filter(t => t.trim() !== m.description?.trim()).map(t => h('p', null, t))),
-      h('div', { class: 'brief-side' },
-      h('div', { class: 'forces' }, ...teams.flatMap(({ t, f }, i) => [
-        i ? h('span', { class: 'fvs' }, 'vs') : null,
-        h('div', { class: 'force', style: `--tc:${t.color}` }, crest(f, 'crest', t.color), h('div', null, h('b', null, t.name), h('small', null, t.controller === 'human' ? 'You' : 'Enemy')))])),
-      h('div', { class: 'objs' },
-        h('div', { class: 'obj win' }, h('h3', null, obj.winAny ? 'Victory: any of' : 'Victory'), h('ul', null, ...obj.win.map(t => h('li', null, t)))),
-        h('div', { class: 'obj lose' }, h('h3', null, 'Defeat'), h('ul', null, ...obj.lose.map(t => h('li', null, t))))),
-      h('div', { class: 'brief-foot' },
-        h('span', { class: 'muted' }, `${map?.name ?? m.map} · ${m.startingEssence ?? 100} ${label(content, 'essence')} to start`),
-        h('button', { class: 'btn-gold big', onclick: onStart }, 'Deploy'))))));
+        story.length ? h('div', { class: 'brief-text' }, ...story.map(t => h('p', null, t))) : null),
+      h('aside', { class: 'brief-side framed' },
+        h('div', { class: 'bs-map' }, mapPreview(content, m.map),
+          h('div', { class: 'bs-mapname' }, h('span', { class: 'kicker' }, 'Battlefield'), h('b', null, map?.name ?? m.map),
+            h('small', null, `${m.startingEssence ?? 100} ${label(content, 'essence')} to start`))),
+        h('div', { class: 'bs-forces' }, ...teams.map(({ t, f }) =>
+          h('div', { class: 'bs-force', style: `--tc:${t.color}` }, crest(f, 'crest', t.color),
+            h('b', null, t.name), h('small', null, t.controller === 'human' ? 'You' : 'Enemy')))),
+        h('div', { class: 'bs-objs' },
+          h('div', { class: 'kicker' }, obj.winAny ? 'Victory, any of' : 'Victory'),
+          h('ul', null, ...obj.win.map(t => objRow('win', t))),
+          h('div', { class: 'kicker lose' }, 'Defeat'),
+          h('ul', null, ...obj.lose.map(t => objRow('lose', t)))),
+        h('button', { class: 'btn-gold big bs-deploy', onclick: onStart }, 'Deploy')))));
 }

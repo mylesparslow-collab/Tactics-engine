@@ -189,25 +189,35 @@ p { margin: 0; }
 .scen-crests { display: flex; } .scen-crests .crest { width: 40px; } .scen-crests .crest + .crest { margin-left: -12px; margin-top: 14px; }
 .scen-t { flex: 1; min-width: 0; } .scen h3 { color: var(--gold-hi); font-size: 17px; } .scen p { color: var(--muted); font-size: 13px; margin-top: 3px; }
 
-/* ------------------------------------------------------------------ briefing */
-.parchment { position: relative; max-width: 780px; margin: 0 auto; padding: 44px 52px 34px; color: var(--paper-ink); border: 1px solid #5a4322; border-radius: 2px;
-  background: var(--grain-paper), radial-gradient(ellipse at 50% 35%, #f1e7cf, #ddcca6 70%, #c8b085);
-  box-shadow: 0 0 0 6px #0b1016, 0 0 0 7px var(--line-hi), 0 24px 60px #000d, inset 0 0 0 6px #f6edd8aa, inset 0 0 0 7px #8a6a3a66, inset 0 0 70px #6b4f2a55; }
-.parchment .kicker { color: #8a5a20; text-align: center; }
-.parchment h1 { text-align: center; font-size: clamp(26px, 4vw, 40px); color: #2c1e0c; margin-top: 6px; line-height: 1.1; }
-.parchment .orn { color: #8a6326; margin: 10px auto 16px; width: 60%; }
-.parchment .lead { color: #5a3a12; text-align: center; font-size: 17px; margin-bottom: 14px; }
-.parchment p { font-family: var(--font-flavor); line-height: 1.55; margin-bottom: 10px; font-size: 16px; color: #3b2d1a; }
-.forces { display: flex; align-items: center; justify-content: center; gap: 18px; margin: 18px 0; flex-wrap: wrap; }
-.force { display: flex; align-items: center; gap: 10px; } .force .crest { width: 44px; }
-.force b { display: block; font-family: var(--font-display); font-size: 15px; color: #2c1e0c; } .force small { color: #7a6142; font-size: 12px; text-transform: uppercase; letter-spacing: .14em; }
-.fvs { font-family: var(--font-logo); font-weight: 600; color: #8a5a20; font-size: 20px; }
-.objs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 6px 0 18px; }
-.obj { padding: 12px 14px; border-radius: 4px; border: 1px solid #8a632655; background: #fff8e244; }
-.obj h3 { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: #2f5a2c; margin-bottom: 6px; } .obj.lose h3 { color: #8e2e24; }
-.obj ul { margin: 0; padding-left: 18px; font-size: 15px; line-height: 1.45; color: #3b2d1a; }
-.brief-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; border-top: 1px solid #8a632655; padding-top: 16px; }
-.brief-foot .muted { color: #7a6142; font-size: 13px; }
+/* ------------------------------------------------------------------ briefing
+   Story set straight on the darkened live board (left), order of battle in one panel (right). */
+.brief-scr { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+.brief-top { max-width: 1240px; width: 100%; margin: 0 auto; }
+.brief-grid { flex: 1; max-width: 1240px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: clamp(28px, 6vw, 96px); align-items: center; padding: 8px 0 24px; }
+.brief-story { max-width: 600px; }
+.brief-story .kicker { margin-bottom: 14px; }
+.brief-title { display: flex; align-items: center; font-size: clamp(38px, 5vw, 64px); line-height: 1.02; color: var(--gold-hi); letter-spacing: .02em; text-shadow: 0 3px 24px #000; }
+.brief-title .ill { width: 1.45em; height: 1.45em; margin-right: .16em; align-self: flex-start; margin-top: -.06em; }
+.brief-story .lead { margin-top: 20px; font-size: clamp(19px, 1.6vw, 23px); line-height: 1.45; color: #e6dcc4; text-shadow: 0 1px 10px #000; }
+.brief-text { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
+.brief-text p { font-size: 15.5px; line-height: 1.65; color: #c9c3b6; text-shadow: 0 1px 8px #000; }
+.brief-side { display: flex; flex-direction: column; gap: 18px; }
+.bs-map { display: grid; grid-template-columns: 130px 1fr; gap: 14px; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--line-dim); }
+.bs-map .mapprev { width: 130px; height: 86px; margin: 0; }
+.bs-mapname { display: flex; flex-direction: column; gap: 3px; } .bs-mapname b { font-family: var(--font-display); font-weight: 600; font-size: 22px; line-height: 1.1; color: var(--gold-hi); }
+.bs-mapname small { font-family: var(--font-ui); font-size: 12.5px; letter-spacing: .04em; color: #8fd8d0; }
+.bs-forces { display: flex; flex-direction: column; gap: 8px; padding-bottom: 16px; border-bottom: 1px solid var(--line-dim); }
+.bs-force { --tc: #888; display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 12px; padding: 6px 10px 6px 8px; border-radius: 2px; background: #ffffff06; box-shadow: inset 3px 0 0 var(--tc); }
+.bs-force .crest { width: 28px; }
+.bs-force b { font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--text); }
+.bs-force small { font-family: var(--font-ui); font-weight: 600; font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase; color: color-mix(in srgb, var(--tc) 55%, #fff); }
+.bs-objs ul { list-style: none; margin: 8px 0 14px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.bs-objs .kicker.lose { color: #c97a70; }
+.bo-row { display: flex; gap: 10px; align-items: baseline; font-size: 14.5px; line-height: 1.4; color: #dcd5c6; }
+.bo-mark { flex: none; width: 7px; height: 7px; transform: rotate(45deg) translateY(-1px); background: #8fd18a; box-shadow: 0 0 8px #8fd18a88; }
+.bo-row.lose .bo-mark { background: #d9675c; box-shadow: 0 0 8px #d9675c88; }
+.bs-deploy { width: 100%; }
+@media (max-width: 900px) { .brief-grid { grid-template-columns: 1fr; align-items: start; } .brief-story { max-width: none; } }
 
 /* ------------------------------------------------------------------ battle layout */
 .game { display: grid; height: 100vh; height: 100dvh; grid-template-rows: minmax(0, 1fr) auto; grid-template-columns: 100%; position: relative; background: var(--ink); }
@@ -439,8 +449,6 @@ p { margin: 0; }
   .mp-name { font-size: 14px; text-align: center; }
 
   .scen-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; }
-  .parchment { padding: 22px 24px 18px; } .parchment p { font-size: 14px; } .parchment .lead { font-size: 15px; }
-  .objs { gap: 10px; } .obj ul { font-size: 13px; }
 
   /* battle */
   #hudtop { padding-top: calc(4px + var(--sa-t)); gap: 6px; }
@@ -479,7 +487,6 @@ p { margin: 0; }
   .logo-block { grid-column: 1; grid-row: 2; margin-bottom: 22px; justify-self: center; } .mainnav { grid-column: 1; grid-row: 3; } .errbox { grid-column: 1; grid-row: 4; } .ver { grid-row: 6; }
   .camp-body, .skirm-body { grid-template-columns: 1fr; } .vs-col { grid-row: auto; }
   .chartmap { aspect-ratio: 4 / 3; }
-  .objs { grid-template-columns: 1fr; }
   .scen-grid { grid-template-columns: 1fr; }
   #hudtop { grid-template-columns: auto 1fr auto; } .pplate { padding: 2px 6px 2px 2px; } .tidebar { min-width: 44px; }
   .rm-round { display: none; }
@@ -536,17 +543,15 @@ p { margin: 0; }
   .hoverbox { display: none; }
 }
 
-/* briefing on short landscape screens: story scrolls on the left, forces/objectives/Deploy always visible on the right */
+/* briefing on short landscape screens: story scrolls on the left, order of battle stays whole on the right */
 @media (max-height: 520px) and (orientation: landscape) {
-  .brief-scr .parchment { max-width: none; display: grid; grid-template-columns: 1.25fr 1fr; gap: 18px; padding: 12px 16px; height: calc(100dvh - 70px); overflow: hidden; }
-  .brief-story { overflow-y: auto; padding-right: 6px; min-height: 0; }
-  .brief-side { display: flex; flex-direction: column; gap: 8px; min-height: 0; overflow: hidden; }
-  .brief-side .forces { margin: 0; gap: 8px; flex-wrap: nowrap; justify-content: space-between; } .brief-side .force .crest { width: 30px; } .brief-side .force b { font-size: 13px; } .brief-side .force small { font-size: 10px; } .brief-side .fvs { font-size: 15px; }
-  .brief-side .objs { grid-template-columns: 1fr; gap: 6px; margin: 0; overflow-y: auto; min-height: 0; flex: 1; }
-  .brief-side .brief-foot { flex: none; flex-wrap: nowrap; } .brief-side .brief-foot .muted { font-size: 11px; } .brief-side .btn-gold.big { padding: 6px 22px; font-size: 18px; }
-  .brief-side .obj { padding: 6px 10px; } .brief-side .obj li { font-size: 12.5px; }
-  .brief-side .brief-foot { margin-top: auto; padding-top: 6px; }
-  .brief-scr .parchment h1 { font-size: 24px; } .brief-scr .parchment .orn { margin: 4px auto 8px; }
+  .brief-grid { grid-template-columns: 1.2fr 1fr; gap: 18px; align-items: start; padding: 0; }
+  .brief-story { max-height: calc(100dvh - 70px); overflow-y: auto; padding-right: 6px; }
+  .brief-title { font-size: 28px; } .brief-story .lead { font-size: 15px; margin-top: 10px; } .brief-text { margin-top: 10px; padding-top: 10px; } .brief-text p { font-size: 13px; }
+  .brief-side { gap: 10px; max-height: calc(100dvh - 70px); overflow-y: auto; } .bs-map { display: block; padding-bottom: 8px; } .bs-map .mapprev { display: none; } .bs-mapname b { font-size: 16px; }
+  .bs-deploy { position: sticky; bottom: 0; flex: none; box-shadow: 0 -10px 16px #0a0f14; }
+  .bs-forces { padding-bottom: 8px; gap: 4px; } .bs-force { padding: 3px 8px; } .bs-force b { font-size: 14px; } .bs-force .crest { width: 22px; }
+  .bs-objs ul { margin: 4px 0 8px; gap: 3px; } .bo-row { font-size: 12.5px; }
 }
 #turnflash.hint { top: auto; bottom: 150px; }
 .tf-hint { padding: 8px 20px; border-radius: 3px; background: var(--glass); box-shadow: 0 0 0 1px var(--line), 0 6px 16px #000a; font-family: var(--font-ui); font-size: 15px; font-weight: 600; letter-spacing: .04em; color: var(--gold-hi); }
