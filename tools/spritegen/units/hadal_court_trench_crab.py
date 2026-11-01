@@ -16,7 +16,7 @@ def leg(add, root, foot, s, lift, P, mat='shell'):
     foot = foot + v3(0, lift, 0)
     mid = (root + foot) / 2
     knee = root + v3(s * 0.24, 0.24 + 0.5 * lift, 0) * (1 - 0.5 * P['end'])
-    seg_limb(add, [root, knee, foot + v3(0, 0.10, 0), foot], [0.075, 0.06, 0.04, 0.012], mat, joint='joint')
+    seg_limb(add, [root, knee, foot + v3(0, 0.10, 0), foot], [0.09, 0.075, 0.05, 0.015], mat, joint='joint')
 
 
 def build(P):

@@ -31,7 +31,8 @@ def maul(P, add):
     butt, tip = g - d * 0.45, g + d * 0.72
     add(Capsule(butt, tip, 0.024), 'wood', 0.0)
     lash(add, butt, tip, n=2, r=0.03, at=(0.05, 0.12))
-    sv = norm(np.cross(d, v3(0, 1, 0.3)))
+    c0 = np.cross(d, v3(0, 1, 0.3))
+    sv = norm(c0) if np.linalg.norm(c0) > 0.2 else norm(np.cross(d, v3(1, 0, 0)))
     # head: a squat capstan drum with iron bands, and a spike on the back face
     a, b = tip - sv * 0.15, tip + sv * 0.15
     add(Cylinder(a, b, 0.095, 0.015), 'plate', 0.0)

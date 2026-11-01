@@ -70,9 +70,8 @@ def cracked_albedo(base, crack=BLACK, freq=9.0, width=0.035, seep=None, barn=0.0
             a[edge] = a[edge] * 0.6 + np.array(seep)[None, :] * 0.4
         a[cm] = crack
         if barn > 0:
-            b = fbm(p + 1.3, 38.0, 2) > (1 - barn)
-            low = np.clip(0.9 - p[:, 1], 0, 1) > 0.2
-            a[b & low] = BARN
+            b = fbm(p + 1.3, 38.0, 2) > (1 - 0.45 * barn)
+            a[b] = BARN
         return a
     return fn
 

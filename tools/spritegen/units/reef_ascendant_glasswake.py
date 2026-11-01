@@ -24,7 +24,7 @@ def build(P):
     rng = np.random.default_rng(71)
     st = P['strike']
     ground_root(add, v3(0, 0.04, 0), 7, 0.45, 0.04, 'coral', rng)
-    add(ribbed(v3(0, 0.16, -0.05), (0.32, 0.18, 0.28), n=16, depth=0.02, R=rot_x(np.pi / 2)), 'calcite_p', 0)
+    add(ribbed(v3(0, 0.16, -0.05), (0.32, 0.28, 0.18), n=16, depth=0.02, R=rot_x(np.pi / 2)), 'calcite_p', 0)
     for j, (x, z, L, r, tx, tz) in enumerate(CRYS):
         s = wave(P, j * 1.1, strike=0.0)
         R = rot_z(tz + 0.03 * s) @ rot_x(tx + 0.02 * s)

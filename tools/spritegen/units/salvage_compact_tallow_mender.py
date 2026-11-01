@@ -60,7 +60,7 @@ def build(P):
         add(Capsule(pel + v3(x, 0.02, 0.1), pel + v3(x, -0.06, 0.11), 0.03, 0.03), 'bone' if k else 'tin', 0.0)
     mats = sv_materials(P, skin='light', hair=_hex('#5a3a28'), coat_seed=5,
                         coat_colors=(SAILCLOTH, CANVAS, OCHRE, BONE))
-    mats['apron'] = Material(lambda p, n: np.where((fbm(p, 14, 3) > 0.55)[:, None], _arr(TALLOW, len(p)) * 0.9,
+    mats['apron'] = Material(lambda p, n: np.where((fbm(p, 14, 3) > 0.68)[:, None], _arr(TALLOW, len(p)) * 0.8,
                                                    _arr(_hex('#5e412c'), len(p))), spec=0.35, gloss=22, brush=0.08)
     return finish(P, FACTION, parts, mats, lights=lights)
 

@@ -44,7 +44,7 @@ def build(P):
     # back standard: pole from between the shoulder blades, squared banner on a crossbar
     sw = 0.5 * np.sin(P['tell'] * 2 * np.pi) + P['skirt_sway'] * 0.4
     base = ch + v3(0.05, -0.10, -0.15)
-    top = base + v3(0.04, 0.92, -0.02)
+    top = base + v3(0.04, 0.80, -0.02)
     add(Capsule(base, top, 0.014), 'wood')
     add(RoundBox(base + v3(0, 0.12, 0.02), (0.03, 0.06, 0.02), 0.006), 'leather')
     add(Sphere(top + v3(0, 0.02, 0), 0.026), 'brass')

@@ -23,7 +23,7 @@ def build(P):
     st = P['strike']
     ground_root(add, v3(0, 0.05, 0), 10, 0.75, 0.05, 'calcite_b', rng, k=0.03)
     # the mound
-    add(ribbed(v3(0, 0.22, -0.05), (0.62, 0.3, 0.5), n=26, depth=0.03, R=rot_x(np.pi / 2)), 'mound', 0)
+    add(ribbed(v3(0, 0.22, -0.05), (0.62, 0.5, 0.3), n=26, depth=0.03, R=rot_x(np.pi / 2)), 'mound', 0)
     for j, (x, z, h, r0, ph) in enumerate(SPIRES):
         s = wave(P, ph, strike=0.0)
         out = norm(v3(x + 1e-3, 0, z + 1e-3))

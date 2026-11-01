@@ -44,7 +44,7 @@ def build(P):
     drips(P, add, [a + v3(0, -0.04, 0), P['pelvis'] + v3(0.2, -0.82, 0.05), P['pelvis'] + v3(-0.22, -0.85, -0.02)])
     puddle(P, add, r=0.34)
     mats = {
-        'robe': wet_cloth(_hex('#25302c'), wet=0.9, low_dark=0.2),
+        'robe': wet_cloth(_hex('#36423d'), wet=0.9, low_dark=0.2),
         'black': wet_cloth(_hex('#3f7a5c'), wet=0.8, low_dark=0.1),
         'skin': wet_skin(P, SKIN_PALE, hair=BLACK, sunken=0.3),
         'water': Material(GLINT, spec=1.2, gloss=70, emissive=tuple(np.array(BRINE) * (0.35 + 0.5 * P['cast_glow'])), brush=0.0),
