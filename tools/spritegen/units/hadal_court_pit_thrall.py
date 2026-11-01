@@ -18,7 +18,7 @@ def neutral_pose():
     rig.shift(P, ('pelvis', 'hip_r', 'hip_l') + rig.UPPER, dn)
     rig.place_leg(P, 'r', P['an_r'] + v3(-0.04, 0, -0.04), l1=0.43 * h, l2=0.42 * h, pole=(-0.4, 0, 1))
     rig.place_leg(P, 'l', P['an_l'] + v3(0.05, 0, 0.0), l1=0.43 * h, l2=0.42 * h, pole=(0.4, 0, 1))
-    rig.lean(P, fwd=np.radians(22))
+    rig.lean(P, fwd=np.radians(16))
     P['head_pitch'] = np.radians(-14)
     rig.place_arm(P, 'r', P['pelvis'] + v3(-0.36, -0.22, 0.12), (-1, 0, -0.5), l1=0.27 * h * 1.1, l2=0.26 * h * 1.1)
     rig.place_arm(P, 'l', P['pelvis'] + v3(0.30, -0.18, 0.28), (1, 0, -0.5), l1=0.27 * h * 1.1, l2=0.26 * h * 1.1)
@@ -36,10 +36,12 @@ def build(P):
     # crude bell-helm (open bottom, sits over the head down to the neck)
     H = P['head']
     Rh = rot_y(P['head_yaw']) @ rot_x(-P['head_pitch'])
-    add(bell_hull(H + Rh[:, 1] * 0.16, 0.30, 0.11, 0.19, R=Rh, power=0.7, sz=0.95, lip=0.025), 'helm', 0.0)
-    add(RoundBox(H + Rh @ v3(0, -0.01, 0.165), (0.09, 0.012, 0.02), 0.006, Rh), 'abyss', 0.0)
-    bulb = stalk_lamp(add, H + Rh[:, 1] * 0.16, Rh[:, 1] + Rh[:, 2] * 0.6, Rh[:, 2] + v3(0, -0.1, 0),
-                      0.07, 0.07, bulb=0.035, mat='iron', r0=0.014, r1=0.009)
+    add(bell_hull(H + Rh[:, 1] * 0.18, 0.32, 0.13, 0.21, R=Rh, power=0.6, sz=0.95, lip=0.03), 'helm', 0.0)
+    add(Ellipsoid(H + Rh[:, 1] * 0.17, (0.13, 0.06, 0.12), Rh), 'helm', 0.03)
+    add(RoundBox(H + Rh @ v3(0, -0.01, 0.19), (0.10, 0.016, 0.03), 0.008, Rh), 'abyss', 0.0)
+    specks(add, [H + Rh @ v3(sx * 0.045, -0.01, 0.205) for sx in (-1, 1)], 0.011)
+    bulb = stalk_lamp(add, H + Rh[:, 1] * 0.22, Rh[:, 1] + Rh[:, 2] * 0.6, Rh[:, 2] + v3(0, -0.1, 0),
+                      0.10, 0.09, bulb=0.042, mat='iron', r0=0.016, r1=0.01)
     # chain from the right fist to a dragged pressure-weight
     if P['item_r'] is not None:
         g = hand_pos(P, 'r')
@@ -51,7 +53,7 @@ def build(P):
         add(Torus(v3(0, 0.02, 0.45), v3(0, 1, 0), 0.15 + 0.2 * P['fx'], 0.014), 'speck', 0.0)
     flick = [1.0, 0.45, 1.1, 0.7][int(P.get('tell', 0) * 4) % 4]
     mats = hadal_mats(P, {
-        'helm': bell_metal(H, Rh, base=_hex('#5d6584'), spacing=0.15, patina_amt=0.4, barn=0.0),
+        'helm': bell_metal(H, Rh, base=_hex('#5d6584'), spacing=0.4, patina_amt=0.4, barn=0.0),
         'lamp': Material(TEAL, emissive=tuple(np.array(TEAL) * 1.0 * flick * max(pulse(P), 0)), rim=0.0),
     })
     lights = [teal_light(bulb, P, 0.6 * flick, 0.5)]

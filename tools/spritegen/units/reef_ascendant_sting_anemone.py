@@ -40,7 +40,7 @@ def build(P):
         r = 0.04 + 0.12 + o[0] - 0.025
         p = top + v3(np.cos(ang) * r, 0.02 + 0.2 + o[1] + 0.05, np.sin(ang) * r)
         add(Sphere(p, 0.011), 'glow', 0)
-    parts = scaled(body_pose(parts, P, lunge=0.03), 1.2)
+    parts = scaled(body_pose(parts, P, lunge=0.03), 1.4)
     m = reef_mats(P, glow=0.5)
     m['pinkflesh'] = flesh_mat(col=_hex('#f6c9bd'), P=P, glow=0.3)
     return finish(P, FACTION, parts, m)

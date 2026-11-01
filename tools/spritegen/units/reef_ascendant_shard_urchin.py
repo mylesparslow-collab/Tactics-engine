@@ -29,7 +29,7 @@ def build(P):
         a = c + v3(np.cos(ang) * 0.09, -0.11, np.sin(ang) * 0.09)
         b = v3(np.cos(ang) * 0.14, 0.012 + max(0, 0.03 * s * ph), np.sin(ang) * 0.14 + 0.04 * s * ph)
         add(Capsule(a, b, 0.016, 0.01), 'flesh', 0.01)
-    parts = scaled(body_pose(parts, P, lunge=0.05), 1.2)
+    parts = scaled(body_pose(parts, P, lunge=0.05), 1.75)
     m = reef_mats(P, glow=0.2)
     m['shard'] = calcite_mat(flush=0.08, base_col=_hex('#f5efe6'), pores=False)
     return finish(P, FACTION, parts, m)
