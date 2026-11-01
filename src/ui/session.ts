@@ -59,8 +59,16 @@ export class GameSession {
     ro.observe(this.canvas.parentElement!);
     this.cleanup.push(() => ro.disconnect());
     const kd = (e: KeyboardEvent) => this.onKey(e);
-    window.addEventListener('keydown', kd);
-    this.cleanup.push(() => window.removeEventListener('keydown', kd));
+    // WASD / arrow keys pan the camera while held
+    const held = new Set<string>();
+    const PAN: Record<string, [number, number]> = { w: [0, 1], arrowup: [0, 1], s: [0, -1], arrowdown: [0, -1], a: [1, 0], arrowleft: [1, 0], d: [-1, 0], arrowright: [-1, 0] };
+    const syncPan = () => { let x = 0, y = 0; for (const k of held) { x += PAN[k][0]; y += PAN[k][1]; } this.renderer.setPanVelocity(x, y); };
+    const typing = (e: KeyboardEvent) => e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement;
+    const pd = (e: KeyboardEvent) => { const k = e.key.toLowerCase(); if (PAN[k] && !typing(e) && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); held.add(k); syncPan(); } };
+    const pu = (e: KeyboardEvent) => { const k = e.key.toLowerCase(); if (held.delete(k)) syncPan(); };
+    const blur = () => { held.clear(); syncPan(); };
+    window.addEventListener('keydown', kd); window.addEventListener('keydown', pd); window.addEventListener('keyup', pu); window.addEventListener('blur', blur);
+    this.cleanup.push(() => { window.removeEventListener('keydown', kd); window.removeEventListener('keydown', pd); window.removeEventListener('keyup', pu); window.removeEventListener('blur', blur); });
     this.logLine(`${this.game.mission.name} begins.`, 'sys');
     this.logLine(`Round 1 - ${this.game.teams[this.game.current].name}`, 'turn');
     this.refresh();
@@ -295,7 +303,7 @@ export class GameSession {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const k = e.key.toLowerCase();
     if (k === 'escape') this.cancel();
-    else if (k === 'enter' || k === 'e') { e.preventDefault(); this.endTurn(); }
+    else if (k === 'enter') { e.preventDefault(); this.endTurn(); } // not 'e': it sits next to WASD
     else if (k === 'q') this.renderer.rotate(-1);
     else if (k === 'r') this.renderer.rotate(1);
     else if (k === '+' || k === '=') this.renderer.zoomBy(1.2);
@@ -442,7 +450,7 @@ export class GameSession {
       h('div', { class: 'turnbox', style: `--tc:${cur.color}` }, h('span', { class: 'round' }, `Round ${g.round}`), h('span', { class: 'who' }, `${cur.name}${this.aiRunning ? ' is thinking' : "'s turn"}`)),
       h('div', { class: 'spacer' }),
       ...g.teams.map((_, i) => this.teamGauge(i)),
-      h('button', { id: 'endturn', class: 'brass', disabled: !this.canActSoft(), title: 'End turn (E / Enter)', onclick: () => this.endTurn() }, h('span', null, 'End Turn')),
+      h('button', { id: 'endturn', class: 'brass', disabled: !this.canActSoft(), title: 'End turn (Enter)', onclick: () => this.endTurn() }, h('span', null, 'End Turn')),
       h('button', { class: 'quiet menu', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, 'Menu'));
   }
 

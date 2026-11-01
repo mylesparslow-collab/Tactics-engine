@@ -149,6 +149,9 @@ export class Renderer {
     this.panX = Math.max(-lim, Math.min(lim, this.panX)); this.panY = Math.max(-lim, Math.min(lim, this.panY));
   }
   private userMoved = false;
+  private panVel = { x: 0, y: 0 };
+  /** Held-key camera pan direction (-1..1 per axis); applied each frame. */
+  setPanVelocity(x: number, y: number) { this.panVel = { x: Math.sign(x), y: Math.sign(y) }; }
   private applyView() {
     const { minX, maxX, minY, maxY } = this.bounds();
     const bw = maxX - minX, bh = maxY - minY;
@@ -415,6 +418,7 @@ export class Renderer {
       this.particles = this.particles.filter(p => now - p.born < p.life);
       for (const p of this.particles) { p.x += p.vx * s; p.y += p.vy * s; p.vy += p.g * s; p.vx *= 0.98; }
     }
+    if (this.panVel.x || this.panVel.y) { const sp = Math.max(this.cssW, this.cssH) * 0.9 * dt / 1000; this.pan(this.panVel.x * sp, this.panVel.y * sp); }
     if (this.boardDirty) this.buildBoard();
 
     const ctx = this.ctx, g = this.game;
