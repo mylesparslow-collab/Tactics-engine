@@ -117,7 +117,8 @@ export function drawUnitSprite(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
   if (f) {
     if (o.dim) ctx.globalAlpha = o.alpha * 0.6;
     const w = f.sw * f.scale, h = f.sh * f.scale;
-    ctx.drawImage(f.img, f.sx, f.sy, f.sw, f.sh, -f.ax * f.scale, -f.ay * f.scale, w, h);
+    const kx = f.img.src instanceof HTMLImageElement ? 1 : (f.img.src as HTMLCanvasElement).width / f.img.naturalWidth;
+    ctx.drawImage(f.img.src, f.sx * kx, f.sy * kx, f.sw * kx, f.sh * kx, -f.ax * f.scale, -f.ay * f.scale, w, h);
     if (o.flash > 0) {
       ctx.save(); ctx.globalCompositeOperation = 'source-atop'; ctx.fillStyle = `rgba(255,255,255,${0.85 * o.flash})`;
       ctx.fillRect(-f.ax * f.scale, -f.ay * f.scale, w, h); ctx.restore();

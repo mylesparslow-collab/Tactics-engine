@@ -51,7 +51,7 @@ export class Renderer {
   reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   // board cache
   private board: HTMLCanvasElement | null = null;
-  private boardK = 1; private boardX0 = 0; private boardY0 = 0; private boardDirty = true;
+  private boardK = 1; private boardX0 = 0; private boardY0 = 0; private boardDirty = true; private artTimer: ReturnType<typeof setTimeout> | undefined;
   private animTiles: AnimTile[] = [];
   private painter!: BoardPainter;
   private seeds: Uint32Array = new Uint32Array(0);
@@ -91,7 +91,7 @@ export class Renderer {
     for (let y = 0; y < game.height; y++) for (let x = 0; x < game.width; x++) this.seeds[y * game.width + x] = (((x * 73856093) ^ (y * 19349663) ^ 0x5bd1e995) >>> 0);
     this.zoom = 1; this.panX = 0; this.panY = 0;
     this.painter = new BoardPainter(game, this.view, this.seeds);
-    onTileArtReady(() => { this.boardDirty = true; });
+    onTileArtReady(() => { clearTimeout(this.artTimer); this.artTimer = setTimeout(() => { this.boardDirty = true; }, 120); });
     this.boardDirty = true;
     this.resize();
   }
@@ -343,7 +343,7 @@ export class Renderer {
   // ---------- board cache ----------
   private buildBoard() {
     const { minX, maxX, minY, maxY } = this.bounds();
-    const k = Math.min(3, Math.max(0.5, this.fitScale * this.dpr * 1.5));
+    const k = Math.min(2, Math.max(0.5, this.fitScale * this.dpr * 1.25));
     const W = Math.ceil((maxX - minX) * k), H = Math.ceil((maxY - minY) * k);
     if (!this.board || this.board.width !== W || this.board.height !== H) { this.board = document.createElement('canvas'); this.board.width = W; this.board.height = H; }
     const ctx = this.board.getContext('2d')!;

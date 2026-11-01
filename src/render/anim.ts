@@ -31,15 +31,28 @@ function manifestFor(p: string | undefined): Manifest | undefined {
   return manifests[`../../content/${p}`] as Manifest | undefined;
 }
 
-const images = new Map<string, HTMLImageElement>();
-export function getImage(src: string): HTMLImageElement | null {
-  let img = images.get(src);
-  if (!img) { img = new Image(); img.src = src; images.set(src, img); }
-  return img.complete && img.naturalWidth > 0 ? img : null;
+/** A drawable picture with its natural size. SVGs are rasterised once to a canvas, because drawing an SVG
+ * image directly makes the browser re-rasterise it on the main thread, which made game start take seconds. */
+export interface Pic { src: CanvasImageSource; naturalWidth: number; naturalHeight: number }
+const images = new Map<string, { img: HTMLImageElement; pic?: Pic }>();
+export function getImage(src: string): Pic | null {
+  let e = images.get(src);
+  if (!e) { const img = new Image(); img.decoding = 'async'; img.src = src; e = { img }; images.set(src, e); }
+  if (e.pic) return e.pic;
+  const img = e.img;
+  if (!img.complete || img.naturalWidth === 0) return null;
+  const w = img.naturalWidth, h = img.naturalHeight;
+  if (/\.svg(\?|$)|^data:image\/svg/.test(src)) {
+    const k = 2, c = document.createElement('canvas');
+    c.width = Math.ceil(w * k); c.height = Math.ceil(h * k);
+    c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height);
+    e.pic = { src: c, naturalWidth: w, naturalHeight: h };
+  } else e.pic = { src: img, naturalWidth: w, naturalHeight: h };
+  return e.pic;
 }
 
 export interface Frame {
-  img: HTMLImageElement;
+  img: Pic;
   sx: number; sy: number; sw: number; sh: number;   // source rect
   ax: number; ay: number;                           // anchor (feet) inside the source rect
   scale: number;                                    // world px per source px
@@ -54,8 +67,13 @@ const artCache = new Map<string, UnitArt>();
 export function unitArt(defId: string, def: UnitDef): UnitArt {
   const hit = artCache.get(defId); if (hit) return hit;
   const sp = def.sprite as SpriteExt;
-  const art: UnitArt = { still: sp.image, clips: {}, animated: false };
-  const sheet = assetUrl(sp.sheet), man = manifestFor(sp.manifest);
+  // Convention for the painted sprite set: sprites/<id>_still.png marks new art; when it exists, the sheet and
+  // manifest default to sprites/<id>.png + sprites/<id>.json even if units.json doesn't name them. Older sheets
+  // without a _still.png are ignored unless named explicitly.
+  const paintedStill = assetUrl(`sprites/${defId}_still.png`);
+  const art: UnitArt = { still: paintedStill ?? sp.image, clips: {}, animated: false };
+  const sheet = assetUrl(sp.sheet ?? (paintedStill ? `sprites/${defId}.png` : undefined));
+  const man = manifestFor(sp.manifest ?? (paintedStill ? `sprites/${defId}.json` : undefined));
   if (sheet && man?.animations) {
     for (const [k, a] of Object.entries(man.animations)) if (a) art.clips[k as AnimState] = { kind: 'sheet', img: sheet, a, m: man };
   }
@@ -74,7 +92,7 @@ export function unitArt(defId: string, def: UnitDef): UnitArt {
 }
 
 /** Natural target height of a still image in world px, and its foot anchor. */
-function stillLayout(img: HTMLImageElement, structure: boolean) {
+function stillLayout(img: Pic, structure: boolean) {
   const w = img.naturalWidth, h = img.naturalHeight;
   const spec = Math.abs(w / h - 96 / 112) < 0.02; // the 96x112 spec with feet at (48,104)
   const ax = w / 2, ay = spec ? h * (104 / 112) : h * 0.92;

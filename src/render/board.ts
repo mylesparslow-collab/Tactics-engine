@@ -52,6 +52,7 @@ export class BoardPainter {
       else if (g.map.wells?.some(w => w.x === o.x && w.y === o.y)) anim.push({ x: o.x, y: o.y, kind });
     }
     const { minX, maxX } = this.xBounds();
+    ctx.save(); ctx.globalCompositeOperation = 'source-atop'; // tint tiles only, not the empty corners
     // global key light from the upper left: warm toward it, cool blue-violet away from it
     const lg = ctx.createLinearGradient(minX, minY, maxX, maxY);
     lg.addColorStop(0, 'rgba(255,240,210,0.16)'); lg.addColorStop(0.5, 'rgba(255,255,255,0)'); lg.addColorStop(1, 'rgba(40,30,70,0.2)');
@@ -61,6 +62,7 @@ export class BoardPainter {
     fog.addColorStop(0, 'rgba(110,100,120,0.34)'); fog.addColorStop(0.45, 'rgba(110,100,120,0.08)'); fog.addColorStop(1, 'rgba(60,40,70,0)');
     ctx.fillStyle = fog;
     ctx.fillRect(minX, minY, maxX - minX, maxY - minY);
+    ctx.restore();
     return anim;
   }
   private xBounds() { const v = this.view; return { minX: -(v.rh) * TW / 2 - TW, maxX: (v.rw) * TW / 2 + TW }; }
@@ -268,9 +270,11 @@ export class BoardPainter {
         ctx.fillStyle = gr; ctx.fillRect(sx - TW / 2, sy - TH / 2, TW, TH);
         ctx.restore();
       } else if (diffT) {
-        ctx.save(); if ('filter' in ctx) ctx.filter = 'blur(1.2px)';
-        ctx.strokeStyle = 'rgba(25,20,30,0.42)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
-        ctx.restore();
+        // soft seam without ctx.filter (a filtered draw allocates a full-canvas layer each time)
+        ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by);
+        ctx.strokeStyle = 'rgba(25,20,30,0.12)'; ctx.lineWidth = 5; ctx.stroke();
+        ctx.strokeStyle = 'rgba(25,20,30,0.2)'; ctx.lineWidth = 3; ctx.stroke();
+        ctx.strokeStyle = 'rgba(25,20,30,0.22)'; ctx.lineWidth = 1.4; ctx.stroke();
       } else if (n.height === t.height) {
         ctx.strokeStyle = 'rgba(20,16,24,0.055)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
       }
