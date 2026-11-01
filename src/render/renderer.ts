@@ -83,7 +83,7 @@ export class Renderer {
   private bolts: Bolt[] = [];
   private particles: Particle[] = [];
   private items: Item[] = [];
-  private cachedDraw: Drawable[] = [];
+  private cachedNow = 0; private pickList: Drawable[] | null = null;
   private lastFrame = 0;
   /** Sound hook: called on the animation timeline. */
   onCue: ((c: Cue) => void) | null = null;
@@ -128,12 +128,16 @@ export class Renderer {
 
   resize() {
     const r = this.canvas.parentElement!.getBoundingClientRect();
-    this.dpr = Math.min(window.devicePixelRatio || 1, 3);
-    this.cssW = Math.max(100, r.width); this.cssH = Math.max(100, r.height);
-    this.canvas.width = Math.round(this.cssW * this.dpr);
-    this.canvas.height = Math.round(this.cssH * this.dpr);
-    this.canvas.style.width = this.cssW + 'px'; this.canvas.style.height = this.cssH + 'px';
-    if (this.game) { this.boardDirty = true; this.fit(); }
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const cssW = Math.max(100, r.width), cssH = Math.max(100, r.height);
+    if (dpr === this.dpr && cssW === this.cssW && cssH === this.cssH && this.canvas.width) return; // nothing changed: skip the realloc
+    this.dpr = dpr; this.cssW = cssW; this.cssH = cssH;
+    this.canvas.width = Math.round(cssW * dpr);
+    this.canvas.height = Math.round(cssH * dpr);
+    this.canvas.style.width = cssW + 'px'; this.canvas.style.height = cssH + 'px';
+    // The cached board is in world units, so a new viewport size never needs a repaint; applyView() asks for a
+    // sharper one in the background if the zoom now needs it.
+    if (this.game) this.fit();
   }
 
   private bounds() {
@@ -180,7 +184,7 @@ export class Renderer {
     this.ox = this.cssW / 2 - (minX + bw / 2) * this.scale + this.panX;
     this.oy = (this.cssH - this.bottomInset) / 2 - (minY + bh / 2) * this.scale + this.panY;
     const need = Math.min(2.5, this.scale * this.dpr);
-    if (this.board && need > this.boardK * 1.3) { clearTimeout(this.zoomTimer); this.zoomTimer = setTimeout(() => { this.boardDirty = true; }, 150); }
+    if (this.board && need > this.boardK * 1.3) { clearTimeout(this.zoomTimer); this.zoomTimer = setTimeout(() => { this.lodWanted = true; }, 150); }
   }
   private zoomTimer: ReturnType<typeof setTimeout> | undefined;
   /** Pan by CSS pixels. */
@@ -442,32 +446,65 @@ export class Renderer {
   }
 
   // ---------- board cache ----------
-  private buildBoard() {
+  private lodWanted = false;
+  private lodJob: { gen: Generator<void>; cv: HTMLCanvasElement; k: number; x0: number; y0: number; anim: () => AnimTile[] } | null = null;
+  /** Start painting the static board layer. `sync` finishes it now; otherwise it is painted a few ms per frame
+   *  into a spare canvas and swapped in when done, so zooming in never stalls a frame. */
+  private buildBoard(sync = true) {
     visualTiles(this.game, this.vt);
     const { minX, maxX, minY, maxY } = this.bounds();
     const want = Math.min(2.5, Math.max(0.5, this.scale * this.dpr));
     const k = Math.min(want, Math.sqrt(12_000_000 / Math.max(1, (maxX - minX) * (maxY - minY)))); // stay under ~12 MP (mobile canvas limits)
     const W = Math.ceil((maxX - minX) * k), H = Math.ceil((maxY - minY) * k);
-    if (!this.board || this.board.width !== W || this.board.height !== H) { this.board = document.createElement('canvas'); this.board.width = W; this.board.height = H; }
-    const ctx = this.board.getContext('2d')!;
+    const cv = sync && this.board && this.board.width === W && this.board.height === H ? this.board : document.createElement('canvas');
+    if (cv.width !== W) cv.width = W; if (cv.height !== H) cv.height = H;
+    const ctx = cv.getContext('2d')!;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, W, H);
     ctx.setTransform(k, 0, 0, k, -minX * k, -minY * k);
-    this.boardK = k; this.boardX0 = minX; this.boardY0 = minY;
-    this.animTiles = this.painter.paint(ctx, minY, maxY);
-    this.boardDirty = false;
+    let anim: AnimTile[] = [];
+    const gen = this.painter.paintSteps(ctx, minY, maxY, a => { anim = a; });
+    const job = { gen, cv, k, x0: minX, y0: minY, anim: () => anim };
+    this.boardDirty = false; this.lodWanted = false;
+    if (sync) { this.lodJob = null; for (;;) if (gen.next().done) break; this.swapBoard(job); }
+    else this.lodJob = job;
+  }
+  private swapBoard(j: NonNullable<Renderer['lodJob']>) {
+    this.board = j.cv; this.boardK = j.k; this.boardX0 = j.x0; this.boardY0 = j.y0; this.animTiles = j.anim();
+  }
+  /** Spend up to `ms` painting the pending sharper board. */
+  private stepLod(ms: number) {
+    const j = this.lodJob; if (!j) return;
+    const end = performance.now() + ms;
+    while (performance.now() < end) { if (j.gen.next().done) { this.lodJob = null; this.swapBoard(j); return; } }
   }
 
   // ---------- drawing ----------
-  private buildDrawables(now: number): Drawable[] {
-    const g = this.game, v = this.view, out: Drawable[] = [];
-    for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) out.push({ d: v.depth(x, y), kind: 'tile', x, y });
+  private tileList: Extract<Drawable, { kind: 'tile' }>[] = []; private tileListKey = '';
+  /** Tiles in painter order. Static for a given map size and rotation, so it is built once, not every frame. */
+  private tiles(): Extract<Drawable, { kind: 'tile' }>[] {
+    const g = this.game, v = this.view, key = `${g.width}x${g.height}r${v.rot}`;
+    if (key !== this.tileListKey) {
+      const out: Extract<Drawable, { kind: 'tile' }>[] = [];
+      for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) out.push({ d: v.depth(x, y), kind: 'tile', x, y });
+      out.sort((a, b) => a.d - b.d); this.tileList = out; this.tileListKey = key;
+    }
+    return this.tileList;
+  }
+  private unitDrawables(now: number): Extract<Drawable, { kind: 'unit' }>[] {
+    const g = this.game, v = this.view, out: Extract<Drawable, { kind: 'unit' }>[] = [];
     for (const u of g.units) {
       const visible = (u.alive || this.dying.has(u.uid) || this.pendingDeath.has(u.uid)) && !this.pendingDeploy.has(u.uid);
       if (!visible) continue;
       const p = this.unitPos(u, now);
       out.push({ d: v.depth(p.x, p.y) + 0.5, kind: 'unit', u, px: p.x, py: p.y, pz: p.z, facing: p.facing, hop: p.hop });
     }
-    out.sort((a, b) => a.d - b.d);
+    return out.sort((a, b) => a.d - b.d);
+  }
+  /** Tiles and units merged in painter order (for picking). */
+  private buildDrawables(now: number): Drawable[] {
+    const t = this.tiles(), u = this.unitDrawables(now), out: Drawable[] = [];
+    let i = 0, j = 0;
+    while (i < t.length || j < u.length) out.push(j >= u.length || (i < t.length && t[i].d <= u[j].d) ? t[i++] : u[j++]);
     return out;
   }
 
@@ -494,7 +531,9 @@ export class Renderer {
     }
     this.stepGlide(now);
     if (this.panVel.x || this.panVel.y) { const sp = Math.max(this.cssW, this.cssH) * 0.9 * dt / 1000; this.pan(this.panVel.x * sp, this.panVel.y * sp); }
-    if (this.boardDirty) this.buildBoard();
+    if (this.boardDirty) this.buildBoard(true);
+    else if (this.lodWanted && !this.lodJob) this.buildBoard(false);
+    this.stepLod(5);
 
     const ctx = this.ctx, g = this.game;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -508,12 +547,17 @@ export class Renderer {
     ctx.setTransform(this.dpr * this.scale, 0, 0, this.dpr * this.scale, this.dpr * (this.ox + jx), this.dpr * (this.oy + jy));
     // board shadow + cached static layer
     const b = this.board!;
-    ctx.drawImage(b, this.boardX0, this.boardY0, b.width / this.boardK, b.height / this.boardK);
+    { // only blit the part of the cached board that is on screen
+      const k = this.boardK, sc = this.scale;
+      const vx0 = (-this.ox - jx) / sc, vy0 = (-this.oy - jy) / sc, vx1 = vx0 + this.cssW / sc, vy1 = vy0 + this.cssH / sc;
+      const sx0 = Math.max(0, Math.floor((vx0 - this.boardX0) * k) - 2), sy0 = Math.max(0, Math.floor((vy0 - this.boardY0) * k) - 2);
+      const sx1 = Math.min(b.width, Math.ceil((vx1 - this.boardX0) * k) + 2), sy1 = Math.min(b.height, Math.ceil((vy1 - this.boardY0) * k) + 2);
+      if (sx1 > sx0 && sy1 > sy0) ctx.drawImage(b, sx0, sy0, sx1 - sx0, sy1 - sy0, this.boardX0 + sx0 / k, this.boardY0 + sy0 / k, (sx1 - sx0) / k, (sy1 - sy0) / k);
+    }
     for (const t of this.animTiles) this.animateTile(t, now);
     this.drawOverlays(now);
 
-    this.cachedDraw = this.buildDrawables(now);
-    const units = this.cachedDraw.filter((d): d is Extract<Drawable, { kind: 'unit' }> => d.kind === 'unit');
+    const units = this.unitDrawables(now); this.cachedNow = now; this.pickList = null;
     for (const dr of units) {
       this.drawUnit(dr, now);
       this.reoccludeAround(dr);
@@ -830,7 +874,7 @@ export class Renderer {
   pick(cx: number, cy: number): Pos | null {
     const wx = (cx - this.ox) / this.scale, wy = (cy - this.oy) / this.scale;
     const g = this.game, now = performance.now();
-    const list = this.cachedDraw.length ? this.cachedDraw : this.buildDrawables(now);
+    const list = this.pickList ??= this.buildDrawables(this.cachedNow || now);
     const topDist = (x: number, y: number) => {
       const s = this.view.project(x, y, this.vt[y][x].height);
       return Math.abs(wx - s.sx) / (TW / 2) + Math.abs(wy - s.sy) / (TH / 2);
