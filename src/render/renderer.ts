@@ -10,6 +10,8 @@ import { clipDuration, clipHitTime, frameFor, unitArt, type AnimState } from './
 export interface Preview { text: string; color: string }
 export interface Overlay {
   reach: Set<string>;
+  /** Ability range zone (hovered or armed ability). */
+  range: Set<string>;
   targets: Set<string>;
   area: Set<string>;
   deploy: Set<string>;
@@ -20,7 +22,7 @@ export interface Overlay {
   previews: Map<number, Preview>;
 }
 export const emptyOverlay = (): Overlay => ({
-  reach: new Set(), targets: new Set(), area: new Set(), deploy: new Set(), path: [], pathCost: null,
+  reach: new Set(), range: new Set(), targets: new Set(), area: new Set(), deploy: new Set(), path: [], pathCost: null,
   selected: null, hover: null, previews: new Map(),
 });
 
@@ -30,7 +32,15 @@ const POP_MS = 420;
 const HIT_MS = 280;
 
 interface Seg { start: number; dur: number; path: Pos[]; arc: boolean }
-interface Float { x: number; y: number; text: string; color: string; born: number; life: number; icon?: string }
+interface Float { x: number; y: number; text: string; color: string; born: number; life: number; icon?: string; size?: number }
+
+/** A sound-worthy moment, fired when its visual lands (not when the rules resolve it). */
+export type Cue =
+  | { kind: 'swing' | 'release' | 'cast'; uid: number }
+  | { kind: 'hit'; uid: number; amount: number; damageType?: string; heavy: boolean; lethal: boolean }
+  | { kind: 'death' | 'deploy' | 'heal' | 'status' | 'equip' | 'revive' | 'push'; uid: number }
+  | { kind: 'step'; uid: number; terrain: string }
+  | { kind: 'spell' | 'essence' };
 interface Ring { pos: Pos; start: number; dur: number; color: string; rune?: boolean }
 interface Bolt { from: Pos; to: Pos; start: number; dur: number; color: string }
 interface Particle { x: number; y: number; vx: number; vy: number; born: number; life: number; color: string; size: number; g: number }
@@ -75,6 +85,12 @@ export class Renderer {
   private items: Item[] = [];
   private cachedDraw: Drawable[] = [];
   private lastFrame = 0;
+  /** Sound hook: called on the animation timeline. */
+  onCue: ((c: Cue) => void) | null = null;
+  private cue(t: number, c: Cue) { if (this.onCue) this.at(t, () => this.onCue?.(c)); }
+  private camShake = { until: 0, mag: 0 };
+  /** Units the mission says to protect (shield badge) or to kill (target badge). */
+  private vip = new Map<string, 'protect' | 'kill'>();
 
   constructor(private canvas: HTMLCanvasElement) {
     this.ctx = canvas.getContext('2d')!;
@@ -91,6 +107,11 @@ export class Renderer {
     this.seeds = new Uint32Array(game.width * game.height);
     for (let y = 0; y < game.height; y++) for (let x = 0; x < game.width; x++) this.seeds[y * game.width + x] = (((x * 73856093) ^ (y * 19349663) ^ 0x5bd1e995) >>> 0);
     this.zoom = 1; this.panX = 0; this.panY = 0; this.userMoved = false;
+    this.vip.clear();
+    const obj = game.mission.objectives ?? {};
+    for (const c of obj.victory ?? []) if (!c.not && c.type === 'defeat_unit') this.vip.set(c.tag, 'kill');
+    for (const c of obj.defeat ?? []) if (!c.not && (c.type === 'unit_lost' || c.type === 'unit_hp_above')) this.vip.set(c.tag, 'protect');
+    for (const c of obj.victory ?? []) if (!c.not && c.type === 'reach_tile' && c.tag) this.vip.set(c.tag, 'protect');
     this.vt = visualTiles(game); this.painter = new BoardPainter(game, this.view, this.seeds, this.vt);
     onTileArtReady(() => { clearTimeout(this.artTimer); this.artTimer = setTimeout(() => { this.boardDirty = true; }, 120); });
     this.boardDirty = true;
@@ -164,7 +185,7 @@ export class Renderer {
   private zoomTimer: ReturnType<typeof setTimeout> | undefined;
   /** Pan by CSS pixels. */
   pan(dx: number, dy: number) {
-    this.panX += dx; this.panY += dy; this.userMoved = true;
+    this.panX += dx; this.panY += dy; this.userMoved = true; this.lastUserPan = performance.now(); this.glide = null;
     this.clampPan(); this.applyView();
   }
   /** Multiply zoom, keeping the CSS point (cx,cy) fixed. */
@@ -177,6 +198,32 @@ export class Renderer {
     this.applyView();
   }
   resetView() { this.userMoved = false; this.defaultView(); }
+
+  // ---------- camera follow ----------
+  private glide: { fromX: number; fromY: number; toX: number; toY: number; start: number; dur: number } | null = null;
+  private lastUserPan = -1e9;
+  /** Keep the enemy's actions on screen: glide to a tile when it is outside the comfortable middle of the view. */
+  follow(p: Pos, force = false) {
+    if (!this.view || performance.now() - this.lastUserPan < 2500) return;
+    const z = this.vt[p.y]?.[p.x]?.height ?? 0;
+    const w = this.view.project(p.x, p.y, z);
+    const sx = w.sx * this.scale + this.ox, sy = (w.sy - 40) * this.scale + this.oy;
+    const H = this.cssH - this.bottomInset, mx = this.cssW * 0.2, my = H * 0.2;
+    if (!force && sx > mx && sx < this.cssW - mx && sy > my && sy < H - my) return;
+    const dx = this.cssW / 2 - sx, dy = H / 2 - sy;
+    const toX = this.panX + dx, toY = this.panY + dy;
+    this.glide = { fromX: this.panX, fromY: this.panY, toX, toY, start: performance.now(), dur: 420 };
+    this.userMoved = true; // keep the followed view across resizes instead of snapping back to the Beacon
+  }
+  private stepGlide(now: number) {
+    const gl = this.glide; if (!gl) return;
+    const k = Math.min(1, (now - gl.start) / gl.dur), e = 1 - Math.pow(1 - k, 3);
+    this.panX = gl.fromX + (gl.toX - gl.fromX) * e; this.panY = gl.fromY + (gl.toY - gl.fromY) * e;
+    this.clampPan(); this.applyView();
+    if (k >= 1) this.glide = null;
+  }
+  /** Follow only what the computer does; never yank the camera during the player's own turn. */
+  private aiActing() { const t = this.game.teams[this.game.current]; return !!t && t.controller === 'ai'; }
   setBottomInset(px: number) { if (px !== this.bottomInset) { this.bottomInset = px; this.applyView(); } }
 
   // ---------- animation scheduling ----------
@@ -185,10 +232,14 @@ export class Renderer {
   private at(start: number, fn: () => void) { this.items.push({ start, fn }); this.endAt = Math.max(this.endAt, start); }
   private uname(uid: number) { return this.game.unit(uid); }
   private tileZ(p: Pos) { return this.game.tiles[Math.round(p.y)]?.[Math.round(p.x)]?.height ?? 0; }
-  private floatAt(p: Pos, text: string, color: string, born: number, icon?: string) {
+  private floatAt(p: Pos, text: string, color: string, born: number, icon?: string, size = 1) {
     const s = this.view.project(p.x, p.y, this.tileZ(p));
     const n = this.floats.filter(f => Math.abs(f.born - born) < 300 && Math.abs(f.x - s.sx) < 4 && Math.abs(f.y - s.sy) < 80).length;
-    this.floats.push({ x: s.sx, y: s.sy - 96 - n * 18, text, color, born, life: 1200, icon });
+    this.floats.push({ x: s.sx, y: s.sy - 96 - n * 18, text, color, born, life: size > 1 ? 1500 : 1200, icon, size });
+  }
+  private shakeCamera(t: number, mag: number, ms: number) {
+    if (this.reduced) return;
+    if (t + ms > this.camShake.until || mag > this.camShake.mag) this.camShake = { until: t + ms, mag: Math.max(mag, t < this.camShake.until ? this.camShake.mag : 0) };
   }
   private burst(p: Pos, n: number, color: string, opts: { up?: number; spread?: number; life?: number; size?: number; g?: number; rise?: boolean } = {}) {
     const s = this.view.project(p.x, p.y, this.tileZ(p)), now = performance.now();
@@ -232,17 +283,25 @@ export class Renderer {
     this.cursor = Math.max(this.cursor, now);
     const g = this.game;
     const push = (uid: number, seg: Seg) => { const l = this.segs.get(uid) ?? []; l.push(seg); this.segs.set(uid, l); this.endAt = Math.max(this.endAt, seg.start + seg.dur); };
+    if (this.aiActing()) {
+      const at = e.kind === 'move' ? e.path[e.path.length - 1] : e.kind === 'ability' || e.kind === 'spell' ? e.target
+        : e.kind === 'deploy' ? g.unit(e.uid) : undefined;
+      if (at) { const p = { x: at.x, y: at.y }, t = this.cursor; this.at(t, () => this.follow(p)); }
+    }
     switch (e.kind) {
       case 'move': {
         const dur = Math.max(e.path.length - 1, 1) * MS_PER_TILE;
         push(e.uid, { start: this.cursor, dur, path: e.path, arc: e.path.length === 2 && Math.abs(e.path[0].x - e.path[1].x) + Math.abs(e.path[0].y - e.path[1].y) > 1 });
         this.setAnim(e.uid, 'move', this.cursor, dur);
+        if (e.path.length === 2 && Math.abs(e.path[0].x - e.path[1].x) + Math.abs(e.path[0].y - e.path[1].y) > 1) this.cue(this.cursor, { kind: 'cast', uid: e.uid });
+        else e.path.slice(1).forEach((p, i) => this.cue(this.cursor + i * MS_PER_TILE + MS_PER_TILE * 0.5, { kind: 'step', uid: e.uid, terrain: g.tiles[p.y]?.[p.x]?.terrain ?? '' }));
         this.cursor += dur; break;
       }
       case 'push': {
         push(e.uid, { start: this.cursor, dur: 220, path: [e.from, e.to], arc: false });
         const t = this.cursor;
         this.at(t, () => { this.shake.set(e.uid, t + 200); });
+        this.cue(t, { kind: 'push', uid: e.uid });
         this.cursor += 220; break;
       }
       case 'ability': {
@@ -257,6 +316,7 @@ export class Renderer {
           const clipDur = clipDuration(art, state);
           const hit = clipHitTime(art, state) ?? (state === 'cast' ? 380 : ranged ? 320 : 230);
           const dur = clipDur ?? (state === 'cast' ? 700 : 520);
+          this.cue(t, { kind: state === 'cast' ? 'cast' : ranged ? 'release' : 'swing', uid: e.uid });
           this.at(t, () => {
             this.faceToward(e.uid, u, e.target);
             this.setAnim(e.uid, state, t, dur, { impact: hit, target: e.target, ranged });
@@ -276,6 +336,12 @@ export class Renderer {
       }
       case 'damage': {
         const t = this.cursor;
+        const tu = g.unit(e.uid);
+        // Events are handled as they're emitted, so hp is already final here: <= 0 means this blow kills.
+        const lethal = !!tu && tu.hp <= 0 && !(g.def(tu).revive && !tu.revived);
+        const heavy = !!tu && (e.amount >= 8 || e.amount >= g.def(tu).stats.hp * 0.4);
+        this.cue(t, { kind: 'hit', uid: e.uid, amount: e.amount, damageType: e.damageType, heavy, lethal });
+        if (lethal || heavy) this.at(t, () => this.shakeCamera(t, lethal ? 7 : 4, lethal ? 320 : 200));
         this.at(t, () => {
           const u = this.uname(e.uid); if (!u) return;
           this.hpShown.set(e.uid, Math.max(0, (this.hpShown.get(e.uid) ?? u.hp) - e.amount));
@@ -284,8 +350,9 @@ export class Renderer {
           const art = unitArt(u.defId, g.def(u));
           this.setAnim(e.uid, 'hit', t, clipDuration(art, 'hit') ?? HIT_MS);
           const p = this.unitPos(u, t);
-          this.floatAt(p, `-${e.amount}`, '#ff5d4d', performance.now());
-          this.burst(p, 6, '#ff8a6a', { up: 50, spread: 50, life: 450, size: 2.5 });
+          // Big hits and killing blows read at a glance: larger, hotter numbers and more debris.
+          this.floatAt(p, `-${e.amount}`, lethal ? '#ffd166' : heavy ? '#ff7a4d' : '#ff5d4d', performance.now(), undefined, lethal ? 1.7 : heavy ? 1.35 : 1);
+          this.burst(p, lethal ? 18 : heavy ? 12 : 6, lethal ? '#ffd9a0' : '#ff8a6a', { up: lethal ? 80 : 50, spread: lethal ? 80 : 50, life: 500, size: lethal ? 3.5 : 2.5 });
         });
         this.endAt = Math.max(this.endAt, t + HIT_MS);
         break;
@@ -296,6 +363,7 @@ export class Renderer {
           const u = this.uname(e.uid); if (!u) return;
           this.hpShown.set(e.uid, (this.hpShown.get(e.uid) ?? u.hp) + e.amount);
           this.floatAt(this.unitPos(u, t), `+${e.amount}`, '#6fe08a', performance.now());
+          this.onCue?.({ kind: 'heal', uid: e.uid });
           this.burst(u, 12, '#8ff0a0', { up: 70, spread: 18, life: 900, size: 2.5, g: -20, rise: true });
         });
         break;
@@ -307,7 +375,8 @@ export class Renderer {
           this.hpShown.set(e.uid, e.hp);
           this.popStart.set(e.uid, t);
           this.anims.delete(e.uid);
-          this.floatAt(this.unitPos(u, t), 'Revived!', '#ffe27a', performance.now());
+          this.floatAt(this.unitPos(u, t), 'Revived!', '#ffe27a', performance.now(), undefined, 1.3);
+          this.onCue?.({ kind: 'revive', uid: e.uid });
           this.burst(u, 16, '#ffe9a0', { up: 60, spread: 40, life: 800, size: 3 });
         });
         this.cursor = t + 200; this.endAt = Math.max(this.endAt, this.cursor); break;
@@ -316,6 +385,7 @@ export class Renderer {
         const t = this.cursor;
         const name = g.content.statuses[e.status]?.name ?? e.status;
         this.at(t, () => { const u = this.uname(e.uid); if (u) this.floatAt(this.unitPos(u, t), name, '#c79bff', performance.now(), e.status); });
+        this.cue(t, { kind: 'status', uid: e.uid });
         break;
       }
       case 'death': {
@@ -323,6 +393,7 @@ export class Renderer {
         this.pendingDeath.add(e.uid);
         this.at(t, () => {
           this.pendingDeath.delete(e.uid); this.dying.set(e.uid, t);
+          this.onCue?.({ kind: 'death', uid: e.uid });
           const u = this.uname(e.uid);
           if (u) {
             const art = unitArt(u.defId, g.def(u));
@@ -341,6 +412,7 @@ export class Renderer {
         const t = this.cursor;
         this.at(t, () => {
           this.pendingDeploy.delete(e.uid); this.popStart.set(e.uid, t);
+          this.onCue?.({ kind: 'deploy', uid: e.uid });
           if (u) { this.burst(u, 18, '#7fe0dc', { up: 90, spread: 55, life: 700, size: 3 }); this.rings.push({ pos: u, start: t, dur: 500, color: '#9fe8e4' }); }
         });
         this.endAt = Math.max(this.endAt, t + POP_MS);
@@ -349,18 +421,20 @@ export class Renderer {
       case 'spell': {
         const t = this.cursor;
         this.rings.push({ pos: e.target, start: t, dur: 700, color: '#c79bff', rune: true });
+        this.cue(t, { kind: 'spell' });
         this.at(t + 300, () => this.burst(e.target, 16, '#d8b8ff', { up: 70, spread: 60, life: 700, size: 3 }));
         this.endAt = Math.max(this.endAt, t + 700);
         this.cursor += 360; break;
       }
       case 'equip': {
         const t = this.cursor;
+        this.cue(t, { kind: 'equip', uid: e.uid });
         this.at(t, () => { const u = this.uname(e.uid); if (u) { this.floatAt(this.unitPos(u, t), 'Equipped', '#ffe27a', performance.now()); this.burst(u, 8, '#ffe9a0', { up: 50, spread: 20, life: 700, size: 2.5, g: -10, rise: true }); } });
         break;
       }
       case 'terrain': { this.boardDirty = true; break; }
       case 'essence': { // HUD shows totals; a well payout also pops over the well
-        if (e.at) { const at = e.at, t = this.cursor; this.at(t, () => { this.floatAt(at, `+${e.amount} ${label(this.game.content, 'essence')}`, '#7fe0ff', performance.now()); this.burst(at, 12, '#9fe8ff', { up: 70, spread: 18, life: 900, size: 2.5, g: -20, rise: true }); }); this.cursor += 250; }
+        if (e.at) { const at = e.at, t = this.cursor; this.cue(t, { kind: 'essence' }); this.at(t, () => { this.floatAt(at, `+${e.amount} ${label(this.game.content, 'essence')}`, '#7fe0ff', performance.now()); this.burst(at, 12, '#9fe8ff', { up: 70, spread: 18, life: 900, size: 2.5, g: -20, rise: true }); }); this.cursor += 250; }
         break;
       }
       default: break;
@@ -418,6 +492,7 @@ export class Renderer {
       this.particles = this.particles.filter(p => now - p.born < p.life);
       for (const p of this.particles) { p.x += p.vx * s; p.y += p.vy * s; p.vy += p.g * s; p.vx *= 0.98; }
     }
+    this.stepGlide(now);
     if (this.panVel.x || this.panVel.y) { const sp = Math.max(this.cssW, this.cssH) * 0.9 * dt / 1000; this.pan(this.panVel.x * sp, this.panVel.y * sp); }
     if (this.boardDirty) this.buildBoard();
 
@@ -425,7 +500,12 @@ export class Renderer {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.drawImage(backdropFor(this.canvas.width, this.canvas.height), 0, 0);
     this.drawBeam(ctx, now);
-    ctx.setTransform(this.dpr * this.scale, 0, 0, this.dpr * this.scale, this.dpr * this.ox, this.dpr * this.oy);
+    let jx = 0, jy = 0;
+    if (now < this.camShake.until) {
+      const r = (this.camShake.until - now) / 320, m = this.camShake.mag * Math.min(1, r);
+      jx = Math.sin(now / 23) * m; jy = Math.cos(now / 31) * m * 0.6;
+    }
+    ctx.setTransform(this.dpr * this.scale, 0, 0, this.dpr * this.scale, this.dpr * (this.ox + jx), this.dpr * (this.oy + jy));
     // board shadow + cached static layer
     const b = this.board!;
     ctx.drawImage(b, this.boardX0, this.boardY0, b.width / this.boardK, b.height / this.boardK);
@@ -494,8 +574,8 @@ export class Renderer {
       const k = (now - f.born) / f.life;
       ctx.globalAlpha = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3;
       const sc = k < 0.15 ? 0.6 + k / 0.15 * 0.5 : 1.1 - Math.min(0.1, (k - 0.15));
-      ctx.font = `bold ${Math.round(22 * sc)}px Cinzel, Georgia, serif`;
-      ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+      ctx.font = `bold ${Math.round(22 * sc * (f.size ?? 1))}px Cinzel, Georgia, serif`;
+      ctx.lineWidth = 4 * (f.size ?? 1); ctx.strokeStyle = 'rgba(0,0,0,0.85)';
       const y = f.y - k * 40;
       ctx.strokeText(f.text, f.x, y); ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, y);
       ctx.globalAlpha = 1;
@@ -510,7 +590,7 @@ export class Renderer {
     const tide = label(g.content, 'essence'), holder = g.unitAt(w.x, w.y);
     const owner = holder && !g.def(holder).structure ? g.teams[holder.team] : undefined;
     const l1 = `${tide} Well  +${w.amount ?? 10} ${tide} per turn`;
-    const l2 = owner ? `Held by ${owner.name}` : 'Stand a unit here at the start of your turn';
+    const l2 = owner ? `Held by ${owner.name} \u00B7 deploy beside it` : 'Hold it: Tide each turn, deploy beside it';
     const wp = this.view.project(w.x, w.y, this.vt[w.y][w.x].height);
     const s = { sx: wp.sx * this.scale + this.ox, sy: wp.sy * this.scale + this.oy + 118 - 56 - 30 * this.scale }; // CSS px, sits above the tile
     ctx.save(); ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); ctx.font = '600 15px Alegreya, Georgia, serif';
@@ -605,6 +685,7 @@ export class Renderer {
     };
     for (const k of ov.deploy) glow(k, '#4cd964', pulse);
     for (const k of ov.reach) glow(k, '#4aa3ff', 0.8);
+    for (const k of ov.range) if (!ov.targets.has(k)) glow(k, '#ffd23d', 0.5);
     for (const k of ov.targets) glow(k, '#ff6a3d', pulse + 0.1);
     for (const k of ov.area) glow(k, '#ffe14d', 0.9);
     ov.path.forEach((p, pi) => {
@@ -637,16 +718,24 @@ export class Renderer {
     const ux = Math.round(d.px), uy = Math.round(d.py), depth = v.depth(d.px, d.py);
     const s = v.project(d.px, d.py, d.pz);
     const top = s.sy - 130, left = s.sx - 50, right = s.sx + 50;
+    // Every tile in front of the unit that overlaps its sprite box, redrawn in painter order and clipped to the box,
+    // so a tall tile's pillar is covered by the tiles in front of it exactly as on the cached board.
+    const list: { x: number; y: number; d: number }[] = []; let occludes = false;
     for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
       const x = ux + dx, y = uy + dy;
       if (!g.inBounds(x, y) || (dx === 0 && dy === 0)) continue;
-      const t = this.vt[y][x];
-      if (v.depth(x, y) <= depth || t.height <= Math.floor(d.pz + 0.01)) continue;
-      const ts = v.project(x, y, t.height);
-      const th = t.height * LV + GROUND;
+      const t = this.vt[y][x], dd = v.depth(x, y);
+      if (dd <= depth) continue;
+      const ts = v.project(x, y, t.height), th = t.height * LV + GROUND;
       if (ts.sx + TW / 2 < left || ts.sx - TW / 2 > right || ts.sy - TH / 2 > s.sy + 10 || ts.sy + TH / 2 + th < top) continue;
-      this.painter.drawTile(ctx, x, y);
+      list.push({ x, y, d: dd });
+      if (t.height > Math.floor(d.pz + 0.01)) occludes = true;
     }
+    if (!occludes) return;
+    list.sort((a, b) => a.d - b.d);
+    ctx.save(); ctx.beginPath(); ctx.rect(left, top, right - left, s.sy + 10 - top); ctx.clip();
+    for (const t of list) this.painter.drawTile(ctx, t.x, t.y);
+    ctx.restore();
   }
 
   private drawUnit(d: Extract<Drawable, { kind: 'unit' }>, now: number) {
@@ -713,6 +802,26 @@ export class Renderer {
       lampGlow: def.structure ? Math.max(0.08, hpNow / def.stats.hp) : undefined,
       reduced: this.reduced,
     });
+    const vip = u.tag ? this.vip.get(u.tag) : undefined;
+    if (vip && u.alive && alpha > 0.3) this.drawVipBadge(sx, sy - figureHeight({ frame, def }) * scale - lift - 30, vip, now);
+  }
+
+  /** Mission-critical units wear a badge: a gold shield for "must survive", a red target for "must die". */
+  private drawVipBadge(x: number, y: number, kind: 'protect' | 'kill', now: number) {
+    const ctx = this.ctx, pulse = this.reduced ? 0 : Math.sin(now / 260) * 0.5 + 0.5;
+    ctx.save(); ctx.translate(x, y);
+    ctx.shadowColor = kind === 'protect' ? 'rgba(255,214,120,0.9)' : 'rgba(255,80,60,0.9)'; ctx.shadowBlur = 6 + pulse * 8;
+    ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(20,14,8,0.95)';
+    if (kind === 'protect') {
+      ctx.beginPath(); ctx.moveTo(0, -11); ctx.lineTo(9, -7); ctx.lineTo(8, 3); ctx.quadraticCurveTo(5, 9, 0, 12); ctx.quadraticCurveTo(-5, 9, -8, 3); ctx.lineTo(-9, -7); ctx.closePath();
+      ctx.fillStyle = '#e8c062'; ctx.fill(); ctx.shadowBlur = 0; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, -6); ctx.lineTo(0, 7); ctx.moveTo(-4.5, -1); ctx.lineTo(4.5, -1); ctx.strokeStyle = '#5a3d12'; ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.arc(0, 0, 9, 0, Math.PI * 2); ctx.fillStyle = '#c8392b'; ctx.fill(); ctx.shadowBlur = 0; ctx.stroke();
+      ctx.strokeStyle = '#ffe3d6'; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.arc(0, 0, 4.5, 0, Math.PI * 2); ctx.moveTo(0, -12); ctx.lineTo(0, -6); ctx.moveTo(0, 6); ctx.lineTo(0, 12); ctx.moveTo(-12, 0); ctx.lineTo(-6, 0); ctx.moveTo(6, 0); ctx.lineTo(12, 0); ctx.stroke();
+    }
+    ctx.restore();
   }
 
   // ---------- picking ----------

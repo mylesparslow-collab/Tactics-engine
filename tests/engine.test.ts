@@ -223,9 +223,15 @@ describe('new mechanics', () => {
     g.useAbility(a.uid, 'basic_strike', 1, 0);
     expect(b.alive).toBe(true);
     expect(b.hp).toBe(9);
-    b.hp = 1; a.ap = 5;
+    b.hp = 1; a.ap = 5; a.usedAbilities = [];
     g.useAbility(a.uid, 'basic_strike', 1, 0);
     expect(b.alive).toBe(false);
+  });
+  it('each ability can be used once per turn', () => {
+    const g = duel('brute', 0, 0, 'vanguard', 1, 0);
+    const [a] = g.units; a.ap = 10;
+    expect(g.useAbility(a.uid, 'basic_strike', 1, 0)).toBe(true);
+    expect(g.useAbility(a.uid, 'basic_strike', 1, 0)).toBe(false);
   });
   it('resistances reduce damage', () => {
     const g = duel('skirmisher', 0, 0, 'vanguard', 1, 0, c => { c.units.vanguard.resist = { physical: 2 }; });
@@ -404,7 +410,7 @@ describe('world-thread mechanics batch 2', () => {
       withAbility('bloom', { name: 'Bloom', apCost: 1, range: { min: 0, max: 0 }, target: 'self', effects: [{ type: 'status', status: 'bloom', duration: 3 }] })(c);
     });
     const v = g.units[0];
-    for (let i = 0; i < 3; i++) g.useAbility(v.uid, 'bloom', 0, 0);
+    for (let i = 0; i < 3; i++) { v.usedAbilities = []; g.useAbility(v.uid, 'bloom', 0, 0); }
     expect(g.stat(v, 'attack')).toBe(8);
   });
   it('spells can be limited to near the keystone', () => {
@@ -467,5 +473,29 @@ describe('mission scripting batch 2', () => {
     expect(g.tiles[2][2].terrain).toBe('water');
     expect(g.tiles[1][2].terrain).toBe('water');
     expect(g.units[1].statuses.map(s => s.id)).toEqual(['rooted']);
+  });
+});
+
+describe('card draw', () => {
+  it('deals an opening hand of 5 with champions, then draws one per turn', async () => {
+    const { loadBundledContent } = await import('../src/engine/bundled');
+    const { buildSkirmish } = await import('../src/engine/skirmish');
+    const { Game: G, DRAW } = await import('../src/engine/game');
+    const c = loadBundledContent();
+    const m = buildSkirmish(c, Object.keys(c.maps)[0], ['salt_concord', 'hadal_court'], ['ai', 'ai']);
+    c.missions[m.id] = m;
+    const g = new G(c, m.id, { seed: 7 });
+    const t0 = g.teams[0];
+    expect(t0.hand.length).toBe(DRAW.opening);
+    expect(t0.hand.filter(id => g.cardKind(id) === 'unit').length).toBeGreaterThanOrEqual(DRAW.minOpeningUnits);
+    const total = t0.hand.length + t0.deck.length;
+    expect(total).toBe(m.teams[0].warband!.length);
+    // Team 1 draws on its first turn; team 0 draws from round 2.
+    g.endTurn();
+    expect(g.teams[1].hand.length).toBe(DRAW.opening + 1);
+    g.endTurn();
+    expect(t0.hand.length).toBe(DRAW.opening + 1);
+    // Same seed, same shuffle.
+    expect(new G(c, m.id, { seed: 7 }).teams[0].hand).toEqual(new G(c, m.id, { seed: 7 }).teams[0].hand);
   });
 });
