@@ -62,8 +62,11 @@ def keeper_mats(P, skin=None, hair=_hex('#5a4a40'), coat=OIL, eyes=_hex('#2a1d1a
     g = P['glow'] * (1 + 0.6 * P['cast_glow'])
     skin = skin if skin is not None else W['skin_light']
     return {
-        'oilskin': Material(oilskin_albedo(_aged(coat)), spec=0.28, gloss=22, brush=0.08),
-        'oilskin_dk': Material(oilskin_albedo(_tone(_aged(coat), 0.72)), spec=0.25, gloss=20, brush=0.08),
+        # Oilskin is weathered waxed cotton, not gold: the bible keeps gold for real light sources,
+        # so the coat is pulled well toward sea grey and darkened, and the lamps stay the only warm
+        # saturated thing on the unit.
+        'oilskin': Material(oilskin_albedo(_tone(_aged(coat, 0.42), 0.80)), spec=0.30, gloss=22, brush=0.08),
+        'oilskin_dk': Material(oilskin_albedo(_tone(_aged(coat, 0.42), 0.58)), spec=0.26, gloss=20, brush=0.08),
         'slate': Material(noisy(SLATE, 0.10), spec=0.06, gloss=10, brush=0.08),
         'seagrey': Material(noisy(SEA, 0.08), spec=0.04, gloss=8, brush=0.09),
         'coatgrey': Material(noisy(_hex('#6a767e'), 0.10), spec=0.05, gloss=8, brush=0.09),
