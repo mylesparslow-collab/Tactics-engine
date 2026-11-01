@@ -17,8 +17,8 @@ LOOKS = {
                                        rim_color=(0.25, 0.85, 0.78), rim_int=0.95,
                                        shadow_tint=(0.62, 0.70, 1.0)),
     # wet glints: greenish ambient, brine rim, a touch more specular feel via rim
-    'returning_tide': dataclasses.replace(_base, sky=(0.58, 0.66, 0.62), rim_color=(0.40, 0.80, 0.76),
-                                          rim_int=0.75, shadow_tint=(0.66, 0.80, 0.92)),
+    'returning_tide': dataclasses.replace(_base, sky=(0.58, 0.66, 0.62), sky_int=0.38, rim_color=(0.40, 0.80, 0.76),
+                                          rim_int=0.75, shadow_tint=(0.66, 0.80, 0.92), exposure=1.12),
     # flares and tin lanterns: warmer key, warm rim
     'salvage_compact': dataclasses.replace(_base, key_color=(1.0, 0.90, 0.76), rim_color=(1.0, 0.72, 0.45),
                                            rim_int=0.6, bounce=(0.82, 0.70, 0.55)),

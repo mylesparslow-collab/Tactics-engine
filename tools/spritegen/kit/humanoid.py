@@ -313,7 +313,8 @@ def held(P, add, side, kind, shaft='wood', head='iron', below=0.0, above=None, g
     lb = below if below else L[0]
     la = above if above is not None else L[1]
     butt, tip = g - d * lb, g + d * la
-    side_v = norm(np.cross(d, v3(0, 1, 0.2)))
+    _c = np.cross(d, v3(0, 1, 0.2))
+    side_v = norm(_c) if np.linalg.norm(_c) > 0.2 else norm(np.cross(d, v3(1, 0, 0)))
     if kind in ('spear', 'pike'):
         add(Capsule(butt, tip - d * 0.14, 0.016), shaft, 0.0)
         add(Capsule(tip - d * 0.16, tip, 0.030, 0.003), head, 0.0)
