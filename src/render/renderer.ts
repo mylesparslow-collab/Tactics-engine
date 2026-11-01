@@ -43,6 +43,7 @@ export type Cue =
   | { kind: 'spell' | 'essence' };
 interface Ring { pos: Pos; start: number; dur: number; color: string; rune?: boolean }
 interface Bolt { from: Pos; to: Pos; start: number; dur: number; color: string }
+interface Column { pos: Pos; start: number; dur: number; color: string; width: number }
 interface Particle { x: number; y: number; vx: number; vy: number; born: number; life: number; color: string; size: number; g: number }
 interface Item { start: number; fn: () => void }
 interface Anim { state: AnimState; start: number; dur: number; impact: number; target?: Pos; ranged?: boolean }
@@ -81,6 +82,7 @@ export class Renderer {
   private floats: Float[] = [];
   private rings: Ring[] = [];
   private bolts: Bolt[] = [];
+  private columns: Column[] = [];
   private particles: Particle[] = [];
   private items: Item[] = [];
   private cachedDraw: Drawable[] = [];
@@ -102,7 +104,7 @@ export class Renderer {
     this.overlay = emptyOverlay();
     this.segs.clear(); this.anims.clear(); this.hpShown.clear(); this.flashUntil.clear(); this.shake.clear();
     this.pendingDeath.clear(); this.dying.clear(); this.pendingDeploy.clear(); this.popStart.clear(); this.facing.clear();
-    this.floats = []; this.rings = []; this.bolts = []; this.particles = []; this.items = []; this.cursor = 0; this.endAt = 0;
+    this.floats = []; this.rings = []; this.bolts = []; this.columns = []; this.particles = []; this.items = []; this.cursor = 0; this.endAt = 0;
     for (const u of game.units) this.hpShown.set(u.uid, u.hp);
     this.seeds = new Uint32Array(game.width * game.height);
     for (let y = 0; y < game.height; y++) for (let x = 0; x < game.width; x++) this.seeds[y * game.width + x] = (((x * 73856093) ^ (y * 19349663) ^ 0x5bd1e995) >>> 0);
@@ -198,6 +200,15 @@ export class Renderer {
     this.applyView();
   }
   resetView() { this.userMoved = false; this.defaultView(); }
+  /** Put tile `p` at the centre of the view at an absolute zoom (used by the collection's proving ground). */
+  frameTile(p: Pos, zoom = this.zoom, lift = 40) {
+    if (!this.view) return;
+    this.zoom = zoom; this.panX = 0; this.panY = 0; this.userMoved = true; this.glide = null; this.applyView();
+    const w = this.view.project(p.x, p.y, this.vt[p.y]?.[p.x]?.height ?? 0);
+    this.panX = this.cssW / 2 - (w.sx * this.scale + this.ox);
+    this.panY = (this.cssH - this.bottomInset) / 2 - ((w.sy - lift) * this.scale + this.oy);
+    this.applyView();
+  }
 
   // ---------- camera follow ----------
   private glide: { fromX: number; fromY: number; toX: number; toY: number; start: number; dur: number } | null = null;
@@ -419,12 +430,22 @@ export class Renderer {
         break;
       }
       case 'spell': {
-        const t = this.cursor;
-        this.rings.push({ pos: e.target, start: t, dur: 700, color: '#c79bff', rune: true });
+        // A shaft of light falls on the target in the spell's colour, its rune circle lights the ground,
+        // and every tile in the area flashes; damage spells land with a shake.
+        const t = this.cursor, sp = this.game.content.spells[e.spell];
+        const col = spellColor(sp?.effects ?? []);
+        const area = sp?.area?.size ?? 0;
+        this.columns.push({ pos: e.target, start: t, dur: 760, color: col, width: 26 + area * 14 });
+        this.rings.push({ pos: e.target, start: t, dur: 820, color: col, rune: true });
+        if (area) for (const p of this.game.radiusTiles(e.target, area)) if (p.x !== e.target.x || p.y !== e.target.y) this.rings.push({ pos: p, start: t + 180 + 40 * (Math.abs(p.x - e.target.x) + Math.abs(p.y - e.target.y)), dur: 520, color: col });
         this.cue(t, { kind: 'spell' });
-        this.at(t + 300, () => this.burst(e.target, 16, '#d8b8ff', { up: 70, spread: 60, life: 700, size: 3 }));
-        this.endAt = Math.max(this.endAt, t + 700);
-        this.cursor += 360; break;
+        this.at(t + 260, () => {
+          this.burst(e.target, 22 + area * 10, mix(col, '#ffffff', 0.4), { up: 90, spread: 60 + area * 30, life: 800, size: 3.2 });
+          this.burst(e.target, 10, col, { up: 30, spread: 20, life: 1100, size: 2.4, g: -30, rise: true });
+          if (sp?.effects.some(x => x.type === 'damage')) this.shakeCamera(t + 260, 3 + area * 1.5, 260);
+        });
+        this.endAt = Math.max(this.endAt, t + 820);
+        this.cursor += 420; break;
       }
       case 'equip': {
         const t = this.cursor;
@@ -487,6 +508,7 @@ export class Renderer {
     this.floats = this.floats.filter(f => now - f.born < f.life);
     this.rings = this.rings.filter(r => now < r.start + r.dur);
     this.bolts = this.bolts.filter(b => now < b.start + b.dur);
+    this.columns = this.columns.filter(c => now < c.start + c.dur);
     if (this.particles.length) {
       const s = dt / 1000;
       this.particles = this.particles.filter(p => now - p.born < p.life);
@@ -569,6 +591,27 @@ export class Renderer {
       ctx.fillStyle = 'rgba(10,10,16,0.88)'; ctx.beginPath(); ctx.roundRect(s.sx - w / 2, y - 11, w, 22, 6); ctx.fill();
       ctx.strokeStyle = pv.color; ctx.lineWidth = 1.5; ctx.stroke();
       ctx.fillStyle = pv.color; ctx.fillText(pv.text, s.sx, y + 1);
+    }
+    // spell light shafts, over the units
+    for (const c of this.columns) {
+      if (now < c.start) continue;
+      const p = (now - c.start) / c.dur;
+      const s = this.view.project(c.pos.x, c.pos.y, this.tileZ(c.pos));
+      const drop = Math.min(1, p / 0.28), fade = p < 0.45 ? 1 : 1 - (p - 0.45) / 0.55;
+      const top = s.sy - 420, bot = top + (s.sy - top) * drop, w = c.width * (p < 0.3 ? 0.55 + p * 1.5 : 1 - (p - 0.3) * 0.6);
+      ctx.save(); ctx.globalAlpha = fade; ctx.shadowColor = c.color; ctx.shadowBlur = 18;
+      const g = ctx.createLinearGradient(0, top, 0, bot);
+      g.addColorStop(0, rgba(c.color, 0)); g.addColorStop(0.55, rgba(c.color, 0.6)); g.addColorStop(1, rgba(mix(c.color, '#ffffff', 0.5), 0.95));
+      ctx.fillStyle = g; ctx.fillRect(s.sx - w / 2, top, w, bot - top);
+      ctx.shadowBlur = 0; ctx.fillStyle = rgba('#ffffff', 0.7); ctx.fillRect(s.sx - w * 0.12, top + (bot - top) * 0.3, w * 0.24, (bot - top) * 0.7);
+      if (drop >= 1) {
+        const r = c.width * 1.6 * (0.6 + p);
+        const fg = ctx.createRadialGradient(s.sx, s.sy, 0, s.sx, s.sy, r);
+        fg.addColorStop(0, rgba(mix(c.color, '#ffffff', 0.5), 0.8)); fg.addColorStop(1, rgba(c.color, 0));
+        ctx.translate(s.sx, s.sy); ctx.scale(1, 0.5); ctx.translate(-s.sx, -s.sy);
+        ctx.fillStyle = fg; ctx.beginPath(); ctx.arc(s.sx, s.sy, r, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
     }
     for (const f of this.floats) {
       const k = (now - f.born) / f.life;
@@ -858,4 +901,19 @@ export class Renderer {
     return null;
   }
 }
+/** The colour a spell reads as, from its main effect. */
+function spellColor(effects: { type: string; damageType?: string }[]): string {
+  const e = effects.find(x => x.type === 'damage') ?? effects[0];
+  switch (e?.type) {
+    case 'damage': return ({ fire: '#ff9a4a', salt: '#ffd98a', cold: '#8fdcff', pressure: '#6fb6ff', light: '#ffe08a', brine: '#5fe0c8', physical: '#ffcf8a' } as Record<string, string>)[e.damageType ?? ''] ?? '#ffcf8a';
+    case 'heal': return '#8ff0a0';
+    case 'status': return '#c79bff';
+    case 'summon': return '#7fe0dc';
+    case 'terrain': return '#e3c27a';
+    case 'essence': return '#8fe6ff';
+    case 'push': case 'pull': case 'teleport': case 'swap': return '#9fc6ff';
+    default: return '#c79bff';
+  }
+}
+
 export { key };
