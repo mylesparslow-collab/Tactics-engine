@@ -43,6 +43,7 @@ export class GameSession {
   private bannerQueue: { text: string; speaker?: string }[] = [];
   private bannerBusy = false;
   private enterArmed = 0;
+  private hoverAbility: string | null = null;
   private cleanup: (() => void)[] = [];
   private logOpen = false;
   private handOpen = typeof window === 'undefined' || window.innerHeight >= 500;
@@ -367,6 +368,8 @@ export class GameSession {
         g.useAbility(u.uid, ab, p.x, p.y);
         this.mode = { kind: 'move' }; this.refresh(); return;
       }
+      // inside the range zone: keep the attack armed; outside it: cancel
+      if (g.rangeTiles(u, ab).some(t => t.x === p.x && t.y === p.y) && !(occ && occ.team === g.current)) return;
       if (!(occ && occ.team === g.current)) { this.mode = { kind: 'move' }; this.refresh(); return; }
     }
     if (occ) {
@@ -381,6 +384,7 @@ export class GameSession {
 
   // ---------- state -> UI ----------
   private refresh() {
+    this.hoverAbility = null; // the unit panel is rebuilt below, so a stale hover can't linger
     const u = this.sel();
     if (u && !u.alive) { this.selected = null; this.mode = { kind: 'idle' }; }
     if (this.mode.kind === 'ability') {
@@ -415,7 +419,7 @@ export class GameSession {
 
   private updateOverlay() {
     const g = this.g, ov = this.renderer.overlay;
-    ov.reach.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.path = []; ov.pathCost = null; ov.previews = new Map();
+    ov.reach.clear(); ov.range.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.path = []; ov.pathCost = null; ov.previews = new Map();
     ov.hover = this.hover;
     const u = this.sel();
     ov.selected = u ? { x: u.x, y: u.y } : null;
@@ -435,7 +439,10 @@ export class GameSession {
       return;
     }
     if (!u || u.team !== g.current) return;
-    if (this.mode.kind === 'move') {
+    // ability range in yellow: the armed ability, or the one under the mouse in the unit panel
+    const rangeAb = this.mode.kind === 'ability' ? this.mode.ability : this.hoverAbility;
+    if (rangeAb && g.ability(rangeAb)) for (const t of g.rangeTiles(u, rangeAb)) ov.range.add(key(t.x, t.y));
+    if (this.mode.kind === 'move' && !this.hoverAbility) {
       const reach = g.reachable(u);
       for (const k of reach.keys()) if (k !== key(u.x, u.y)) ov.reach.add(k);
       if (hv && reach.has(key(hv.x, hv.y)) && !(hv.x === u.x && hv.y === u.y)) {
@@ -610,7 +617,9 @@ export class GameSession {
           const idx = ++n;
           list.append(h('button', {
             class: 'abtn' + (active ? ' active' : ''), disabled: !usable,
-            onclick: () => { if (!this.canAct()) return; this.mode = active ? { kind: 'move' } : { kind: 'ability', ability: id }; this.refresh(); },
+            onclick: () => { if (!this.canAct()) return; this.mode = active ? { kind: 'move' } : { kind: 'ability', ability: id }; this.hoverAbility = null; this.refresh(); },
+            onmouseenter: () => { this.hoverAbility = id; this.updateOverlay(); },
+            onmouseleave: () => { if (this.hoverAbility === id) { this.hoverAbility = null; this.updateOverlay(); } },
           }, glyph(abilityGlyph(a)), h('span', { class: 'ab-ap hc-num' }, String(a.apCost)), h('span', { class: 'ab-key' }, String(idx)), cd > 0 ? h('span', { class: 'ab-cd hc-num' }, String(cd)) : null, tipEl));
         });
         card.append(list);

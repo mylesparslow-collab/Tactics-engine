@@ -205,6 +205,16 @@ export class Game {
     return d >= a.range.min && d <= a.range.max + bonus;
   }
 
+  /** Every tile an ability can reach from the unit (its range zone), whether or not anything is there to hit. */
+  rangeTiles(u: Unit, abilityId: string): Pos[] {
+    const a = this.ability(abilityId); if (!a || a.passive) return [];
+    if (a.target === 'self') return [{ x: u.x, y: u.y }];
+    const out: Pos[] = [], r = a.range.max + 1;
+    for (let y = u.y - r; y <= u.y + r; y++) for (let x = u.x - r; x <= u.x + r; x++)
+      if (this.inBounds(x, y) && this.inRange(a, u, { x, y })) out.push({ x, y });
+    return out;
+  }
+
   /** Valid target tiles for an ability if the caster stood at `from`. */
   targetsFrom(u: Unit, abilityId: string, from: Pos = u): Pos[] {
     const a = this.ability(abilityId);

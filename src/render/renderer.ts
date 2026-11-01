@@ -10,6 +10,8 @@ import { clipDuration, clipHitTime, frameFor, unitArt, type AnimState } from './
 export interface Preview { text: string; color: string }
 export interface Overlay {
   reach: Set<string>;
+  /** Ability range zone (hovered or armed ability). */
+  range: Set<string>;
   targets: Set<string>;
   area: Set<string>;
   deploy: Set<string>;
@@ -20,7 +22,7 @@ export interface Overlay {
   previews: Map<number, Preview>;
 }
 export const emptyOverlay = (): Overlay => ({
-  reach: new Set(), targets: new Set(), area: new Set(), deploy: new Set(), path: [], pathCost: null,
+  reach: new Set(), range: new Set(), targets: new Set(), area: new Set(), deploy: new Set(), path: [], pathCost: null,
   selected: null, hover: null, previews: new Map(),
 });
 
@@ -605,6 +607,7 @@ export class Renderer {
     };
     for (const k of ov.deploy) glow(k, '#4cd964', pulse);
     for (const k of ov.reach) glow(k, '#4aa3ff', 0.8);
+    for (const k of ov.range) if (!ov.targets.has(k)) glow(k, '#ffd23d', 0.5);
     for (const k of ov.targets) glow(k, '#ff6a3d', pulse + 0.1);
     for (const k of ov.area) glow(k, '#ffe14d', 0.9);
     ov.path.forEach((p, pi) => {
