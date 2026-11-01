@@ -5,12 +5,20 @@ import type {
 } from './types';
 
 export const DEFAULTS = { startingEssence: 100, essencePerTurn: 25, maxEssence: 200 };
+/** Card draw: opening hand size, cards drawn per turn, hand limit (a full hand skips the draw; the card stays on top). */
+export const DRAW = { opening: 5, perTurn: 1, maxHand: 8, minOpeningUnits: 2 };
+
+/** Small seeded PRNG (mulberry32) so a game can be replayed from its seed. */
+export function rng(seed: number) {
+  let a = seed >>> 0;
+  return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
 const key = (x: number, y: number) => `${x},${y}`;
 export const manhattan = (a: Pos, b: Pos) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 const DIRS: Pos[] = [{ x: 1, y: 0 }, { x: -1, y: 0 }, { x: 0, y: 1 }, { x: 0, y: -1 }];
 
 export interface ReachNode { cost: number; prev: string | null }
-export interface GameOptions { roster?: string[] }
+export interface GameOptions { roster?: string[]; /** Shuffle seed; random when omitted. */ seed?: number }
 
 /**
  * Rules engine. Pure game logic, no rendering. All mutations go through the public action methods
@@ -32,6 +40,14 @@ export class Game {
   private listeners: ((e: GameEvent) => void)[] = [];
   private nextUid = 1;
   private firedEvents = new Set<number>();
+  readonly seed: number;
+  /** Seeded randomness for shuffles. */
+  readonly random: () => number;
+  private shuffle<T>(xs: T[]): T[] {
+    const a = [...xs];
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(this.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+    return a;
+  }
   /** Temporary terrain changes, reverted when `remaining` rounds have passed. */
   private terrainTimers: { x: number; y: number; prev: string; remaining: number }[] = [];
 
@@ -49,8 +65,10 @@ export class Game {
     const start = mission.startingEssence ?? DEFAULTS.startingEssence;
     this.teams = mission.teams.map(t => ({
       name: t.name, color: t.color, controller: t.controller, essence: t.startingEssence ?? start,
-      hand: [...((t.useCampaignRoster && opts.roster) ? opts.roster : (t.warband ?? []))],
+      hand: [...((t.useCampaignRoster && opts.roster) ? opts.roster : (t.warband ?? []))], deck: [],
     }));
+    this.seed = opts.seed ?? Math.floor(Math.random() * 2 ** 31);
+    this.random = rng(this.seed);
     mission.teams.forEach((t, team) => {
       const ks = this.map.keystones?.find(k => k.team === team);
       if (ks && t.keystone !== false) this.spawn('keystone', team, ks.x, ks.y, `keystone_${team}`);
@@ -61,6 +79,20 @@ export class Game {
       const seen = new Set(this.units.filter(u => u.team === team && this.def(u).hero).map(u => u.defId));
       t.hand = t.hand.filter(id => { if (!this.content.units[id]?.hero) return true; if (seen.has(id)) return false; seen.add(id); return true; });
     });
+    // Shuffle each Chart and draw the opening hand. Short warbands (scripted fights, tests) stay fully in hand.
+    for (const t of this.teams) {
+      if (t.hand.length <= DRAW.opening) continue;
+      const pile = this.shuffle(t.hand);
+      const hand = pile.splice(0, DRAW.opening);
+      // No hopeless openers: make sure there are a couple of champions to deploy.
+      const isUnit = (id: string) => this.cardKind(id) === 'unit';
+      while (hand.filter(isUnit).length < DRAW.minOpeningUnits) {
+        const ui = pile.findIndex(isUnit), ni = hand.findIndex(id => !isUnit(id));
+        if (ui < 0 || ni < 0) break;
+        [hand[ni], pile[ui]] = [pile[ui], hand[ni]];
+      }
+      t.hand = hand; t.deck = pile;
+    }
     // Pre-placed units can act on turn 1.
     for (const u of this.units) { u.summonedThisTurn = false; u.ap = this.stat(u, 'ap'); }
     this.beginTurn();
@@ -529,6 +561,13 @@ export class Game {
     if (this.round > 1)
       team.essence = Math.min(this.mission.maxEssence ?? DEFAULTS.maxEssence, team.essence + (this.mission.teams[this.current]?.essencePerTurn ?? this.mission.essencePerTurn ?? DEFAULTS.essencePerTurn));
     this.emit({ kind: 'turn', team: this.current, turn: this.round });
+    // Draw (not on the very first turn of the game: going first is already an edge).
+    if (this.round > 1 || this.current > 0) for (let i = 0; i < DRAW.perTurn; i++) {
+      if (!team.deck.length || team.hand.length >= DRAW.maxHand) break;
+      const card = team.deck.shift()!;
+      team.hand.push(card);
+      this.emit({ kind: 'draw', team: this.current, card });
+    }
     for (const w of this.map.wells ?? []) {
       const holder = this.unitAt(w.x, w.y);
       if (holder && holder.team === this.current && !this.def(holder).structure) this.gainEssence(this.current, w.amount, { x: w.x, y: w.y });
@@ -766,7 +805,7 @@ export class Game {
   private metRaw(c: Condition, endOfRound: boolean): boolean {
     switch (c.type) {
       case 'destroy_keystone': return this.units.some(u => u.tag === `keystone_${c.team}` && !u.alive);
-      case 'eliminate': return !this.teams[c.team].hand.some(id => this.cardKind(id) === 'unit') &&
+      case 'eliminate': return ![...this.teams[c.team].hand, ...this.teams[c.team].deck].some(id => this.cardKind(id) === 'unit') &&
         !this.aliveUnits(c.team).some(u => !this.def(u).structure);
       case 'defeat_unit': { const tagged = this.units.filter(u => u.tag === c.tag); return tagged.length > 0 && tagged.every(u => !u.alive); }
       case 'unit_lost': return this.units.some(u => u.tag === c.tag && !u.alive);

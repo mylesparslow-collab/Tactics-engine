@@ -239,7 +239,9 @@ export interface TeamState {
   color: string;
   controller: 'human' | 'ai';
   essence: number;
-  hand: string[]; // undeployed warband cards: unit, spell or equipment ids
+  hand: string[]; // cards you can play now: unit, spell or equipment ids
+  /** Shuffled draw pile (rest of the Chart). One card is drawn at the start of each of your turns. */
+  deck: string[];
 }
 
 export type Phase = 'playing' | 'victory' | 'defeat';
@@ -259,5 +261,6 @@ export type GameEvent =
   | { kind: 'spell'; team: number; spell: string; target: Pos }
   | { kind: 'equip'; uid: number; equipment: string }
   | { kind: 'turn'; team: number; turn: number }
+  | { kind: 'draw'; team: number; card: string }
   | { kind: 'message'; text: string; speaker?: string }
   | { kind: 'end'; phase: Phase };

@@ -475,3 +475,27 @@ describe('mission scripting batch 2', () => {
     expect(g.units[1].statuses.map(s => s.id)).toEqual(['rooted']);
   });
 });
+
+describe('card draw', () => {
+  it('deals an opening hand of 5 with champions, then draws one per turn', async () => {
+    const { loadBundledContent } = await import('../src/engine/bundled');
+    const { buildSkirmish } = await import('../src/engine/skirmish');
+    const { Game: G, DRAW } = await import('../src/engine/game');
+    const c = loadBundledContent();
+    const m = buildSkirmish(c, Object.keys(c.maps)[0], ['salt_concord', 'hadal_court'], ['ai', 'ai']);
+    c.missions[m.id] = m;
+    const g = new G(c, m.id, { seed: 7 });
+    const t0 = g.teams[0];
+    expect(t0.hand.length).toBe(DRAW.opening);
+    expect(t0.hand.filter(id => g.cardKind(id) === 'unit').length).toBeGreaterThanOrEqual(DRAW.minOpeningUnits);
+    const total = t0.hand.length + t0.deck.length;
+    expect(total).toBe(m.teams[0].warband!.length);
+    // Team 1 draws on its first turn; team 0 draws from round 2.
+    g.endTurn();
+    expect(g.teams[1].hand.length).toBe(DRAW.opening + 1);
+    g.endTurn();
+    expect(t0.hand.length).toBe(DRAW.opening + 1);
+    // Same seed, same shuffle.
+    expect(new G(c, m.id, { seed: 7 }).teams[0].hand).toEqual(new G(c, m.id, { seed: 7 }).teams[0].hand);
+  });
+});

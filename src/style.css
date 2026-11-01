@@ -325,6 +325,7 @@ p { margin: 0; }
 .hstrip { position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; height: 32px; }
 .htoggle { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 13px; font-family: var(--font-display); font-weight: 400; font-size: 12px; letter-spacing: .08em; color: var(--gold); background: #ffffff0a; box-shadow: inset 0 0 0 1px #c99a4b55; }
 .htoggle b { color: var(--gold-hi); } .htoggle .chev { transition: transform .2s; } .htoggle .chev.up { transform: rotate(180deg); }
+.htoggle .hdeck { color: var(--muted); font-size: .85em; margin-left: .15em; }
 .htabs { display: flex; gap: 2px; }
 .htab { height: 26px; padding: 0 10px; border-radius: 4px; font-size: 12px; font-weight: 500; color: var(--muted); display: inline-flex; align-items: center; gap: 5px; }
 .htab small { color: var(--dim); font-size: 11px; } .htab:hover:not(:disabled) { color: var(--text); } .htab:disabled { opacity: .35; }

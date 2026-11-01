@@ -10,7 +10,7 @@ import { clear, h } from './dom';
 import { artNode, buildCard } from './cards';
 import { abilityGlyph, crestSvg, glyph, installArt, teamFaction } from './art';
 import { stopBackdrop } from './menu';
-import { isMuted, playCue, playEnd, playTurnBell, setMuted } from '../audio/sfx';
+import { isMuted, playCard, playCue, playEnd, playTurnBell, setMuted } from '../audio/sfx';
 import { effectText } from './text';
 
 export interface SessionOpts {
@@ -114,7 +114,7 @@ export class GameSession {
     installArt(); stopBackdrop();
     clear(this.root); this.root.className = 'game';
     const g = this.g;
-    this.factions = g.teams.map((t, i) => teamFaction(this.content, [...t.hand, ...g.units.filter(u => u.team === i).map(u => u.defId)]));
+    this.factions = g.teams.map((t, i) => teamFaction(this.content, [...t.hand, ...t.deck, ...g.units.filter(u => u.team === i).map(u => u.defId)]));
     this.hudTop = h('header', { id: 'hudtop' });
     this.top = this.hudTop;
     this.hand = h('div', { id: 'hand' });
@@ -212,6 +212,7 @@ export class GameSession {
       case 'terrain': this.logLine(`The ground at ${e.x},${e.y} becomes ${g.content.terrain[e.terrain]?.name ?? e.terrain}.`, 'sys'); break;
       case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); playTurnBell(g.teams[e.team].controller === 'human'); break;
       case 'message': this.logLine(`${e.speaker ? e.speaker + ': ' : ''}${e.text}`, 'msg'); this.bannerQueue.push({ text: e.text, speaker: e.speaker }); this.pumpBanner(); break;
+      case 'draw': if (g.teams[e.team].controller === 'human') { this.logLine(`You draw ${g.cardName(e.card)}.`, 'sys'); playCard(); } break;
       case 'end': this.ended = true; this.logLine(e.phase === 'victory' ? 'Victory!' : 'Defeat.', 'turn'); this.waitForEnd(e.phase); break;
     }
   }
@@ -528,7 +529,7 @@ export class GameSession {
       }, card, h('button', { class: 'info', title: 'Details', onclick: (e: Event) => { e.stopPropagation(); if (this.previewId === id) this.hidePreview(); else this.showPreview(id, slot); } }, 'i'));
       row.append(slot);
     });
-    if (!team.hand.length) row.append(h('div', { class: 'empty' }, 'Every relic is on the field.'));
+    if (!team.hand.length) row.append(h('div', { class: 'empty' }, team.deck.length ? 'Your hand is empty. You draw a card each turn.' : 'Every relic is on the field.'));
     const hintFor = () => {
       if (this.mode.kind === 'ability') { const a = g.ability(this.mode.ability); return `${a?.name ?? ''}: choose a target \u00B7 Esc cancels`; }
       if (this.mode.kind !== 'card') return t === g.current && this.canActSoft() ? 'Play a relic, or select a unit on the board' : 'Waiting for the enemy';
@@ -540,7 +541,7 @@ export class GameSession {
         n, h('small', null, String(counts[k])))));
     const strip = h('div', { class: 'hstrip' },
       h('button', { class: 'htoggle', title: this.handOpen ? 'Hide hand' : 'Show hand', onclick: () => { this.handOpen = !this.handOpen; this.hand.classList.toggle('closed', !this.handOpen); this.renderHand(); this.renderer.resize(); } },
-        h('span', { class: 'chev' + (this.handOpen ? '' : ' up') }, '\u25BE'), h('span', null, this.L('warband')), h('b', null, String(team.hand.length))),
+        h('span', { class: 'chev' + (this.handOpen ? '' : ' up') }, '\u25BE'), h('span', null, this.L('warband')), h('b', null, String(team.hand.length)), team.deck.length ? h('span', { class: 'hdeck', title: `${team.deck.length} cards left to draw` }, `+${team.deck.length}`) : null),
       tabs, h('span', { class: 'hint' }, hintFor()));
     const end = h('button', { id: 'endturn', class: 'endturn-big', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() },
       h('span', { class: 'et-ring' }), h('span', { class: 'et-text' }, 'End', h('br'), 'Turn'));
