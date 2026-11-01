@@ -1,4 +1,5 @@
 import type { Content } from './types';
+import { grantRelics } from './collection';
 
 export interface CampaignProgress { completed: number } // number of missions won, in order
 
@@ -28,7 +29,9 @@ export function rosterFor(content: Content, campaignId: string, p: CampaignProgr
 export function recordVictory(content: Content, campaignId: string, i: number): string[] {
   const p = loadProgress(campaignId);
   if (i === p.completed) { p.completed++; saveProgress(campaignId, p); }
-  return content.campaigns[campaignId].missions[i]?.unlocks ?? [];
+  const unlocks = content.campaigns[campaignId].missions[i]?.unlocks ?? [];
+  grantRelics(unlocks); // relics stay in the collection even if the campaign is reset
+  return unlocks;
 }
 
 export function isUnlocked(p: CampaignProgress, i: number) { return i <= p.completed; }
