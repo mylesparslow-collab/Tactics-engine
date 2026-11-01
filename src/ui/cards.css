@@ -1,0 +1,61 @@
+/* Relic card face. Card space is 500x700 (5:7); every position below is a percentage of that space and
+   must match the baked frame in tools/cardkit/bake.py. Text sizes are in cqw so a card reads the same at any width. */
+.rcard { position: relative; width: var(--cw, 120px); aspect-ratio: 5 / 7; container-type: inline-size; user-select: none; color: #e9e1cf;
+  border-radius: 4.4%; filter: drop-shadow(0 .8cqw 1.6cqw #000d); font-family: var(--font-body, 'Alegreya Sans', sans-serif); }
+.rcard > * { position: absolute; }
+.rcard .rc-art { position: absolute; left: 4.8%; right: 4.8%; top: 3.4%; bottom: 3.4%; width: auto; aspect-ratio: auto; border-radius: 1.6cqw; }
+.rcard .rc-frame { inset: 0; background: var(--frame) center / 100% 100% no-repeat; pointer-events: none; }
+
+/* cost: number set into the baked tide-glass gem */
+.rcard .rc-cost { left: 1.6%; top: 1.15%; width: 20%; aspect-ratio: 1; display: grid; place-items: center; }
+.rcard .rc-cost span { font-family: var(--font-num, 'Alegreya Sans', sans-serif); font-weight: 900; font-size: 9cqw; line-height: 1; color: #f4fbff;
+  -webkit-text-stroke: .9cqw #031420; paint-order: stroke fill; text-shadow: 0 0 2cqw #5fd3ff99; }
+.rcard .rc-sigil { left: 85.4%; top: 4.1%; width: 8.4%; aspect-ratio: 1; display: grid; place-items: center; }
+.rcard .rc-sigil svg { width: 100%; height: 118%; filter: drop-shadow(0 .3cqw .3cqw #000); }
+
+/* name in the enamel cartouche, type line under it */
+.rcard .rc-name { left: 11%; right: 11%; top: 59.7%; height: 6.6%; display: grid; place-items: center; text-align: center; overflow: hidden; }
+.rcard .rc-name span { font-family: var(--font-display, 'IM Fell English SC', serif); font-size: 6.4cqw; line-height: 1; color: #fbf1d8; white-space: nowrap;
+  letter-spacing: .02em; text-shadow: 0 .3cqw .2cqw #000, 0 0 1.5cqw #000c; }
+.rcard .rc-name.long span { font-size: 5.2cqw; } .rcard .rc-name.xlong span { font-size: 4.4cqw; }
+.rcard .rc-type { left: 10%; right: 10%; top: 67.4%; text-align: center; font-family: 'Alegreya', serif; font-style: italic; font-size: 3.7cqw; line-height: 1.1;
+  color: #c9b98f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* rules panel */
+.rcard .rc-text { left: 10%; right: 10%; top: 71.4%; bottom: 10.6%; overflow: hidden; font-size: 3.7cqw; line-height: 1.22; color: #ddd4bf;
+  display: flex; flex-direction: column; justify-content: center; gap: .9cqw; text-align: center; }
+.rcard .rc-text .r { margin: 0; }
+.rcard .rc-text .r b { font-family: var(--font-display, serif); font-weight: 400; color: #f0cf86; letter-spacing: .02em; }
+.rcard .rc-text .r .m { color: #8f8a7c; font-size: .86em; white-space: nowrap; }
+.rcard .rc-text .fl { font-family: 'Alegreya', serif; font-style: italic; color: #a99f88; }
+.rcard .rc-text .kw { color: #f0cf86; }
+.rcard.full .rc-text { justify-content: flex-start; text-align: left; overflow-y: auto; scrollbar-width: none; font-size: max(3.9cqw, 10px);
+  mask-image: linear-gradient(#000 85%, transparent); }
+.rcard.full .rc-text::-webkit-scrollbar { display: none; }
+.rcard:not(.full) .rc-text { font-size: 4.2cqw; }
+.rcard:not(.full) .rc-text .r { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* stats: attack coin and health shield on the lower corners, AP / DEF on the panel rail */
+.rcard .rc-stat { bottom: .4%; width: 17%; aspect-ratio: 1; display: grid; place-items: center; background: center / contain no-repeat; }
+.rcard .rc-stat.atk { left: .4%; background-image: var(--coin-atk); }
+.rcard .rc-stat.hp { right: .4%; background-image: var(--coin-hp); padding-bottom: 1.2cqw; }
+.rcard .rc-stat b, .rcard .rc-rail b { font-family: var(--font-num, 'Alegreya Sans', sans-serif); font-weight: 900; line-height: 1; color: #fff8e6;
+  -webkit-text-stroke: .8cqw #120a04; paint-order: stroke fill; }
+.rcard .rc-stat b { font-size: 8cqw; }
+.rcard .rc-rail { left: 22%; right: 22%; bottom: 3.2%; display: flex; justify-content: center; gap: 5cqw; font-size: 3.4cqw; color: #a39a86; letter-spacing: .08em; text-transform: uppercase; }
+.rcard .rc-rail span { display: flex; align-items: baseline; gap: 1.2cqw; } .rcard .rc-rail b { font-size: 5.4cqw; -webkit-text-stroke-width: .6cqw; }
+.rcard .rc-rail.text { text-transform: none; letter-spacing: 0; font-size: 3.6cqw; color: #c9b98f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; text-align: center; bottom: 3.6%; }
+.rcard .up b { color: #9cf0a2 !important; } .rcard .down b { color: #ff8f7a !important; }
+.rcard.full { pointer-events: auto; }
+.rcard.hero { filter: drop-shadow(0 .8cqw 1.6cqw #000d) drop-shadow(0 0 2cqw #e3b04b55); }
+
+/* art window contents (also used bare by hand tiles and unit portraits: .rc-art fills whatever box it is put in) */
+.rc-art { position: relative; width: 100%; aspect-ratio: 3 / 4; overflow: hidden; background: #0f151c; }
+.rc-art img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; }
+.rc-art img.cardart { position: absolute; width: 144%; height: auto; max-width: none; left: -22%; top: -22.5%; object-fit: fill; }
+.rc-art.painted { background: radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--fcl) 70%, #fff) 0%, var(--fc) 45%, var(--fcd) 100%); }
+.rc-art.painted::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 100%, #0008, transparent 60%); }
+.rc-art .rc-ground { position: absolute; left: 10%; right: 10%; bottom: 8%; height: 12%; border-radius: 50%; background: radial-gradient(#000a, transparent 70%); }
+.rc-art img.figure { position: absolute; left: 50%; bottom: 6%; width: auto; height: 86%; transform: translateX(-50%); object-fit: contain; filter: drop-shadow(0 2px 3px #000a); }
+.rc-art .rc-emblem { position: absolute; inset: 14%; } .rc-art .rc-emblem svg { width: 100%; height: 100%; filter: drop-shadow(0 2px 4px #000c); }
+.rcard .rc-art.emblem .rc-emblem { inset: 8% 18% 46%; }
