@@ -246,6 +246,7 @@ class Look:
     edge_dark: float = 0.45
     edge_color: tuple = (0.07, 0.08, 0.12)
     flash: float = 0.0                            # hit flash toward white (figure only)
+    toon: float = 0.0                             # 1 = cel shading: hard light/shadow, hard rim and spec
 
 
 def render(scene: Scene, cam: Camera = Camera(), look: Look = Look(), debug=False):
@@ -324,7 +325,7 @@ def render(scene: Scene, cam: Camera = Camera(), look: Look = Look(), debug=Fals
 
     # brush noise: stretched world-space noise modulates albedo value
     bn = fbm(P * np.array([1.0, 0.35, 1.0]), 38.0, 3) - 0.5
-    albedo = albedo * (1.0 + brush[:, None] * 2.0 * bn[:, None])
+    albedo = albedo * (1.0 + brush[:, None] * 2.0 * bn[:, None] * (1 - look.toon))
     alb = srgb_to_lin(np.clip(albedo, 0, 1))
 
     ndl = Nrm @ Lk
@@ -333,6 +334,12 @@ def render(scene: Scene, cam: Camera = Camera(), look: Look = Look(), debug=Fals
     # painterly banding of the key light
     banded = np.clip((np.floor(diff * 3.0 + 0.5) / 3.0), 0, 1)
     soft_b = diff + (banded - diff) * look.bands
+    if look.toon:
+        def _st(e0, e1, x):
+            t = np.clip((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t)
+        cel = 0.12 + 0.70 * _st(0.22, 0.26, diff) + 0.18 * _st(0.74, 0.77, diff)
+        soft_b = soft_b + (cel - soft_b) * look.toon
+        AO = AO + (np.where(AO > 0.55, 1.0, 0.7) - AO) * look.toon
     key = soft_b[:, None] * np.array(look.key_color) * look.key_int
 
     sky_w = 0.5 + 0.5 * Nrm[:, 1]
@@ -344,13 +351,18 @@ def render(scene: Scene, cam: Camera = Camera(), look: Look = Look(), debug=Fals
     amb = amb * (tint + (1 - tint) * soft_b[:, None])
 
     fres = np.power(np.clip(1 - Nrm @ Vd, 0, 1), 2.5)
-    rim = (fres * np.clip(Nrm @ Lr + 0.3, 0, 1) * rimw)[:, None] * np.array(look.rim_color) * look.rim_int
+    rimt = fres * np.clip(Nrm @ Lr + 0.3, 0, 1)
+    if look.toon:
+        rimt = rimt + ((rimt > 0.30) * 0.75 - rimt) * look.toon
+    rim = (rimt * rimw)[:, None] * np.array(look.rim_color) * look.rim_int
 
     color = alb * (key + amb) + alb * rim * 0.6 + rim * 0.25
 
     Hh = Lk + Vd
     Hh /= np.linalg.norm(Hh)
     sp = np.power(np.clip(Nrm @ Hh, 0, 1), gloss) * spec_s * shadow
+    if look.toon:
+        sp = sp + ((sp > 0.25 * np.maximum(spec_s, 1e-3)) * spec_s * 0.9 - sp) * look.toon
     spec_col = (1 - metal)[:, None] * np.array(look.key_color)[None, :] + metal[:, None] * alb
     color += sp[:, None] * spec_col * look.key_int
 

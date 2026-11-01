@@ -11,7 +11,7 @@ BRANCHES = [  # start height on trunk, angle, length, radius, outward bend
     (0.7, 0.3, 0.95, 0.13, 0.85), (0.9, 2.7, 0.9, 0.12, 0.9), (1.1, 4.3, 0.75, 0.1, 0.8),
     (1.3, 1.4, 0.6, 0.08, 0.7), (0.55, 5.5, 0.6, 0.09, 1.0), (1.45, 3.5, 0.45, 0.06, 0.6),
 ]
-DRONES = [(0.5, 0.42, 0.3), (-0.55, 0.35, 0.9), (0.0, 0.68, 0.1)]
+DRONES = [(0.62, 0.45, 0.3), (-0.62, 0.4, 0.9), (0.05, 0.78, 0.1)]
 
 
 def neutral_pose():
@@ -88,7 +88,7 @@ def build(P):
         c = v3(x, 0.0, z)
         sub_parts, sub_add = new_parts()
         mini_drone(sub_add, v3(0, 0, 0), yaw, P, i)
-        parts.extend(transform_parts(sub_parts, t=tuple(c), s=1.35))
+        parts.extend(transform_parts(sub_parts, t=tuple(c), s=1.8))
         add(Capsule(v3(x * 0.35, 0.05, z * 0.35), c + v3(0, 0.12, 0), 0.006), 'synapse', 0.0)
     parts = body_pose(parts, P, lean_scale=0.25)
     m = reef_mats(P, glow=0.5)

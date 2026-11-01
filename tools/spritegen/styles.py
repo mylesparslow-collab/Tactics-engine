@@ -117,12 +117,34 @@ def styled(mod, P, style, over=None):
         alpha = np.where(m2, 1.0, sh)
         rgb = np.where(m2[..., None], rgb, np.array([0.08, 0.09, 0.12]))
         return (np.dstack([rgb, alpha]) * 255 + 0.5).astype(np.uint8)
+    if style == 'cel':
+        lk = dataclasses.replace(look0, toon=1.0, kuwahara=0, bands=0.0, contrast=0.12, sharpen=0.25,
+                                 edge_dark=0.0, sky_int=look0.sky_int * 1.25, ground_shadow=0.45)
+        img = render(sc, cam0, lk)
+        f = img.astype(np.float64) / 255.0
+        rgb, A = f[..., :3].copy(), f[..., 3]
+        mask = A > 0.5
+        g = rgb.mean(-1, keepdims=True)
+        rgb = np.where(mask[..., None], np.clip(g + (rgb - g) * 1.2, 0, 1), rgb)
+        rgb = np.where(mask[..., None], _quantize(rgb, mask, 32), rgb)
+        # thin interior ink where tone jumps (shadow terminators, part boundaries)
+        lum = rgb @ np.array([0.3, 0.59, 0.11])
+        gx = np.maximum(np.abs(np.roll(lum, -1, 1) - lum), np.abs(np.roll(lum, -1, 0) - lum))
+        ink = (gx > 0.20) & mask & np.roll(mask, -1, 1) & np.roll(mask, -1, 0)
+        rgb[ink] = rgb[ink] * 0.55
+        rgb2, m2 = _outline(rgb, mask, strength=0.9, color=(0.07, 0.06, 0.09))
+        edge = m2 & ~mask
+        out = f.copy()
+        out[..., :3] = np.where(mask[..., None], rgb2, f[..., :3])
+        out[edge, :3] = (0.07, 0.06, 0.09)
+        out[edge, 3] = 1.0
+        return (np.clip(out, 0, 1) * 255 + 0.5).astype(np.uint8)
     raise ValueError(style)
 
 
-STYLES = ['painted', 'pixel', 'chunky', 'ink', 'smooth']
+STYLES = ['painted', 'pixel', 'chunky', 'ink', 'smooth', 'cel']
 LABELS = {'painted': 'A  Painted (current)', 'pixel': 'B  Pixel art (crisp, 28 colours)',
-          'chunky': 'C  Chunky pixel (48x56, 16 colours)', 'ink': 'D  Cel-shaded ink',
+          'chunky': 'C  Chunky pixel (48x56, 16 colours)', 'ink': 'D  Cel-shaded ink', 'cel': 'F  True cel (toon-lit)',
           'smooth': 'E  Smooth pre-rendered 3D'}
 
 

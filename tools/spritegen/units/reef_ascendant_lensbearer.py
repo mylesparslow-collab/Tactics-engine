@@ -25,6 +25,15 @@ def build(P):
         r0 = v3(np.cos(ang) * 0.16, 0.0, np.sin(ang) * 0.14)
         branches(add, r0, (np.cos(ang) * 0.4, 1.0, np.sin(ang) * 0.4), 0.22, 0.045, 2, 'coral', rng,
                  k=0.02, spread=0.6, sway=(0.02 * wave(P, i), 0), kids=(2, 2), up_bias=0.4)
+    # lesser spires of the colony grown up around the stalk
+    for j, (x, z, h, r) in enumerate([(-0.2, 0.1, 0.75, 0.08), (0.2, -0.12, 0.6, 0.07), (0.06, 0.22, 0.45, 0.06)]):
+        s = wave(P, j * 1.9, strike=0.0)
+        add(spire(v3(x, 0, z), h, r, r * 0.3, n=7, flute=0.25, twist=0.6,
+                  bend=(np.sign(x) * 0.2 + 0.03 * s, np.sign(z) * 0.1)), 'calcite_p', 0.04)
+        tip = v3(x + (np.sign(x) * 0.2 + 0.03 * s) * h, h, z + np.sign(z) * 0.1 * h)
+        add(crown(tip - v3(0, 0.02, 0), 6, r * 0.25, 0.05, 0.06, 0.01, 0.004, curl=0.02,
+                  sway=lambda i, j=j: (0.0, 0.012 * np.sin(i * 1.7 + j + 6.28 * P['tell']) + 0.015 * P['twitch'] * (i % 2), 0.0)),
+            'flesh', 0.008)
     # main stalk: fluted, curving forward at the top
     L = 1.55
     bx, bz = 0.02 * sw, 0.10 + 0.06 * st
