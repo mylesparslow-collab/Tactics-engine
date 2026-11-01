@@ -25,7 +25,7 @@ C = Costume(top='robe', sleeve='robe', legs='road', hand='glove', skirt='robe', 
 def neutral_pose():
     P = base_pose(height=1.06, build=0.9)
     rig.place_arm(P, 'r', v3(-0.28, 1.12, 0.17), (-0.4, -0.2, -1))
-    P['item_r'] = norm(v3(-0.08, 1.0, 0.06))
+    P['item_r'] = norm(v3(-0.24, 1.0, 0.06))
     rig.place_arm(P, 'l', v3(0.12, 1.22, 0.24), (1, -0.4, -0.5))     # holds a sample up to the light
     P['head_yaw'] = np.radians(-4)
     P['head_pitch'] = np.radians(6)
