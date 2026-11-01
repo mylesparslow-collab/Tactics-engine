@@ -45,12 +45,20 @@ export class BoardPainter {
 
   /** Paint every tile. Returns the tiles that need per-frame animation. */
   paint(ctx: CanvasRenderingContext2D, minY: number, maxY: number): AnimTile[] {
+    let out: AnimTile[] = [];
+    for (const _ of this.paintSteps(ctx, minY, maxY, a => { out = a; })) void _;
+    return out;
+  }
+  /** Same as paint(), but yields every few tiles so a caller can spread the work across frames. */
+  *paintSteps(ctx: CanvasRenderingContext2D, minY: number, maxY: number, done: (anim: AnimTile[]) => void): Generator<void> {
     const g = this.game, v = this.view;
     const order: { d: number; x: number; y: number }[] = [];
     for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) order.push({ d: v.depth(x, y), x, y });
     order.sort((a, b) => a.d - b.d);
     const anim: AnimTile[] = [];
+    let n = 0;
     for (const o of order) {
+      if ((n++ & 7) === 7) yield;
       const t = this.vt[o.y][o.x], def = g.content.terrain[t.terrain] as TerrainExt | undefined;
       const kind = terrainKind(t.terrain, def);
       this.sides(ctx, o.x, o.y);
@@ -65,7 +73,7 @@ export class BoardPainter {
     this.tint(ctx, minY, maxY);
     ctx.restore();
     this.tintY = [minY, maxY];
-    return anim;
+    done(anim);
   }
   private tintY: [number, number] = [0, 1];
   /** Global key light + depth fog over the whole board rect (callers set composite/clip). */

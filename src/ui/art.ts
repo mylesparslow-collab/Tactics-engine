@@ -1,6 +1,8 @@
 // Original UI art for EBB, drawn as inline SVG: brass frames (9-slice), faction crests, title key art, and UI glyphs.
 // Everything here is static vector art; nothing uses filters on animated layers (keeps mobile fast).
 
+import { h } from './dom';
+
 let uid = 0;
 const nid = (p: string) => `${p}${++uid}`;
 
@@ -24,6 +26,14 @@ export const kit = (n: string) => KIT[`./kit/${n}.png`];
 const ILL = import.meta.glob('./kit/ill/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 /** URL of a baked illuminated initial (tools/uikit/illuminate.py), or undefined for non A-Z. */
 export const illum = (ch: string) => ILL[`./kit/ill/${ch.toUpperCase()}.webp`];
+
+/** A menu heading whose first letter is an illuminated initial; other text is left as is. */
+export function illuminated(text: string) {
+  const m = /^(\W*)([A-Za-z])(.*)$/.exec(text);
+  const src = m && illum(m[2]);
+  if (!m || !src) return [text];
+  return [m[1] || null, h('span', { class: 'ill', role: 'img', 'aria-label': m[2], style: `--ill:url("${src}")` }), m[3]];
+}
 
 export function installArt() {
   if (document.getElementById('ebb-art')) return;

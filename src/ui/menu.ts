@@ -5,9 +5,11 @@ import { clear, h } from './dom';
 import { describeObjectives } from './text';
 import { buildSkirmish, playableFactions } from '../engine/skirmish';
 import { artNode } from './cards';
-import { crestSvg, glyph, illum, installArt, kit, teamFaction } from './art';
+import { crestSvg, glyph, illuminated, installArt, kit, teamFaction } from './art';
 import { Game } from '../engine/game';
 import { Renderer } from '../render/renderer';
+import { showCollection } from './collection';
+import { allRelics, ownedRelics } from '../engine/collection';
 
 export interface MissionChoice { missionId: string; campaign?: { id: string; index: number } }
 
@@ -65,14 +67,6 @@ function shell(root: HTMLElement, content: Content): HTMLElement {
   return host;
 }
 
-/** A menu heading whose first letter is an illuminated initial; other text is left as is. */
-export function illuminated(text: string) {
-  const m = /^(\W*)([A-Za-z])(.*)$/.exec(text);
-  const src = m && illum(m[2]);
-  if (!m || !src) return [text];
-  return [m[1] || null, h('span', { class: 'ill', role: 'img', 'aria-label': m[2], style: `--ill:url("${src}")` }), m[3]];
-}
-
 function screenHeader(title: string, kicker: string | null, onBack: () => void) {
   return h('header', { class: 'scr-head' },
     h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back')),
@@ -104,7 +98,7 @@ export function showMenu(root: HTMLElement, content: Content, errors: string[], 
       item('Campaign', campTotal ? `${campDone} / ${campTotal}` : '', camps.length ? () => showCampaign(ctx) : null, ' primary'),
       item('Skirmish', '', playableFactions(content).length >= 2 ? () => showSkirmish(ctx) : null),
       item('Scenarios', String(scen), scen ? () => showScenarios(ctx) : null),
-      item('Collection', 'Soon', null)),
+      item('Collection', `${ownedRelics(content).size} / ${allRelics(content).length}`, () => showCollection(shell(root, content), content, () => showMenu(root, content, errors, onPick)))),
     errors.length ? h('details', { class: 'errbox' }, h('summary', null, `Content check: ${errors.length} problem${errors.length === 1 ? '' : 's'}`),
       h('ul', null, ...errors.slice(0, 30).map(e => h('li', null, e)))) : null,
     h('footer', { class: 'ver' }, 'Early access'));
