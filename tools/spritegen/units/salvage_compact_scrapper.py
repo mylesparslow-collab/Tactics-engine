@@ -19,7 +19,7 @@ def neutral_pose():
     P['head_pitch'] = np.radians(-14)
     rig.place_arm(P, 'l', v3(0.12, 1.08, 0.36), (0.35, -0.6, -1))     # shield arm out front
     rig.place_arm(P, 'r', v3(-0.24, 1.0, 0.22), (-0.35, -0.5, -1))
-    P['item_r'] = norm(v3(-0.05, 1.0, 0.18))                        # boat hook upright
+    P['item_r'] = norm(v3(-0.55, 1.0, -0.30))   # boat hook slanted out and back, clear of the face (a Compact diagonal)
     return P
 
 

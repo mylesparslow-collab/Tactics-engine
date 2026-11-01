@@ -3,9 +3,11 @@ a three-lame pauldron and a bolted chest plate on the left, bare patched canvas 
 breaching maul made of a ship's capstan pin on a mast-spar haft, carried on the shoulder."""
 import numpy as np
 from _salvage_compact_common import *
+from render import Camera
 
 UNIT_ID = 'salvage_compact_hullbreaker'
 FACTION = 'salvage_compact'
+CAMERA = Camera(ppm=45)   # big unit: keeps the raised maul inside the frame
 
 C = Costume(top='coat', sleeve='coat', legs='trousers', hand='glove', skirt=None, head='bald',
             belt='leather', girth=1.45)
@@ -28,7 +30,7 @@ def maul(P, add):
         return
     d = norm(d)
     g = hand_pos(P, 'r')
-    butt, tip = g - d * 0.45, g + d * 0.72
+    butt, tip = g - d * 0.40, g + d * 0.62
     add(Capsule(butt, tip, 0.024), 'wood', 0.0)
     lash(add, butt, tip, n=2, r=0.03, at=(0.05, 0.12))
     c0 = np.cross(d, v3(0, 1, 0.3))
@@ -48,7 +50,10 @@ def build(P):
     lights = []
     body(P, add, C)
     add(ragged_coat(P, hem_lo=0.46, hem_hi=0.62, slope=1, opening=0.4, flare=0.7, girth=1.45), 'coat2', 0.0)
-    pauldron(P, add, 'l', size=1.45, layers=3)
+    # the pauldron sits low and outboard so it never merges with the bald head into a second head
+    P2 = dict(P)
+    P2['sh_l'] = P['sh_l'] + v3(0.05, -0.06, 0.0)
+    pauldron(P2, add, 'l', size=1.12, layers=3)
     ch, pel, h = P['chest'], P['pelvis'], P['height']
     # chest plate bolted on the left half only
     R = basis_from(v3(0.15, 1, 0.1), (0.3, 0, 1))

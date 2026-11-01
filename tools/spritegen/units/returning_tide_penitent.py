@@ -17,8 +17,9 @@ def neutral_pose():
     rig.lean(P, fwd=np.radians(-3))
     P['head_pitch'] = np.radians(-16)
     P['head_yaw'] = np.radians(-6)
-    rig.place_arm(P, 'r', v3(-0.44, 1.10, 0.14), (-0.2, -0.6, -1))
-    rig.place_arm(P, 'l', v3(0.46, 1.16, 0.14), (0.2, -0.6, -1))
+    rig.place_arm(P, 'r', v3(-0.36, 1.02, 0.18), (-0.6, -0.6, -0.6))
+    # open arm offered forward and bent, palm up, instead of a stiff straight-out T
+    rig.place_arm(P, 'l', v3(0.32, 1.24, 0.30), (1, -1, 0))
     P['item_r'] = norm(v3(-0.25, -0.9, 0.25))
     return P
 
@@ -28,6 +29,8 @@ def build(P):
     body(P, add, C)
     add(ragged_robe(P, hem=0.26, flare=0.55, rag=1.2, seed=0.7, girth=0.9), 'shift', 0.0)
     held(P, add, 'r', 'club', shaft='driftwood')
+    # a sodden hood pushed back off the shaven head: reads as Tide at 1x without hiding the prayer
+    hood_down(P, add, 'shift', size=1.0)
     knotted_cord(add, P, girth=0.95)
     # black cord at the neck with a small knot
     nk = P['neck']
