@@ -30,3 +30,10 @@ npm run build      # static build in dist/ (works offline / any static host)
 Click a unit to select it (blue = where it can walk), pick an ability, click a target. Click a card in your
 warband, then a green tile to deploy. `E`/`Enter` ends the turn, `Esc` or right-click cancels, `1-9` pick abilities, `Q`/`R` rotate the camera.
 In the browser console, `__tactics.game` is the live game state (handy for debugging content).
+
+## Hosting (Cloudflare Pages)
+
+`.github/workflows/deploy.yml` tests, builds, and deploys `dist/` to the Cloudflare Pages project `ebb` on every push to
+`main` (production) and on every pull request (a preview URL). It needs two repository secrets, set under
+Settings, Secrets and variables, Actions: `CLOUDFLARE_API_TOKEN` (a token with the "Cloudflare Pages: Edit" permission)
+and `CLOUDFLARE_ACCOUNT_ID`. Without them the workflow still builds and tests, and skips the deploy.
