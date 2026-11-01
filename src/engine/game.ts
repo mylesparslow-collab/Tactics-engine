@@ -56,6 +56,11 @@ export class Game {
       if (ks && t.keystone !== false) this.spawn('keystone', team, ks.x, ks.y, `keystone_${team}`);
       t.units?.forEach(u => this.spawn(u.unit, team, u.x, u.y, u.tag));
     });
+    // Heroes are unique: a hero already on the field is not also in the hand (campaign rosters list the commander).
+    this.teams.forEach((t, team) => {
+      const seen = new Set(this.units.filter(u => u.team === team && this.def(u).hero).map(u => u.defId));
+      t.hand = t.hand.filter(id => { if (!this.content.units[id]?.hero) return true; if (seen.has(id)) return false; seen.add(id); return true; });
+    });
     // Pre-placed units can act on turn 1.
     for (const u of this.units) { u.summonedThisTurn = false; u.ap = this.stat(u, 'ap'); }
     this.beginTurn();
@@ -145,10 +150,22 @@ export class Game {
     return out;
   }
 
-  private reachRaw(u: Unit, apBudget: number): Map<string, ReachNode> {
+  /** Where a unit could walk on its next turn with a full AP bar, regardless of whose turn it is (AI threat maps). */
+  moveRange(u: Unit, apBudget = this.stat(u, 'ap')): Map<string, ReachNode> {
+    if (this.def(u).structure || this.hasFlag(u, 'preventsMove')) return new Map([[key(u.x, u.y), { cost: 0, prev: null }]]);
+    const out = this.reachRaw(u, apBudget, true);
+    for (const k of [...out.keys()]) {
+      const [x, y] = k.split(',').map(Number);
+      const occ = this.unitAt(x, y);
+      if (occ && occ.uid !== u.uid) out.delete(k);
+    }
+    return out;
+  }
+
+  private reachRaw(u: Unit, apBudget: number, anyTurn = false): Map<string, ReachNode> {
     const out = new Map<string, ReachNode>();
     out.set(key(u.x, u.y), { cost: 0, prev: null });
-    if (!this.canMove(u)) return out;
+    if (!anyTurn && !this.canMove(u)) return out;
     const jump = this.stat(u, 'jump');
     const frontier: { x: number; y: number; cost: number }[] = [{ x: u.x, y: u.y, cost: 0 }];
     while (frontier.length) {
@@ -195,7 +212,11 @@ export class Game {
     const a = this.ability(abilityId);
     return !!a && !a.passive && this.isActive(u) && !this.def(u).structure && !u.summonedThisTurn &&
       !this.hasFlag(u, 'preventsAction') && u.ap >= a.apCost && (u.cooldowns[abilityId] ?? 0) <= 0 &&
-      this.abilitiesOf(u).includes(abilityId);
+      !this.usedThisTurn(u, abilityId) && this.abilitiesOf(u).includes(abilityId);
+  }
+
+  /** Each ability fires at most once per turn: the basic attack can't be spammed, so specials and positioning matter. */
+  usedThisTurn(u: Unit, abilityId: string) { return !!u.usedAbilities?.includes(abilityId);
   }
 
   /** Max range including the high-ground bonus (+1 when 2+ levels above the target tile). */
@@ -203,6 +224,16 @@ export class Game {
     const d = manhattan(from, to);
     const bonus = a.range.max > 1 && this.tiles[from.y][from.x].height - this.tiles[to.y][to.x].height >= 2 ? 1 : 0;
     return d >= a.range.min && d <= a.range.max + bonus;
+  }
+
+  /** Every tile an ability can reach from the unit (its range zone), whether or not anything is there to hit. */
+  rangeTiles(u: Unit, abilityId: string): Pos[] {
+    const a = this.ability(abilityId); if (!a || a.passive) return [];
+    if (a.target === 'self') return [{ x: u.x, y: u.y }];
+    const out: Pos[] = [], r = a.range.max + 1;
+    for (let y = u.y - r; y <= u.y + r; y++) for (let x = u.x - r; x <= u.x + r; x++)
+      if (this.inBounds(x, y) && this.inRange(a, u, { x, y })) out.push({ x, y });
+    return out;
   }
 
   /** Valid target tiles for an ability if the caster stood at `from`. */
@@ -390,8 +421,23 @@ export class Game {
   }
 
   deployTiles(team: number): Pos[] {
-    const zone = this.map.deployZones[String(team)] ?? [];
-    return zone.map(([x, y]) => ({ x, y })).filter(p => !this.unitAt(p.x, p.y) && !this.terrainAt(p.x, p.y).impassable);
+    const zone = (this.map.deployZones[String(team)] ?? []).map(([x, y]) => ({ x, y }));
+    // Forward deployment: a Tide Well held by one of your champions lets you deploy next to it.
+    // Wells become the map's front line: worth fighting for, and reinforcements don't spend two turns walking.
+    for (const w of this.heldWells(team)) for (const d of DIRS) zone.push({ x: w.x + d.x, y: w.y + d.y });
+    const seen = new Set<string>();
+    return zone.filter(p => {
+      const k = key(p.x, p.y);
+      if (seen.has(k) || !this.inBounds(p.x, p.y)) return false;
+      seen.add(k);
+      return !this.unitAt(p.x, p.y) && !this.terrainAt(p.x, p.y).impassable;
+    });
+  }
+
+  /** Wells with one of the team's (non-structure) units standing on them. */
+  heldWells(team: number): Pos[] {
+    if (this.mission.wellDeploy === false) return [];
+    return (this.map.wells ?? []).filter(w => { const o = this.unitAt(w.x, w.y); return !!o && o.team === team && !this.def(o).structure; });
   }
 
   canDeploy(team: number, handIndex: number) {
@@ -425,6 +471,7 @@ export class Game {
     const a = this.ability(abilityId);
     u.ap -= a.apCost;
     if (a.cooldown) u.cooldowns[abilityId] = a.cooldown;
+    (u.usedAbilities ??= []).push(abilityId);
     this.emit({ kind: 'ability', uid, ability: abilityId, target: { x, y } });
     const targets = this.affected(u, abilityId, { x, y });
     for (const e of a.effects) {
@@ -488,6 +535,7 @@ export class Game {
     }
     for (const u of this.aliveUnits(this.current)) {
       u.summonedThisTurn = false;
+      u.usedAbilities = [];
       for (const k of Object.keys(u.cooldowns)) u.cooldowns[k] = Math.max(0, u.cooldowns[k] - 1);
       for (const s of [...u.statuses]) for (const e of this.content.statuses[s.id]?.onTurnStart ?? [])
         if (u.alive && (e.type === 'damage' || e.type === 'heal')) this.applyEffect({ ...e, amount: e.amount * (s.stacks ?? 1) }, u);

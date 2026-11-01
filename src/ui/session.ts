@@ -10,6 +10,7 @@ import { clear, h } from './dom';
 import { artNode, buildCard } from './cards';
 import { abilityGlyph, crestSvg, glyph, installArt, teamFaction } from './art';
 import { stopBackdrop } from './menu';
+import { isMuted, playCue, playEnd, playTurnBell, setMuted } from '../audio/sfx';
 import { effectText } from './text';
 
 export interface SessionOpts {
@@ -43,6 +44,7 @@ export class GameSession {
   private bannerQueue: { text: string; speaker?: string }[] = [];
   private bannerBusy = false;
   private enterArmed = 0;
+  private hoverAbility: string | null = null;
   private cleanup: (() => void)[] = [];
   private logOpen = false;
   private handOpen = typeof window === 'undefined' || window.innerHeight >= 500;
@@ -60,6 +62,7 @@ export class GameSession {
     this.renderer = new Renderer(this.canvas);
     this.renderer.setGame(this.game);
     this.renderer.start();
+    this.renderer.onCue = c => playCue(c, this.game);
     this.game.on(e => this.onEvent(e));
     const ro = new ResizeObserver(() => { this.renderer.resize(); this.layoutHand(); });
     ro.observe(this.canvas.parentElement!);
@@ -207,7 +210,7 @@ export class GameSession {
       case 'deploy': this.logLine(`${this.uname(e.uid)} enters the field.`, 'move'); break;
       case 'essence': this.logLine(`${g.teams[e.team].name} ${e.amount >= 0 ? 'gains' : 'loses'} ${Math.abs(e.amount)} ${this.L('essence')}.`, 'sys'); break;
       case 'terrain': this.logLine(`The ground at ${e.x},${e.y} becomes ${g.content.terrain[e.terrain]?.name ?? e.terrain}.`, 'sys'); break;
-      case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); break;
+      case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); playTurnBell(g.teams[e.team].controller === 'human'); break;
       case 'message': this.logLine(`${e.speaker ? e.speaker + ': ' : ''}${e.text}`, 'msg'); this.bannerQueue.push({ text: e.text, speaker: e.speaker }); this.pumpBanner(); break;
       case 'end': this.ended = true; this.logLine(e.phase === 'victory' ? 'Victory!' : 'Defeat.', 'turn'); this.waitForEnd(e.phase); break;
     }
@@ -252,7 +255,7 @@ export class GameSession {
     const poll = () => {
       if (this.destroyed) return;
       if (this.renderer.busy()) { setTimeout(poll, 150); return; }
-      setTimeout(() => !this.destroyed && this.showEnd(phase), 500);
+      setTimeout(() => { if (this.destroyed) return; playEnd(phase === 'victory'); this.showEnd(phase); }, 500);
     };
     poll();
   }
@@ -329,6 +332,7 @@ export class GameSession {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const k = e.key.toLowerCase();
     if (k === 'escape') this.cancel();
+    else if (k === 'm') { setMuted(!isMuted()); this.toastMsg(isMuted() ? 'Sound off (M)' : 'Sound on (M)', '#b8913e', this.g.current); }
     else if (k === 'enter') { // press twice to end the turn (not 'e': it sits next to WASD)
       e.preventDefault();
       if (performance.now() < this.enterArmed) { this.enterArmed = 0; this.endTurn(); }
@@ -367,6 +371,8 @@ export class GameSession {
         g.useAbility(u.uid, ab, p.x, p.y);
         this.mode = { kind: 'move' }; this.refresh(); return;
       }
+      // inside the range zone: keep the attack armed; outside it: cancel
+      if (g.rangeTiles(u, ab).some(t => t.x === p.x && t.y === p.y) && !(occ && occ.team === g.current)) return;
       if (!(occ && occ.team === g.current)) { this.mode = { kind: 'move' }; this.refresh(); return; }
     }
     if (occ) {
@@ -381,6 +387,7 @@ export class GameSession {
 
   // ---------- state -> UI ----------
   private refresh() {
+    this.hoverAbility = null; // the unit panel is rebuilt below, so a stale hover can't linger
     const u = this.sel();
     if (u && !u.alive) { this.selected = null; this.mode = { kind: 'idle' }; }
     if (this.mode.kind === 'ability') {
@@ -415,7 +422,7 @@ export class GameSession {
 
   private updateOverlay() {
     const g = this.g, ov = this.renderer.overlay;
-    ov.reach.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.path = []; ov.pathCost = null; ov.previews = new Map();
+    ov.reach.clear(); ov.range.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.path = []; ov.pathCost = null; ov.previews = new Map();
     ov.hover = this.hover;
     const u = this.sel();
     ov.selected = u ? { x: u.x, y: u.y } : null;
@@ -435,7 +442,10 @@ export class GameSession {
       return;
     }
     if (!u || u.team !== g.current) return;
-    if (this.mode.kind === 'move') {
+    // ability range in yellow: the armed ability, or the one under the mouse in the unit panel
+    const rangeAb = this.mode.kind === 'ability' ? this.mode.ability : this.hoverAbility;
+    if (rangeAb && g.ability(rangeAb)) for (const t of g.rangeTiles(u, rangeAb)) ov.range.add(key(t.x, t.y));
+    if (this.mode.kind === 'move' && !this.hoverAbility) {
       const reach = g.reachable(u);
       for (const k of reach.keys()) if (k !== key(u.x, u.y)) ov.reach.add(k);
       if (hv && reach.has(key(hv.x, hv.y)) && !(hv.x === u.x && hv.y === u.y)) {
@@ -610,7 +620,9 @@ export class GameSession {
           const idx = ++n;
           list.append(h('button', {
             class: 'abtn' + (active ? ' active' : ''), disabled: !usable,
-            onclick: () => { if (!this.canAct()) return; this.mode = active ? { kind: 'move' } : { kind: 'ability', ability: id }; this.refresh(); },
+            onclick: () => { if (!this.canAct()) return; this.mode = active ? { kind: 'move' } : { kind: 'ability', ability: id }; this.hoverAbility = null; this.refresh(); },
+            onmouseenter: () => { this.hoverAbility = id; this.updateOverlay(); },
+            onmouseleave: () => { if (this.hoverAbility === id) { this.hoverAbility = null; this.updateOverlay(); } },
           }, glyph(abilityGlyph(a)), h('span', { class: 'ab-ap hc-num' }, String(a.apCost)), h('span', { class: 'ab-key' }, String(idx)), cd > 0 ? h('span', { class: 'ab-cd hc-num' }, String(cd)) : null, tipEl));
         });
         card.append(list);

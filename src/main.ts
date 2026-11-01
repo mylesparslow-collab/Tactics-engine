@@ -4,6 +4,9 @@ import { validateContent } from './engine/content';
 import { loadProgress, rosterFor } from './engine/campaign';
 import { showBriefing, showMenu, type MissionChoice } from './ui/menu';
 import { GameSession } from './ui/session';
+import { installAudioUnlock } from './audio/sfx';
+
+installAudioUnlock();
 
 const content = loadBundledContent();
 const errors = validateContent(content);
@@ -33,3 +36,5 @@ function play(choice: MissionChoice) {
 }
 
 menu();
+// Dev-only handle for automated playtests.
+if (import.meta.env.DEV) (window as unknown as { ebb: () => GameSession | null }).ebb = () => session;

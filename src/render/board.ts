@@ -61,19 +61,24 @@ export class BoardPainter {
       else if (!art?.top && (kind === 'water' || kind === 'deepwater' || kind === 'glow' || kind === 'coral' || kind === 'trench')) anim.push({ x: o.x, y: o.y, kind });
       else if (g.map.wells?.some(w => w.x === o.x && w.y === o.y)) anim.push({ x: o.x, y: o.y, kind });
     }
-    const { minX, maxX } = this.xBounds();
     ctx.save(); ctx.globalCompositeOperation = 'source-atop'; // tint tiles only, not the empty corners
-    // global key light from the upper left: warm toward it, cool blue-violet away from it
+    this.tint(ctx, minY, maxY);
+    ctx.restore();
+    this.tintY = [minY, maxY];
+    return anim;
+  }
+  private tintY: [number, number] = [0, 1];
+  /** Global key light + depth fog over the whole board rect (callers set composite/clip). */
+  private tint(ctx: CanvasRenderingContext2D, minY: number, maxY: number) {
+    const { minX, maxX } = this.xBounds();
+    // key light from the upper left: warm toward it, cool blue-violet away from it
     const lg = ctx.createLinearGradient(minX, minY, maxX, maxY);
     lg.addColorStop(0, 'rgba(255,240,210,0.16)'); lg.addColorStop(0.5, 'rgba(255,255,255,0)'); lg.addColorStop(1, 'rgba(40,30,70,0.2)');
     ctx.fillStyle = lg; ctx.fillRect(minX, minY, maxX - minX, maxY - minY);
     // depth fog: far rows fade toward the dusk haze
     const fog = ctx.createLinearGradient(0, minY, 0, maxY);
     fog.addColorStop(0, 'rgba(110,100,120,0.34)'); fog.addColorStop(0.45, 'rgba(110,100,120,0.08)'); fog.addColorStop(1, 'rgba(60,40,70,0)');
-    ctx.fillStyle = fog;
-    ctx.fillRect(minX, minY, maxX - minX, maxY - minY);
-    ctx.restore();
-    return anim;
+    ctx.fillStyle = fog; ctx.fillRect(minX, minY, maxX - minX, maxY - minY);
   }
   private xBounds() { const v = this.view; return { minX: -(v.rh) * TW / 2 - TW, maxX: (v.rw) * TW / 2 + TW }; }
 
@@ -308,5 +313,11 @@ export class BoardPainter {
   drawTile(ctx: CanvasRenderingContext2D, x: number, y: number) {
     const t = this.vt[y][x], def = this.game.content.terrain[t.terrain] as TerrainExt | undefined;
     this.sides(ctx, x, y); this.top(ctx, x, y, t.terrain, def, terrainKind(t.terrain, def)); this.edges(ctx, x, y);
+    // same lighting as the cached board, clipped to this tile's block, so redraws don't flash brighter
+    const { sx, sy } = this.view.project(x, y, t.height), hw = TW / 2, hh = TH / 2, th = t.height * LV + GROUND;
+    ctx.save(); ctx.beginPath();
+    ctx.moveTo(sx, sy - hh); ctx.lineTo(sx + hw, sy); ctx.lineTo(sx + hw, sy + th); ctx.lineTo(sx, sy + hh + th); ctx.lineTo(sx - hw, sy + th); ctx.lineTo(sx - hw, sy); ctx.closePath(); ctx.clip();
+    this.tint(ctx, this.tintY[0], this.tintY[1]);
+    ctx.restore();
   }
 }

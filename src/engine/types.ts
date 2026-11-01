@@ -175,6 +175,8 @@ export interface MissionDef {
   startingEssence?: number;
   essencePerTurn?: number;
   maxEssence?: number;
+  /** Holding a Tide Well lets a team deploy next to it (default true). */
+  wellDeploy?: boolean;
   teams: MissionTeam[];
   objectives?: { victory?: Condition[]; defeat?: Condition[] };
   events?: MissionEvent[];
@@ -224,6 +226,8 @@ export interface Unit {
   statuses: StatusInstance[];
   cooldowns: Record<string, number>;
   summonedThisTurn: boolean;
+  /** Abilities already used this turn (each ability once per turn). */
+  usedAbilities?: string[];
   tag?: string;
   alive: boolean;
   revived?: boolean;
