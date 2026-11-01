@@ -1,10 +1,20 @@
-// Relic cards: an ornate original frame tinted by faction, with art window, cost gem, name banner, type line and stats.
+// Relic cards: a baked cast-metal frame per faction (gold for heroes, tools/cardkit/bake.py) over full-bleed art,
+// with the cost in a tide-glass gem, the name in an enamel cartouche, a rules panel, and attack / health coins.
+import './cards.css';
 import type { Game } from '../engine/game';
 import type { Content, Unit } from '../engine/types';
 import { assetUrl, cardArtUrl } from '../render/anim';
 import { hashStr, mix, rgba, shade } from '../render/iso';
+import { crestSvg, kit } from './art';
 import { h } from './dom';
 import { effectText } from './text';
+
+const FRAMES = import.meta.glob('./kit/card/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const frameUrl = (fid: string | undefined, hero: boolean) =>
+  FRAMES[`./kit/card/frame_${fid ?? 'neutral'}${hero ? '_hero' : ''}.webp`] ?? FRAMES[`./kit/card/frame_neutral${hero ? '_hero' : ''}.webp`];
+/** Painted card art (content/cards/<id>.webp, 2:3): the ChatGPT paintings, or the interim model renders from tools/cardkit/interim_art.py. */
+const PAINTED = import.meta.glob('../../content/cards/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+export const paintedArtUrl = (id: string) => PAINTED[`../../content/cards/${id}.webp`];
 
 export type CardSize = 'hand' | 'mini' | 'full' | 'portrait';
 export interface CardOpts { size: CardSize; live?: { game: Game; unit: Unit }; content: Content }
@@ -47,11 +57,6 @@ export function emblemSvg(id: string, kind: string, color: string, accent: strin
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="${gid}" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="${c2}"/><stop offset="1" stop-color="${dark}"/></radialGradient></defs>${body}</svg>`;
 }
 
-function statChip(cls: string, label: string, v: number, base?: number) {
-  const mod = base === undefined ? '' : v > base ? ' up' : v < base ? ' down' : '';
-  return h('span', { class: `st ${cls}${mod}`, title: label }, h('i', null, label), h('b', null, String(v)));
-}
-
 /** Ability text block for full cards and panels. */
 export function abilityLines(c: Content, ids: string[]): HTMLElement[] {
   const out: HTMLElement[] = [];
@@ -79,6 +84,8 @@ export function artNode(id: string, c: Content): HTMLElement {
   const ud = c.units[id];
   const def = (ud ?? c.spells[id] ?? c.equipment[id]) as { art?: string } | undefined;
   const art = h('div', { class: 'rc-art', style: `--fc:${color};--fcd:${shade(color, 0.55)};--fcl:${mix(color, '#ffffff', 0.3)}` });
+  const webp = paintedArtUrl(id);
+  if (webp) { art.append(h('img', { src: webp, alt: '', draggable: 'false' })); return art; }
   const artUrl = cardArtUrl(id, def);
   const painted = ud ? assetUrl(`sprites/${id}_still.png`) : undefined;
   const still = ud ? assetUrl(ud.sprite.image) : undefined;
@@ -100,49 +107,73 @@ export function artNode(id: string, c: Content): HTMLElement {
   return art;
 }
 
+function rulesFor(c: Content, id: string, full: boolean): HTMLElement[] {
+  const ud = c.units[id], sd = c.spells[id], ed = c.equipment[id];
+  const out: HTMLElement[] = [];
+  const rule = (name: string | null, text: string, meta?: string) =>
+    out.push(h('p', { class: 'r' }, name ? h('b', null, name) : '', name ? ' ' : '', meta && full ? h('span', { class: 'm' }, meta + ' ') : '', text));
+  const abl = (aid: string) => {
+    const a = c.abilities[aid]; if (!a) return;
+    const meta = a.passive ? 'passive' : `${a.apCost} AP${a.range.max > 1 ? ` · rng ${a.range.min === a.range.max ? a.range.max : a.range.min + '-' + a.range.max}` : ''}${a.cooldown ? ` · cd ${a.cooldown}` : ''}`;
+    rule(a.name, full ? (a.description ?? a.effects.map(e => effectText(c, e)).join('. ')) : '', meta);
+  };
+  if (ud) {
+    if (full) {
+      ud.abilities.forEach(abl);
+      if (ud.resist && Object.keys(ud.resist).length) rule(null, 'Resist ' + Object.entries(ud.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', '));
+      if (ud.revive) rule(null, `Rises once on death (${Math.round(ud.revive.hpFraction * 100)}% HP).`);
+      if (ud.description) out.push(h('p', { class: 'r fl' }, ud.description));
+    } else {
+      const names = ud.abilities.map(a => c.abilities[a]?.name).filter(Boolean);
+      out.push(h('p', { class: 'r' }, h('b', null, names.join(' · '))));
+    }
+  } else if (sd) {
+    rule(null, sd.description ?? sd.effects.map(e => effectText(c, e)).join('. '));
+  } else if (ed) {
+    rule(null, ed.description ?? '');
+    if (full) ed.grantAbilities?.forEach(abl);
+    if (full && ed.restrictTo?.length) rule(null, 'Only: ' + ed.restrictTo.join(', '));
+  }
+  return out;
+}
+
 export function buildCard(id: string, o: CardOpts): HTMLElement {
   const c = o.content;
-  const { color, accent, kind, factionName } = cardColors(c, id);
+  const { color, accent, kind } = cardColors(c, id);
   const ud = c.units[id], sd = c.spells[id], ed = c.equipment[id];
-  const def = (ud ?? sd ?? ed) as { name: string; description?: string; cost: number; art?: string } | undefined;
+  const def = (ud ?? sd ?? ed) as { name: string; description?: string; cost: number; faction?: string } | undefined;
   const name = def?.name ?? id;
-  const el = h('div', { class: `rcard ${kind} ${o.size}${ud?.hero ? ' hero' : ''}`, style: `--fc:${color};--fa:${accent};--fcd:${shade(color, 0.55)};--fcl:${mix(color, '#ffffff', 0.3)}` });
-  const art = artNode(id, c);
-  const typeLine = kind === 'unit' ? `${ud?.hero ? 'Hero' : ud?.structure ? 'Structure' : 'Champion'}${ud?.role ? ' · ' + ud.role : ''}` : kind === 'spell' ? 'Spell' : 'Equipment';
+  const hero = !!ud?.hero;
+  const el = h('div', { class: `rcard ${kind} ${o.size}${hero ? ' hero' : ''}`,
+    style: `--fc:${color};--fa:${accent};--fcd:${shade(color, 0.55)};--fcl:${mix(color, '#ffffff', 0.3)};--frame:url("${frameUrl(def?.faction, hero)}");--coin-atk:url("${kit('coin_round')}");--coin-hp:url("${kit('coin_hp')}")` });
+  const typeLine = kind === 'unit' ? `${hero ? 'Hero' : ud?.structure ? 'Structure' : 'Champion'}${ud?.role && ud.role.toLowerCase() !== 'hero' ? ' · ' + ud.role : ''}` : kind === 'spell' ? 'Spell' : 'Equipment';
+  const sigil = h('div', { class: 'rc-sigil' }); sigil.innerHTML = crestSvg(def?.faction, color);
   el.append(
-    h('div', { class: 'rc-frame' }, h('i', { class: 'c1' }), h('i', { class: 'c2' }), h('i', { class: 'c3' }), h('i', { class: 'c4' })),
-    art,
-    h('div', { class: 'rc-cost' }, h('span', null, String(def?.cost ?? '?'))),
-    ud?.hero ? h('div', { class: 'rc-crown', title: 'Hero' }, '\u2655') : '',
-    h('div', { class: 'rc-name' }, h('span', null, name)),
+    artNode(id, c),
+    h('div', { class: 'rc-frame' }),
+    h('div', { class: 'rc-cost', title: 'Tide cost' }, h('span', null, String(def?.cost ?? '?'))),
+    sigil,
+    h('div', { class: 'rc-name' + (name.length > 24 ? ' xlong' : name.length > 17 ? ' long' : '') }, h('span', null, name)),
     h('div', { class: 'rc-type' }, typeLine),
+    h('div', { class: 'rc-text' }, ...rulesFor(c, id, o.size === 'full')),
   );
   if (ud) {
     const live = o.live, g = live?.game, u = live?.unit;
     const stat = (k: 'attack' | 'defense' | 'ap') => g && u ? g.stat(u, k) : ud.stats[k];
-    el.append(h('div', { class: 'rc-stats' },
-      statChip('hp', 'HP', u ? u.hp : ud.stats.hp), ud.structure ? null : statChip('ap', 'AP', u ? u.ap : stat('ap'), u ? stat('ap') : undefined),
-      statChip('atk', 'ATK', stat('attack'), u ? ud.stats.attack : undefined), statChip('def', 'DEF', stat('defense'), u ? ud.stats.defense : undefined)));
+    const mod = (v: number, base?: number) => base === undefined ? '' : v > base ? ' up' : v < base ? ' down' : '';
+    const atk = stat('attack'), dfn = stat('defense'), ap = u ? u.ap : stat('ap');
+    el.append(
+      h('div', { class: 'rc-stat atk' + mod(atk, u ? ud.stats.attack : undefined), title: 'Attack' }, h('b', null, String(atk))),
+      h('div', { class: 'rc-stat hp', title: 'Health' }, h('b', null, String(u ? u.hp : ud.stats.hp))),
+      h('div', { class: 'rc-rail' },
+        ud.structure ? '' : h('span', { class: mod(ap, u ? stat('ap') : undefined).trim(), title: 'Action points' }, 'AP', h('b', null, String(ap))),
+        h('span', { class: mod(dfn, u ? ud.stats.defense : undefined).trim(), title: 'Defense' }, 'Def', h('b', null, String(dfn)))),
+    );
   } else if (ed) {
-    const mods = Object.entries(ed.statMods ?? {}).map(([k, v]) => `${(v ?? 0) >= 0 ? '+' : ''}${v} ${k}`).join(' ');
-    el.append(h('div', { class: 'rc-stats text' }, mods || (ed.grantAbilities?.length ? 'Grants ability' : 'Relic')));
+    const mods = Object.entries(ed.statMods ?? {}).map(([k, v]) => `${(v ?? 0) >= 0 ? '+' : ''}${v} ${k}`).join('  ');
+    el.append(h('div', { class: 'rc-rail text' }, mods || (ed.grantAbilities?.length ? 'Grants an ability' : 'Relic')));
   } else if (sd) {
-    el.append(h('div', { class: 'rc-stats text' }, `${sd.target}${sd.area ? ` · area ${sd.area.size}` : ''}${sd.castRange !== undefined ? ` · ${typeof sd.castRange === 'number' ? 'range ' + sd.castRange : 'near ' + (c.config?.labels?.keystone ?? 'Beacon')}` : ''}`));
-  }
-  if (o.size === 'full') {
-    const text = h('div', { class: 'rc-text' });
-    if (factionName) text.append(h('div', { class: 'rc-faction' }, factionName));
-    if (def?.description) text.append(h('p', null, def.description));
-    if (ud) text.append(...abilityLines(c, ud.abilities));
-    if (ud?.resist && Object.keys(ud.resist).length) text.append(h('div', { class: 'rc-line' }, 'Resist: ' + Object.entries(ud.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', ')));
-    if (ud?.revive) text.append(h('div', { class: 'rc-line' }, `Rises once on death (${Math.round(ud.revive.hpFraction * 100)}% HP).`));
-    if (sd) text.append(h('div', { class: 'abl' }, h('b', null, 'Effect'), h('div', { class: 'adesc' }, sd.effects.map(e => effectText(c, e)).join('. '))));
-    if (ed) {
-      if (ed.grantAbilities?.length) text.append(...abilityLines(c, ed.grantAbilities));
-      if (ed.resist && Object.keys(ed.resist).length) text.append(h('div', { class: 'rc-line' }, 'Resist: ' + Object.entries(ed.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', ')));
-      if (ed.restrictTo?.length) text.append(h('div', { class: 'rc-line' }, 'Only: ' + ed.restrictTo.join(', ')));
-    }
-    el.append(text);
+    el.append(h('div', { class: 'rc-rail text' }, `${sd.target}${sd.area ? ` · area ${sd.area.size}` : ''}${sd.castRange !== undefined ? ` · ${typeof sd.castRange === 'number' ? 'range ' + sd.castRange : 'near ' + (c.config?.labels?.keystone ?? 'Beacon')}` : ''}`));
   }
   el.style.setProperty('--fcl-a', rgba(color, 0.35));
   return el;
