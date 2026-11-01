@@ -294,11 +294,13 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
   host.append(h('div', { class: 'scr brief-scr' },
     screenHeader('Briefing', null, onBack),
     h('article', { class: 'parchment' },
-      h('div', { class: 'kicker' }, kicker),
-      h('h1', null, m.name),
-      ornament(),
-      m.description ? h('p', { class: 'lead' }, m.description) : null,
-      ...(m.briefing ?? []).map(t => h('p', null, t)),
+      h('div', { class: 'brief-story' },
+        h('div', { class: 'kicker' }, kicker),
+        h('h1', null, m.name),
+        ornament(),
+        m.description ? h('p', { class: 'lead' }, m.description) : null,
+        ...(m.briefing ?? []).filter(t => t.trim() !== m.description?.trim()).map(t => h('p', null, t))),
+      h('div', { class: 'brief-side' },
       h('div', { class: 'forces' }, ...teams.flatMap(({ t, f }, i) => [
         i ? h('span', { class: 'fvs' }, 'vs') : null,
         h('div', { class: 'force', style: `--tc:${t.color}` }, crest(f, 'crest', t.color), h('div', null, h('b', null, t.name), h('small', null, t.controller === 'human' ? 'You' : 'Enemy')))])),
@@ -307,5 +309,5 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
         h('div', { class: 'obj lose' }, h('h3', null, 'Defeat'), h('ul', null, ...obj.lose.map(t => h('li', null, t))))),
       h('div', { class: 'brief-foot' },
         h('span', { class: 'muted' }, `${map?.name ?? m.map} · ${m.startingEssence ?? 100} ${label(content, 'essence')} to start`),
-        h('button', { class: 'btn-gold big', onclick: onStart }, 'Deploy')))));
+        h('button', { class: 'btn-gold big', onclick: onStart }, 'Deploy'))))));
 }
