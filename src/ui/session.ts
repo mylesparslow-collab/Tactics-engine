@@ -1,4 +1,4 @@
-import { Game } from '../engine/game';
+import { Game, DEFAULTS } from '../engine/game';
 import { aiStep } from '../engine/ai';
 import { label } from '../engine/content';
 import { loadProgress, recordVictory } from '../engine/campaign';
@@ -7,6 +7,7 @@ import { Renderer } from '../render/renderer';
 import { key } from '../render/iso';
 import { statusColor } from '../render/sprites';
 import { clear, h } from './dom';
+import { buildCard } from './cards';
 import { effectText } from './text';
 
 export interface SessionOpts {
@@ -26,8 +27,10 @@ export class GameSession {
   private renderer: Renderer;
   private content: Content;
   private root: HTMLElement;
-  private top!: HTMLElement; private left!: HTMLElement; private right!: HTMLElement; private hoverBox!: HTMLElement;
-  private logBox!: HTMLElement; private banner!: HTMLElement; private toast!: HTMLElement; private canvas!: HTMLCanvasElement;
+  private top!: HTMLElement; private hand!: HTMLElement; private right!: HTMLElement; private hoverBox!: HTMLElement;
+  private logBox!: HTMLElement; private logList!: HTMLElement; private ticker!: HTMLElement;
+  private banner!: HTMLElement; private toast!: HTMLElement; private canvas!: HTMLCanvasElement; private stage!: HTMLElement;
+  private preview!: HTMLElement;
   private selected: number | null = null;
   private mode: Mode = { kind: 'idle' };
   private hover: Pos | null = null;
@@ -38,6 +41,10 @@ export class GameSession {
   private bannerQueue: { text: string; speaker?: string }[] = [];
   private bannerBusy = false;
   private cleanup: (() => void)[] = [];
+  private logOpen = false;
+  private handOpen = typeof window === 'undefined' || window.innerHeight >= 500;
+  private touch = typeof matchMedia === 'function' && matchMedia('(hover: none)').matches;
+  private previewId: string | null = null;
 
   constructor(container: HTMLElement, private opts: SessionOpts) {
     this.content = opts.content;
@@ -48,7 +55,7 @@ export class GameSession {
     this.renderer.setGame(this.game);
     this.renderer.start();
     this.game.on(e => this.onEvent(e));
-    const ro = new ResizeObserver(() => this.renderer.resize());
+    const ro = new ResizeObserver(() => { this.renderer.resize(); this.layoutHand(); });
     ro.observe(this.canvas.parentElement!);
     this.cleanup.push(() => ro.disconnect());
     const kd = (e: KeyboardEvent) => this.onKey(e);
@@ -88,30 +95,79 @@ export class GameSession {
   // ---------- DOM ----------
   private build() {
     clear(this.root); this.root.className = 'game';
-    this.top = h('div', { id: 'topbar' });
-    this.left = h('aside', { id: 'left', class: 'panel' });
+    this.top = h('header', { id: 'topbar' });
+    this.hand = h('div', { id: 'hand' });
     this.right = h('aside', { id: 'right', class: 'panel' });
     this.hoverBox = h('div', { class: 'hoverbox' });
     this.canvas = h('canvas', { id: 'canvas' });
     this.banner = h('div', { id: 'banner', class: 'hidden' });
     this.toast = h('div', { id: 'toast', class: 'hidden' });
-    this.logBox = h('div', { id: 'log' });
-    const rot = h('div', { id: 'rotbtns' },
+    this.logList = h('div', { class: 'loglist' });
+    this.ticker = h('div', { class: 'ticker' });
+    this.logBox = h('div', { id: 'log', onclick: () => { this.logOpen = !this.logOpen; this.logBox.classList.toggle('open', this.logOpen); this.logList.scrollTop = this.logList.scrollHeight; } },
+      h('div', { class: 'logtitle' }, h('span', null, 'Log'), h('span', { class: 'chev' }, '▴')), this.ticker, this.logList);
+    this.preview = h('div', { id: 'cardpreview', class: 'hidden' });
+    const ctl = h('div', { id: 'viewctl' },
       h('button', { title: 'Rotate view (Q)', onclick: () => this.renderer.rotate(-1) }, '⟲'),
-      h('button', { title: 'Rotate view (R)', onclick: () => this.renderer.rotate(1) }, '⟳'));
-    const stage = h('main', { id: 'stage' }, this.canvas, this.banner, this.toast, rot);
-    this.root.append(this.top, this.left, stage, this.right, this.logBox);
-    this.canvas.addEventListener('mousemove', e => {
-      const r = this.canvas.getBoundingClientRect();
-      const p = this.renderer.pick(e.clientX - r.left, e.clientY - r.top);
-      if (p?.x !== this.hover?.x || p?.y !== this.hover?.y) { this.hover = p; this.updateOverlay(); this.renderHover(); }
+      h('button', { title: 'Rotate view (R)', onclick: () => this.renderer.rotate(1) }, '⟳'),
+      h('button', { title: 'Zoom in', onclick: () => this.renderer.zoomBy(1.25) }, '+'),
+      h('button', { title: 'Zoom out', onclick: () => this.renderer.zoomBy(0.8) }, '−'),
+      h('button', { title: 'Reset view', onclick: () => this.renderer.resetView() }, '⌖'));
+    this.stage = h('main', { id: 'stage' }, this.canvas, this.logBox, this.banner, this.toast, ctl, this.preview, this.right);
+    this.root.append(this.top, this.stage, this.hand);
+    this.bindPointer();
+  }
+
+  /** Pointer handling: hover (mouse), tap vs drag-to-pan, pinch/wheel zoom. */
+  private bindPointer() {
+    const cv = this.canvas;
+    const pts = new Map<number, { x: number; y: number }>();
+    let start: { x: number; y: number; t: number } | null = null, dragging = false, pinchD = 0, lastMid: { x: number; y: number } | null = null;
+    const local = (e: PointerEvent) => { const r = cv.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+    cv.addEventListener('pointerdown', e => {
+      cv.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, local(e));
+      if (pts.size === 1) { start = { ...local(e), t: performance.now() }; dragging = false; lastMid = null; }
+      else if (pts.size === 2) { const [a, b] = [...pts.values()]; pinchD = Math.hypot(a.x - b.x, a.y - b.y); lastMid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; dragging = true; }
+      e.preventDefault();
     });
-    this.canvas.addEventListener('mouseleave', () => { this.hover = null; this.updateOverlay(); this.renderHover(); });
-    this.canvas.addEventListener('click', e => {
-      const r = this.canvas.getBoundingClientRect();
-      this.click(this.renderer.pick(e.clientX - r.left, e.clientY - r.top));
+    cv.addEventListener('pointermove', e => {
+      const p = local(e);
+      if (pts.has(e.pointerId)) {
+        pts.set(e.pointerId, p);
+        if (pts.size === 2) {
+          const [a, b] = [...pts.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y), mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+          if (pinchD > 0) this.renderer.zoomBy(d / pinchD, mid.x, mid.y);
+          if (lastMid) this.renderer.pan(mid.x - lastMid.x, mid.y - lastMid.y);
+          pinchD = d; lastMid = mid; return;
+        }
+        if (start) {
+          const prev = lastMid ?? start;
+          if (!dragging && Math.hypot(p.x - start.x, p.y - start.y) > 8) dragging = true;
+          if (dragging) { this.renderer.pan(p.x - prev.x, p.y - prev.y); lastMid = p; this.setHover(null); return; }
+        }
+      }
+      if (e.pointerType === 'mouse' && !dragging) this.setHover(this.renderer.pick(p.x, p.y));
     });
-    this.canvas.addEventListener('contextmenu', e => { e.preventDefault(); this.cancel(); });
+    const up = (e: PointerEvent) => {
+      const p = local(e);
+      const was = pts.size;
+      pts.delete(e.pointerId);
+      if (was === 1 && start && !dragging && performance.now() - start.t < 600) {
+        this.hidePreview();
+        this.click(this.renderer.pick(p.x, p.y));
+      }
+      if (pts.size === 0) { start = null; dragging = false; lastMid = null; }
+      else if (pts.size === 1) { const [a] = [...pts.values()]; start = { ...a, t: 0 }; lastMid = a; dragging = true; }
+    };
+    cv.addEventListener('pointerup', up);
+    cv.addEventListener('pointercancel', up);
+    cv.addEventListener('mouseleave', () => this.setHover(null));
+    cv.addEventListener('wheel', e => { e.preventDefault(); const p = local(e as unknown as PointerEvent); this.renderer.zoomBy(e.deltaY < 0 ? 1.12 : 0.9, p.x, p.y); }, { passive: false });
+    cv.addEventListener('contextmenu', e => { e.preventDefault(); this.cancel(); });
+  }
+  private setHover(p: Pos | null) {
+    if (p?.x !== this.hover?.x || p?.y !== this.hover?.y) { this.hover = p; this.updateOverlay(); this.renderHover(); }
   }
 
   // ---------- events ----------
@@ -139,9 +195,10 @@ export class GameSession {
   }
 
   private logLine(text: string, cls: string) {
-    this.logBox.append(h('div', { class: 'logline ' + cls }, text));
-    while (this.logBox.childElementCount > 200) this.logBox.firstElementChild!.remove();
-    this.logBox.scrollTop = this.logBox.scrollHeight;
+    this.logList.append(h('div', { class: 'logline ' + cls }, text));
+    while (this.logList.childElementCount > 200) this.logList.firstElementChild!.remove();
+    this.logList.scrollTop = this.logList.scrollHeight;
+    this.ticker.className = 'ticker ' + cls; this.ticker.textContent = text;
   }
 
   private toastMsg(text: string, color?: string) {
@@ -220,6 +277,7 @@ export class GameSession {
     if (this.canActSoft() && this.renderer.busy()) { setTimeout(() => this.endTurn(), 120); return; }
     if (!this.canAct()) return;
     this.selected = null; this.mode = { kind: 'idle' };
+    this.hidePreview();
     this.g.endTurn();
     this.refresh();
     this.scheduleAi();
@@ -229,6 +287,7 @@ export class GameSession {
     if (this.mode.kind === 'ability') this.mode = { kind: 'move' };
     else if (this.mode.kind === 'card') this.mode = { kind: 'idle' };
     else { this.selected = null; this.mode = { kind: 'idle' }; }
+    this.hidePreview();
     this.refresh();
   }
 
@@ -239,8 +298,10 @@ export class GameSession {
     else if (k === 'enter' || k === 'e') { e.preventDefault(); this.endTurn(); }
     else if (k === 'q') this.renderer.rotate(-1);
     else if (k === 'r') this.renderer.rotate(1);
+    else if (k === '+' || k === '=') this.renderer.zoomBy(1.2);
+    else if (k === '-') this.renderer.zoomBy(0.83);
     else if (/^[1-9]$/.test(k)) {
-      const btn = this.right.querySelectorAll<HTMLButtonElement>('button.ability:not(:disabled)')[Number(k) - 1];
+      const btn = this.right.querySelectorAll<HTMLButtonElement>('button.rune:not(:disabled)')[Number(k) - 1];
       btn?.click();
     }
   }
@@ -290,7 +351,7 @@ export class GameSession {
     }
     if (this.mode.kind === 'card' && !this.g.cardTargets(this.g.current, this.mode.index).length) this.mode = { kind: 'idle' };
     this.updateOverlay();
-    this.renderTop(); this.renderLeft(); this.renderRight(); this.renderHover();
+    this.renderTop(); this.renderHand(); this.renderRight(); this.renderHover();
   }
 
   private previewOf(units: Unit[], effects: Effect[], dmgFn: (o: Unit, e: Extract<Effect, { type: 'damage' }>) => number) {
@@ -357,76 +418,108 @@ export class GameSession {
   /** Highlights are shown while the player could act soon (also during animations, but not during AI turns). */
   private canActSoft() { const g = this.g; return !this.ended && !this.aiRunning && g.phase === 'playing' && g.teams[g.current].controller === 'human'; }
 
+  /** Tide vessel + Beacon lamp for a team. */
+  private teamGauge(i: number) {
+    const g = this.g, t = g.teams[i];
+    const max = g.mission.maxEssence ?? DEFAULTS.maxEssence;
+    const fill = Math.max(0, Math.min(1, t.essence / max));
+    const ks = g.units.find(u => u.team === i && g.def(u).structure && u.tag?.startsWith('keystone'));
+    const kf = ks ? (ks.alive ? ks.hp / g.def(ks).stats.hp : 0) : -1;
+    const el = h('div', { class: 'tg' + (i === g.current ? ' active' : ''), style: `--tc:${t.color}`, title: `${t.name}: ${t.essence} ${this.L('essence')}${ks ? ` · ${this.L('keystone')} ${ks.hp}/${g.def(ks).stats.hp}` : ''}` },
+      h('span', { class: 'tgname' }, t.name),
+      h('span', { class: 'vessel', title: `${this.L('essence')} ${t.essence}/${max}` }, h('i', { class: 'water', style: `height:${Math.round(fill * 100)}%` }), h('i', { class: 'glass' })),
+      h('b', { class: 'tide' }, String(t.essence)),
+      kf >= 0 ? h('span', { class: 'lamp', style: `--lk:${kf.toFixed(2)}`, title: `${this.L('keystone')} ${ks!.hp}/${g.def(ks!).stats.hp}` }, h('i', { class: 'flame' }), h('i', { class: 'tower' })) : null);
+    return el;
+  }
+
   private renderTop() {
     const g = this.g;
     clear(this.top);
     const cur = g.teams[g.current];
     this.top.append(
-      h('div', { class: 'brand' }, g.mission.name),
-      h('div', { class: 'tb round' }, `Round ${g.round}`),
-      h('div', { class: 'tb turn', style: `color:${cur.color}` }, `${cur.name}${this.aiRunning ? ' (thinking...)' : "'s turn"}`),
+      h('div', { class: 'brand' }, h('span', { class: 'ebb' }, this.content.config?.labels?.title ?? 'EBB'), h('span', { class: 'mission' }, g.mission.name)),
+      h('div', { class: 'turnbox', style: `--tc:${cur.color}` }, h('span', { class: 'round' }, `Round ${g.round}`), h('span', { class: 'who' }, `${cur.name}${this.aiRunning ? ' is thinking' : "'s turn"}`)),
       h('div', { class: 'spacer' }),
-      ...g.teams.map((t, i) => h('div', { class: 'tb essence' + (i === g.current ? ' active' : ''), style: `border-color:${t.color}` },
-        h('span', { class: 'dot', style: `background:${t.color}` }), `${t.name}: `, h('b', null, String(t.essence)), ` ${this.L('essence')}`)),
-      h('button', { id: 'endturn', class: 'primary', disabled: !this.canActSoft(), title: 'End turn (E / Enter)', onclick: () => this.endTurn() }, 'End Turn'),
-      h('button', { class: 'quiet', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, 'Menu'));
+      ...g.teams.map((_, i) => this.teamGauge(i)),
+      h('button', { id: 'endturn', class: 'brass', disabled: !this.canActSoft(), title: 'End turn (E / Enter)', onclick: () => this.endTurn() }, h('span', null, 'End Turn')),
+      h('button', { class: 'quiet menu', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, 'Menu'));
   }
 
-  private renderLeft() {
+  // ---------- hand ----------
+  private renderHand() {
     const g = this.g, t = this.humanTeam(), team = g.teams[t];
-    clear(this.left);
-    this.left.append(h('h3', null, this.L('warband')), h('div', { class: 'sub' }, `${this.L('essence')}: ${team.essence}`));
-    const list = h('div', { class: 'hand' });
+    clear(this.hand);
+    this.hand.classList.toggle('closed', !this.handOpen);
+    const row = h('div', { class: 'handrow' });
     team.hand.forEach((id, i) => {
       const kind = g.cardKind(id) ?? 'unit';
-      const ud = this.content.units[id];
-      const desc = (ud ?? this.content.spells[id] ?? this.content.equipment[id])?.description ?? '';
       const cost = g.cardCost(id);
       const ok = this.canActSoft() && t === g.current && g.cardTargets(t, i).length > 0;
       const active = this.mode.kind === 'card' && this.mode.index === i;
-      const glyph = ud ? h('span', { class: 'glyph', style: `background:${ud.sprite.color ?? team.color}` }, ud.sprite.glyph)
-        : h('span', { class: 'glyph ' + kind }, kind === 'spell' ? '\u2736' : '\u2692');
-      list.append(h('button', {
-        class: 'card ' + kind + (active ? ' active' : ''), disabled: !ok,
-        title: `${g.cardName(id)} (${kind}, ${cost} ${this.L('essence')})${desc ? '\n' + desc : ''}${ok ? '' : (cost > team.essence ? `\nNot enough ${this.L('essence')}` : '\nCannot be played now')}`,
-        onclick: () => { if (!this.canAct()) return; this.mode = active ? { kind: 'idle' } : { kind: 'card', index: i }; this.selected = null; this.refresh(); },
-      }, glyph,
-        h('span', { class: 'cn' }, h('span', null, ud?.hero ? '\u2655 ' : '', g.cardName(id)), h('small', null, kind === 'unit' ? (ud?.role ?? 'Unit') : kind === 'spell' ? 'Spell' : 'Equipment')),
-        h('span', { class: 'cost' }, String(cost))));
+      const card = buildCard(id, { size: 'hand', content: this.content });
+      const why = ok ? '' : cost > team.essence ? `Not enough ${this.L('essence')}` : 'Cannot be played now';
+      const slot = h('div', { class: `slot ${kind}${active ? ' active' : ''}${ok ? '' : ' off'}`, title: why,
+        onclick: () => {
+          if (this.touch && this.previewId !== id) this.showPreview(id, slot); else this.hidePreview();
+          if (!ok || !this.canAct()) return;
+          this.mode = active ? { kind: 'idle' } : { kind: 'card', index: i }; this.selected = null; this.refresh();
+        },
+        onmouseenter: () => { if (!this.touch) this.showPreview(id, slot); },
+        onmouseleave: () => { if (!this.touch) this.hidePreview(); },
+      }, card, h('button', { class: 'info', title: 'Details', onclick: (e: Event) => { e.stopPropagation(); if (this.previewId === id) this.hidePreview(); else this.showPreview(id, slot); } }, 'i'));
+      row.append(slot);
     });
-    if (!team.hand.length) list.append(h('div', { class: 'muted' }, 'No cards in reserve.'));
+    if (!team.hand.length) row.append(h('div', { class: 'muted empty' }, 'No cards in reserve.'));
     const hintFor = () => {
-      if (this.mode.kind !== 'card') return 'Click a card, then a highlighted target.';
+      if (this.mode.kind !== 'card') return `${this.L('warband')} · tap a card, then a highlighted tile`;
       const k = g.cardKind(team.hand[this.mode.index] ?? '');
-      return k === 'spell' ? 'Click a target tile to cast. Esc cancels.' : k === 'equipment' ? 'Click a friendly unit to equip. Esc cancels.' : 'Click a green tile to deploy. Esc cancels.';
+      return k === 'spell' ? 'Choose a target tile to cast. Esc cancels.' : k === 'equipment' ? 'Choose a friendly unit to equip. Esc cancels.' : 'Choose a green tile to deploy. Esc cancels.';
     };
-    this.left.append(list, h('div', { class: 'hint' }, hintFor()));
-    this.left.append(h('div', { class: 'help' },
-      h('b', null, 'Controls'), h('div', null, 'Click a unit to select, blue tile to move.'),
-      h('div', null, '1-9: ability  Esc: cancel'), h('div', null, 'E / Enter: end turn'), h('div', null, 'Q / R: rotate view')));
+    const tab = h('div', { class: 'handtab', onclick: () => { this.handOpen = !this.handOpen; this.hand.classList.toggle('closed', !this.handOpen); this.renderer.resize(); } },
+      h('span', { class: 'chev' }, this.handOpen ? '▾' : '▴'), h('span', { class: 'hint' }, hintFor()), h('span', { class: 'count' }, `${team.hand.length}`));
+    this.hand.append(tab, row);
+    this.layoutHand();
+  }
+  /** Fan the hand so every card fits in the available width (cards overlap when there are many). */
+  private layoutHand() {
+    const row = this.hand.querySelector<HTMLElement>('.handrow'); if (!row) return;
+    const slots = row.querySelectorAll<HTMLElement>('.slot'); if (!slots.length) return;
+    const avail = row.clientWidth - 24, cw = slots[0].offsetWidth || 120, n = slots.length;
+    const overlap = n > 1 ? Math.min(0, (avail - n * cw) / (n - 1)) : 0;
+    const narrow = window.innerWidth < 900 || window.innerHeight < 520;
+    row.classList.toggle('scroll', narrow);
+    slots.forEach((s, i) => { s.style.marginLeft = narrow || i === 0 ? '' : `${Math.max(overlap, -cw * 0.7)}px`; s.style.zIndex = String(i + 1); });
   }
 
-  private unitCard(u: Unit, full: boolean) {
+  private showPreview(id: string, anchor: HTMLElement) {
+    this.previewId = id;
+    clear(this.preview);
+    this.preview.append(buildCard(id, { size: 'full', content: this.content }));
+    this.preview.classList.remove('hidden');
+    const sr = this.stage.getBoundingClientRect(), ar = anchor.getBoundingClientRect();
+    const pw = this.preview.offsetWidth;
+    const x = Math.max(8, Math.min(sr.width - pw - 8, ar.left + ar.width / 2 - sr.left - pw / 2));
+    this.preview.style.left = `${x}px`;
+  }
+  private hidePreview() { this.previewId = null; this.preview.classList.add('hidden'); }
+
+  private unitPanel(u: Unit, full: boolean) {
     const g = this.g, d = g.def(u), team = g.teams[u.team];
-    const stat = (k: 'attack' | 'defense' | 'jump') => {
-      const v = g.stat(u, k), b = d.stats[k];
-      return h('span', { class: 'stat' + (v > b ? ' up' : v < b ? ' down' : '') }, `${v}`);
-    };
     const maxAp = g.stat(u, 'ap');
-    const box = h('div', { class: 'ucard' },
-      h('div', { class: 'uname', style: `border-color:${team.color}` },
-        h('span', { class: 'glyph', style: `background:${d.sprite.color ?? team.color}` }, d.sprite.glyph),
-        h('div', null, h('b', null, d.hero ? '\u2655 ' : '', d.name), h('div', { class: 'role' }, `${d.role ?? ''}${d.role ? ' - ' : ''}${team.name}`))),
-      h('div', { class: 'bar' }, h('div', { class: 'fill hp', style: `width:${Math.max(0, u.hp / d.stats.hp * 100)}%` }), h('span', null, `HP ${u.hp}/${d.stats.hp}`)),
-      d.structure ? null : h('div', { class: 'bar' }, h('div', { class: 'fill ap', style: `width:${maxAp ? Math.min(100, u.ap / maxAp * 100) : 0}%` }), h('span', null, `AP ${u.ap}/${maxAp}`)),
-      h('div', { class: 'stats' }, h('span', null, 'ATK ', stat('attack')), h('span', null, 'DEF ', stat('defense')), h('span', null, 'JUMP ', stat('jump'))),
-      d.resist && Object.keys(d.resist).length ? h('div', { class: 'resist' }, 'Resist: ' + Object.entries(d.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', ')) : null,
-      g.equipmentOf(u) ? h('div', { class: 'resist', title: g.equipmentOf(u)!.description ?? '' }, 'Equipped: ' + g.equipmentOf(u)!.name + (g.equipmentOf(u)!.description ? ' - ' + g.equipmentOf(u)!.description : '')) : null,
-      d.revive ? h('div', { class: 'resist' }, u.revived ? 'Has risen once already.' : `Rises once on death (${Math.round(d.revive.hpFraction * 100)}% HP).`) : null);
+    const box = h('div', { class: 'upanel', style: `--tc:${team.color}` },
+      buildCard(u.defId, { size: 'portrait', content: this.content, live: { game: g, unit: u } }),
+      h('div', { class: 'bars' },
+        h('div', { class: 'bar' }, h('div', { class: 'fill hp', style: `width:${Math.max(0, u.hp / d.stats.hp * 100)}%` }), h('span', null, `HP ${u.hp}/${d.stats.hp}`)),
+        d.structure ? null : h('div', { class: 'bar' }, h('div', { class: 'fill ap', style: `width:${maxAp ? Math.min(100, u.ap / maxAp * 100) : 0}%` }), h('span', null, `AP ${u.ap}/${maxAp}`))),
+      h('div', { class: 'teamline' }, h('i', { class: 'dot' }), team.name, d.hero ? ' · Hero' : ''),
+      d.resist && Object.keys(d.resist).length ? h('div', { class: 'line' }, 'Resist: ' + Object.entries(d.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', ')) : null,
+      g.equipmentOf(u) ? h('div', { class: 'line equip', title: g.equipmentOf(u)!.description ?? '' }, h('b', null, g.equipmentOf(u)!.name), g.equipmentOf(u)!.description ? ' - ' + g.equipmentOf(u)!.description : '') : null,
+      d.revive ? h('div', { class: 'line' }, u.revived ? 'Has risen once already.' : `Rises once on death (${Math.round(d.revive.hpFraction * 100)}% HP).`) : null);
     if (u.statuses.length) {
       box.append(h('div', { class: 'statuses' }, ...u.statuses.map(s => {
         const sd = g.content.statuses[s.id];
-        return h('div', { class: 'status' }, h('span', { class: 'sdot', style: `background:${statusColor(s.id)}` }), h('b', null, `${sd?.name ?? s.id} `), `(${s.remaining}) `, h('span', { class: 'muted' }, sd?.description ?? ''));
+        return h('div', { class: 'status', title: sd?.description ?? '' }, h('span', { class: 'sdot', style: `background:${statusColor(s.id)}` }), h('b', null, `${sd?.name ?? s.id}`), h('span', { class: 'muted' }, ` ${s.remaining}${s.stacks && s.stacks > 1 ? ` ×${s.stacks}` : ''}`));
       })));
     }
     if (full && d.description) box.append(h('div', { class: 'desc' }, d.description));
@@ -437,48 +530,56 @@ export class GameSession {
     const g = this.g;
     clear(this.right);
     const u = this.sel();
-    this.right.append(h('h3', null, u ? 'Selected' : 'No selection'));
+    this.right.classList.toggle('open', !!u || (!this.touch && !!this.hover && !!g.unitAt(this.hover.x, this.hover.y)));
     if (!u) {
-      this.right.append(h('div', { class: 'muted' }, 'Click one of your units to select it.'));
+      this.right.append(h('div', { class: 'ptitle' }, 'No selection'), h('div', { class: 'muted small' }, 'Select one of your units to see its relic, statuses and abilities.'));
     } else {
-      this.right.append(this.unitCard(u, true));
+      this.right.append(h('div', { class: 'ptitle' }, h('span', null, 'Selected'), h('button', { class: 'close', title: 'Close (Esc)', onclick: () => this.cancel() }, '×')));
+      this.right.append(this.unitPanel(u, true));
       const abs = g.abilitiesOf(u);
       if (abs.length) {
-        const list = h('div', { class: 'abilities' });
+        const list = h('div', { class: 'runes' });
+        let n = 0;
         abs.forEach(id => {
           const a = g.ability(id);
           if (!a) return;
           const tip = [a.description ?? '', `Range ${a.range.min === a.range.max ? a.range.max : a.range.min + '-' + a.range.max}${a.area ? `, area ${a.area.size}` : ''}`,
             ...a.effects.map(e => effectText(this.content, e)), a.cooldown ? `Cooldown ${a.cooldown} turns` : ''].filter(Boolean).join('\n');
           if (a.passive) {
-            list.append(h('div', { class: 'ability passive', title: tip }, h('span', { class: 'an' }, a.name), h('span', { class: 'meta' }, 'Passive'), h('div', { class: 'adesc' }, a.description ?? '')));
+            list.append(h('div', { class: 'rune passive', title: tip }, h('span', { class: 'slotno' }, '◇'), h('span', { class: 'an' }, a.name, h('small', null, a.description ?? '')), h('span', { class: 'meta' }, 'Passive')));
             return;
           }
           const cd = u.cooldowns[id] ?? 0;
           const usable = u.team === g.current && this.canActSoft() && g.canUse(u, id);
           const active = this.mode.kind === 'ability' && this.mode.ability === id;
-          const idx = list.querySelectorAll('button.ability').length + 1;
+          const idx = ++n;
           list.append(h('button', {
-            class: 'ability' + (active ? ' active' : ''), disabled: !usable, title: tip,
+            class: 'rune' + (active ? ' active' : ''), disabled: !usable, title: tip,
             onclick: () => { if (!this.canAct()) return; this.mode = active ? { kind: 'move' } : { kind: 'ability', ability: id }; this.refresh(); },
-          }, h('span', { class: 'an' }, `${idx}. ${a.name}`),
-            h('span', { class: 'meta' }, `${a.apCost} AP${cd > 0 ? ` - cd ${cd}` : a.cooldown ? ` - cd ${a.cooldown}` : ''}`)));
+          }, h('span', { class: 'slotno' }, String(idx)), h('span', { class: 'an' }, a.name, h('small', null, a.description ?? '')),
+            h('span', { class: 'meta' }, `${a.apCost} AP${cd > 0 ? ` · cd ${cd}` : a.cooldown ? ` · cd ${a.cooldown}` : ''}`)));
         });
-        this.right.append(h('h3', null, 'Abilities'), list);
+        this.right.append(h('div', { class: 'ptitle sub' }, 'Abilities'), list);
       }
     }
     this.right.append(this.hoverBox);
+    this.updateInset();
+  }
+  /** On portrait phones the unit drawer covers the bottom of the stage; keep the board centred above it. */
+  private updateInset() {
+    const portraitPhone = this.touch && window.innerHeight > window.innerWidth && window.innerWidth <= 900;
+    this.renderer.setBottomInset(portraitPhone && this.right.classList.contains('open') ? this.right.offsetHeight : 0);
   }
 
   private renderHover() {
     const g = this.g;
     clear(this.hoverBox);
     const hv = this.hover;
-    if (!hv || !g.inBounds(hv.x, hv.y)) return;
+    if (!hv || !g.inBounds(hv.x, hv.y)) { if (!this.touch) this.right.classList.toggle('open', !!this.sel()); return; }
     const occ = g.unitAt(hv.x, hv.y);
-    this.hoverBox.append(h('h3', null, 'Hover'));
+    if (!this.touch) this.right.classList.toggle('open', !!this.sel() || !!occ);
     const t = g.tiles[hv.y][hv.x], terr = g.content.terrain[t.terrain];
-    if (occ && occ.uid !== this.selected) this.hoverBox.append(this.unitCard(occ, false));
+    if (occ && occ.uid !== this.selected) { this.hoverBox.append(h('div', { class: 'ptitle sub' }, 'Under cursor'), this.unitPanel(occ, false)); }
     const pv = this.renderer.overlay.previews;
     if (pv.size) {
       const box = h('div', { class: 'preview' }, h('b', null, 'Predicted'));
@@ -486,7 +587,7 @@ export class GameSession {
       this.hoverBox.append(box);
     }
     this.hoverBox.append(h('div', { class: 'tileinfo' },
-      `${terr?.name ?? t.terrain} - height ${t.height} - move ${terr?.moveCost} - def +${terr?.defense ?? 0}`,
-      g.map.wells?.some(w => w.x === hv.x && w.y === hv.y) ? ` - ${this.L('essence')} well` : ''));
+      h('b', null, terr?.name ?? t.terrain), ` · height ${t.height} · move ${terr?.moveCost} · def +${terr?.defense ?? 0}`,
+      g.map.wells?.some(w => w.x === hv.x && w.y === hv.y) ? ` · ${this.L('essence')} well` : ''));
   }
 }

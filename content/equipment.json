@@ -7,7 +7,8 @@
   "cost": 10,
   "statMods": {
    "defense": 1
-  }
+  },
+  "art": "cards/sc_equip_salt_crusted_helm.svg"
  },
  "sc_equip_surveyors_chain": {
   "name": "Surveyor's Chain",
@@ -18,7 +19,8 @@
   "statMods": {
    "attack": 1,
    "jump": 1
-  }
+  },
+  "art": "cards/sc_equip_surveyors_chain.svg"
  },
  "sc_equip_brine_ward_cloak": {
   "name": "Brine-Ward Cloak",
@@ -29,7 +31,8 @@
   "resist": {
    "salt": 2,
    "physical": 1
-  }
+  },
+  "art": "cards/sc_equip_brine_ward_cloak.svg"
  },
  "sc_equip_cairn_horn": {
   "name": "Cairn Horn",
@@ -39,7 +42,8 @@
   "cost": 20,
   "grantAbilities": [
    "sc_equip_cairn_shout"
-  ]
+  ],
+  "art": "cards/sc_equip_cairn_horn.svg"
  },
  "sc_equip_stairwardens_plate": {
   "name": "Stair-Warden's Plate",
@@ -53,7 +57,8 @@
   },
   "resist": {
    "pressure": 1
-  }
+  },
+  "art": "cards/sc_equip_stairwardens_plate.svg"
  },
  "sc_equip_road_marshals_baton": {
   "name": "Road-Marshal's Baton",
@@ -64,7 +69,8 @@
   "statMods": {
    "ap": 1,
    "attack": 1
-  }
+  },
+  "art": "cards/sc_equip_road_marshals_baton.svg"
  },
  "hc_equip_brine_greaves": {
   "name": "Brine Greaves",
@@ -74,7 +80,8 @@
   "cost": 10,
   "statMods": {
    "defense": 1
-  }
+  },
+  "art": "cards/hc_equip_brine_greaves.svg"
  },
  "hc_equip_vent_flask": {
   "name": "Vent Flask",
@@ -87,7 +94,8 @@
   },
   "resist": {
    "fire": 1
-  }
+  },
+  "art": "cards/hc_equip_vent_flask.svg"
  },
  "hc_equip_stalklamp": {
   "name": "Stalk-Lamp Lantern",
@@ -97,7 +105,8 @@
   "cost": 18,
   "grantAbilities": [
    "hc_equip_lurelamp_flash"
-  ]
+  ],
+  "art": "cards/hc_equip_stalklamp.svg"
  },
  "hc_equip_pressure_mantle": {
   "name": "Pressure Mantle",
@@ -110,7 +119,8 @@
   },
   "resist": {
    "pressure": 2
-  }
+  },
+  "art": "cards/hc_equip_pressure_mantle.svg"
  },
  "hc_equip_resonant_clapper": {
   "name": "Resonant Clapper",
@@ -123,7 +133,8 @@
   },
   "grantAbilities": [
    "hc_equip_bellshock"
-  ]
+  ],
+  "art": "cards/hc_equip_resonant_clapper.svg"
  },
  "hc_equip_deep_heart": {
   "name": "Heart of the Deep",
@@ -139,7 +150,8 @@
   },
   "revive": {
    "hpFraction": 0.3
-  }
+  },
+  "art": "cards/hc_equip_deep_heart.svg"
  },
  "rt_equip_oilskin_cloak": {
   "name": "Oilskin Cloak",
@@ -152,7 +164,8 @@
   },
   "resist": {
    "brine": 2
-  }
+  },
+  "art": "cards/rt_equip_oilskin_cloak.svg"
  },
  "rt_equip_knotted_cord": {
   "name": "Knotted Cord",
@@ -162,7 +175,8 @@
   "cost": 12,
   "statMods": {
    "attack": 1
-  }
+  },
+  "art": "cards/rt_equip_knotted_cord.svg"
  },
  "rt_equip_barnacle_mail": {
   "name": "Barnacle Mail",
@@ -175,7 +189,8 @@
   },
   "resist": {
    "physical": 1
-  }
+  },
+  "art": "cards/rt_equip_barnacle_mail.svg"
  },
  "rt_equip_drowners_gaff": {
   "name": "Drowner's Gaff",
@@ -185,7 +200,8 @@
   "cost": 18,
   "grantAbilities": [
    "rt_gaff_haul"
-  ]
+  ],
+  "art": "cards/rt_equip_drowners_gaff.svg"
  },
  "rt_equip_lungful_of_sea": {
   "name": "Lungful of Sea",
@@ -198,7 +214,8 @@
   },
   "grantAbilities": [
    "rt_exhale_the_deep"
-  ]
+  ],
+  "art": "cards/rt_equip_lungful_of_sea.svg"
  },
  "rt_equip_second_tide_shroud": {
   "name": "Second Tide Shroud",
@@ -211,7 +228,8 @@
   },
   "revive": {
    "hpFraction": 0.4
-  }
+  },
+  "art": "cards/rt_equip_second_tide_shroud.svg"
  },
  "sv_equip_scrap_vest": {
   "name": "Scrap Vest",
@@ -222,7 +240,8 @@
   "statMods": {
    "defense": 1,
    "hp": 2
-  }
+  },
+  "art": "cards/sv_equip_scrap_vest.svg"
  },
  "sv_equip_lucky_lantern": {
   "name": "Lucky Lantern",
@@ -232,7 +251,8 @@
   "cost": 12,
   "grantAbilities": [
    "sv_equip_lantern_flash"
-  ]
+  ],
+  "art": "cards/sv_equip_lucky_lantern.svg"
  },
  "sv_equip_oilskin_coat": {
   "name": "Oilskin Coat",
@@ -245,7 +265,8 @@
   },
   "statMods": {
    "hp": 1
-  }
+  },
+  "art": "cards/sv_equip_oilskin_coat.svg"
  },
  "sv_equip_tinker_gloves": {
   "name": "Tinker's Gloves",
@@ -256,7 +277,8 @@
   "statMods": {
    "ap": 1,
    "attack": 1
-  }
+  },
+  "art": "cards/sv_equip_tinker_gloves.svg"
  },
  "sv_equip_harpoon_gauntlet": {
   "name": "Harpoon Gauntlet",
@@ -269,7 +291,8 @@
   },
   "grantAbilities": [
    "sv_equip_grapple_haul"
-  ]
+  ],
+  "art": "cards/sv_equip_harpoon_gauntlet.svg"
  },
  "sv_equip_hull_plate_cuirass": {
   "name": "Hull-Plate Cuirass",
@@ -283,7 +306,8 @@
   },
   "resist": {
    "physical": 2
-  }
+  },
+  "art": "cards/sv_equip_hull_plate_cuirass.svg"
  },
  "ra_equip_calcite_plate": {
   "name": "Calcite Plate",
@@ -294,7 +318,8 @@
   "statMods": {
    "hp": 2,
    "defense": 1
-  }
+  },
+  "art": "cards/ra_equip_calcite_plate.svg"
  },
  "ra_equip_brine_sponge": {
   "name": "Brine Sponge",
@@ -307,7 +332,8 @@
   },
   "resist": {
    "brine": 2
-  }
+  },
+  "art": "cards/ra_equip_brine_sponge.svg"
  },
  "ra_equip_synapse_nodule": {
   "name": "Synapse Nodule",
@@ -318,7 +344,8 @@
   "statMods": {
    "ap": 1,
    "attack": 1
-  }
+  },
+  "art": "cards/ra_equip_synapse_nodule.svg"
  },
  "ra_equip_spur_crown": {
   "name": "Spur Crown",
@@ -331,7 +358,8 @@
   },
   "grantAbilities": [
    "ra_spur_thrust"
-  ]
+  ],
+  "art": "cards/ra_equip_spur_crown.svg"
  },
  "ra_equip_heartstone_geode": {
   "name": "Heartstone Geode",
@@ -344,7 +372,8 @@
   },
   "revive": {
    "hpFraction": 0.4
-  }
+  },
+  "art": "cards/ra_equip_heartstone_geode.svg"
  },
  "ra_equip_tidal_husk": {
   "name": "Tidal Husk",
@@ -361,7 +390,8 @@
   },
   "grantAbilities": [
    "ra_husk_pulse"
-  ]
+  ],
+  "art": "cards/ra_equip_tidal_husk.svg"
  },
  "lk_equip_oilskin_cloak": {
   "name": "Oilskin Cloak",
@@ -374,7 +404,8 @@
   },
   "resist": {
    "brine": 1
-  }
+  },
+  "art": "cards/lk_equip_oilskin_cloak.svg"
  },
  "lk_equip_wick_trimmers": {
   "name": "Wick Trimmers",
@@ -384,7 +415,8 @@
   "cost": 10,
   "statMods": {
    "attack": 1
-  }
+  },
+  "art": "cards/lk_equip_wick_trimmers.svg"
  },
  "lk_equip_signal_horn": {
   "name": "Keeper's Signal Horn",
@@ -394,7 +426,8 @@
   "cost": 20,
   "grantAbilities": [
    "lk_flare_signal"
-  ]
+  ],
+  "art": "cards/lk_equip_signal_horn.svg"
  },
  "lk_equip_stairwell_greaves": {
   "name": "Stairwell Greaves",
@@ -408,7 +441,8 @@
   },
   "resist": {
    "physical": 1
-  }
+  },
+  "art": "cards/lk_equip_stairwell_greaves.svg"
  },
  "lk_equip_lamplit_mantle": {
   "name": "Lamplit Mantle",
@@ -421,7 +455,8 @@
   },
   "resist": {
    "brine": 2
-  }
+  },
+  "art": "cards/lk_equip_lamplit_mantle.svg"
  },
  "lk_equip_first_lens": {
   "name": "The First Lens",
@@ -434,6 +469,7 @@
   },
   "grantAbilities": [
    "lk_prism_beam"
-  ]
+  ],
+  "art": "cards/lk_equip_first_lens.svg"
  }
 }

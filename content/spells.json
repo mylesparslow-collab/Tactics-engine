@@ -14,7 +14,8 @@
     "ignoreAttack": true
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sc_spell_salt_volley.svg"
  },
  "sc_spell_levy_summons": {
   "name": "Levy Summons",
@@ -30,7 +31,8 @@
     "count": 1
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sc_spell_levy_summons.svg"
  },
  "sc_spell_toll_gate": {
   "name": "Toll Gate",
@@ -46,7 +48,8 @@
     "duration": 3
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sc_spell_toll_gate.svg"
  },
  "sc_spell_drill_order": {
   "name": "Drill Order",
@@ -67,7 +70,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sc_spell_drill_order.svg"
  },
  "sc_spell_caustic_mist": {
   "name": "Caustic Mist",
@@ -94,7 +98,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sc_spell_caustic_mist.svg"
  },
  "sc_spell_road_levy": {
   "name": "Road Levy",
@@ -116,7 +121,8 @@
     "team": "self"
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sc_spell_road_levy.svg"
  },
  "sc_spell_salt_the_earth": {
   "name": "Salt the Earth",
@@ -143,7 +149,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sc_spell_salt_the_earth.svg"
  },
  "sc_spell_edict_of_assize": {
   "name": "Edict of Assize",
@@ -169,7 +176,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sc_spell_edict_of_assize.svg"
  },
  "hc_spell_pressure_spike": {
   "name": "Pressure Spike",
@@ -191,7 +199,8 @@
     "duration": 1
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/hc_spell_pressure_spike.svg"
  },
  "hc_spell_lightless_veil": {
   "name": "Lightless Veil",
@@ -212,7 +221,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/hc_spell_lightless_veil.svg"
  },
  "hc_spell_vent_surge": {
   "name": "Vent Surge",
@@ -232,7 +242,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/hc_spell_vent_surge.svg"
  },
  "hc_spell_undertow": {
   "name": "Undertow",
@@ -252,7 +263,8 @@
     "duration": 1
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/hc_spell_undertow.svg"
  },
  "hc_spell_call_thralls": {
   "name": "Call the Thralls",
@@ -268,7 +280,8 @@
     "count": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/hc_spell_call_thralls.svg"
  },
  "hc_spell_bellward": {
   "name": "Bellward",
@@ -289,7 +302,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/hc_spell_bellward.svg"
  },
  "hc_spell_the_weight_returns": {
   "name": "The Weight Returns",
@@ -320,7 +334,8 @@
     "terrain": "trench",
     "duration": 3
    }
-  ]
+  ],
+  "art": "cards/hc_spell_the_weight_returns.svg"
  },
  "hc_spell_tithe_of_depths": {
   "name": "Tithe of the Depths",
@@ -340,7 +355,8 @@
     "amount": 10,
     "team": "self"
    }
-  ]
+  ],
+  "art": "cards/hc_spell_tithe_of_depths.svg"
  },
  "rt_spell_brine_lash": {
   "name": "Brine Lash",
@@ -362,7 +378,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/rt_spell_brine_lash.svg"
  },
  "rt_spell_wet_blessing": {
   "name": "Wet Blessing",
@@ -382,7 +399,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/rt_spell_wet_blessing.svg"
  },
  "rt_spell_pool_of_the_faithful": {
   "name": "Pool of the Faithful",
@@ -402,7 +420,8 @@
    "shape": "radius",
    "size": 1
   },
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/rt_spell_pool_of_the_faithful.svg"
  },
  "rt_spell_wringing_rite": {
   "name": "Wringing Rite",
@@ -424,7 +443,8 @@
     "team": "self"
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/rt_spell_wringing_rite.svg"
  },
  "rt_spell_drowned_rise": {
   "name": "The Drowned Rise",
@@ -440,7 +460,8 @@
     "count": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/rt_spell_drowned_rise.svg"
  },
  "rt_spell_hymn_of_the_deep": {
   "name": "Hymn of the Deep",
@@ -461,7 +482,8 @@
    "size": 2
   },
   "affects": "allies",
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/rt_spell_hymn_of_the_deep.svg"
  },
  "rt_spell_the_sea_remembers": {
   "name": "The Sea Remembers",
@@ -492,7 +514,8 @@
    "shape": "radius",
    "size": 2
   },
-  "affects": "enemies"
+  "affects": "enemies",
+  "art": "cards/rt_spell_the_sea_remembers.svg"
  },
  "rt_spell_tithe_of_water": {
   "name": "Tithe of Water",
@@ -517,7 +540,8 @@
     "amount": 12,
     "team": "self"
    }
-  ]
+  ],
+  "art": "cards/rt_spell_tithe_of_water.svg"
  },
  "sv_spell_flash_fire": {
   "name": "Flash Fire",
@@ -544,7 +568,8 @@
     "duration": 1
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sv_spell_flash_fire.svg"
  },
  "sv_spell_grease_the_deck": {
   "name": "Grease the Deck",
@@ -564,7 +589,8 @@
     "duration": 3
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sv_spell_grease_the_deck.svg"
  },
  "sv_spell_cut_and_run_tonic": {
   "name": "Cut-and-Run Tonic",
@@ -584,7 +610,8 @@
     "duration": 1
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sv_spell_cut_and_run_tonic.svg"
  },
  "sv_spell_tripwire_alley": {
   "name": "Tripwire Alley",
@@ -610,7 +637,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sv_spell_tripwire_alley.svg"
  },
  "sv_spell_hired_knives": {
   "name": "Hired Knives",
@@ -626,7 +654,8 @@
     "count": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sv_spell_hired_knives.svg"
  },
  "sv_spell_black_market_cut": {
   "name": "Black Market Cut",
@@ -646,7 +675,8 @@
     "amount": 3,
     "team": "self"
    }
-  ]
+  ],
+  "art": "cards/sv_spell_black_market_cut.svg"
  },
  "sv_spell_powder_barrage": {
   "name": "Powder Barrage",
@@ -673,7 +703,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/sv_spell_powder_barrage.svg"
  },
  "sv_spell_compact_embargo": {
   "name": "Compact Embargo",
@@ -693,7 +724,8 @@
     "status": "marked",
     "duration": 2
    }
-  ]
+  ],
+  "art": "cards/sv_spell_compact_embargo.svg"
  },
  "ra_spell_swarm_call": {
   "name": "Swarm Call",
@@ -709,7 +741,8 @@
     "count": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/ra_spell_swarm_call.svg"
  },
  "ra_spell_creeping_reef": {
   "name": "Creeping Reef",
@@ -728,7 +761,8 @@
     "terrain": "living_reef"
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/ra_spell_creeping_reef.svg"
  },
  "ra_spell_calcite_shard": {
   "name": "Calcite Shard",
@@ -745,7 +779,8 @@
     "ignoreAttack": true
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/ra_spell_calcite_shard.svg"
  },
  "ra_spell_consume_calcite": {
   "name": "Consume Calcite",
@@ -774,7 +809,8 @@
     "terrain": "living_reef"
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/ra_spell_consume_calcite.svg"
  },
  "ra_spell_synapse_surge": {
   "name": "Synapse Surge",
@@ -800,7 +836,8 @@
     "duration": 1
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/ra_spell_synapse_surge.svg"
  },
  "ra_spell_choking_overgrowth": {
   "name": "Choking Overgrowth",
@@ -830,7 +867,8 @@
     "terrain": "living_reef"
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/ra_spell_choking_overgrowth.svg"
  },
  "ra_spell_great_waking": {
   "name": "The Great Waking",
@@ -846,7 +884,8 @@
     "count": 4
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/ra_spell_great_waking.svg"
  },
  "ra_spell_tithe_of_the_shelf": {
   "name": "Tithe of the Shelf",
@@ -872,7 +911,8 @@
     "amount": 10,
     "team": "self"
    }
-  ]
+  ],
+  "art": "cards/ra_spell_tithe_of_the_shelf.svg"
  },
  "lk_spell_lamp_flash": {
   "name": "Lamp Flash",
@@ -894,7 +934,8 @@
     "duration": 2
    }
   ],
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/lk_spell_lamp_flash.svg"
  },
  "lk_spell_kindle_the_wick": {
   "name": "Kindle the Wick",
@@ -916,7 +957,8 @@
   ],
   "castRange": {
    "nearKeystone": 3
-  }
+  },
+  "art": "cards/lk_spell_kindle_the_wick.svg"
  },
  "lk_spell_tithe_of_oil": {
   "name": "Tithe of Oil",
@@ -931,7 +973,8 @@
     "amount": 30,
     "team": "self"
    }
-  ]
+  ],
+  "art": "cards/lk_spell_tithe_of_oil.svg"
  },
  "lk_spell_hooded_lamp": {
   "name": "Hooded Lamp",
@@ -954,7 +997,8 @@
   "affects": "allies",
   "castRange": {
    "nearKeystone": 3
-  }
+  },
+  "art": "cards/lk_spell_hooded_lamp.svg"
  },
  "lk_spell_beam_of_the_long_watch": {
   "name": "Beam of the Long Watch",
@@ -981,7 +1025,8 @@
    "size": 1
   },
   "affects": "enemies",
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/lk_spell_beam_of_the_long_watch.svg"
  },
  "lk_spell_call_the_drowned": {
   "name": "Call the Drowned",
@@ -999,7 +1044,8 @@
   ],
   "castRange": {
    "nearKeystone": 3
-  }
+  },
+  "art": "cards/lk_spell_call_the_drowned.svg"
  },
  "lk_spell_dawn_over_the_shoal": {
   "name": "Dawn over the Shoal",
@@ -1026,7 +1072,8 @@
    "size": 2
   },
   "affects": "enemies",
-  "castRange": 3
+  "castRange": 3,
+  "art": "cards/lk_spell_dawn_over_the_shoal.svg"
  },
  "lk_spell_the_lamp_will_not_go_out": {
   "name": "The Lamp Will Not Go Out",
@@ -1053,6 +1100,7 @@
   "affects": "allies",
   "castRange": {
    "nearKeystone": 3
-  }
+  },
+  "art": "cards/lk_spell_the_lamp_will_not_go_out.svg"
  }
 }

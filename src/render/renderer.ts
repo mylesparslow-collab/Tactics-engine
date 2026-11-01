@@ -1,7 +1,10 @@
 import type { Game } from '../engine/game';
 import type { GameEvent, Pos, Unit } from '../engine/types';
-import { GROUND, LV, TH, TW, View, key, rgba, shade } from './iso';
-import { drawUnitSprite } from './sprites';
+import { GROUND, LV, TH, TW, View, key, mix, rgba } from './iso';
+import { drawUnitSprite, figureHeight } from './sprites';
+import { backdropFor, diamondPath, glowSprite } from './terrain';
+import { BoardPainter, onTileArtReady, type AnimTile } from './board';
+import { clipDuration, clipHitTime, frameFor, unitArt, type AnimState } from './anim';
 
 export interface Preview { text: string; color: string }
 export interface Overlay {
@@ -20,15 +23,19 @@ export const emptyOverlay = (): Overlay => ({
   selected: null, hover: null, previews: new Map(),
 });
 
-const MS_PER_TILE = 80;
-const DEATH_MS = 450;
-const POP_MS = 260;
+const MS_PER_TILE = 150;
+const DEATH_MS = 650;
+const POP_MS = 420;
+const HIT_MS = 280;
 
 interface Seg { start: number; dur: number; path: Pos[]; arc: boolean }
-interface Float { x: number; y: number; text: string; color: string; born: number; life: number }
-interface Ring { pos: Pos; start: number; dur: number; color: string }
+interface Float { x: number; y: number; text: string; color: string; born: number; life: number; icon?: string }
+interface Ring { pos: Pos; start: number; dur: number; color: string; rune?: boolean }
+interface Bolt { from: Pos; to: Pos; start: number; dur: number; color: string }
+interface Particle { x: number; y: number; vx: number; vy: number; born: number; life: number; color: string; size: number; g: number }
 interface Item { start: number; fn: () => void }
-type Drawable = { d: number; kind: 'tile'; x: number; y: number } | { d: number; kind: 'unit'; u: Unit; px: number; py: number; pz: number };
+interface Anim { state: AnimState; start: number; dur: number; impact: number; target?: Pos; ranged?: boolean }
+type Drawable = { d: number; kind: 'tile'; x: number; y: number } | { d: number; kind: 'unit'; u: Unit; px: number; py: number; pz: number; facing: 1 | -1; hop: number };
 
 export class Renderer {
   private ctx: CanvasRenderingContext2D;
@@ -36,22 +43,37 @@ export class Renderer {
   private view!: View;
   overlay: Overlay = emptyOverlay();
   private scale = 1; private ox = 0; private oy = 0; private dpr = 1;
+  private fitScale = 1; zoom = 1; private panX = 0; private panY = 0;
+  /** CSS px of the stage covered by overlays at the bottom; the board is centred in what remains. */
+  bottomInset = 0;
   private cssW = 0; private cssH = 0;
   private raf = 0;
+  reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // board cache
+  private board: HTMLCanvasElement | null = null;
+  private boardK = 1; private boardX0 = 0; private boardY0 = 0; private boardDirty = true;
+  private animTiles: AnimTile[] = [];
+  private painter!: BoardPainter;
+  private seeds: Uint32Array = new Uint32Array(0);
   // animation state
   private cursor = 0; private endAt = 0;
   private segs = new Map<number, Seg[]>();
-  private bumps = new Map<number, { start: number; dur: number; dx: number; dy: number }>();
+  private anims = new Map<number, Anim>();
+  private facing = new Map<number, 1 | -1>();
   private hpShown = new Map<number, number>();
   private flashUntil = new Map<number, number>();
+  private shake = new Map<number, number>();
   private pendingDeath = new Set<number>();
   private dying = new Map<number, number>();
   private pendingDeploy = new Set<number>();
   private popStart = new Map<number, number>();
   private floats: Float[] = [];
   private rings: Ring[] = [];
+  private bolts: Bolt[] = [];
+  private particles: Particle[] = [];
   private items: Item[] = [];
   private cachedDraw: Drawable[] = [];
+  private lastFrame = 0;
 
   constructor(private canvas: HTMLCanvasElement) {
     this.ctx = canvas.getContext('2d')!;
@@ -61,10 +83,16 @@ export class Renderer {
     this.game = game;
     this.view = new View(game.width, game.height);
     this.overlay = emptyOverlay();
-    this.segs.clear(); this.bumps.clear(); this.hpShown.clear(); this.flashUntil.clear();
-    this.pendingDeath.clear(); this.dying.clear(); this.pendingDeploy.clear(); this.popStart.clear();
-    this.floats = []; this.rings = []; this.items = []; this.cursor = 0; this.endAt = 0;
+    this.segs.clear(); this.anims.clear(); this.hpShown.clear(); this.flashUntil.clear(); this.shake.clear();
+    this.pendingDeath.clear(); this.dying.clear(); this.pendingDeploy.clear(); this.popStart.clear(); this.facing.clear();
+    this.floats = []; this.rings = []; this.bolts = []; this.particles = []; this.items = []; this.cursor = 0; this.endAt = 0;
     for (const u of game.units) this.hpShown.set(u.uid, u.hp);
+    this.seeds = new Uint32Array(game.width * game.height);
+    for (let y = 0; y < game.height; y++) for (let x = 0; x < game.width; x++) this.seeds[y * game.width + x] = (((x * 73856093) ^ (y * 19349663) ^ 0x5bd1e995) >>> 0);
+    this.zoom = 1; this.panX = 0; this.panY = 0;
+    this.painter = new BoardPainter(game, this.view, this.seeds);
+    onTileArtReady(() => { this.boardDirty = true; });
+    this.boardDirty = true;
     this.resize();
   }
 
@@ -72,44 +100,85 @@ export class Renderer {
   stop() { cancelAnimationFrame(this.raf); }
 
   get rotation() { return this.view.rot; }
-  rotate(dir: 1 | -1) { this.view.rot = (this.view.rot + dir + 4) % 4; this.fit(); }
+  rotate(dir: 1 | -1) { this.view.rot = (this.view.rot + dir + 4) % 4; this.boardDirty = true; this.fit(); }
+  /** Terrain changed under us: rebuild the static board layer. */
+  invalidateBoard() { this.boardDirty = true; }
 
   resize() {
     const r = this.canvas.parentElement!.getBoundingClientRect();
-    this.dpr = window.devicePixelRatio || 1;
+    this.dpr = Math.min(window.devicePixelRatio || 1, 3);
     this.cssW = Math.max(100, r.width); this.cssH = Math.max(100, r.height);
     this.canvas.width = Math.round(this.cssW * this.dpr);
     this.canvas.height = Math.round(this.cssH * this.dpr);
     this.canvas.style.width = this.cssW + 'px'; this.canvas.style.height = this.cssH + 'px';
-    if (this.game) this.fit();
+    if (this.game) { this.boardDirty = true; this.fit(); }
   }
 
-  private fit() {
+  private bounds() {
     const v = this.view;
     let maxL = 0;
     for (const row of this.game.tiles) for (const t of row) maxL = Math.max(maxL, t.height);
     const minX = -(v.rh - 1) * TW / 2 - TW / 2, maxX = (v.rw - 1) * TW / 2 + TW / 2;
-    const minY = -TH / 2 - maxL * LV - 56, maxY = (v.rw + v.rh - 2) * TH / 2 + TH / 2 + GROUND + 8;
-    const bw = maxX - minX, bh = maxY - minY;
-    this.scale = Math.max(0.35, Math.min(this.cssW / bw, this.cssH / bh, 1.8)) * 0.96;
-    this.ox = this.cssW / 2 - (minX + bw / 2) * this.scale;
-    this.oy = this.cssH / 2 - (minY + bh / 2) * this.scale;
+    const minY = -TH / 2 - maxL * LV - 120, maxY = (v.rw + v.rh - 2) * TH / 2 + TH / 2 + GROUND + 10;
+    return { minX, maxX, minY, maxY };
   }
+
+  private fit() {
+    const { minX, maxX, minY, maxY } = this.bounds();
+    const bw = maxX - minX, bh = maxY - minY;
+    this.fitScale = Math.max(0.12, Math.min(this.cssW / bw, this.cssH / bh, 1.6)) * 0.97;
+    this.applyView();
+  }
+  private applyView() {
+    const { minX, maxX, minY, maxY } = this.bounds();
+    const bw = maxX - minX, bh = maxY - minY;
+    this.scale = this.fitScale * this.zoom;
+    this.ox = this.cssW / 2 - (minX + bw / 2) * this.scale + this.panX;
+    this.oy = (this.cssH - this.bottomInset) / 2 - (minY + bh / 2) * this.scale + this.panY;
+  }
+  /** Pan by CSS pixels. */
+  pan(dx: number, dy: number) {
+    this.panX += dx; this.panY += dy;
+    const lim = Math.max(this.cssW, this.cssH) * 0.9 * this.zoom;
+    this.panX = Math.max(-lim, Math.min(lim, this.panX)); this.panY = Math.max(-lim, Math.min(lim, this.panY));
+    this.applyView();
+  }
+  /** Multiply zoom, keeping the CSS point (cx,cy) fixed. */
+  zoomBy(f: number, cx = this.cssW / 2, cy = this.cssH / 2) {
+    const z0 = this.zoom;
+    this.zoom = Math.max(0.5, Math.min(4, this.zoom * f));
+    const k = this.zoom / z0;
+    const wx = (cx - this.ox), wy = (cy - this.oy);
+    this.panX += (wx - wx * k) ; this.panY += (wy - wy * k);
+    this.applyView();
+  }
+  resetView() { this.zoom = 1; this.panX = 0; this.panY = 0; this.applyView(); }
+  setBottomInset(px: number) { if (px !== this.bottomInset) { this.bottomInset = px; this.applyView(); } }
 
   // ---------- animation scheduling ----------
   busy() { return performance.now() < this.endAt; }
 
   private at(start: number, fn: () => void) { this.items.push({ start, fn }); this.endAt = Math.max(this.endAt, start); }
   private uname(uid: number) { return this.game.unit(uid); }
-  private floatAt(p: Pos, text: string, color: string, born: number) {
-    const s = this.view.project(p.x, p.y, this.game.tiles[p.y]?.[p.x]?.height ?? 0);
-    const n = this.floats.filter(f => Math.abs(f.born - born) < 300 && Math.abs(f.x - s.sx) < 4 && Math.abs(f.y - s.sy) < 40).length;
-    this.floats.push({ x: s.sx, y: s.sy - 46 - n * 14, text, color, born, life: 1100 });
+  private tileZ(p: Pos) { return this.game.tiles[Math.round(p.y)]?.[Math.round(p.x)]?.height ?? 0; }
+  private floatAt(p: Pos, text: string, color: string, born: number, icon?: string) {
+    const s = this.view.project(p.x, p.y, this.tileZ(p));
+    const n = this.floats.filter(f => Math.abs(f.born - born) < 300 && Math.abs(f.x - s.sx) < 4 && Math.abs(f.y - s.sy) < 80).length;
+    this.floats.push({ x: s.sx, y: s.sy - 96 - n * 18, text, color, born, life: 1200, icon });
   }
-  /** Where a unit is displayed at time `t` (honouring queued movement segments). */
+  private burst(p: Pos, n: number, color: string, opts: { up?: number; spread?: number; life?: number; size?: number; g?: number; rise?: boolean } = {}) {
+    const s = this.view.project(p.x, p.y, this.tileZ(p)), now = performance.now();
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2, sp = (opts.spread ?? 40) * (0.4 + Math.random() * 0.6);
+      this.particles.push({ x: s.sx + (Math.random() - 0.5) * 20, y: s.sy - (opts.rise ? Math.random() * 40 : 0), vx: Math.cos(a) * sp, vy: Math.sin(a) * sp * 0.5 - (opts.up ?? 40) * (0.5 + Math.random()),
+        born: now, life: (opts.life ?? 700) * (0.6 + Math.random() * 0.6), color, size: (opts.size ?? 3) * (0.5 + Math.random()), g: opts.g ?? 80 });
+    }
+  }
+  /** Where a unit is displayed at time `t` (honouring queued movement segments), with hop and facing. */
   private unitPos(u: Unit, t: number) {
     const segs = this.segs.get(u.uid);
-    const hz = (p: Pos) => this.game.tiles[Math.round(p.y)]?.[Math.round(p.x)]?.height ?? 0;
+    const hz = (p: Pos) => this.tileZ(p);
+    let facing = this.facing.get(u.uid) ?? 1;
     if (segs) for (const s of segs) {
       if (t < s.start + s.dur) {
         const p = s.dur > 0 ? Math.max(0, Math.min(1, (t - s.start) / s.dur)) : 1;
@@ -118,10 +187,20 @@ export class Renderer {
         const a = s.path[i], b = s.path[i + 1];
         let z = hz(a) + (hz(b) - hz(a)) * k;
         if (s.arc) z += Math.sin(Math.PI * p) * 1.2;
-        return { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, z };
+        const sa = this.view.project(a.x, a.y), sb = this.view.project(b.x, b.y);
+        if (Math.abs(sb.sx - sa.sx) > 1) { facing = sb.sx > sa.sx ? 1 : -1; this.facing.set(u.uid, facing); }
+        const hop = this.reduced ? 0 : Math.abs(Math.sin(Math.PI * k)) * 7;
+        return { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, z, facing, hop, moving: true };
       }
     }
-    return { x: u.x, y: u.y, z: hz(u) };
+    return { x: u.x, y: u.y, z: hz(u), facing, hop: 0, moving: false };
+  }
+  private faceToward(uid: number, from: Pos, to: Pos) {
+    const a = this.view.project(from.x, from.y), b = this.view.project(to.x, to.y);
+    if (Math.abs(b.sx - a.sx) > 1) this.facing.set(uid, b.sx > a.sx ? 1 : -1);
+  }
+  private setAnim(uid: number, state: AnimState, start: number, dur: number, extra: Partial<Anim> = {}) {
+    this.anims.set(uid, { state, start, dur, impact: extra.impact ?? 0, ...extra });
   }
 
   handleEvent(e: GameEvent) {
@@ -133,22 +212,43 @@ export class Renderer {
       case 'move': {
         const dur = Math.max(e.path.length - 1, 1) * MS_PER_TILE;
         push(e.uid, { start: this.cursor, dur, path: e.path, arc: e.path.length === 2 && Math.abs(e.path[0].x - e.path[1].x) + Math.abs(e.path[0].y - e.path[1].y) > 1 });
+        this.setAnim(e.uid, 'move', this.cursor, dur);
         this.cursor += dur; break;
       }
       case 'push': {
-        push(e.uid, { start: this.cursor, dur: 200, path: [e.from, e.to], arc: false });
-        this.cursor += 200; break;
+        push(e.uid, { start: this.cursor, dur: 220, path: [e.from, e.to], arc: false });
+        const t = this.cursor;
+        this.at(t, () => { this.shake.set(e.uid, t + 200); });
+        this.cursor += 220; break;
       }
       case 'ability': {
         const u = g.unit(e.uid);
+        const a = g.ability(e.ability);
+        const t = this.cursor;
+        const ranged = (a?.range.max ?? 1) > 1;
+        const harmful = a?.effects.some(x => x.type === 'damage' || x.type === 'push' || x.type === 'pull') ?? true;
+        const state: AnimState = harmful && a?.target !== 'ally' && a?.target !== 'self' ? 'attack' : 'cast';
         if (u) {
-          const a = this.view.project(u.x, u.y), b = this.view.project(e.target.x, e.target.y);
-          const dx = b.sx - a.sx, dy = b.sy - a.sy, len = Math.hypot(dx, dy) || 1;
-          this.bumps.set(e.uid, { start: this.cursor, dur: 200, dx: dx / len * 10, dy: dy / len * 5 });
+          const art = unitArt(u.defId, g.def(u));
+          const clipDur = clipDuration(art, state);
+          const hit = clipHitTime(art, state) ?? (state === 'cast' ? 380 : ranged ? 320 : 230);
+          const dur = clipDur ?? (state === 'cast' ? 700 : 520);
+          this.at(t, () => {
+            this.faceToward(e.uid, u, e.target);
+            this.setAnim(e.uid, state, t, dur, { impact: hit, target: e.target, ranged });
+            if (ranged && state === 'attack') this.bolts.push({ from: { x: u.x, y: u.y }, to: e.target, start: t + hit * 0.35, dur: hit * 0.65, color: '#ffd37a' });
+          });
+          this.at(t + hit, () => {
+            if (a?.area) { this.rings.push({ pos: e.target, start: t + hit, dur: 520, color: state === 'cast' ? '#9fe3ff' : '#ffb347' }); this.burst(e.target, 14, state === 'cast' ? '#bfeeff' : '#ffb347', { up: 60, spread: 70, life: 600 }); }
+            else this.rings.push({ pos: e.target, start: t + hit, dur: 380, color: state === 'cast' ? '#9fe3ff' : '#ffb347' });
+          });
+          this.endAt = Math.max(this.endAt, t + dur);
+          this.cursor = t + hit;
+        } else {
+          this.rings.push({ pos: e.target, start: t, dur: 450, color: '#ffb347' });
+          this.cursor += 220;
         }
-        this.rings.push({ pos: e.target, start: this.cursor, dur: 450, color: '#ffb347' });
-        this.endAt = Math.max(this.endAt, this.cursor + 450);
-        this.cursor += 220; break;
+        break;
       }
       case 'damage': {
         const t = this.cursor;
@@ -156,9 +256,14 @@ export class Renderer {
           const u = this.uname(e.uid); if (!u) return;
           this.hpShown.set(e.uid, Math.max(0, (this.hpShown.get(e.uid) ?? u.hp) - e.amount));
           this.flashUntil.set(e.uid, t + 220);
+          this.shake.set(e.uid, t + 260);
+          const art = unitArt(u.defId, g.def(u));
+          this.setAnim(e.uid, 'hit', t, clipDuration(art, 'hit') ?? HIT_MS);
           const p = this.unitPos(u, t);
           this.floatAt(p, `-${e.amount}`, '#ff5d4d', performance.now());
+          this.burst(p, 6, '#ff8a6a', { up: 50, spread: 50, life: 450, size: 2.5 });
         });
+        this.endAt = Math.max(this.endAt, t + HIT_MS);
         break;
       }
       case 'heal': {
@@ -167,6 +272,7 @@ export class Renderer {
           const u = this.uname(e.uid); if (!u) return;
           this.hpShown.set(e.uid, (this.hpShown.get(e.uid) ?? u.hp) + e.amount);
           this.floatAt(this.unitPos(u, t), `+${e.amount}`, '#6fe08a', performance.now());
+          this.burst(u, 12, '#8ff0a0', { up: 70, spread: 18, life: 900, size: 2.5, g: -20, rise: true });
         });
         break;
       }
@@ -176,20 +282,31 @@ export class Renderer {
           const u = this.uname(e.uid); if (!u) return;
           this.hpShown.set(e.uid, e.hp);
           this.popStart.set(e.uid, t);
+          this.anims.delete(e.uid);
           this.floatAt(this.unitPos(u, t), 'Revived!', '#ffe27a', performance.now());
+          this.burst(u, 16, '#ffe9a0', { up: 60, spread: 40, life: 800, size: 3 });
         });
         this.cursor = t + 200; this.endAt = Math.max(this.endAt, this.cursor); break;
       }
       case 'status': {
         const t = this.cursor;
         const name = g.content.statuses[e.status]?.name ?? e.status;
-        this.at(t, () => { const u = this.uname(e.uid); if (u) this.floatAt(this.unitPos(u, t), name, '#c79bff', performance.now()); });
+        this.at(t, () => { const u = this.uname(e.uid); if (u) this.floatAt(this.unitPos(u, t), name, '#c79bff', performance.now(), e.status); });
         break;
       }
       case 'death': {
-        const t = this.cursor + 220;
+        const t = this.cursor + 180;
         this.pendingDeath.add(e.uid);
-        this.at(t, () => { this.pendingDeath.delete(e.uid); this.dying.set(e.uid, t); });
+        this.at(t, () => {
+          this.pendingDeath.delete(e.uid); this.dying.set(e.uid, t);
+          const u = this.uname(e.uid);
+          if (u) {
+            const art = unitArt(u.defId, g.def(u));
+            this.setAnim(e.uid, 'death', t, clipDuration(art, 'death') ?? DEATH_MS);
+            this.burst(u, 14, mix(g.teams[u.team].color, '#ffffff', 0.5), { up: 30, spread: 45, life: 900, size: 3, g: 30 });
+            this.burst(u, 10, '#c9c2b0', { up: 20, spread: 30, life: 1100, size: 4, g: 10 });
+          }
+        });
         this.endAt = Math.max(this.endAt, t + DEATH_MS);
         this.cursor = t; break;
       }
@@ -198,25 +315,43 @@ export class Renderer {
         if (u) this.hpShown.set(e.uid, u.hp);
         this.pendingDeploy.add(e.uid);
         const t = this.cursor;
-        this.at(t, () => { this.pendingDeploy.delete(e.uid); this.popStart.set(e.uid, t); });
+        this.at(t, () => {
+          this.pendingDeploy.delete(e.uid); this.popStart.set(e.uid, t);
+          if (u) { this.burst(u, 18, '#7fe0dc', { up: 90, spread: 55, life: 700, size: 3 }); this.rings.push({ pos: u, start: t, dur: 500, color: '#9fe8e4' }); }
+        });
         this.endAt = Math.max(this.endAt, t + POP_MS);
         break;
       }
       case 'spell': {
-        this.rings.push({ pos: e.target, start: this.cursor, dur: 550, color: '#c79bff' });
-        this.endAt = Math.max(this.endAt, this.cursor + 550);
-        this.cursor += 300; break;
+        const t = this.cursor;
+        this.rings.push({ pos: e.target, start: t, dur: 700, color: '#c79bff', rune: true });
+        this.at(t + 300, () => this.burst(e.target, 16, '#d8b8ff', { up: 70, spread: 60, life: 700, size: 3 }));
+        this.endAt = Math.max(this.endAt, t + 700);
+        this.cursor += 360; break;
       }
       case 'equip': {
         const t = this.cursor;
-        this.at(t, () => { const u = this.uname(e.uid); if (u) this.floatAt(this.unitPos(u, t), 'Equipped', '#ffe27a', performance.now()); });
+        this.at(t, () => { const u = this.uname(e.uid); if (u) { this.floatAt(this.unitPos(u, t), 'Equipped', '#ffe27a', performance.now()); this.burst(u, 8, '#ffe9a0', { up: 50, spread: 20, life: 700, size: 2.5, g: -10, rise: true }); } });
         break;
       }
-      case 'essence': {
-        break; // handled by HUD
-      }
+      case 'terrain': { this.boardDirty = true; break; }
+      case 'essence': break; // handled by HUD
       default: break;
     }
+  }
+
+  // ---------- board cache ----------
+  private buildBoard() {
+    const { minX, maxX, minY, maxY } = this.bounds();
+    const k = Math.min(3, Math.max(0.5, this.fitScale * this.dpr * 1.5));
+    const W = Math.ceil((maxX - minX) * k), H = Math.ceil((maxY - minY) * k);
+    if (!this.board || this.board.width !== W || this.board.height !== H) { this.board = document.createElement('canvas'); this.board.width = W; this.board.height = H; }
+    const ctx = this.board.getContext('2d')!;
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, W, H);
+    ctx.setTransform(k, 0, 0, k, -minX * k, -minY * k);
+    this.boardK = k; this.boardX0 = minX; this.boardY0 = minY;
+    this.animTiles = this.painter.paint(ctx, minY, maxY);
+    this.boardDirty = false;
   }
 
   // ---------- drawing ----------
@@ -227,13 +362,14 @@ export class Renderer {
       const visible = (u.alive || this.dying.has(u.uid) || this.pendingDeath.has(u.uid)) && !this.pendingDeploy.has(u.uid);
       if (!visible) continue;
       const p = this.unitPos(u, now);
-      out.push({ d: v.depth(p.x, p.y) + 0.5, kind: 'unit', u, px: p.x, py: p.y, pz: p.z });
+      out.push({ d: v.depth(p.x, p.y) + 0.5, kind: 'unit', u, px: p.x, py: p.y, pz: p.z, facing: p.facing, hop: p.hop });
     }
     out.sort((a, b) => a.d - b.d);
     return out;
   }
 
   private frame(now: number) {
+    const dt = Math.min(50, now - (this.lastFrame || now)); this.lastFrame = now;
     // run due items, expire segments
     if (this.items.length) {
       const due = this.items.filter(i => i.start <= now);
@@ -243,19 +379,44 @@ export class Renderer {
       const rest = l.filter(s => s.start + s.dur > now);
       if (rest.length) this.segs.set(uid, rest); else this.segs.delete(uid);
     }
-    for (const [uid, t] of this.dying) if (now - t > DEATH_MS) this.dying.delete(uid);
+    for (const [uid, a] of this.anims) if (a.state !== 'death' && now > a.start + a.dur) this.anims.delete(uid);
+    for (const [uid, t] of this.dying) if (now - t > DEATH_MS + 400) { this.dying.delete(uid); this.anims.delete(uid); }
     this.floats = this.floats.filter(f => now - f.born < f.life);
     this.rings = this.rings.filter(r => now < r.start + r.dur);
+    this.bolts = this.bolts.filter(b => now < b.start + b.dur);
+    if (this.particles.length) {
+      const s = dt / 1000;
+      this.particles = this.particles.filter(p => now - p.born < p.life);
+      for (const p of this.particles) { p.x += p.vx * s; p.y += p.vy * s; p.vy += p.g * s; p.vx *= 0.98; }
+    }
+    if (this.boardDirty) this.buildBoard();
 
     const ctx = this.ctx, g = this.game;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.drawImage(backdropFor(this.canvas.width, this.canvas.height), 0, 0);
+    this.drawBeam(ctx, now);
     ctx.setTransform(this.dpr * this.scale, 0, 0, this.dpr * this.scale, this.dpr * this.ox, this.dpr * this.oy);
+    // board shadow + cached static layer
+    const b = this.board!;
+    ctx.drawImage(b, this.boardX0, this.boardY0, b.width / this.boardK, b.height / this.boardK);
+    for (const t of this.animTiles) this.animateTile(t, now);
+    this.drawOverlays(now);
 
     this.cachedDraw = this.buildDrawables(now);
-    for (const dr of this.cachedDraw) {
-      if (dr.kind === 'tile') this.drawTile(dr.x, dr.y, now);
-      else this.drawUnit(dr, now);
+    const units = this.cachedDraw.filter((d): d is Extract<Drawable, { kind: 'unit' }> => d.kind === 'unit');
+    for (const dr of units) {
+      this.drawUnit(dr, now);
+      this.reoccludeAround(dr);
+    }
+    // bolts
+    for (const bt of this.bolts) {
+      if (now < bt.start) continue;
+      const p = Math.min(1, (now - bt.start) / bt.dur);
+      const a = this.view.project(bt.from.x, bt.from.y, this.tileZ(bt.from)), c = this.view.project(bt.to.x, bt.to.y, this.tileZ(bt.to));
+      const x = a.sx + (c.sx - a.sx) * p, y = a.sy - 50 + (c.sy - 40 - (a.sy - 50)) * p - Math.sin(Math.PI * p) * 40;
+      ctx.save(); ctx.shadowColor = bt.color; ctx.shadowBlur = 12; ctx.fillStyle = bt.color;
+      ctx.beginPath(); ctx.ellipse(x, y, 7, 3.5, Math.atan2(c.sy - a.sy, c.sx - a.sx), 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
     }
     // rings
     for (const r of this.rings) {
@@ -263,104 +424,178 @@ export class Renderer {
       const p = (now - r.start) / r.dur;
       const t = g.tiles[r.pos.y]?.[r.pos.x]; if (!t) continue;
       const s = this.view.project(r.pos.x, r.pos.y, t.height);
-      ctx.strokeStyle = rgba(r.color, 1 - p); ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.ellipse(s.sx, s.sy, 8 + p * 30, 4 + p * 15, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.save(); ctx.translate(s.sx, s.sy); ctx.scale(1, 0.5);
+      if (r.rune) {
+        ctx.globalAlpha = p < 0.7 ? 1 : 1 - (p - 0.7) / 0.3;
+        ctx.strokeStyle = r.color; ctx.lineWidth = 2.5; ctx.shadowColor = r.color; ctx.shadowBlur = 14;
+        ctx.beginPath(); ctx.arc(0, 0, 50, 0, Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([5, 7]); ctx.lineDashOffset = -now / 12; ctx.beginPath(); ctx.arc(0, 0, 40, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]);
+        ctx.rotate(now / 900); ctx.beginPath(); for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2; ctx.moveTo(Math.cos(a) * 50, Math.sin(a) * 50); ctx.lineTo(Math.cos(a + Math.PI / 2) * 50, Math.sin(a + Math.PI / 2) * 50); } ctx.stroke();
+        const fg = ctx.createRadialGradient(0, 0, 0, 0, 0, 50); fg.addColorStop(0, rgba(r.color, 0.4 * (1 - p))); fg.addColorStop(1, rgba(r.color, 0));
+        ctx.fillStyle = fg; ctx.beginPath(); ctx.arc(0, 0, 50, 0, Math.PI * 2); ctx.fill();
+      } else {
+        ctx.strokeStyle = rgba(r.color, 1 - p); ctx.lineWidth = 3; ctx.shadowColor = r.color; ctx.shadowBlur = 10;
+        ctx.beginPath(); ctx.arc(0, 0, 14 + p * 54, 0, Math.PI * 2); ctx.stroke();
+        const fg = ctx.createRadialGradient(0, 0, 0, 0, 0, 60); fg.addColorStop(0, rgba(r.color, 0.35 * (1 - p))); fg.addColorStop(1, rgba(r.color, 0));
+        ctx.fillStyle = fg; ctx.beginPath(); ctx.arc(0, 0, 60, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
     }
+    // particles
+    for (const p of this.particles) {
+      const k = (now - p.born) / p.life;
+      ctx.globalAlpha = 1 - k * k; ctx.fillStyle = p.color;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (1 - k * 0.5), 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
     // previews + floats on top
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     for (const [uid, pv] of this.overlay.previews) {
       const u = g.unit(uid); if (!u || !u.alive) continue;
       const p = this.unitPos(u, now), s = this.view.project(p.x, p.y, p.z);
-      ctx.font = 'bold 13px system-ui, sans-serif';
-      const w = ctx.measureText(pv.text).width + 12;
-      const y = s.sy - 74;
-      ctx.fillStyle = 'rgba(10,10,16,0.88)'; ctx.beginPath(); ctx.roundRect(s.sx - w / 2, y - 9, w, 18, 5); ctx.fill();
+      ctx.font = 'bold 15px Cinzel, Georgia, serif';
+      const w = ctx.measureText(pv.text).width + 16;
+      const y = s.sy - 128;
+      ctx.fillStyle = 'rgba(10,10,16,0.88)'; ctx.beginPath(); ctx.roundRect(s.sx - w / 2, y - 11, w, 22, 6); ctx.fill();
       ctx.strokeStyle = pv.color; ctx.lineWidth = 1.5; ctx.stroke();
-      ctx.fillStyle = pv.color; ctx.fillText(pv.text, s.sx, y + 0.5);
+      ctx.fillStyle = pv.color; ctx.fillText(pv.text, s.sx, y + 1);
     }
     for (const f of this.floats) {
       const k = (now - f.born) / f.life;
       ctx.globalAlpha = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3;
-      ctx.font = 'bold 18px system-ui, sans-serif';
+      const sc = k < 0.15 ? 0.6 + k / 0.15 * 0.5 : 1.1 - Math.min(0.1, (k - 0.15));
+      ctx.font = `bold ${Math.round(22 * sc)}px Cinzel, Georgia, serif`;
       ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.85)';
-      const y = f.y - k * 34;
+      const y = f.y - k * 40;
       ctx.strokeText(f.text, f.x, y); ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, y);
       ctx.globalAlpha = 1;
     }
   }
 
-  private diamond(sx: number, sy: number, inset = 0) {
-    const ctx = this.ctx, w = TW / 2 - inset * 2, h = TH / 2 - inset;
-    ctx.beginPath(); ctx.moveTo(sx, sy - h); ctx.lineTo(sx + w, sy); ctx.lineTo(sx, sy + h); ctx.lineTo(sx - w, sy); ctx.closePath();
+  /** A slow lighthouse beam sweeping the backdrop. */
+  private drawBeam(ctx: CanvasRenderingContext2D, now: number) {
+    if (this.reduced) return;
+    const W = this.canvas.width, H = this.canvas.height;
+    const a = -0.9 + Math.sin(now / 9000) * 0.5;
+    ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.translate(W * 0.15, -H * 0.1); ctx.rotate(a);
+    const g = ctx.createLinearGradient(0, 0, 0, H * 2);
+    g.addColorStop(0, 'rgba(255,225,160,0.10)'); g.addColorStop(1, 'rgba(255,225,160,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(10, 0); ctx.lineTo(W * 0.35, H * 2); ctx.lineTo(-W * 0.25, H * 2); ctx.closePath(); ctx.fill();
+    ctx.restore();
   }
 
-  private drawTile(x: number, y: number, now: number) {
-    const g = this.game, ctx = this.ctx, ov = this.overlay;
-    const t = g.tiles[y][x], terr = g.content.terrain[t.terrain];
+  private animateTile(at: AnimTile, now: number) {
+    const { x, y, kind } = at;
+    const ctx = this.ctx, g = this.game, t = g.tiles[y][x];
+    if (at.frames?.length) {
+      const img = at.frames[Math.floor(now / 400) % at.frames.length];
+      const { sx, sy } = this.view.project(x, y, t.height);
+      const s = TW / img.naturalWidth;
+      ctx.drawImage(img, sx - TW / 2, sy + TH / 2 - img.naturalHeight * s, TW, img.naturalHeight * s);
+    }
     const { sx, sy } = this.view.project(x, y, t.height);
-    const th = t.height * LV + GROUND, hw = TW / 2, hh = TH / 2;
-    const base = terr?.color ?? '#777';
-    // sides
-    ctx.fillStyle = shade(base, 0.68);
-    ctx.beginPath(); ctx.moveTo(sx - hw, sy); ctx.lineTo(sx, sy + hh); ctx.lineTo(sx, sy + hh + th); ctx.lineTo(sx - hw, sy + th); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = shade(base, 0.48);
-    ctx.beginPath(); ctx.moveTo(sx, sy + hh); ctx.lineTo(sx + hw, sy); ctx.lineTo(sx + hw, sy + th); ctx.lineTo(sx, sy + hh + th); ctx.closePath(); ctx.fill();
-    ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(sx - hw, sy + th); ctx.lineTo(sx, sy + hh + th); ctx.lineTo(sx + hw, sy + th); ctx.moveTo(sx, sy + hh); ctx.lineTo(sx, sy + hh + th); ctx.stroke();
-    // top
-    this.diamond(sx, sy);
-    ctx.fillStyle = base; ctx.fill();
-    ctx.strokeStyle = 'rgba(0,0,0,0.28)'; ctx.stroke();
-    this.decorate(x, y, t.terrain, sx, sy, now);
-    // well marker
     const well = g.map.wells?.find(w => w.x === x && w.y === y);
-    if (well) {
-      ctx.strokeStyle = '#8ee6ff'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.ellipse(sx, sy, 13, 6.5, 0, 0, Math.PI * 2); ctx.stroke();
-      ctx.fillStyle = `rgba(142,230,255,${0.35 + 0.2 * Math.sin(now / 400)})`; ctx.fill();
-      ctx.fillStyle = '#d8f6ff'; ctx.beginPath(); ctx.arc(sx, sy, 2.5, 0, Math.PI * 2); ctx.fill();
-    }
-    // highlights
-    const k = key(x, y);
-    const fillTop = (color: string, a: number, stroke?: string) => {
-      this.diamond(sx, sy, 1); ctx.fillStyle = rgba(color, a); ctx.fill();
-      if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.5; ctx.stroke(); }
-    };
-    const pulse = 0.5 + 0.12 * Math.sin(now / 300);
-    if (ov.deploy.has(k)) fillTop('#4cd964', pulse, 'rgba(160,255,170,0.9)');
-    if (ov.reach.has(k)) fillTop('#3d8bff', 0.38, 'rgba(120,180,255,0.8)');
-    if (ov.targets.has(k)) fillTop('#ff6a3d', pulse + 0.1, 'rgba(255,170,120,0.95)');
-    if (ov.area.has(k)) fillTop('#ffe14d', 0.55, 'rgba(255,240,140,1)');
-    const pi = ov.path.findIndex(p => p.x === x && p.y === y);
-    if (pi >= 0) {
-      fillTop('#9fd0ff', 0.45);
-      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(sx, sy, 3, 0, Math.PI * 2); ctx.fill();
-      if (pi === ov.path.length - 1 && ov.pathCost !== null) {
-        ctx.font = 'bold 12px system-ui, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.8)';
-        const txt = `${ov.pathCost} AP`; ctx.strokeText(txt, sx, sy - 14); ctx.fillStyle = '#fff'; ctx.fillText(txt, sx, sy - 14);
+    const ph = (x * 1.7 + y * 2.3);
+    if (!this.reduced && !at.frames) {
+      if (kind === 'water' || kind === 'deepwater') {
+        ctx.save(); diamondPath(ctx, sx, sy, 2); ctx.clip();
+        const k = kind === 'water' ? 0.5 : 0.22;
+        ctx.strokeStyle = `rgba(255,255,255,${0.28 * k + 0.1 * k * Math.sin(now / 500 + ph)})`; ctx.lineWidth = 1.5;
+        for (let i = 0; i < 3; i++) {
+          const o = Math.sin(now / 900 + ph + i * 2) * 10, yy = sy - 14 + i * 12;
+          ctx.beginPath(); ctx.moveTo(sx - 30 + o, yy); ctx.quadraticCurveTo(sx - 10 + o, yy - 3, sx + 10 + o, yy); ctx.quadraticCurveTo(sx + 20 + o, yy + 2, sx + 32 + o, yy - 1); ctx.stroke();
+        }
+        const gx = sx - 18 + Math.sin(now / 1500 + ph) * 14, gy = sy - 6 + Math.cos(now / 1900 + ph) * 6;
+        const gr = ctx.createRadialGradient(gx, gy, 0, gx, gy, 26);
+        gr.addColorStop(0, `rgba(255,255,255,${0.22 * k + 0.12 * k * Math.sin(now / 400 + ph)})`); gr.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = gr; ctx.fillRect(sx - 64, sy - 32, 128, 64);
+        ctx.restore();
+      } else if (kind === 'glow') {
+        ctx.save(); diamondPath(ctx, sx, sy, 3); ctx.clip();
+        const gr = ctx.createRadialGradient(sx, sy, 2, sx, sy, 60);
+        const a = 0.28 + 0.18 * Math.sin(now / 350 + ph);
+        gr.addColorStop(0, `rgba(255,200,90,${a})`); gr.addColorStop(1, 'rgba(255,120,30,0)');
+        ctx.fillStyle = gr; ctx.fillRect(sx - 64, sy - 32, 128, 64); ctx.restore();
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        const hg = ctx.createRadialGradient(sx, sy, 10, sx, sy, 80); hg.addColorStop(0, `rgba(255,150,50,${0.12 + 0.06 * Math.sin(now / 420 + ph)})`); hg.addColorStop(1, 'rgba(255,150,50,0)');
+        ctx.fillStyle = hg; ctx.fillRect(sx - 80, sy - 60, 160, 120); ctx.restore();
+      } else if (kind === 'coral') {
+        ctx.save(); diamondPath(ctx, sx, sy, 3); ctx.clip();
+        const a = 0.10 + 0.08 * Math.sin(now / 1200 + ph);
+        const gr = ctx.createRadialGradient(sx + 8, sy - 4, 0, sx + 8, sy - 4, 40);
+        gr.addColorStop(0, `rgba(255,190,200,${a})`); gr.addColorStop(1, 'rgba(255,190,200,0)');
+        ctx.fillStyle = gr; ctx.fillRect(sx - 64, sy - 32, 128, 64); ctx.restore();
+      } else if (kind === 'trench') {
+        const a = 0.25 + 0.2 * Math.sin(now / 1400 + ph);
+        ctx.fillStyle = `rgba(63,209,196,${a})`; ctx.beginPath(); ctx.arc(sx + Math.sin(ph) * 10, sy + 4, 1.5, 0, Math.PI * 2); ctx.fill();
       }
     }
-    if (ov.selected && ov.selected.x === x && ov.selected.y === y) { this.diamond(sx, sy, 1); ctx.strokeStyle = '#ffd86b'; ctx.lineWidth = 2.5; ctx.stroke(); }
-    if (ov.hover && ov.hover.x === x && ov.hover.y === y) { this.diamond(sx, sy, 1); ctx.strokeStyle = 'rgba(255,255,255,0.95)'; ctx.lineWidth = 2; ctx.stroke(); }
+    if (well) {
+      ctx.save(); ctx.translate(sx, sy); ctx.scale(1, 0.5);
+      const pulse = this.reduced ? 0.5 : 0.5 + 0.2 * Math.sin(now / 400 + ph);
+      const gr = ctx.createRadialGradient(0, 0, 2, 0, 0, 34);
+      gr.addColorStop(0, `rgba(160,240,255,${0.55 * pulse + 0.2})`); gr.addColorStop(0.6, `rgba(100,210,230,${0.25 * pulse})`); gr.addColorStop(1, 'rgba(100,210,230,0)');
+      ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(0, 0, 34, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = 'rgba(190,245,255,0.9)'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(0, 0, 22, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = 'rgba(190,245,255,0.5)'; ctx.lineWidth = 1; ctx.setLineDash([4, 6]); ctx.lineDashOffset = this.reduced ? 0 : -now / 30; ctx.beginPath(); ctx.arc(0, 0, 30, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = '#e8fbff'; ctx.beginPath(); ctx.arc(sx, sy - 2, 3, 0, Math.PI * 2); ctx.fill();
+    }
   }
 
-  private decorate(x: number, y: number, terrain: string, sx: number, sy: number, now: number) {
-    const ctx = this.ctx, r = ((x * 73856093) ^ (y * 19349663)) >>> 0;
-    if (terrain === 'forest') {
-      for (let i = 0; i < 2; i++) {
-        const ox = (i ? 11 : -10) + ((r >> i) & 3), oy = (i ? 2 : -2);
-        ctx.fillStyle = '#2b4d2a'; ctx.beginPath(); ctx.moveTo(sx + ox, sy + oy - 16); ctx.lineTo(sx + ox + 7, sy + oy); ctx.lineTo(sx + ox - 7, sy + oy); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#4e8a45'; ctx.beginPath(); ctx.moveTo(sx + ox, sy + oy - 16); ctx.lineTo(sx + ox + 7, sy + oy); ctx.lineTo(sx + ox, sy + oy); ctx.closePath(); ctx.fill();
+  private drawOverlays(now: number) {
+    const ov = this.overlay, ctx = this.ctx, g = this.game;
+    const pulse = this.reduced ? 0.8 : 0.72 + 0.18 * Math.sin(now / 300);
+    const glow = (k: string, color: string, strength: number) => {
+      const [x, y] = k.split(',').map(Number);
+      const t = g.tiles[y]?.[x]; if (!t) return;
+      const { sx, sy } = this.view.project(x, y, t.height);
+      const s = glowSprite(color, strength);
+      ctx.drawImage(s, sx - s.width / 4, sy - s.height / 4, s.width / 2, s.height / 2);
+    };
+    for (const k of ov.deploy) glow(k, '#4cd964', pulse);
+    for (const k of ov.reach) glow(k, '#4aa3ff', 0.8);
+    for (const k of ov.targets) glow(k, '#ff6a3d', pulse + 0.1);
+    for (const k of ov.area) glow(k, '#ffe14d', 0.9);
+    ov.path.forEach((p, pi) => {
+      const t = g.tiles[p.y]?.[p.x]; if (!t) return;
+      const { sx, sy } = this.view.project(p.x, p.y, t.height);
+      if (pi > 0) {
+        const q = ov.path[pi - 1], tq = g.tiles[q.y][q.x], a = this.view.project(q.x, q.y, tq.height);
+        ctx.strokeStyle = 'rgba(220,240,255,0.85)'; ctx.lineWidth = 3; ctx.setLineDash([8, 6]); ctx.lineDashOffset = this.reduced ? 0 : -now / 40;
+        ctx.beginPath(); ctx.moveTo(a.sx, a.sy); ctx.lineTo(sx, sy); ctx.stroke(); ctx.setLineDash([]);
       }
-    } else if (terrain === 'water') {
-      ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.lineWidth = 1;
-      const o = Math.sin(now / 700 + x + y) * 3;
-      ctx.beginPath(); ctx.moveTo(sx - 12 + o, sy - 2); ctx.lineTo(sx - 2 + o, sy - 2); ctx.moveTo(sx + 2 - o, sy + 4); ctx.lineTo(sx + 12 - o, sy + 4); ctx.stroke();
-    } else if (terrain === 'lava') {
-      this.diamond(sx, sy, 6); ctx.fillStyle = `rgba(255,190,60,${0.35 + 0.25 * Math.sin(now / 350 + x)})`; ctx.fill();
-    } else if (terrain === 'stone' && (r & 3) === 0) {
-      ctx.fillStyle = 'rgba(0,0,0,0.12)'; ctx.fillRect(sx - 6, sy - 1, 8, 3);
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(sx, sy, 4, 0, Math.PI * 2); ctx.fill();
+      if (pi === ov.path.length - 1 && ov.pathCost !== null) {
+        ctx.font = 'bold 15px Cinzel, Georgia, serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.85)';
+        const txt = `${ov.pathCost} AP`; ctx.strokeText(txt, sx, sy - 22); ctx.fillStyle = '#fff'; ctx.fillText(txt, sx, sy - 22);
+      }
+    });
+    const outline = (p: Pos, color: string, lw: number) => {
+      const t = g.tiles[p.y]?.[p.x]; if (!t) return;
+      const { sx, sy } = this.view.project(p.x, p.y, t.height);
+      ctx.save(); ctx.shadowColor = color; ctx.shadowBlur = 10; ctx.strokeStyle = color; ctx.lineWidth = lw; diamondPath(ctx, sx, sy, 2); ctx.stroke(); ctx.restore();
+    };
+    if (ov.selected) outline(ov.selected, '#ffd86b', 3);
+    if (ov.hover) outline(ov.hover, 'rgba(255,255,255,0.95)', 2);
+  }
+
+  /** Redraw taller tiles in front of a unit so cliffs occlude it correctly (the board layer is static). */
+  private reoccludeAround(d: Extract<Drawable, { kind: 'unit' }>) {
+    const g = this.game, v = this.view, ctx = this.ctx;
+    const ux = Math.round(d.px), uy = Math.round(d.py), depth = v.depth(d.px, d.py);
+    const s = v.project(d.px, d.py, d.pz);
+    const top = s.sy - 130, left = s.sx - 50, right = s.sx + 50;
+    for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
+      const x = ux + dx, y = uy + dy;
+      if (!g.inBounds(x, y) || (dx === 0 && dy === 0)) continue;
+      const t = g.tiles[y][x];
+      if (v.depth(x, y) <= depth || t.height <= Math.floor(d.pz + 0.01)) continue;
+      const ts = v.project(x, y, t.height);
+      const th = t.height * LV + GROUND;
+      if (ts.sx + TW / 2 < left || ts.sx - TW / 2 > right || ts.sy - TH / 2 > s.sy + 10 || ts.sy + TH / 2 + th < top) continue;
+      this.painter.drawTile(ctx, x, y);
     }
   }
 
@@ -368,31 +603,65 @@ export class Renderer {
     const g = this.game, u = d.u, ov = this.overlay;
     const def = g.def(u);
     let { sx, sy } = this.view.project(d.px, d.py, d.pz);
-    const bump = this.bumps.get(u.uid);
-    if (bump) {
-      if (now > bump.start + bump.dur) this.bumps.delete(u.uid);
-      else if (now >= bump.start) { const k = Math.sin(Math.PI * (now - bump.start) / bump.dur); sx += bump.dx * k; sy += bump.dy * k; }
+    const art = unitArt(u.defId, def);
+    const an = this.anims.get(u.uid);
+    const state: AnimState = an?.state ?? 'idle';
+    const el = an ? now - an.start : now + u.uid * 173;
+    let squash = 1, tilt = 0, lift = d.hop, glow = 0, alpha = 1, scale = 1;
+    // procedural layer
+    if (!this.reduced && !def.structure) {
+      if (state === 'idle') { squash = 1 + Math.sin(now / 700 + u.uid * 1.3) * 0.018; sx += Math.sin(now / 1100 + u.uid) * 0.8; }
+      else if (state === 'move') squash = 1 + Math.sin(now / 90) * 0.04;
     }
-    let alpha = 1;
+    if (an && (state === 'attack' || state === 'cast')) {
+      const k = Math.min(1, el / Math.max(1, an.impact));
+      if (state === 'attack' && an.target) {
+        const b = this.view.project(an.target.x, an.target.y, this.tileZ(an.target));
+        const dx = b.sx - sx, dy = b.sy - sy, len = Math.hypot(dx, dy) || 1;
+        const m = an.ranged ? -8 : 22;
+        // wind-up back, then lunge to impact, then settle
+        const f = el <= an.impact ? (k < 0.45 ? -0.35 * (k / 0.45) : -0.35 + 1.35 * ((k - 0.45) / 0.55)) : Math.max(0, 1 - (el - an.impact) / (an.dur - an.impact || 1));
+        sx += dx / len * m * f; sy += dy / len * m * 0.5 * f;
+        squash *= 1 + 0.08 * Math.max(0, f);
+      } else {
+        glow = el < an.impact ? k : Math.max(0, 1 - (el - an.impact) / 300);
+        lift += glow * 4;
+      }
+    }
+    if (an && state === 'hit' && !this.reduced) {
+      const k = el / an.dur;
+      squash *= 1 - 0.12 * Math.sin(Math.PI * Math.min(1, k));
+    }
+    const sh = this.shake.get(u.uid);
+    if (sh !== undefined) { if (now > sh) this.shake.delete(u.uid); else if (!this.reduced) { const r = (sh - now) / 260; sx += Math.sin(now / 18) * 5 * r; } }
     const dt = this.dying.get(u.uid);
-    if (dt !== undefined) alpha = Math.max(0, 1 - (now - dt) / DEATH_MS);
+    if (dt !== undefined) {
+      const k = Math.min(1, (now - dt) / DEATH_MS);
+      const frames = art.clips.death;
+      alpha = frames ? Math.max(0, 1 - Math.max(0, (now - dt - (clipDuration(art, 'death') ?? 0))) / 400) : Math.max(0, 1 - k);
+      if (!frames) { tilt = (u.uid % 2 ? 1 : -1) * 0.55 * k * k; sy += 10 * k; }
+    }
     const ps = this.popStart.get(u.uid);
-    let scale = 1;
     if (ps !== undefined) {
       const k = (now - ps) / POP_MS;
-      if (k >= 1) this.popStart.delete(u.uid); else if (k >= 0) scale = 0.2 + 0.8 * (1 - Math.pow(1 - k, 3)) ;
+      if (k >= 1) this.popStart.delete(u.uid); else if (k >= 0) { const e = 1 - Math.pow(1 - k, 3); scale = 0.3 + 0.7 * e; lift += (1 - e) * 30; alpha *= Math.min(1, k * 2); }
     }
     const mine = u.team === g.current && g.phase === 'playing';
     const dim = mine && !def.structure && (u.ap <= 0 || u.summonedThisTurn);
     const fl = (this.flashUntil.get(u.uid) ?? 0) - now;
+    const frame = frameFor(art, state, el, !!def.structure);
+    const hpNow = this.hpShown.get(u.uid) ?? u.hp;
     drawUnitSprite(this.ctx, {
-      def, hero: !!def.hero, teamColor: g.teams[u.team].color, x: sx, y: sy - (dt !== undefined ? (now - dt) / DEATH_MS * 6 : 0), alpha, dim,
+      def, hero: !!def.hero, teamColor: g.teams[u.team].color, factionColor: def.faction ? g.content.factions?.[def.faction]?.color : undefined,
+      x: sx, y: sy, alpha, dim,
       flash: Math.max(0, Math.min(1, fl / 220)),
-      hp: this.hpShown.get(u.uid) ?? u.hp, maxHp: def.stats.hp,
+      hp: hpNow, maxHp: def.stats.hp,
       statuses: u.statuses.map(s => ({ id: s.id, name: g.content.statuses[s.id]?.name ?? s.id })),
       selected: !!ov.selected && ov.selected.x === u.x && ov.selected.y === u.y && !this.segs.has(u.uid),
       hovered: !!ov.hover && ov.hover.x === u.x && ov.hover.y === u.y,
-      scale, time: now,
+      scale, time: now, frame, facing: d.facing, squash, tilt, lift, glow,
+      lampGlow: def.structure ? Math.max(0.08, hpNow / def.stats.hp) : undefined,
+      reduced: this.reduced,
     });
   }
 
@@ -407,7 +676,8 @@ export class Renderer {
       if (d.kind === 'unit') {
         if (!d.u.alive) continue;
         const s = this.view.project(d.px, d.py, d.pz);
-        if (Math.abs(wx - s.sx) <= 14 && wy >= s.sy - 46 && wy <= s.sy + 4) return { x: d.u.x, y: d.u.y };
+        const fh = figureHeight({ frame: frameFor(unitArt(d.u.defId, g.def(d.u)), 'idle', 0, !!g.def(d.u).structure), def: g.def(d.u) });
+        if (Math.abs(wx - s.sx) <= 26 && wy >= s.sy - fh && wy <= s.sy + 8) return { x: d.u.x, y: d.u.y };
       } else {
         const t = g.tiles[d.y][d.x];
         const s = this.view.project(d.x, d.y, t.height);
@@ -423,3 +693,4 @@ export class Renderer {
     return null;
   }
 }
+export { key };

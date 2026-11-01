@@ -21,7 +21,8 @@
    "glyph": "Bg",
    "image": "sprites/salt_concord_brineguard.svg"
   },
-  "description": "The salt-crusted spear line that paved the Shelf one road at a time. Alone it is a farmer with a pole; shoulder to shoulder it is a wall."
+  "description": "The salt-crusted spear line that paved the Shelf one road at a time. Alone it is a farmer with a pole; shoulder to shoulder it is a wall.",
+  "art": "cards/salt_concord_brineguard.svg"
  },
  "salt_concord_salt_levy": {
   "name": "Salt Levy",
@@ -45,7 +46,8 @@
    "glyph": "Lv",
    "image": "sprites/salt_concord_salt_levy.svg"
   },
-  "description": "Conscripted by the road-tax and given a spear. Cheap, plentiful, and exactly as brave as the line around them."
+  "description": "Conscripted by the road-tax and given a spear. Cheap, plentiful, and exactly as brave as the line around them.",
+  "art": "cards/salt_concord_salt_levy.svg"
  },
  "salt_concord_surveyor": {
   "name": "Surveyor",
@@ -69,7 +71,8 @@
    "glyph": "Sv",
    "image": "sprites/salt_concord_surveyor.svg"
   },
-  "description": "The Concord owns what it has measured. Surveyors chalk enemies onto the map before the line ever moves."
+  "description": "The Concord owns what it has measured. Surveyors chalk enemies onto the map before the line ever moves.",
+  "art": "cards/salt_concord_surveyor.svg"
  },
  "salt_concord_brine_slinger": {
   "name": "Brine Slinger",
@@ -93,7 +96,8 @@
    "glyph": "Sl",
    "image": "sprites/salt_concord_brine_slinger.svg"
   },
-  "description": "A miner turned skirmisher who flings pans of cut brine. A hit leaves armour weeping and rust-red."
+  "description": "A miner turned skirmisher who flings pans of cut brine. A hit leaves armour weeping and rust-red.",
+  "art": "cards/salt_concord_brine_slinger.svg"
  },
  "salt_concord_saltwright": {
   "name": "Saltwright",
@@ -118,7 +122,8 @@
    "glyph": "Sw",
    "image": "sprites/salt_concord_saltwright.svg"
   },
-  "description": "Salt-alchemist and mason in one. Saltwrights grow barricades from the dry flats in an afternoon, and cut the enemy's road to the Rim in two."
+  "description": "Salt-alchemist and mason in one. Saltwrights grow barricades from the dry flats in an afternoon, and cut the enemy's road to the Rim in two.",
+  "art": "cards/salt_concord_saltwright.svg"
  },
  "salt_concord_causeway_outrider": {
   "name": "Causeway Outrider",
@@ -142,7 +147,8 @@
    "glyph": "Co",
    "image": "sprites/salt_concord_causeway_outrider.svg"
   },
-  "description": "Mounted courier of the salt roads. Outriders run down stragglers that break from their own formations."
+  "description": "Mounted courier of the salt roads. Outriders run down stragglers that break from their own formations.",
+  "art": "cards/salt_concord_causeway_outrider.svg"
  },
  "salt_concord_brine_chirurgeon": {
   "name": "Brine Chirurgeon",
@@ -167,7 +173,8 @@
    "glyph": "Ch",
    "image": "sprites/salt_concord_brine_chirurgeon.svg"
   },
-  "description": "Field surgeon who cleans wounds with brine and swears by it. The line holds because someone keeps stitching it."
+  "description": "Field surgeon who cleans wounds with brine and swears by it. The line holds because someone keeps stitching it.",
+  "art": "cards/salt_concord_brine_chirurgeon.svg"
  },
  "salt_concord_tollkeeper": {
   "name": "Tollkeeper",
@@ -192,7 +199,8 @@
    "glyph": "Tk",
    "image": "sprites/salt_concord_tollkeeper.svg"
   },
-  "description": "Every road has a toll and every toll has a keeper. They reel in those who try to cross without paying."
+  "description": "Every road has a toll and every toll has a keeper. They reel in those who try to cross without paying.",
+  "art": "cards/salt_concord_tollkeeper.svg"
  },
  "salt_concord_stair_warden": {
   "name": "Stair-Warden",
@@ -217,7 +225,8 @@
    "glyph": "SW",
    "image": "sprites/salt_concord_stair_warden.svg"
   },
-  "description": "Sworn to the Greywater Stair, and to the idea that nothing climbs it uninvited. Neighbours stand taller beside them."
+  "description": "Sworn to the Greywater Stair, and to the idea that nothing climbs it uninvited. Neighbours stand taller beside them.",
+  "art": "cards/salt_concord_stair_warden.svg"
  },
  "salt_concord_caustic_lantern": {
   "name": "Caustic Lantern",
@@ -241,7 +250,8 @@
    "glyph": "CL",
    "image": "sprites/salt_concord_caustic_lantern.svg"
   },
-  "description": "A wheeled brazier that hurls burning salt-glass in long arcs. Slow, loud, and expensive to defend."
+  "description": "A wheeled brazier that hurls burning salt-glass in long arcs. Slow, loud, and expensive to defend.",
+  "art": "cards/salt_concord_caustic_lantern.svg"
  },
  "salt_concord_rim_marshal": {
   "name": "Rim Marshal",
@@ -266,7 +276,8 @@
    "glyph": "RM",
    "image": "sprites/salt_concord_rim_marshal.svg"
   },
-  "description": "Officer of the Rim Wardens, rank earned in road-surveys and border wars. Where the Marshal stands, the formation remembers its drill."
+  "description": "Officer of the Rim Wardens, rank earned in road-surveys and border wars. Where the Marshal stands, the formation remembers its drill.",
+  "art": "cards/salt_concord_rim_marshal.svg"
  },
  "salt_concord_saltmill_juggernaut": {
   "name": "Saltmill Juggernaut",
@@ -291,7 +302,8 @@
    "glyph": "SJ",
    "image": "sprites/salt_concord_saltmill_juggernaut.svg"
   },
-  "description": "A salt-grinding mill bolted to iron treads and sent against the enemy line. The Concord's proof that a road can walk."
+  "description": "A salt-grinding mill bolted to iron treads and sent against the enemy line. The Concord's proof that a road can walk.",
+  "art": "cards/salt_concord_saltmill_juggernaut.svg"
  },
  "salt_concord_tamsin_orrel": {
   "name": "Commander Tamsin Orrel",
@@ -318,7 +330,8 @@
    "glyph": "TO",
    "image": "sprites/salt_concord_tamsin_orrel.svg"
   },
-  "description": "A Rim Marshal's daughter and the youngest survey-company commander the Concord has, promoted because nobody senior would take the Shoal. She measures everything twice and keeps a night lamp lit, and she wants to hold the work together even if the paper does not."
+  "description": "A Rim Marshal's daughter and the youngest survey-company commander the Concord has, promoted because nobody senior would take the Shoal. She measures everything twice and keeps a night lamp lit, and she wants to hold the work together even if the paper does not.",
+  "art": "cards/salt_concord_tamsin_orrel.svg"
  },
  "salt_concord_hesper_vael": {
   "name": "Warden-General Hesper Vael",
@@ -345,7 +358,8 @@
    "glyph": "HV",
    "image": "sprites/salt_concord_hesper_vael.svg"
   },
-  "description": "Oldest living Stair-Warden, who has stood the top landing of the Greywater Stair for forty years and has never once given up a step. She wants one thing, which is that nothing climbs the Stair uninvited, and she will outlast anyone who tries."
+  "description": "Oldest living Stair-Warden, who has stood the top landing of the Greywater Stair for forty years and has never once given up a step. She wants one thing, which is that nothing climbs the Stair uninvited, and she will outlast anyone who tries.",
+  "art": "cards/salt_concord_hesper_vael.svg"
  },
  "salt_concord_ione_karst": {
   "name": "Magister Ione Karst",
@@ -375,7 +389,8 @@
   "description": "Chief salt-alchemist of the Verge, who has tasted every brine on the Shelf and trusts none of them. She wants a pure salt, one that holds the line without the people who dig it dying of it, and she will test every enemy as a sample.",
   "resist": {
    "salt": 2
-  }
+  },
+  "art": "cards/salt_concord_ione_karst.svg"
  },
  "hadal_court_pit_thrall": {
   "name": "Pit Thrall",
@@ -398,7 +413,8 @@
    "glyph": "Th",
    "image": "sprites/hadal_court_pit_thrall.svg"
   },
-  "description": "Brine-grown labourer of the vent pools, bred to fill a breach in the line and be walked over by something larger. The Court counts them as the floor its champions stand on."
+  "description": "Brine-grown labourer of the vent pools, bred to fill a breach in the line and be walked over by something larger. The Court counts them as the floor its champions stand on.",
+  "art": "cards/hadal_court_pit_thrall.svg"
  },
  "hadal_court_bell_knight": {
   "name": "Bell-Knight",
@@ -422,7 +438,8 @@
    "glyph": "BK",
    "image": "sprites/hadal_court_bell_knight.svg"
   },
-  "description": "A knight sealed inside a brass pressure-bell that keeps the trench weight in and the Ebb out. It walks ahead of the Court so the bell's toll is the first thing the enemy hears."
+  "description": "A knight sealed inside a brass pressure-bell that keeps the trench weight in and the Ebb out. It walks ahead of the Court so the bell's toll is the first thing the enemy hears.",
+  "art": "cards/hadal_court_bell_knight.svg"
  },
  "hadal_court_lurecaller": {
   "name": "Lurecaller",
@@ -446,7 +463,8 @@
    "glyph": "Lc",
    "image": "sprites/hadal_court_lurecaller.svg"
   },
-  "description": "Carries a lamp-stalk grown from its own skull and swings it to draw the curious into reach. In the Court's hunts it is the one who decides where the prey will stand."
+  "description": "Carries a lamp-stalk grown from its own skull and swings it to draw the curious into reach. In the Court's hunts it is the one who decides where the prey will stand.",
+  "art": "cards/hadal_court_lurecaller.svg"
  },
  "hadal_court_lantern_spitter": {
   "name": "Lantern Spitter",
@@ -469,7 +487,8 @@
    "glyph": "Ls",
    "image": "sprites/hadal_court_lantern_spitter.svg"
   },
-  "description": "A glass-skinned gulper that spits luminous brine. Fired from behind the bells, it is how the Court teaches the sunlit to fear a sudden flash."
+  "description": "A glass-skinned gulper that spits luminous brine. Fired from behind the bells, it is how the Court teaches the sunlit to fear a sudden flash.",
+  "art": "cards/hadal_court_lantern_spitter.svg"
  },
  "hadal_court_vent_priest": {
   "name": "Vent-Priest",
@@ -494,7 +513,8 @@
    "glyph": "VP",
    "image": "sprites/hadal_court_vent_priest.svg"
   },
-  "description": "Tends a portable vent-flame that keeps the Court alive far from the trench floor. Its prayers are warm water, and it is the reason the slow giants survive their long climb."
+  "description": "Tends a portable vent-flame that keeps the Court alive far from the trench floor. Its prayers are warm water, and it is the reason the slow giants survive their long climb.",
+  "art": "cards/hadal_court_vent_priest.svg"
  },
  "hadal_court_pressure_lancer": {
   "name": "Pressure Lancer",
@@ -518,7 +538,8 @@
    "glyph": "PL",
    "image": "sprites/hadal_court_pressure_lancer.svg"
   },
-  "description": "Fires bored shafts of compressed brine that carry a little of the deep with them. The Court's artillery, for a people who never forgot what true weight feels like."
+  "description": "Fires bored shafts of compressed brine that carry a little of the deep with them. The Court's artillery, for a people who never forgot what true weight feels like.",
+  "art": "cards/hadal_court_pressure_lancer.svg"
  },
  "hadal_court_murk_diver": {
   "name": "Murk Diver",
@@ -542,7 +563,8 @@
    "glyph": "MD",
    "image": "sprites/hadal_court_murk_diver.svg"
   },
-  "description": "A lean, quick scout that slips from shadow to shadow ahead of the army. It maps the dark places a Court column will have to cross."
+  "description": "A lean, quick scout that slips from shadow to shadow ahead of the army. It maps the dark places a Court column will have to cross.",
+  "art": "cards/hadal_court_murk_diver.svg"
  },
  "hadal_court_trench_crab": {
   "name": "Trench Crab",
@@ -566,7 +588,8 @@
    "glyph": "TC",
    "image": "sprites/hadal_court_trench_crab.svg"
   },
-  "description": "A barnacled, house-sized hunter-beast the Court breeds to pin and break the enemy's formation. It guards the roads the great houses use to climb out of the trench."
+  "description": "A barnacled, house-sized hunter-beast the Court breeds to pin and break the enemy's formation. It guards the roads the great houses use to climb out of the trench.",
+  "art": "cards/hadal_court_trench_crab.svg"
  },
  "hadal_court_crushing_maw": {
   "name": "Crushing Maw",
@@ -590,7 +613,8 @@
    "glyph": "CM",
    "image": "sprites/hadal_court_crushing_maw.svg"
   },
-  "description": "A walking mouth, thousands of years old, that the Court keeps in a tomb of brine and wakes only for war. Nothing that stands before it has ever stood again."
+  "description": "A walking mouth, thousands of years old, that the Court keeps in a tomb of brine and wakes only for war. Nothing that stands before it has ever stood again.",
+  "art": "cards/hadal_court_crushing_maw.svg"
  },
  "hadal_court_deep_herald": {
   "name": "Deep Herald",
@@ -614,7 +638,8 @@
    "glyph": "DH",
    "image": "sprites/hadal_court_deep_herald.svg"
   },
-  "description": "Voice of the Court of Depths, who sings the dark across a battlefield before the army arrives. It exists so the enemy forgets the shape of the sky."
+  "description": "Voice of the Court of Depths, who sings the dark across a battlefield before the army arrives. It exists so the enemy forgets the shape of the sky.",
+  "art": "cards/hadal_court_deep_herald.svg"
  },
  "hadal_court_tollwarden": {
   "name": "Tollwarden",
@@ -639,7 +664,8 @@
    "glyph": "TW",
    "image": "sprites/hadal_court_tollwarden.svg"
   },
-  "description": "A magistrate of the Court who carries the weight of its oath into the field. Where the Tollwarden stands, the Court's champions fight as if the whole sea were behind them."
+  "description": "A magistrate of the Court who carries the weight of its oath into the field. Where the Tollwarden stands, the Court's champions fight as if the whole sea were behind them.",
+  "art": "cards/hadal_court_tollwarden.svg"
  },
  "hadal_court_trench_mother": {
   "name": "Trench Mother",
@@ -663,7 +689,8 @@
    "glyph": "TM",
    "image": "sprites/hadal_court_trench_mother.svg"
   },
-  "description": "The great brood-mother of the trench floors, hauled in a pressure-cradle at the heart of the Court's armies. She is there to prove the Court can raise an army from nothing, and does."
+  "description": "The great brood-mother of the trench floors, hauled in a pressure-cradle at the heart of the Court's armies. She is there to prove the Court can raise an army from nothing, and does.",
+  "art": "cards/hadal_court_trench_mother.svg"
  },
  "hadal_court_herald_vhaal": {
   "name": "Herald Vhaal",
@@ -690,7 +717,8 @@
    "glyph": "Vh",
    "image": "sprites/hadal_court_herald_vhaal.svg"
   },
-  "description": "Envoy of the Court of Depths in a bronze brine-bell, formal and slow and unfailingly polite, who treats the surface as a house where a guest has been eating the furniture for three hundred years. She wants one question answered, who lifted the sea, and she will accept only the truth."
+  "description": "Envoy of the Court of Depths in a bronze brine-bell, formal and slow and unfailingly polite, who treats the surface as a house where a guest has been eating the furniture for three hundred years. She wants one question answered, who lifted the sea, and she will accept only the truth.",
+  "art": "cards/hadal_court_herald_vhaal.svg"
  },
  "hadal_court_orrun_tessk": {
   "name": "Orrun Tessk",
@@ -717,7 +745,8 @@
    "glyph": "Ot",
    "image": "sprites/hadal_court_orrun_tessk.svg"
   },
-  "description": "A Bell-Knight who stood the night watch when the sea vanished and has never been relieved, his bell cracked and still tolling. He wants an officer of the surface to stand in front of him and sign the order that ends his watch."
+  "description": "A Bell-Knight who stood the night watch when the sea vanished and has never been relieved, his bell cracked and still tolling. He wants an officer of the surface to stand in front of him and sign the order that ends his watch.",
+  "art": "cards/hadal_court_orrun_tessk.svg"
  },
  "hadal_court_maelis_quell": {
   "name": "Maelis Quell",
@@ -744,7 +773,8 @@
    "glyph": "Mq",
    "image": "sprites/hadal_court_maelis_quell.svg"
   },
-  "description": "Eldest Vent-Priest of the Court, who carried a flame up out of the trench cradled against the cold and has not let it gutter in forty years. She wants to see her giants reach the open sky alive, and to learn whether the surface sea is mercy or theft."
+  "description": "Eldest Vent-Priest of the Court, who carried a flame up out of the trench cradled against the cold and has not let it gutter in forty years. She wants to see her giants reach the open sky alive, and to learn whether the surface sea is mercy or theft.",
+  "art": "cards/hadal_court_maelis_quell.svg"
  },
  "returning_tide_penitent": {
   "name": "Penitent",
@@ -768,7 +798,8 @@
    "glyph": "Pe",
    "image": "sprites/returning_tide_penitent.svg"
   },
-  "description": "A shaven pilgrim who walks into the surf to be forgiven. The Tide spends them freely, and they would have it no other way."
+  "description": "A shaven pilgrim who walks into the surf to be forgiven. The Tide spends them freely, and they would have it no other way.",
+  "art": "cards/returning_tide_penitent.svg"
  },
  "returning_tide_drowned": {
   "name": "Drowned",
@@ -797,7 +828,8 @@
   ],
   "revive": {
    "hpFraction": 0.5
-  }
+  },
+  "art": "cards/returning_tide_drowned.svg"
  },
  "returning_tide_tear_slinger": {
   "name": "Tear-Slinger",
@@ -820,7 +852,8 @@
    "glyph": "Ts",
    "image": "sprites/returning_tide_tear_slinger.svg"
   },
-  "description": "A mourner who hurls brine from a bag of collected grief. Its job is to leave enemy lines soaked before the first blade lands."
+  "description": "A mourner who hurls brine from a bag of collected grief. Its job is to leave enemy lines soaked before the first blade lands.",
+  "art": "cards/returning_tide_tear_slinger.svg"
  },
  "returning_tide_tideskulker": {
   "name": "Tideskulker",
@@ -844,7 +877,8 @@
    "glyph": "Tk",
    "image": "sprites/returning_tide_tideskulker.svg"
   },
-  "description": "A gutter-child who learned the shallows on the Weeping Shelf. It slips behind lines to cut the legs from anything that moves slowly."
+  "description": "A gutter-child who learned the shallows on the Weeping Shelf. It slips behind lines to cut the legs from anything that moves slowly.",
+  "art": "cards/returning_tide_tideskulker.svg"
  },
  "returning_tide_wringer": {
   "name": "Wringer",
@@ -868,7 +902,8 @@
    "glyph": "Wr",
    "image": "sprites/returning_tide_wringer.svg"
   },
-  "description": "A priest of the oldest rite, who draws water from living things and carries it to the sea above. It exists to outlast whatever it holds."
+  "description": "A priest of the oldest rite, who draws water from living things and carries it to the sea above. It exists to outlast whatever it holds.",
+  "art": "cards/returning_tide_wringer.svg"
  },
  "returning_tide_rainsayer": {
   "name": "Rainsayer",
@@ -892,7 +927,8 @@
    "glyph": "Rs",
    "image": "sprites/returning_tide_rainsayer.svg"
   },
-  "description": "A prophet who calls rain from clear sky and floods the ground beneath enemy feet. It claims ground for the faithful and makes it theirs alone."
+  "description": "A prophet who calls rain from clear sky and floods the ground beneath enemy feet. It claims ground for the faithful and makes it theirs alone.",
+  "art": "cards/returning_tide_rainsayer.svg"
  },
  "returning_tide_shroud_mender": {
   "name": "Shroud-Mender",
@@ -916,7 +952,8 @@
    "glyph": "Sm",
    "image": "sprites/returning_tide_shroud_mender.svg"
   },
-  "description": "A midwife of the Drowned who wraps wounds in wet cloth that never dries. It keeps the swarm on its feet long enough to finish its prayers."
+  "description": "A midwife of the Drowned who wraps wounds in wet cloth that never dries. It keeps the swarm on its feet long enough to finish its prayers.",
+  "art": "cards/returning_tide_shroud_mender.svg"
  },
  "returning_tide_anchor_bearer": {
   "name": "Anchor-Bearer",
@@ -940,7 +977,8 @@
    "glyph": "Ab",
    "image": "sprites/returning_tide_anchor_bearer.svg"
   },
-  "description": "A penitent who chose to drag a ship's anchor until the tide took them. It holds the line and drags runners down to the Drowned."
+  "description": "A penitent who chose to drag a ship's anchor until the tide took them. It holds the line and drags runners down to the Drowned.",
+  "art": "cards/returning_tide_anchor_bearer.svg"
  },
  "returning_tide_choirmaster": {
   "name": "Choirmaster",
@@ -964,7 +1002,8 @@
    "glyph": "Cm",
    "image": "sprites/returning_tide_choirmaster.svg"
   },
-  "description": "A conductor of the faithful whose hymns keep a thousand throats in time. It exists so that cheap bodies fight like one great body."
+  "description": "A conductor of the faithful whose hymns keep a thousand throats in time. It exists so that cheap bodies fight like one great body.",
+  "art": "cards/returning_tide_choirmaster.svg"
  },
  "returning_tide_undertow_singer": {
   "name": "Undertow Singer",
@@ -988,7 +1027,8 @@
    "glyph": "Us",
    "image": "sprites/returning_tide_undertow_singer.svg"
   },
-  "description": "A voice that tugs at ankles. It herds enemies into brine pools and holds them there until the choir arrives."
+  "description": "A voice that tugs at ankles. It herds enemies into brine pools and holds them there until the choir arrives.",
+  "art": "cards/returning_tide_undertow_singer.svg"
  },
  "returning_tide_bloat_drowned": {
   "name": "Bloat-Drowned",
@@ -1012,7 +1052,8 @@
    "glyph": "Bd",
    "image": "sprites/returning_tide_bloat_drowned.svg"
   },
-  "description": "A corpse left to swell for a season until it carries a river inside. It walks into the enemy line and releases it."
+  "description": "A corpse left to swell for a season until it carries a river inside. It walks into the enemy line and releases it.",
+  "art": "cards/returning_tide_bloat_drowned.svg"
  },
  "returning_tide_tide_prophet": {
   "name": "Tide-Prophet",
@@ -1037,7 +1078,8 @@
    "glyph": "TP",
    "image": "sprites/returning_tide_tide_prophet.svg"
   },
-  "description": "The one who heard the sea above and told the faithful where it went. It drops a flood on the world and does not pretend to be sorry."
+  "description": "The one who heard the sea above and told the faithful where it went. It drops a flood on the world and does not pretend to be sorry.",
+  "art": "cards/returning_tide_tide_prophet.svg"
  },
  "returning_tide_imre_dunnock": {
   "name": "Prophet Imre Dunnock",
@@ -1064,7 +1106,8 @@
    "glyph": "ID",
    "image": "sprites/returning_tide_imre_dunnock.svg"
   },
-  "description": "Once a Concord tax clerk, he audited the water ledgers, found they did not balance, and walked into the rain with a following of thousands. He wants every lighthouse put out because he believes the sea above will be merciful, and he knows in his gentler hours that it will not."
+  "description": "Once a Concord tax clerk, he audited the water ledgers, found they did not balance, and walked into the rain with a following of thousands. He wants every lighthouse put out because he believes the sea above will be merciful, and he knows in his gentler hours that it will not.",
+  "art": "cards/returning_tide_imre_dunnock.svg"
  },
  "returning_tide_maren_ketch": {
   "name": "Sister Maren Ketch",
@@ -1091,7 +1134,8 @@
    "glyph": "MK",
    "image": "sprites/returning_tide_maren_ketch.svg"
   },
-  "description": "The senior wringer of the Weeping Shelf, who has drawn the water out of more living things than she will admit to counting. She wants the faithful to be worth the sea when it arrives, and keeps what she takes."
+  "description": "The senior wringer of the Weeping Shelf, who has drawn the water out of more living things than she will admit to counting. She wants the faithful to be worth the sea when it arrives, and keeps what she takes.",
+  "art": "cards/returning_tide_maren_ketch.svg"
  },
  "returning_tide_oswin_brack": {
   "name": "Captain Oswin Brack",
@@ -1124,7 +1168,8 @@
   },
   "resist": {
    "brine": 2
-  }
+  },
+  "art": "cards/returning_tide_oswin_brack.svg"
  },
  "salvage_compact_lamplighter": {
   "name": "Lamplighter",
@@ -1148,7 +1193,8 @@
    "glyph": "Lm",
    "image": "sprites/salvage_compact_lamplighter.svg"
   },
-  "description": "A hulk-kid with a lantern pole who runs ahead to light the way, and to pour oil where the enemy will step. Cheap, quick, and expected to be lost."
+  "description": "A hulk-kid with a lantern pole who runs ahead to light the way, and to pour oil where the enemy will step. Cheap, quick, and expected to be lost.",
+  "art": "cards/salvage_compact_lamplighter.svg"
  },
  "salvage_compact_scrapper": {
   "name": "Hull Scrapper",
@@ -1172,7 +1218,8 @@
    "glyph": "Sc",
    "image": "sprites/salvage_compact_scrapper.svg"
   },
-  "description": "A deckhand paid in rope and rumour to hold a corridor of rusted plating for exactly as long as the Compact needs."
+  "description": "A deckhand paid in rope and rumour to hold a corridor of rusted plating for exactly as long as the Compact needs.",
+  "art": "cards/salvage_compact_scrapper.svg"
  },
  "salvage_compact_wrecker": {
   "name": "Wrecker",
@@ -1196,7 +1243,8 @@
    "glyph": "Wr",
    "image": "sprites/salvage_compact_wrecker.svg"
   },
-  "description": "Strips wrecks down to the nails and strips enemy lines the same way, in and out before anyone has finished shouting."
+  "description": "Strips wrecks down to the nails and strips enemy lines the same way, in and out before anyone has finished shouting.",
+  "art": "cards/salvage_compact_wrecker.svg"
  },
  "salvage_compact_rivet_slinger": {
   "name": "Rivet-Slinger",
@@ -1220,7 +1268,8 @@
    "glyph": "Rv",
    "image": "sprites/salvage_compact_rivet_slinger.svg"
   },
-  "description": "Fires bent rivets and nails from a pneumatic gun built out of a ship's bilge pump. The Compact pays its marksmen in scrap."
+  "description": "Fires bent rivets and nails from a pneumatic gun built out of a ship's bilge pump. The Compact pays its marksmen in scrap.",
+  "art": "cards/salvage_compact_rivet_slinger.svg"
  },
  "salvage_compact_powder_monk": {
   "name": "Powder-Monk",
@@ -1244,7 +1293,8 @@
    "glyph": "Pm",
    "image": "sprites/salvage_compact_powder_monk.svg"
   },
-  "description": "Keeper of the leviathan-fat kilns who blesses every fuse before it is lit. Sells fire to everyone, and burns those who do not pay."
+  "description": "Keeper of the leviathan-fat kilns who blesses every fuse before it is lit. Sells fire to everyone, and burns those who do not pay.",
+  "art": "cards/salvage_compact_powder_monk.svg"
  },
  "salvage_compact_bone_sled_rider": {
   "name": "Bone-Sled Rider",
@@ -1268,7 +1318,8 @@
    "glyph": "Bs",
    "image": "sprites/salvage_compact_bone_sled_rider.svg"
   },
-  "description": "Rides a sled of leviathan ribs over the salt faster than anyone can aim, carrying messages, cargo, and sudden violence."
+  "description": "Rides a sled of leviathan ribs over the salt faster than anyone can aim, carrying messages, cargo, and sudden violence.",
+  "art": "cards/salvage_compact_bone_sled_rider.svg"
  },
  "salvage_compact_tallow_mender": {
   "name": "Tallow-Mender",
@@ -1292,7 +1343,8 @@
    "glyph": "Tm",
    "image": "sprites/salvage_compact_tallow_mender.svg"
   },
-  "description": "Hull-doctor who patches wounds with rendered fat and greases the boots of those who must run. The Compact's closest thing to a field hospital."
+  "description": "Hull-doctor who patches wounds with rendered fat and greases the boots of those who must run. The Compact's closest thing to a field hospital.",
+  "art": "cards/salvage_compact_tallow_mender.svg"
  },
  "salvage_compact_snare_tinker": {
   "name": "Snare-Tinker",
@@ -1316,7 +1368,8 @@
    "glyph": "Sn",
    "image": "sprites/salvage_compact_snare_tinker.svg"
   },
-  "description": "Builds every trap the Compact lays for invaders, and every one looks like something worth picking up."
+  "description": "Builds every trap the Compact lays for invaders, and every one looks like something worth picking up.",
+  "art": "cards/salvage_compact_snare_tinker.svg"
  },
  "salvage_compact_hullbreaker": {
   "name": "Hullbreaker",
@@ -1340,7 +1393,8 @@
    "glyph": "Hb",
    "image": "sprites/salvage_compact_hullbreaker.svg"
   },
-  "description": "Sledgehammer-wielder hired to bring down bulkheads, and sometimes the soldiers behind them. The one Compact piece that can hold ground."
+  "description": "Sledgehammer-wielder hired to bring down bulkheads, and sometimes the soldiers behind them. The one Compact piece that can hold ground.",
+  "art": "cards/salvage_compact_hullbreaker.svg"
  },
  "salvage_compact_quartermaster": {
   "name": "Quartermaster",
@@ -1365,7 +1419,8 @@
    "glyph": "Qm",
    "image": "sprites/salvage_compact_quartermaster.svg"
   },
-  "description": "Keeper of the ledger and the cutlass, who pays out shares mid-battle and gets everyone moving at once."
+  "description": "Keeper of the ledger and the cutlass, who pays out shares mid-battle and gets everyone moving at once.",
+  "art": "cards/salvage_compact_quartermaster.svg"
  },
  "salvage_compact_breach_gunner": {
   "name": "Breach-Gunner",
@@ -1389,7 +1444,8 @@
    "glyph": "Bg",
    "image": "sprites/salvage_compact_breach_gunner.svg"
   },
-  "description": "Lobs powder kegs from a hull-mounted mortar and shoots anything that survives. Every shot costs more than the average sailor earns in a season."
+  "description": "Lobs powder kegs from a hull-mounted mortar and shoots anything that survives. Every shot costs more than the average sailor earns in a season.",
+  "art": "cards/salvage_compact_breach_gunner.svg"
  },
  "salvage_compact_harpoon_engine": {
   "name": "Harpoon Engine",
@@ -1413,7 +1469,8 @@
    "glyph": "He",
    "image": "sprites/salvage_compact_harpoon_engine.svg"
   },
-  "description": "A whaling harpoon the size of a mast, bolted to a hull and wound with chain, built to haul anything that moves back to the Compact. It took a generation to build and no one is allowed to sell it."
+  "description": "A whaling harpoon the size of a mast, bolted to a hull and wound with chain, built to haul anything that moves back to the Compact. It took a generation to build and no one is allowed to sell it.",
+  "art": "cards/salvage_compact_harpoon_engine.svg"
  },
  "salvage_compact_odo_brask": {
   "name": "Odo Brask",
@@ -1440,7 +1497,8 @@
    "glyph": "Ob",
    "image": "sprites/salvage_compact_odo_brask.svg"
   },
-  "description": "A fat, cheerful broker in three coats who sells maps, grain, rumours and, when it pays, silence. He wants to stay solvent and alive, and has found that the two usually mean selling someone out at the right price."
+  "description": "A fat, cheerful broker in three coats who sells maps, grain, rumours and, when it pays, silence. He wants to stay solvent and alive, and has found that the two usually mean selling someone out at the right price.",
+  "art": "cards/salvage_compact_odo_brask.svg"
  },
  "salvage_compact_ketta_vane": {
   "name": "Ketta Vane",
@@ -1467,7 +1525,8 @@
    "glyph": "Kv",
    "image": "sprites/salvage_compact_ketta_vane.svg"
   },
-  "description": "The fastest rider on the salt, who has outrun three debts, two wars and her own reputation on a sled of leviathan ribs. She wants a stretch of open flat with nobody on it, and will burn anything that stands between her and it."
+  "description": "The fastest rider on the salt, who has outrun three debts, two wars and her own reputation on a sled of leviathan ribs. She wants a stretch of open flat with nobody on it, and will burn anything that stands between her and it.",
+  "art": "cards/salvage_compact_ketta_vane.svg"
  },
  "salvage_compact_brother_ashmaw": {
   "name": "Brother Ashmaw",
@@ -1494,7 +1553,8 @@
    "glyph": "As",
    "image": "sprites/salvage_compact_brother_ashmaw.svg"
   },
-  "description": "Head of the Powder-Monks, who renders leviathan fat into the finest blasting grease in the Hulks and blesses every barrel by name. He wants the old hulls to burn bright enough to be seen from the Rim, so that someone finally asks what the Compact has been guarding."
+  "description": "Head of the Powder-Monks, who renders leviathan fat into the finest blasting grease in the Hulks and blesses every barrel by name. He wants the old hulls to burn bright enough to be seen from the Rim, so that someone finally asks what the Compact has been guarding.",
+  "art": "cards/salvage_compact_brother_ashmaw.svg"
  },
  "reef_ascendant_polyp_drone": {
   "name": "Polyp Drone",
@@ -1520,7 +1580,8 @@
    "glyph": "Pd",
    "image": "sprites/reef_ascendant_polyp_drone.svg"
   },
-  "description": "One mouth of the colony, grown in an hour and spent in a minute. The Reef does not mourn drones; it grows more."
+  "description": "One mouth of the colony, grown in an hour and spent in a minute. The Reef does not mourn drones; it grows more.",
+  "art": "cards/reef_ascendant_polyp_drone.svg"
  },
  "reef_ascendant_spitter_polyp": {
   "name": "Spitter Polyp",
@@ -1546,7 +1607,8 @@
    "glyph": "Sp",
    "image": "sprites/reef_ascendant_spitter_polyp.svg"
   },
-  "description": "A drone bred to lob caustic calcite slurry from behind the line. It exists so the front drones can die with company."
+  "description": "A drone bred to lob caustic calcite slurry from behind the line. It exists so the front drones can die with company.",
+  "art": "cards/reef_ascendant_spitter_polyp.svg"
  },
  "reef_ascendant_fanblade": {
   "name": "Fanblade",
@@ -1572,7 +1634,8 @@
    "glyph": "Fb",
    "image": "sprites/reef_ascendant_fanblade.svg"
   },
-  "description": "A drone grown around a fan of razored calcite. It is the colony's reach, sent to cut down whatever the slow bodies cannot catch."
+  "description": "A drone grown around a fan of razored calcite. It is the colony's reach, sent to cut down whatever the slow bodies cannot catch.",
+  "art": "cards/reef_ascendant_fanblade.svg"
  },
  "reef_ascendant_sting_anemone": {
   "name": "Sting Anemone",
@@ -1598,7 +1661,8 @@
    "glyph": "An",
    "image": "sprites/reef_ascendant_sting_anemone.svg"
   },
-  "description": "A rooted-looking thing that is not rooted at all. Its touch dulls the nerves of anything that threatens a mind."
+  "description": "A rooted-looking thing that is not rooted at all. Its touch dulls the nerves of anything that threatens a mind.",
+  "art": "cards/reef_ascendant_sting_anemone.svg"
  },
  "reef_ascendant_shard_urchin": {
   "name": "Shard Urchin",
@@ -1624,7 +1688,8 @@
    "glyph": "Ur",
    "image": "sprites/reef_ascendant_shard_urchin.svg"
   },
-  "description": "A drone that bristles when cornered. The colony plants it in doorways so that passing through costs blood."
+  "description": "A drone that bristles when cornered. The colony plants it in doorways so that passing through costs blood.",
+  "art": "cards/reef_ascendant_shard_urchin.svg"
  },
  "reef_ascendant_brainstalk": {
   "name": "Brainstalk",
@@ -1651,7 +1716,8 @@
    "glyph": "Bs",
    "image": "sprites/reef_ascendant_brainstalk.svg"
   },
-  "description": "A fluted tower of living calcite that thinks for the drones around it. Kill it and every body within its reach goes slack."
+  "description": "A fluted tower of living calcite that thinks for the drones around it. Kill it and every body within its reach goes slack.",
+  "art": "cards/reef_ascendant_brainstalk.svg"
  },
  "reef_ascendant_broodspire": {
   "name": "Broodspire",
@@ -1678,7 +1744,8 @@
    "glyph": "Bd",
    "image": "sprites/reef_ascendant_broodspire.svg"
   },
-  "description": "A budding spire that pushes out fresh drones the way a reef pushes out polyps. It is the reason the Reef is never really outnumbered."
+  "description": "A budding spire that pushes out fresh drones the way a reef pushes out polyps. It is the reason the Reef is never really outnumbered.",
+  "art": "cards/reef_ascendant_broodspire.svg"
  },
  "reef_ascendant_reef_tender": {
   "name": "Reef Tender",
@@ -1705,7 +1772,8 @@
    "glyph": "Tn",
    "image": "sprites/reef_ascendant_reef_tender.svg"
   },
-  "description": "A drone bred to feed its siblings from the colony's stores. It is the only mercy the Reef knows, and it is still just bookkeeping."
+  "description": "A drone bred to feed its siblings from the colony's stores. It is the only mercy the Reef knows, and it is still just bookkeeping.",
+  "art": "cards/reef_ascendant_reef_tender.svg"
  },
  "reef_ascendant_spireguard": {
   "name": "Spireguard",
@@ -1732,7 +1800,8 @@
    "glyph": "Sg",
    "image": "sprites/reef_ascendant_spireguard.svg"
   },
-  "description": "A drone that never stops growing, layer on layer of calcite, until it is more wall than animal. The colony plants it in the road and waits."
+  "description": "A drone that never stops growing, layer on layer of calcite, until it is more wall than animal. The colony plants it in the road and waits.",
+  "art": "cards/reef_ascendant_spireguard.svg"
  },
  "reef_ascendant_calcite_bloom": {
   "name": "Calcite Bloom",
@@ -1759,7 +1828,8 @@
    "glyph": "Cb",
    "image": "sprites/reef_ascendant_calcite_bloom.svg"
   },
-  "description": "A flower the size of a house, its roots turning bare rock into Living Reef. Where it blooms the Reef is already home."
+  "description": "A flower the size of a house, its roots turning bare rock into Living Reef. Where it blooms the Reef is already home.",
+  "art": "cards/reef_ascendant_calcite_bloom.svg"
  },
  "reef_ascendant_lensbearer": {
   "name": "Lensbearer",
@@ -1786,7 +1856,8 @@
    "glyph": "Lb",
    "image": "sprites/reef_ascendant_lensbearer.svg"
   },
-  "description": "A colony grown around a lens of clear calcite that gathers the sun the Reef woke to. It sees far and burns what it sees."
+  "description": "A colony grown around a lens of clear calcite that gathers the sun the Reef woke to. It sees far and burns what it sees.",
+  "art": "cards/reef_ascendant_lensbearer.svg"
  },
  "reef_ascendant_elder_colony": {
   "name": "Elder Colony",
@@ -1814,7 +1885,8 @@
    "glyph": "El",
    "image": "sprites/reef_ascendant_elder_colony.svg"
   },
-  "description": "One of the oldest minds on the Shelf, thinking a single slow thought for three centuries. Wherever it stands, the Reef is one body."
+  "description": "One of the oldest minds on the Shelf, thinking a single slow thought for three centuries. Wherever it stands, the Reef is one body.",
+  "art": "cards/reef_ascendant_elder_colony.svg"
  },
  "reef_ascendant_coralspire": {
   "name": "Coralspire",
@@ -1841,7 +1913,8 @@
    "glyph": "CS",
    "image": "sprites/reef_ascendant_coralspire.svg"
   },
-  "description": "Coralspire is the eldest colony of the Shelf, a petrified reef that woke at the first dawn and has thought slowly ever since. It wants the Ebb to last forever, because it can feel its own oldest branches crumbling as the sea stays gone."
+  "description": "Coralspire is the eldest colony of the Shelf, a petrified reef that woke at the first dawn and has thought slowly ever since. It wants the Ebb to last forever, because it can feel its own oldest branches crumbling as the sea stays gone.",
+  "art": "cards/reef_ascendant_coralspire.svg"
  },
  "reef_ascendant_marrowbloom": {
   "name": "Marrowbloom",
@@ -1868,7 +1941,8 @@
    "glyph": "MB",
    "image": "sprites/reef_ascendant_marrowbloom.svg"
   },
-  "description": "Marrowbloom is a colony woken in a mass grave of wrecks, and it has learned that everything dead leaves calcite behind. It wants to eat the whole battlefield down to bare reef before the sea can come back for it."
+  "description": "Marrowbloom is a colony woken in a mass grave of wrecks, and it has learned that everything dead leaves calcite behind. It wants to eat the whole battlefield down to bare reef before the sea can come back for it.",
+  "art": "cards/reef_ascendant_marrowbloom.svg"
  },
  "reef_ascendant_glasswake": {
   "name": "Glasswake",
@@ -1895,7 +1969,8 @@
    "glyph": "GW",
    "image": "sprites/reef_ascendant_glasswake.svg"
   },
-  "description": "Glasswake is a young colony grown in clear stone lenses that bend the first sunlight into sight, and it remembers every shape that ever crossed its focus. It wants to see the end of every lighthouse, because the beams make its lenses ache."
+  "description": "Glasswake is a young colony grown in clear stone lenses that bend the first sunlight into sight, and it remembers every shape that ever crossed its focus. It wants to see the end of every lighthouse, because the beams make its lenses ache.",
+  "art": "cards/reef_ascendant_glasswake.svg"
  },
  "lanternkeepers_wick": {
   "name": "Wick",
@@ -1919,7 +1994,8 @@
    "glyph": "Wk",
    "image": "sprites/lanternkeepers_wick.svg"
   },
-  "description": "The youngest keeper on every stair, sent ahead with a taper to see what the beam will meet. A Wick's whole job is to be the first light on a thing."
+  "description": "The youngest keeper on every stair, sent ahead with a taper to see what the beam will meet. A Wick's whole job is to be the first light on a thing.",
+  "art": "cards/lanternkeepers_wick.svg"
  },
  "lanternkeepers_lamplit_sailor": {
   "name": "Lamplit Sailor",
@@ -1942,7 +2018,8 @@
    "glyph": "Ls",
    "image": "sprites/lanternkeepers_lamplit_sailor.svg"
   },
-  "description": "A drowned sailor the beam revealed and the lamp bound, who serves because the lamp is all that stands between it and the sea. Keepers summon them by the dozen and do not learn their names."
+  "description": "A drowned sailor the beam revealed and the lamp bound, who serves because the lamp is all that stands between it and the sea. Keepers summon them by the dozen and do not learn their names.",
+  "art": "cards/lanternkeepers_lamplit_sailor.svg"
  },
  "lanternkeepers_oilbearer": {
   "name": "Oilbearer",
@@ -1966,7 +2043,8 @@
    "glyph": "Ob",
    "image": "sprites/lanternkeepers_oilbearer.svg"
   },
-  "description": "The keeper who carries the lamp-oil up three hundred steps and the cudgel to guard it. A spill on the stairs is also a weapon."
+  "description": "The keeper who carries the lamp-oil up three hundred steps and the cudgel to guard it. A spill on the stairs is also a weapon.",
+  "art": "cards/lanternkeepers_oilbearer.svg"
  },
  "lanternkeepers_signalman": {
   "name": "Signalman",
@@ -1990,7 +2068,8 @@
    "glyph": "Sg",
    "image": "sprites/lanternkeepers_signalman.svg"
   },
-  "description": "Flashes shutter-codes between lighthouses across the dark water. In battle the flash lands on an enemy and every other keeper knows exactly where to aim."
+  "description": "Flashes shutter-codes between lighthouses across the dark water. In battle the flash lands on an enemy and every other keeper knows exactly where to aim.",
+  "art": "cards/lanternkeepers_signalman.svg"
  },
  "lanternkeepers_beaconrunner": {
   "name": "Beaconrunner",
@@ -2014,7 +2093,8 @@
    "glyph": "Br",
    "image": "sprites/lanternkeepers_beaconrunner.svg"
   },
-  "description": "Carries word between lamps faster than any boat, by stepping along the beams themselves. Where a beam is, a Beaconrunner can be."
+  "description": "Carries word between lamps faster than any boat, by stepping along the beams themselves. Where a beam is, a Beaconrunner can be.",
+  "art": "cards/lanternkeepers_beaconrunner.svg"
  },
  "lanternkeepers_lantern_warden": {
   "name": "Lantern Warden",
@@ -2039,7 +2119,8 @@
    "glyph": "Lw",
    "image": "sprites/lanternkeepers_lantern_warden.svg"
   },
-  "description": "Tends the flame that tends the keepers: every wound is closed in lamplight and every vigil is shared. Wardens go where the lamp is dimmest."
+  "description": "Tends the flame that tends the keepers: every wound is closed in lamplight and every vigil is shared. Wardens go where the lamp is dimmest.",
+  "art": "cards/lanternkeepers_lantern_warden.svg"
  },
  "lanternkeepers_stairkeeper": {
   "name": "Stairkeeper",
@@ -2064,7 +2145,8 @@
    "glyph": "Sk",
    "image": "sprites/lanternkeepers_stairkeeper.svg"
   },
-  "description": "Sworn to a single staircase and to the door at its top. Three centuries of climbing have left nothing in the Stairkeeper that can be pushed down it."
+  "description": "Sworn to a single staircase and to the door at its top. Three centuries of climbing have left nothing in the Stairkeeper that can be pushed down it.",
+  "art": "cards/lanternkeepers_stairkeeper.svg"
  },
  "lanternkeepers_glassgrinder": {
   "name": "Glassgrinder",
@@ -2088,7 +2170,8 @@
    "glyph": "Gg",
    "image": "sprites/lanternkeepers_glassgrinder.svg"
   },
-  "description": "Cuts and polishes the great lenses, and knows precisely how to turn one into a blinding flash. Enemies that stare into a Glassgrinder's work do not stare long."
+  "description": "Cuts and polishes the great lenses, and knows precisely how to turn one into a blinding flash. Enemies that stare into a Glassgrinder's work do not stare long.",
+  "art": "cards/lanternkeepers_glassgrinder.svg"
  },
  "lanternkeepers_bellringer": {
   "name": "Bellringer",
@@ -2112,7 +2195,8 @@
    "glyph": "Bl",
    "image": "sprites/lanternkeepers_bellringer.svg"
   },
-  "description": "Rings the fog-bell that wakes the Lamplit from the water. Each toll calls another drowned sailor to the lamp's side."
+  "description": "Rings the fog-bell that wakes the Lamplit from the water. Each toll calls another drowned sailor to the lamp's side.",
+  "art": "cards/lanternkeepers_bellringer.svg"
  },
  "lanternkeepers_beamwright": {
   "name": "Beamwright",
@@ -2136,7 +2220,8 @@
    "glyph": "Bw",
    "image": "sprites/lanternkeepers_beamwright.svg"
   },
-  "description": "Builds and aims the great beams, trimming the lens until a line of light is as sharp as a drawn blade. Everything in its path is revealed, and most of it does not survive that."
+  "description": "Builds and aims the great beams, trimming the lens until a line of light is as sharp as a drawn blade. Everything in its path is revealed, and most of it does not survive that.",
+  "art": "cards/lanternkeepers_beamwright.svg"
  },
  "lanternkeepers_keeper_of_the_long_watch": {
   "name": "Keeper of the Long Watch",
@@ -2161,7 +2246,8 @@
    "glyph": "KW",
    "image": "sprites/lanternkeepers_keeper_of_the_long_watch.svg"
   },
-  "description": "Head of a lighthouse garrison, who has not slept a full night in forty years and does not intend to start. The Long Watch is the vow, and the Keeper is the vow made flesh."
+  "description": "Head of a lighthouse garrison, who has not slept a full night in forty years and does not intend to start. The Long Watch is the vow, and the Keeper is the vow made flesh.",
+  "art": "cards/lanternkeepers_keeper_of_the_long_watch.svg"
  },
  "lanternkeepers_first_flame": {
   "name": "First Flame",
@@ -2186,7 +2272,8 @@
    "glyph": "FF",
    "image": "sprites/lanternkeepers_first_flame.svg"
   },
-  "description": "The flame that was already lit on the night of the Long Ebb, burning in a lamp nobody had touched. It is the oldest Keeper there is, and it has never been quiet."
+  "description": "The flame that was already lit on the night of the Long Ebb, burning in a lamp nobody had touched. It is the oldest Keeper there is, and it has never been quiet.",
+  "art": "cards/lanternkeepers_first_flame.svg"
  },
  "lanternkeepers_keeper_pell_auster": {
   "name": "Keeper Pell Auster",
@@ -2213,7 +2300,8 @@
    "glyph": "Pl",
    "image": "sprites/lanternkeepers_keeper_pell_auster.svg"
   },
-  "description": "Elderly, half-blind and never asleep, Pell is the last Lanternkeeper of the Shoal and the one who knows exactly what the lamp holds up. She wants every lamp lit and every stranger kept from it, and she will stand in front of any blade to see it done."
+  "description": "Elderly, half-blind and never asleep, Pell is the last Lanternkeeper of the Shoal and the one who knows exactly what the lamp holds up. She wants every lamp lit and every stranger kept from it, and she will stand in front of any blade to see it done.",
+  "art": "cards/lanternkeepers_keeper_pell_auster.svg"
  },
  "lanternkeepers_lensmaster_oriel_venn": {
   "name": "Lensmaster Oriel Venn",
@@ -2240,7 +2328,8 @@
    "glyph": "Vn",
    "image": "sprites/lanternkeepers_lensmaster_oriel_venn.svg"
   },
-  "description": "Venn grinds and aims the great lamp lenses, and can fold a beacon's beam into a blade of light a mile long. She wants to prove that a keeper can strike as well as watch, before the vow of silence cuts her order's last hope down."
+  "description": "Venn grinds and aims the great lamp lenses, and can fold a beacon's beam into a blade of light a mile long. She wants to prove that a keeper can strike as well as watch, before the vow of silence cuts her order's last hope down.",
+  "art": "cards/lanternkeepers_lensmaster_oriel_venn.svg"
  },
  "lanternkeepers_captain_hollis_drenn": {
   "name": "Captain Hollis Drenn",
@@ -2267,7 +2356,8 @@
    "glyph": "Hd",
    "image": "sprites/lanternkeepers_captain_hollis_drenn.svg"
   },
-  "description": "Hollis went down with the last ship to founder off the Rim and woke bound to a lighthouse lamp, now commanding the Lamplit who share his fate. He wants to keep the beam burning so that the sea above never gets to finish what it started."
+  "description": "Hollis went down with the last ship to founder off the Rim and woke bound to a lighthouse lamp, now commanding the Lamplit who share his fate. He wants to keep the beam burning so that the sea above never gets to finish what it started.",
+  "art": "cards/lanternkeepers_captain_hollis_drenn.svg"
  },
  "keystone": {
   "name": "Beacon",
