@@ -479,7 +479,7 @@ export class Game {
 
   private beginTurn() {
     const team = this.teams[this.current];
-    if (this.round > 1 || this.current > 0)
+    if (this.round > 1)
       team.essence = Math.min(this.mission.maxEssence ?? DEFAULTS.maxEssence, team.essence + (this.mission.teams[this.current]?.essencePerTurn ?? this.mission.essencePerTurn ?? DEFAULTS.essencePerTurn));
     this.emit({ kind: 'turn', team: this.current, turn: this.round });
     for (const w of this.map.wells ?? []) {

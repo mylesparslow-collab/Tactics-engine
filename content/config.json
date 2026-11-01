@@ -4,6 +4,8 @@
   "keystone": "Beacon",
   "warband": "Chart",
   "deck": "Chart",
-  "unit": "Relic"
+  "unit": "Relic",
+  "title": "EBB",
+  "subtitle": "A tactics game on the floor of a drained ocean"
  }
 }

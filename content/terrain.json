@@ -3,25 +3,25 @@
     "name": "Salt Flat",
     "moveCost": 1,
     "defense": 0,
-    "color": "#e8e4d8"
+    "color": "#cfc6b4"
   },
   "silt": {
     "name": "Silt",
     "moveCost": 1,
     "defense": 0,
-    "color": "#b9b09c"
+    "color": "#8d7f6a"
   },
   "dead_coral": {
     "name": "Dead Coral",
     "moveCost": 2,
     "defense": 1,
-    "color": "#c79a86"
+    "color": "#9c6f7a"
   },
   "wreck": {
     "name": "Wreck",
     "moveCost": 2,
     "defense": 2,
-    "color": "#8a4a2c"
+    "color": "#6b4a3a"
   },
   "brine_pool": {
     "name": "Brine Pool",
@@ -45,7 +45,7 @@
     "name": "Bone Road",
     "moveCost": 1,
     "defense": 0,
-    "color": "#d9d0b4"
+    "color": "#bfb39a"
   },
   "salt_wall": {
     "name": "Salt Wall",
@@ -77,7 +77,7 @@
     "name": "Lighthouse Stone",
     "moveCost": 1,
     "defense": 1,
-    "color": "#a8b2b9"
+    "color": "#7f8a96"
   },
   "brine_lake": {
     "name": "Brine Lake",
@@ -97,7 +97,7 @@
     "name": "Calcite",
     "moveCost": 1,
     "defense": 0,
-    "color": "#f1e9df",
+    "color": "#d9d0c2",
     "description": "Chalky remains left where something died. Reef units consume it to grow."
   }
 }
