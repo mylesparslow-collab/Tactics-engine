@@ -640,16 +640,24 @@ export class Renderer {
     const ux = Math.round(d.px), uy = Math.round(d.py), depth = v.depth(d.px, d.py);
     const s = v.project(d.px, d.py, d.pz);
     const top = s.sy - 130, left = s.sx - 50, right = s.sx + 50;
+    // Every tile in front of the unit that overlaps its sprite box, redrawn in painter order and clipped to the box,
+    // so a tall tile's pillar is covered by the tiles in front of it exactly as on the cached board.
+    const list: { x: number; y: number; d: number }[] = []; let occludes = false;
     for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
       const x = ux + dx, y = uy + dy;
       if (!g.inBounds(x, y) || (dx === 0 && dy === 0)) continue;
-      const t = this.vt[y][x];
-      if (v.depth(x, y) <= depth || t.height <= Math.floor(d.pz + 0.01)) continue;
-      const ts = v.project(x, y, t.height);
-      const th = t.height * LV + GROUND;
+      const t = this.vt[y][x], dd = v.depth(x, y);
+      if (dd <= depth) continue;
+      const ts = v.project(x, y, t.height), th = t.height * LV + GROUND;
       if (ts.sx + TW / 2 < left || ts.sx - TW / 2 > right || ts.sy - TH / 2 > s.sy + 10 || ts.sy + TH / 2 + th < top) continue;
-      this.painter.drawTile(ctx, x, y);
+      list.push({ x, y, d: dd });
+      if (t.height > Math.floor(d.pz + 0.01)) occludes = true;
     }
+    if (!occludes) return;
+    list.sort((a, b) => a.d - b.d);
+    ctx.save(); ctx.beginPath(); ctx.rect(left, top, right - left, s.sy + 10 - top); ctx.clip();
+    for (const t of list) this.painter.drawTile(ctx, t.x, t.y);
+    ctx.restore();
   }
 
   private drawUnit(d: Extract<Drawable, { kind: 'unit' }>, now: number) {
