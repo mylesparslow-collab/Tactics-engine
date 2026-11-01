@@ -17,7 +17,7 @@ export type SpriteExt = UnitDef['sprite'] & {
   animations?: Partial<Record<AnimState | 'walk', FrameAnim>>;
 };
 
-const urls = import.meta.glob('../../content/sprites/**/*.{svg,png,webp,jpg,jpeg,gif}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const urls = import.meta.glob('../../content/sprites/**/*.{png,webp}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 const manifests = import.meta.glob('../../content/sprites/**/*.json', { eager: true, import: 'default' }) as Record<string, unknown>;
 
 /** Resolve a content-relative asset path ("sprites/x.svg") to a built URL; absolute/data URLs pass through. */
@@ -72,7 +72,7 @@ export function unitArt(defId: string, def: UnitDef): UnitArt {
   // without a _still.png are ignored unless named explicitly.
   const paintedStill = assetUrl(`sprites/${defId}_still.png`);
   const art: UnitArt = { still: paintedStill ?? sp.image, clips: {}, animated: false };
-  const sheet = assetUrl(sp.sheet ?? (paintedStill ? `sprites/${defId}.png` : undefined));
+  const sheet = assetUrl(sp.sheet ?? (paintedStill ? (assetUrl(`sprites/${defId}.webp`) ? `sprites/${defId}.webp` : `sprites/${defId}.png`) : undefined));
   const man = manifestFor(sp.manifest ?? (paintedStill ? `sprites/${defId}.json` : undefined));
   if (sheet && man?.animations) {
     for (const [k, a] of Object.entries(man.animations)) if (a) art.clips[k as AnimState] = { kind: 'sheet', img: sheet, a, m: man };
