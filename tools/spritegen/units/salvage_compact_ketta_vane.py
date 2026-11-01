@@ -18,6 +18,8 @@ DECK = 0.17
 def neutral_pose():
     P = rider_pose(height=0.94, build=0.86, deck=DECK, crouch=0.55, lean_fwd=22)
     h = 0.94
+    rig.place_leg(P, 'l', (0.10, DECK + 0.085, 0.16), l1=0.43 * h, l2=0.42 * h, pole=(0.1, 0.3, 1))
+    rig.place_leg(P, 'r', (-0.12, DECK + 0.085, -0.20), l1=0.43 * h, l2=0.42 * h, pole=(-0.1, 0.3, 1))
     rig.lean(P, side=np.radians(8))
     rig.place_arm(P, 'r', P['sh_r'] + v3(-0.20, -0.14, -0.12), (-0.35, -0.3, -1), l1=0.27 * h, l2=0.26 * h)
     P['item_r'] = norm(v3(-0.5, 0.25, -0.8))          # Cutwater swept back
@@ -37,7 +39,6 @@ def build(P):
     # a short mast with a patched triangle of sail, raked back
     mb = v3(-0.05, DECK, 0.25)
     mt = mb + v3(-0.04, 0.95 - 0.5 * P['sled_break'], -0.18)
-    add_s(Capsule(mb, mt, 0.016), 'bone', 0.0)
     def sail(p, a=mt, b=mb + v3(0, 0.25, 0), c=mb + v3(0.0, 0.3, -0.75)):
         # thin triangle: plane through a, b, c
         n = norm(np.cross(b - a, c - a))
@@ -48,7 +49,7 @@ def build(P):
             e.append(-((p - u) @ en))
         inside = np.maximum(np.maximum(e[0], e[1]), e[2])
         return np.maximum(dpl, inside)
-    if P['sled_break'] < 0.5:
+    if False:
         add_s(Func(sail, (mt + mb + mb + v3(0, 0.3, -0.75)) / 3, 0.7), 'sail', 0.0)
     for prt in sled:
         parts.append(prt)
@@ -85,7 +86,7 @@ def build(P):
     hand_flare(P, add, lights, 'l')
     # drift: yaw and heel the whole sled
     place_sled(parts, lights, P, dz=-0.30, yaw=np.radians(18), heel=np.radians(-5))
-    mats = sv_materials(P, skin='light', hair=_hex('#9a5a2a'), coat_seed=41,
+    mats = sv_materials(P, skin='light', hair=_hex('#3a2016'), coat_seed=41,
                         coat_colors=(MUTED_RUST, BONE, OCHRE, CANVAS, SAILCLOTH))
     mats.update(sled_materials())
     mats['sail'] = Material(patchwork(lambda: v3(0, 0, 0), (SAILCLOTH, BONE, CANVAS, MUTED_RUST), cell=0.16, seed=2, mute=0.3),

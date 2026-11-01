@@ -8,12 +8,12 @@ UNIT_ID = 'hadal_court_tollwarden'
 CAMERA = Camera(ppm=46)
 
 C = Costume(top='brine', sleeve='robe', legs='hide', boot='iron', hand='iron', skirt='robe', skirt_mat='robe',
-            hem=0.03, flare=1.6, head='none', belt='chain', girth=1.15)
+            hem=0.30, flare=1.2, head='none', belt='chain', girth=1.3)
 
 
 def neutral_pose():
-    P = hpose(1.18, 1.25)
-    h = 1.18
+    P = hpose(1.15, 1.5)
+    h = 1.15
     P['head_pitch'] = np.radians(-4)
     rig.place_arm(P, 'r', P['pelvis'] + v3(-0.44, 0.14, 0.12), (-1, -0.5, -0.4), l1=0.27 * h, l2=0.26 * h)
     P['item_r'] = norm(v3(-0.08, 1.0, 0.12))
@@ -26,7 +26,11 @@ def build(P):
     body(P, add, C)
     brute_limbs(P, add, 'robe', arm=(0.075, 0.07, 0.06), fist=0.055, leg=None, hand_mat='iron')
     R = frame_for(P)
-    add(bell_hull(P['neck'] + R[:, 1] * 0.0, 0.48, 0.20, 0.36, R=R, power=0.9, sz=0.85, lip=0.02), 'bell', 0.03)
+    add(bell_hull(P['neck'] + R[:, 1] * 0.0, 0.62, 0.24, 0.44, R=R, power=0.9, sz=0.85, lip=0.03), 'bell', 0.03)
+    for s_ in ('r', 'l'):
+        sx = -1 if s_ == 'r' else 1
+        Rs = basis_from(norm(v3(sx * 0.6, 1, 0)), (0, 0, 1))
+        add(bell_hull(P['sh_' + s_] + v3(0, 0.12, 0), 0.22, 0.06, 0.17, R=Rs, power=0.8, lip=0.02), 'bellg', 0.02)
     # chain of office with toll-seal
     nk = P['neck']
     for i in range(7):
@@ -39,8 +43,8 @@ def build(P):
     # bell-crown helm
     H, Rh = P['head'], rot_y(P['head_yaw']) @ rot_x(-P['head_pitch'])
     dome_helm(add, H, Rh, r=0.14, mat='helm', ports=1)
-    add(bell_hull(H + Rh[:, 1] * 0.34, 0.22, 0.04, 0.12, R=Rh, power=1.3, sz=1.0, lip=0.02), 'bellg', 0.0)
-    add(Sphere(H + Rh[:, 1] * 0.36, 0.025), 'lamp', 0.0)
+    add(bell_hull(H + Rh[:, 1] * 0.40, 0.28, 0.05, 0.16, R=Rh, power=1.3, sz=1.0, lip=0.02), 'bellg', 0.0)
+    add(Sphere(H + Rh[:, 1] * 0.42, 0.03), 'lamp', 0.0)
     # tollrod
     bt = held(P, add, 'r', 'staff', shaft='iron', head='iron', below=0.9, above=0.62)
     if bt:

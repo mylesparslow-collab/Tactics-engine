@@ -46,11 +46,21 @@ def build(P):
         box_lamp(add, lights, P, top - fwd * 0.07 + d * 0.07, size=0.75, frame='darkiron', light=1.6)
     # leather apron, front only
     pel, ch = P['pelvis'], P['chest']
-    a_top, a_bot = ch + v3(0, 0.10, 0.10), pel + v3(0, -0.42, 0.15 + 0.03 * P['skirt_sway'])
-    add(RoundBox((a_top + a_bot) / 2, (0.095, np.linalg.norm(a_top - a_bot) / 2, 0.008), 0.006,
-                 basis_from(a_top - a_bot, (0, 0, 1))), 'apron')
-    add(Capsule(a_top + v3(-0.09, 0, -0.02), P['neck'] + v3(0, 0.0, -0.03), 0.007), 'leather')
-    add(Capsule(a_top + v3(0.09, 0, -0.02), P['neck'] + v3(0, 0.0, -0.03), 0.007), 'leather')
+    a_top, a_mid = ch + v3(0, 0.08, 0.105), pel + v3(0, 0.08, 0.125)
+    a_bot = pel + v3(0, -0.42, 0.15 + 0.03 * P['skirt_sway'])
+    add(RoundBox((a_top + a_mid) / 2, (0.07, np.linalg.norm(a_top - a_mid) / 2, 0.008), 0.006,
+                 basis_from(a_top - a_mid, (0, 0, 1))), 'apron')
+    def skirt(p, a=a_mid, b=a_bot):
+        ax = norm(a - b)
+        R = basis_from(ax, (0, 0, 1))
+        q = (p - (a + b) / 2) @ R
+        L = np.linalg.norm(a - b) / 2
+        t = np.clip((L - q[:, 1]) / (2 * L), 0, 1)
+        w = 0.10 + 0.05 * t
+        return np.maximum(np.maximum(np.abs(q[:, 0]) - w, np.abs(q[:, 1]) - L), np.abs(q[:, 2]) - 0.008) - 0.004
+    add(Func(skirt, (a_mid + a_bot) / 2, 0.35), 'apron')
+    add(Capsule(a_top + v3(-0.06, 0, -0.02), P['neck'] + v3(0, 0.0, -0.03), 0.007), 'leather')
+    add(Capsule(a_top + v3(0.06, 0, -0.02), P['neck'] + v3(0, 0.0, -0.03), 0.007), 'leather')
     # hand lens in the right hand
     gr = hand_pos(P, 'r')
     dr = norm(P['item_r']) if P['item_r'] is not None else v3(0, 1, 0)

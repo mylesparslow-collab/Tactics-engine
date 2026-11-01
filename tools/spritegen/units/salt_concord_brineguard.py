@@ -20,7 +20,7 @@ C = Costume(top='tabard', sleeve='steelcloth', legs='road', hand='glove', skirt=
 
 def neutral_pose():
     P = base_pose(height=1.02, build=1.06)
-    rig.place_arm(P, 'r', v3(-0.31, 1.0, 0.12), (-1, -0.2, -0.6))
+    rig.place_arm(P, 'r', v3(-0.29, 0.98, 0.13), (-0.5, -0.2, -1))
     P['item_r'] = norm(v3(0.0, 1.0, 0.04))
     rig.place_arm(P, 'l', v3(0.22, 1.02, 0.16), (1, -0.3, -0.5))
     P['head_yaw'] = np.radians(-6)

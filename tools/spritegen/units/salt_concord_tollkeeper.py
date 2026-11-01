@@ -22,7 +22,7 @@ def neutral_pose():
     P = base_pose(height=1.0, build=1.08)
     rig.place_arm(P, 'r', v3(-0.27, 1.12, 0.16), (-1, -0.4, -0.5))
     P['item_r'] = norm(v3(-0.04, 1.0, 0.05))
-    rig.place_arm(P, 'l', v3(0.16, 0.98, 0.14), (1, -0.2, -0.6))
+    rig.place_arm(P, 'l', v3(0.15, 0.96, 0.15), (0.3, -0.2, -1))
     P['head_yaw'] = np.radians(-6)
     return P
 

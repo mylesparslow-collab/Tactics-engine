@@ -11,8 +11,8 @@ UNIT_ID = 'lanternkeepers_wick'
 FACTION = 'lanternkeepers'
 LOOK = LOOKS[FACTION]
 
-C = Costume(top='coatgrey', sleeve='coatgrey', legs='slate', boot='boot', hand='glove', skirt='coat',
-            skirt_mat='coatgrey', hem=0.50, flare=0.55, head='hood', head_mat='oilskin', belt='leather', girth=0.85)
+C = Costume(top='coatgrey', sleeve='coatgrey', legs='wool', boot='boot', hand='glove', skirt='coat',
+            skirt_mat='coatgrey', hem=0.50, flare=0.55, head='hood', head_mat='oilskin_dk', belt='leather', girth=0.85)
 
 
 def neutral_pose():
@@ -35,7 +35,7 @@ def build(P):
     parts, add = new_parts()
     lights = []
     body(P, add, C)
-    tall_hood(add, P, 'oilskin', peak=0.06)
+    tall_hood(add, P, 'oilskin_dk', peak=0.10)
     mantle(add, P, 'oilskin', depth=0.16, width=0.15)
     held(P, add, 'r', 'knife', head='brass')
     # hand lantern hanging from the left fist

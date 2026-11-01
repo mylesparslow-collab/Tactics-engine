@@ -21,9 +21,9 @@ C = Costume(top='coat', sleeve='coat', legs='road', hand='glove', skirt='coat', 
 
 def neutral_pose():
     P = base_pose(height=1.03, build=1.08)
-    rig.place_arm(P, 'r', v3(-0.26, 1.0, 0.16), (-1, -0.3, -0.5))
+    rig.place_arm(P, 'r', v3(-0.23, 0.96, 0.16), (-0.4, -0.2, -1))
     P['item_r'] = norm(v3(-0.15, -0.55, 1.0))
-    rig.place_arm(P, 'l', v3(0.20, 1.02, 0.02), (1, -0.1, 0.3))      # fist on hip
+    rig.place_arm(P, 'l', v3(0.13, 0.99, 0.15), (0.3, -0.2, -1))     # hand resting on the sash
     P['head_yaw'] = np.radians(-14)
     P['head_pitch'] = np.radians(-4)
     return P

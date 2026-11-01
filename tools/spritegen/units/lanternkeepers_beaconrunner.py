@@ -11,21 +11,23 @@ UNIT_ID = 'lanternkeepers_beaconrunner'
 FACTION = 'lanternkeepers'
 LOOK = LOOKS[FACTION]
 
-C = Costume(top='oilskin', sleeve='slate', legs='slate', boot='boot', hand='glove', skirt='coat',
-            skirt_mat='oilskin', hem=0.64, flare=0.45, head='hood', head_mat='coatgrey', belt='leather', girth=0.85)
+C = Costume(top='oilskin', sleeve='coatgrey', legs='slate', boot='boot', hand='glove', skirt='coat',
+            skirt_mat='oilskin', hem=0.50, flare=0.65, head='hood', head_mat='coatgrey', belt='leather', girth=1.05)
 
 
 def neutral_pose():
-    P = base_pose(height=1.0, build=0.86)
+    P = base_pose(height=1.0, build=1.02)
     h = P['height']
-    rig.shift(P, ('pelvis', 'hip_r', 'hip_l') + rig.UPPER, v3(0, -0.03, 0.0))
-    rig.place_leg(P, 'l', P['an_l'] + v3(0, 0, 0.08), l1=0.43 * h, l2=0.42 * h)
-    rig.place_leg(P, 'r', P['an_r'] + v3(0, 0, -0.06), l1=0.43 * h, l2=0.42 * h)
-    rig.lean(P, fwd=np.radians(12))
-    P['head_pitch'] = np.radians(-10)
-    rig.place_arm(P, 'r', v3(-0.27, 0.92, 0.18), (-1, -0.2, -0.5), l1=0.27 * h, l2=0.26 * h)
-    P['item_r'] = norm(v3(-0.25, -0.35, 0.9))
-    rig.place_arm(P, 'l', v3(0.24, 1.02, 0.10), (1, -0.3, -0.6), l1=0.27 * h, l2=0.26 * h)
+    # running-ready: low, wide, weight on the front foot, leaning in
+    rig.shift(P, ('pelvis', 'hip_r', 'hip_l') + rig.UPPER, v3(0, -0.07, 0.02))
+    rig.place_leg(P, 'l', v3(0.15, 0.085, 0.20), l1=0.43 * h, l2=0.42 * h)
+    rig.place_leg(P, 'r', v3(-0.13, 0.085, -0.16), l1=0.43 * h, l2=0.42 * h)
+    rig.lean(P, fwd=np.radians(14))
+    P['head_pitch'] = np.radians(-14)
+    # blade arm cocked back and low, free arm forward and bent for balance
+    rig.place_arm(P, 'r', v3(-0.30, 0.98, -0.02), (-1, -0.2, 0.6), l1=0.27 * h, l2=0.26 * h)
+    P['item_r'] = norm(v3(-0.2, -0.25, 0.95))
+    rig.place_arm(P, 'l', v3(0.18, 1.18, 0.30), (1, -0.6, -0.2), l1=0.27 * h, l2=0.26 * h)
     return P
 
 

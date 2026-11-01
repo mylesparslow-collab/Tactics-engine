@@ -23,10 +23,10 @@ def neutral_pose():
     rig.lean(P, fwd=np.radians(8))               # slightly hunched
     P['head_pitch'] = np.radians(-4)
     # right hand braces the spear upright beside him, butt on the ground
-    rig.place_arm(P, 'r', v3(-0.27, 0.98, 0.14), (-0.3, -0.2, -1))
+    rig.place_arm(P, 'r', v3(-0.25, 0.90, 0.14), (-0.3, -0.2, -1))
     P['item_r'] = norm(v3(0.02, 1.0, 0.04))
-    # left hand hangs, thumb in the rope belt
-    rig.place_arm(P, 'l', v3(0.17, 0.93, 0.10), (1, -0.2, -0.6))
+    # left hand hangs loose and a little forward, elbow back
+    rig.place_arm(P, 'l', v3(0.19, 0.92, 0.13), (0.3, -0.2, -1))
     return P
 
 

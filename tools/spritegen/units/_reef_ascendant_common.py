@@ -27,7 +27,8 @@ from kit.humanoid import new_parts, finish
 FACTION = 'reef_ascendant'
 import dataclasses
 # chalky forms: lift the ambient/bounce a touch so calcite stays white in the shadow side
-LOOK = dataclasses.replace(LOOKS[FACTION], sky_int=0.48, bounce_int=0.36, exposure=1.06)
+LOOK = dataclasses.replace(LOOKS[FACTION], sky_int=0.5, bounce_int=0.38, exposure=1.1,
+                          shadow_tint=(0.78, 0.84, 1.0))
 RA = PALETTES[FACTION]
 CORAL, CALC, PINK, RED, LENS = RA['coral'], RA['calcite'], RA['pink'], RA['reef_red'], RA['lens']
 BONE = _hex('#d9d0b4')
@@ -90,6 +91,15 @@ def _arr(c, n):
     return np.array(c)[None, :].repeat(n, 0)
 
 
+def mix(a, b, t):
+    return tuple(np.array(a) * (1 - t) + np.array(b) * t)
+
+
+# Lead review: keep the faction coral + calcite white, never rust-brown. Every coral colour passed to the
+# material helpers is pulled toward calcite white, and the deep red is only a light accent.
+SOFTEN = 0.24
+
+
 def calcite_mat(flush=0.25, flush_col=PINK, pores=True, base_col=CALC, low_col=None, brush=0.08):
     """Chalky porous calcite. flush blooms pink through it; pores dot the surface."""
     def alb(p, n):
@@ -98,24 +108,26 @@ def calcite_mat(flush=0.25, flush_col=PINK, pores=True, base_col=CALC, low_col=N
         a = a * (1 - f) + np.array(flush_col)[None, :] * f
         if low_col is not None:
             g = np.clip(0.35 - p[:, 1], 0, 0.35)[:, None] / 0.35
-            a = a * (1 - g * 0.6) + np.array(low_col)[None, :] * g * 0.6
+            a = a * (1 - g * 0.22) + np.array(mix(low_col, PINK, 0.4))[None, :] * g * 0.22
         if pores:
             pr = vnoise(p, 120.0)
-            a = np.where((pr > 0.72)[:, None], a * 0.72 + np.array(DUSK)[None, :] * 0.18, a)
+            a = np.where((pr > 0.74)[:, None], a * 0.82 + np.array(PINK)[None, :] * 0.12, a)
         return a
     return Material(alb, spec=0.05, gloss=10, brush=brush)
 
 
 def coral_mat(deep=0.18, base_col=CORAL, deep_col=RED, hi_col=PINK, freq=11.0, brush=0.07):
+    base_col = mix(mix(base_col, CORAL, 0.5), CALC, SOFTEN)     # bright coral, chalk-softened
+    deep_col = mix(deep_col, CORAL, 0.55)                        # reef red only as a light accent
     def alb(p, n):
         a = _arr(base_col, len(p))
         f = fbm(p, freq, 3)
-        d = np.clip((0.45 - f) * 3.0 * deep * 2, 0, 0.7)[:, None]
-        h = np.clip((f - 0.6) * 4.0, 0, 1)[:, None] * np.clip(n[:, 1], 0, 1)[:, None]
+        d = np.clip((0.45 - f) * 3.0 * deep * 2, 0, 0.35)[:, None]
+        h = np.clip((f - 0.5) * 3.0, 0, 1)[:, None] * np.clip(0.3 + n[:, 1], 0, 1)[:, None]
         a = a * (1 - d) + np.array(deep_col)[None, :] * d
-        a = a * (1 - h * 0.5) + np.array(hi_col)[None, :] * h * 0.5
+        a = a * (1 - h * 0.55) + np.array(mix(hi_col, CALC, 0.6))[None, :] * h * 0.55   # chalk bloom
         pr = vnoise(p, 110.0)
-        a = np.where((pr > 0.74)[:, None], a * 0.8, a)
+        a = np.where((pr > 0.76)[:, None], a * 0.9, a)
         return a
     return Material(alb, spec=0.08, gloss=12, brush=brush)
 
@@ -128,7 +140,7 @@ def flesh_mat(col=PINK, inner=RED, P=None, glow=0.0):
         em = tuple(np.array(GLOW) * min(g, 1.0) * 0.35)
     def alb(p, n):
         f = fbm(p, 24.0, 2)[:, None]
-        return _arr(col, len(p)) * (0.85 + 0.25 * f) * 0.9 + _arr(inner, len(p)) * 0.1
+        return _arr(col, len(p)) * (0.9 + 0.2 * f) * 0.95 + _arr(mix(inner, CORAL, 0.5), len(p)) * 0.05
     return Material(alb, spec=0.35, gloss=28, sss=0.7, brush=0.03, emissive=em)
 
 
@@ -175,7 +187,7 @@ def reef_mats(P, glow=0.6):
         'flesh': flesh_mat(P=P, glow=glow),
         'mouth': mouth_mat(),
         'glow': glow_mat(P),
-        'reefred': Material(RED, spec=0.1, gloss=14, brush=0.08),
+        'reefred': Material(mix(RED, CORAL, 0.35), spec=0.1, gloss=14, brush=0.08),
     }
 
 

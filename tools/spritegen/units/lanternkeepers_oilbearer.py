@@ -11,8 +11,8 @@ UNIT_ID = 'lanternkeepers_oilbearer'
 FACTION = 'lanternkeepers'
 LOOK = LOOKS[FACTION]
 
-C = Costume(top='oilskin_dk', sleeve='oilskin_dk', legs='slate', boot='boot', hand='glove', skirt='coat',
-            skirt_mat='oilskin_dk', hem=0.36, flare=0.7, head='bald', belt='leather', girth=1.15)
+C = Costume(top='oilskin', sleeve='oilskin', legs='slate', boot='boot', hand='glove', skirt='coat',
+            skirt_mat='oilskin', hem=0.36, flare=0.7, head='bald', belt='leather', girth=1.15)
 
 
 def neutral_pose():
@@ -29,7 +29,7 @@ def build(P):
     parts, add = new_parts()
     lights = []
     body(P, add, C)
-    sou_wester(add, P, 'oilskin', brim=1.05, tilt=-0.28)
+    sou_wester(add, P, 'oilskin_dk', brim=1.05, tilt=-0.28)
     # wool scarf
     nk = P['neck']
     add(Torus(nk + v3(0, -0.02, 0.0), v3(0, 1, 0.15), 0.07, 0.025), 'seagrey', 0.01)

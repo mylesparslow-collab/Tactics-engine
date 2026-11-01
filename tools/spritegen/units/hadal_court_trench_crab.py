@@ -70,7 +70,7 @@ def build(P):
             add(Ellipsoid(palm + d * 0.20 * size + Rc[:, 2] * sg * 0.04 * size, (0.045 * size, 0.17 * size, 0.04 * size), Rf), 'claw', 0.01)
     if P['fx'] > 0:
         add(Torus(v3(-0.4, 0.03, 1.0), v3(0, 1, 0), 0.12 + 0.2 * P['fx'], 0.014), 'speck', 0.0)
-    parts[:] = transform_parts(creature_place(parts, P), t=(0.08, 0, -0.18))
+    parts[:] = transform_parts(creature_place(parts, P), t=(0.10, 0, -0.32))
     mats = hadal_mats(P, {
         'shell': Material(cracked_albedo(_hex('#3e4466'), crack=_hex('#1a1c30'), freq=6, width=0.02, seep=TEAL, barn=0.35,
                                          patina=_hex('#5b6a6a'), patina_amt=0.25), spec=0.2, gloss=18, brush=0.08),

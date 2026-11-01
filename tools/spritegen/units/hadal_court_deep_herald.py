@@ -13,8 +13,8 @@ C = Costume(top='robe', sleeve='robe', legs='robe', boot='hide', hand='skin', sk
 
 
 def neutral_pose():
-    P = hpose(1.22, 1.0)
-    h = 1.22
+    P = hpose(1.27, 0.95)
+    h = 1.27
     P['head_pitch'] = np.radians(10)
     rig.place_arm(P, 'r', P['pelvis'] + v3(-0.40, 0.22, 0.14), (-1, -0.6, -0.4), l1=0.27 * h, l2=0.26 * h)
     P['item_r'] = norm(v3(-0.03, 1.0, 0.06))
@@ -30,7 +30,12 @@ def build(P):
     # three nested bells: hood, mantle, cape
     add(Subtract(bell_hull(H + Rh[:, 1] * 0.17, 0.30, 0.06, 0.15, R=Rh, power=0.6, sz=0.95, lip=0.015, open_bottom=True, thick=0.014),
                  Ellipsoid(H + Rh @ v3(0, -0.02, 0.13), (0.075, 0.10, 0.08), Rh), 0.01), 'cowl', 0.0)
-    add(bell_hull(P['neck'] + v3(0, 0.0, -0.01), 0.24, 0.12, 0.27, R=R, power=0.7, sz=0.85, lip=0.02, open_bottom=True, thick=0.015), 'cowl', 0.0)
+    add(bell_hull(P['neck'] + v3(0, 0.0, -0.01), 0.20, 0.12, 0.40, R=R, power=0.55, sz=0.85, lip=0.03, open_bottom=True, thick=0.015), 'cowl', 0.0)
+    for k in range(7):
+        a = -1.6 + k * 0.53
+        q = P['neck'] + R @ v3(np.sin(a) * 0.40, -0.24, np.cos(a) * 0.34)
+        add(Capsule(q, q - v3(0, 0.06, 0), 0.004), 'chain', 0.0)
+        add(bell_hull(q - v3(0, 0.05, 0), 0.05, 0.012, 0.024, power=0.8, lip=0.004), 'bellm', 0.0)
     add(bell_hull(P['chest'] + R[:, 1] * 0.0, 0.32, 0.20, 0.33, R=R, power=0.8, sz=0.85, lip=0.02, ribs=0.05, open_bottom=True, thick=0.015), 'robe', 0.0)
     # void face + teal eyes
     add(Ellipsoid(H + Rh @ v3(0, -0.01, 0.03), (0.075, 0.095, 0.08), Rh), 'abyss', 0.0)

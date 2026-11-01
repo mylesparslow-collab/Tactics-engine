@@ -22,8 +22,8 @@ BRINE = _hex('#9fe3d8')
 
 def neutral_pose():
     P = base_pose(height=1.0, build=0.95)
-    rig.place_arm(P, 'r', v3(-0.24, 1.02, 0.14), (-1, -0.3, -0.5))
-    P['item_r'] = norm(v3(-0.1, 0.4, 1.0))
+    rig.place_arm(P, 'r', v3(-0.21, 0.97, 0.15), (-0.3, -0.2, -1))
+    P['item_r'] = norm(v3(-0.1, -0.35, 1.0))
     rig.place_arm(P, 'l', v3(0.24, 1.10, 0.18), (1, -0.4, -0.5))
     P['head_yaw'] = np.radians(-10)
     P['head_pitch'] = np.radians(4)

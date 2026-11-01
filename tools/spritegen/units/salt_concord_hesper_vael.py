@@ -24,7 +24,7 @@ def neutral_pose():
     P = base_pose(height=1.02, build=1.18)
     rig.place_arm(P, 'r', v3(-0.37, 1.24, 0.16), (-1, -0.3, -0.5))
     P['item_r'] = norm(v3(-0.10, 1.0, 0.05))
-    rig.place_arm(P, 'l', v3(0.22, 1.0, 0.04), (1, -0.1, 0.4))      # gauntlet on hip
+    rig.place_arm(P, 'l', v3(0.17, 0.97, 0.15), (0.3, -0.2, -1))     # gauntlet resting on the belt
     P['head_yaw'] = np.radians(-16)
     P['head_pitch'] = np.radians(-3)
     rig.place_leg(P, 'r', v3(-0.15, 0.085, -0.03), l1=0.43 * 1.02, l2=0.42 * 1.02)
@@ -38,7 +38,10 @@ def halberd(P, add):
         return
     d = norm(d)
     g = hand_pos(P, 'r')
-    butt, tip = g - d * 1.22, g + d * 0.92
+    vert = d[1] > 0.85 and g[1] < 1.4
+    # in the overhead slam the hands choke up toward the head so the blade stays in frame
+    above = 0.92 if g[1] < 1.45 else 0.62
+    butt, tip = g - d * (1.22 if vert else 0.75), g + d * above
     add(Capsule(butt, tip, 0.019), 'haft')
     add(Cylinder(butt, butt + d * 0.06, 0.024, 0.004), 'brass')
     for t in (0.55, 0.62):

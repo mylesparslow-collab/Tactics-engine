@@ -36,7 +36,7 @@ def neutral_pose():
     rig.place_arm(P, 'l', v3(0.08, SEAT + 0.10, 0.30), (1, -0.3, -0.4))
     P['foot_r_yaw'] = 0.0
     P['foot_l_yaw'] = 0.0
-    P.update(gait=None, hbob=0.0, hpitch=0.0, neck=0.0, fold=0.0, tail=0.0)
+    P.update(gait=None, hbob=0.0, hpitch=0.0, hneck=0.0, fold=0.0, tail=0.0)
     return P
 
 
@@ -48,10 +48,10 @@ def horse(P, add):
     add(Ellipsoid(v3(0, by + 0.04, -0.40), (0.25, 0.29, 0.28)), 'coat_h', 0.08)
     # neck and head
     na = v3(0, by + 0.12, 0.50)
-    nd = norm(v3(0, 0.80 - 0.5 * P['neck'] - 0.4 * fold, 0.60))
+    nd = norm(v3(0, 0.80 - 0.5 * P['hneck'] - 0.4 * fold, 0.60))
     nb = na + nd * 0.52
     add(Capsule(na, nb, 0.15, 0.095), 'coat_h', 0.06)
-    hd = norm(v3(0, -0.75, 0.66) + v3(0, 0, 0.3 * P['neck']))
+    hd = norm(v3(0, -0.75, 0.66) + v3(0, 0, 0.3 * P['hneck']))
     hb = nb + hd * 0.34
     add(Capsule(nb, hb, 0.095, 0.062), 'coat_h', 0.04)
     for sx in (-1, 1):
@@ -154,7 +154,7 @@ def _idle(i):
     P['breathe'] = b
     P['hbob'] = 0.006 * b
     rig.shift(P, rig.UPPER, v3(0, 0.006 * b, 0))
-    P['neck'] = [0.0, 0.08, 0.15, 0.06][i]
+    P['hneck'] = [0.0, 0.08, 0.15, 0.06][i]
     P['tail'] = [0, 0.6, 0, -0.6][i]
     P['tell'] = i / 4
     return P, {}
@@ -166,7 +166,7 @@ def _move(i):
     P['hbob'] = [0.03, -0.01, 0.03, -0.01][i]
     P['hpitch'] = [0.03, -0.02, 0.03, -0.02][i]
     rig.shift(P, rig.UPPER, v3(0, -0.01 * [1, -1, 1, -1][i], 0.02))
-    P['neck'] = [-0.1, 0.1, -0.1, 0.1][i]
+    P['hneck'] = [-0.1, 0.1, -0.1, 0.1][i]
     P['tail'] = [1, 0.5, 1, 0.5][i]
     P['tell'] = i / 4
     return P, {}
@@ -183,7 +183,7 @@ def _attack(i):
     P['hpitch'] = [0.06, 0.0, -0.06, -0.02][i]
     P['hbob'] = [0.02, 0.0, -0.02, 0.0][i]
     P['gait'] = [None, 0.25, 0.5, None][i]
-    P['neck'] = [0.1, -0.1, -0.2, 0][i]
+    P['hneck'] = [0.1, -0.1, -0.2, 0][i]
     return P, {}
 
 
@@ -191,7 +191,7 @@ def _hit(i):
     P = neutral_pose()
     rig.lean(P, fwd=np.radians([-12, -4][i]))
     P['hpitch'] = [0.06, 0.02][i]
-    P['neck'] = [0.3, 0.1][i]
+    P['hneck'] = [0.3, 0.1][i]
     return P, (dict(exposure=1.25, flash=0.22) if i == 0 else {})
 
 
@@ -206,7 +206,7 @@ def _death(i):
     rig.place_arm(P, 'l', P['pelvis'] + v3(0.20, 0.0, 0.25), (1, 0, -0.5))
     P['item_r'] = norm(v3(-0.6, -0.15, 0.8)) if i > 0 else P['item_r']
     P['head_pitch'] = np.radians([12, 20, 35, 35][i])
-    P['neck'] = [0.3, 0.6, 1.0, 1.1][i]
+    P['hneck'] = [0.3, 0.6, 1.0, 1.1][i]
     P['hpitch'] = [0.08, -0.05, -0.08, -0.08][i]
     P['end'] = [0, 0.15, 0.5, 1.0][i]
     return P, {}
@@ -216,7 +216,7 @@ def _cast(i):
     P = neutral_pose()
     # causeway dash: the pony rears a little, the rider raises the lance high and points
     P['hpitch'] = [0.08, 0.16, 0.04][i]
-    P['neck'] = [0.2, 0.35, 0.0][i]
+    P['hneck'] = [0.2, 0.35, 0.0][i]
     rig.place_arm(P, 'r', v3(-0.26, SEAT + [0.20, 0.32, 0.16][i], 0.06), (-1, -0.3, -0.4))
     rig.place_arm(P, 'l', v3(0.20, SEAT + [0.30, 0.52, 0.25][i], 0.32), (1, -0.4, -0.3))
     rig.lean(P, fwd=np.radians([-4, -8, 2][i]))

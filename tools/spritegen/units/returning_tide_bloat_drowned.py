@@ -21,7 +21,7 @@ def neutral_pose():
     rig.place_leg(P, 'l', (0.22, 0.085, 0.10), l1=0.36, l2=0.36)
     rig.place_leg(P, 'r', (-0.22, 0.085, -0.06), l1=0.36, l2=0.36)
     rig.lean(P, fwd=np.radians(12))
-    rig.shift(P, ('neck', 'head'), v3(0, -0.02, 0.09))
+    rig.shift(P, ('neck', 'head'), v3(0, 0.05, 0.13))
     P['head_pitch'] = np.radians(6)
     rig.place_arm(P, 'r', P['sh_r'] + v3(-0.14, -0.50, 0.10), (-1, 0, -0.3), l1=0.30, l2=0.29)
     rig.place_arm(P, 'l', P['sh_l'] + v3(0.14, -0.48, 0.14), (1, 0, -0.3), l1=0.30, l2=0.29)
@@ -54,6 +54,10 @@ def build(P):
     add(ragged_robe(P, hem=0.56, flare=0.6, top=0.86, rag=2.0, seed=10.3, droop=0.0, girth=1.7, depth=1.3), 'rags', 0.0)
     add(Capsule(P['sh_l'] + v3(-0.03, 0.04, 0.10), pel + v3(-0.22, 0.08, 0.26), 0.035), 'rags', 0.02)
     add(Capsule(P['sh_l'] + v3(-0.03, 0.04, -0.10), pel + v3(-0.20, 0.10, -0.22), 0.035), 'rags', 0.02)
+    HR = head_R(P)
+    add(Ellipsoid(P['head'] + HR @ v3(0, 0.0, -0.005), (0.092, 0.105, 0.098), HR), 'skin', 0.0)
+    add(Ellipsoid(P['head'] + HR @ v3(0, -0.055, 0.02), (0.075, 0.06, 0.075), HR), 'skin', 0.02)
+    add(Ellipsoid(P['head'] + HR @ v3(0, 0.035, -0.02), (0.095, 0.08, 0.098), HR), 'scalp', 0.01)
     barnacles(add, P['head'] + v3(0.02, 0.08, -0.03), v3(0.2, 1, -0.4), n=5, spread=0.04, size=0.012, seed=24)
     # split seams on the belly (painted dark) leaking streams of brine
     R = basis_from(fwd, (0, 0, 1))
@@ -94,6 +98,7 @@ def build(P):
         return np.where(on_body, face * (0.9 + 0.2 * mott) * np.array([0.97, 1.0, 1.0]), face)
     mats = {
         'skin': Material(bloat_skin, spec=0.45, gloss=36, sss=0.35, brush=0.05),
+        'scalp': Material(_hex('#2c3430'), spec=0.7, gloss=40, brush=0.08),
         'rags': wet_cloth(_hex('#3c5a4a'), wet=0.8, low_dark=0.2, streak=0.2, top=1.4),
     }
     return tide_finish(P, parts, mats, add, pool_r=0.62)
