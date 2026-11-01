@@ -11,7 +11,7 @@ UNIT_ID = 'lanternkeepers_glassgrinder'
 FACTION = 'lanternkeepers'
 LOOK = LOOKS[FACTION]
 
-C = Costume(top='coatgrey', sleeve='canvas', legs='slate', boot='boot', hand='skin', skirt='coat',
+C = Costume(top='coatgrey', sleeve='wool', legs='slate', boot='boot', hand='skin', skirt='coat',
             skirt_mat='coatgrey', hem=0.50, flare=0.5, head='hair', hair='hair', hair_style='bob', belt='leather', girth=0.95)
 
 
@@ -47,8 +47,20 @@ def build(P):
     # leather apron, front only
     pel, ch = P['pelvis'], P['chest']
     a_top, a_bot = ch + v3(0, 0.10, 0.10), pel + v3(0, -0.42, 0.15 + 0.03 * P['skirt_sway'])
-    add(RoundBox((a_top + a_bot) / 2, (0.095, np.linalg.norm(a_top - a_bot) / 2, 0.008), 0.006,
-                 basis_from(a_top - a_bot, (0, 0, 1))), 'apron')
+    # apron as a shallow curved shell wrapped round the front of the body (a flat box read as a plank)
+    ab_c, ab_h = (a_top + a_bot) / 2, np.linalg.norm(a_top - a_bot) / 2
+    Ra = basis_from(a_top - a_bot, (0, 0, 1))
+
+    def apron_f(p, c=ab_c, R=Ra, hh=ab_h):
+        q = (p - c) @ R
+        t = np.clip((q[:, 1] + hh) / (2 * hh), 0, 1)
+        w = 0.085 + 0.05 * (1 - t)                       # wider at the hem
+        bow = 0.05 * (q[:, 0] / 0.13) ** 2               # wraps back at the sides
+        dz = np.abs(q[:, 2] + bow) - 0.008
+        dx = np.abs(q[:, 0]) - w
+        dy = np.abs(q[:, 1]) - hh
+        return np.maximum(np.maximum(dz, dx), dy) - 0.004
+    add(Func(apron_f, ab_c, ab_h + 0.2), 'apron')
     add(Capsule(a_top + v3(-0.09, 0, -0.02), P['neck'] + v3(0, 0.0, -0.03), 0.007), 'leather')
     add(Capsule(a_top + v3(0.09, 0, -0.02), P['neck'] + v3(0, 0.0, -0.03), 0.007), 'leather')
     # hand lens in the right hand
