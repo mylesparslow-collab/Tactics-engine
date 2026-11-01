@@ -82,27 +82,17 @@
           "y": 2
         },
         {
-          "unit": "salvage_compact_wrecker",
-          "x": 14,
-          "y": 2
-        },
-        {
-          "unit": "salvage_compact_rivet_slinger",
-          "x": 10,
-          "y": 5
-        },
-        {
           "unit": "salvage_compact_rivet_slinger",
           "x": 12,
           "y": 5
         },
         {
-          "unit": "salvage_compact_breach_gunner",
-          "x": 11,
-          "y": 7
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 10,
+          "y": 5
         }
       ],
-      "startingEssence": 120,
+      "startingEssence": 20,
       "essencePerTurn": 25,
       "keystone": false
     }
@@ -133,8 +123,8 @@
       },
       {
         "type": "turn_limit",
-        "turns": 12,
-        "label": "Take Varrow before turn 12"
+        "turns": 16,
+        "label": "Take Varrow before turn 16"
       }
     ]
   },
@@ -168,20 +158,6 @@
           "unit": "salvage_compact_bone_sled_rider",
           "x": 1,
           "y": 11
-        },
-        {
-          "type": "spawn",
-          "team": 1,
-          "unit": "salvage_compact_bone_sled_rider",
-          "x": 20,
-          "y": 11
-        },
-        {
-          "type": "spawn",
-          "team": 1,
-          "unit": "salvage_compact_bone_sled_rider",
-          "x": 11,
-          "y": 12
         }
       ]
     },
@@ -202,13 +178,6 @@
           "unit": "salvage_compact_wrecker",
           "x": 11,
           "y": 5
-        },
-        {
-          "type": "spawn",
-          "team": 1,
-          "unit": "salvage_compact_wrecker",
-          "x": 10,
-          "y": 4
         }
       ]
     }

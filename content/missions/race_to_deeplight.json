@@ -88,11 +88,6 @@
           "y": 4
         },
         {
-          "unit": "hadal_court_bell_knight",
-          "x": 10,
-          "y": 9
-        },
-        {
           "unit": "hadal_court_lurecaller",
           "x": 7,
           "y": 4
@@ -118,7 +113,7 @@
           "y": 1
         }
       ],
-      "startingEssence": 150,
+      "startingEssence": 85,
       "essencePerTurn": 32,
       "keystone": false
     }
@@ -176,8 +171,8 @@
       },
       {
         "type": "turn_limit",
-        "turns": 14,
-        "label": "Reach the lamp before turn 14"
+        "turns": 16,
+        "label": "Reach the lamp before turn 16"
       }
     ]
   },

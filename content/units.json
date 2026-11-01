@@ -5,9 +5,9 @@
   "faction": "salt_concord",
   "cost": 35,
   "stats": {
-   "hp": 22,
+   "hp": 24,
    "ap": 6,
-   "attack": 7,
+   "attack": 8,
    "defense": 2,
    "jump": 1
   },
@@ -28,11 +28,11 @@
   "name": "Salt Levy",
   "role": "Cheap Body",
   "faction": "salt_concord",
-  "cost": 30,
+  "cost": 25,
   "stats": {
-   "hp": 14,
+   "hp": 16,
    "ap": 5,
-   "attack": 6,
+   "attack": 7,
    "defense": 1,
    "jump": 1
   },
@@ -80,7 +80,7 @@
   "faction": "salt_concord",
   "cost": 35,
   "stats": {
-   "hp": 14,
+   "hp": 16,
    "ap": 6,
    "attack": 7,
    "defense": 0,
@@ -103,7 +103,7 @@
   "name": "Saltwright",
   "role": "Engineer / Controller",
   "faction": "salt_concord",
-  "cost": 45,
+  "cost": 40,
   "stats": {
    "hp": 16,
    "ap": 6,
@@ -131,9 +131,9 @@
   "faction": "salt_concord",
   "cost": 40,
   "stats": {
-   "hp": 16,
+   "hp": 18,
    "ap": 8,
-   "attack": 8,
+   "attack": 9,
    "defense": 1,
    "jump": 2
   },
@@ -154,7 +154,7 @@
   "name": "Brine Chirurgeon",
   "role": "Healer",
   "faction": "salt_concord",
-  "cost": 45,
+  "cost": 40,
   "stats": {
    "hp": 17,
    "ap": 6,
@@ -180,11 +180,11 @@
   "name": "Tollkeeper",
   "role": "Controller",
   "faction": "salt_concord",
-  "cost": 45,
+  "cost": 40,
   "stats": {
-   "hp": 18,
+   "hp": 20,
    "ap": 6,
-   "attack": 6,
+   "attack": 7,
    "defense": 1,
    "jump": 1
   },
@@ -206,11 +206,11 @@
   "name": "Stair-Warden",
   "role": "Tank",
   "faction": "salt_concord",
-  "cost": 55,
+  "cost": 50,
   "stats": {
    "hp": 34,
    "ap": 5,
-   "attack": 8,
+   "attack": 9,
    "defense": 3,
    "jump": 1
   },
@@ -232,7 +232,7 @@
   "name": "Caustic Lantern",
   "role": "Siege Engine",
   "faction": "salt_concord",
-  "cost": 55,
+  "cost": 50,
   "stats": {
    "hp": 22,
    "ap": 5,
@@ -257,11 +257,11 @@
   "name": "Rim Marshal",
   "role": "Commander",
   "faction": "salt_concord",
-  "cost": 60,
+  "cost": 55,
   "stats": {
-   "hp": 28,
+   "hp": 30,
    "ap": 6,
-   "attack": 8,
+   "attack": 9,
    "defense": 2,
    "jump": 1
   },
@@ -283,7 +283,7 @@
   "name": "Saltmill Juggernaut",
   "role": "Exotic Siege Engine",
   "faction": "salt_concord",
-  "cost": 70,
+  "cost": 65,
   "stats": {
    "hp": 40,
    "ap": 5,
@@ -311,7 +311,7 @@
   "role": "Hero",
   "faction": "salt_concord",
   "hero": true,
-  "cost": 80,
+  "cost": 75,
   "stats": {
    "hp": 34,
    "ap": 7,
@@ -398,7 +398,7 @@
   "faction": "hadal_court",
   "cost": 35,
   "stats": {
-   "hp": 20,
+   "hp": 18,
    "ap": 5,
    "attack": 7,
    "defense": 1,
@@ -420,7 +420,7 @@
   "name": "Bell-Knight",
   "role": "Tank",
   "faction": "hadal_court",
-  "cost": 40,
+  "cost": 45,
   "stats": {
    "hp": 30,
    "ap": 5,
@@ -470,11 +470,11 @@
   "name": "Lantern Spitter",
   "role": "Ranged",
   "faction": "hadal_court",
-  "cost": 35,
+  "cost": 40,
   "stats": {
    "hp": 14,
    "ap": 6,
-   "attack": 8,
+   "attack": 7,
    "defense": 0,
    "jump": 1
   },
@@ -522,9 +522,9 @@
   "faction": "hadal_court",
   "cost": 45,
   "stats": {
-   "hp": 16,
+   "hp": 15,
    "ap": 5,
-   "attack": 9,
+   "attack": 8,
    "defense": 1,
    "jump": 1
   },
@@ -574,7 +574,7 @@
   "stats": {
    "hp": 30,
    "ap": 5,
-   "attack": 9,
+   "attack": 8,
    "defense": 3,
    "jump": 1
   },
@@ -599,7 +599,7 @@
   "stats": {
    "hp": 38,
    "ap": 5,
-   "attack": 11,
+   "attack": 10,
    "defense": 3,
    "jump": 1
   },
@@ -620,7 +620,7 @@
   "name": "Deep Herald",
   "role": "Debuffer",
   "faction": "hadal_court",
-  "cost": 55,
+  "cost": 60,
   "stats": {
    "hp": 22,
    "ap": 6,
@@ -698,11 +698,11 @@
   "role": "Hero",
   "faction": "hadal_court",
   "hero": true,
-  "cost": 85,
+  "cost": 90,
   "stats": {
    "hp": 34,
    "ap": 6,
-   "attack": 9,
+   "attack": 8,
    "defense": 3,
    "jump": 1
   },
@@ -782,7 +782,7 @@
   "faction": "returning_tide",
   "cost": 30,
   "stats": {
-   "hp": 16,
+   "hp": 18,
    "ap": 6,
    "attack": 6,
    "defense": 0,
@@ -809,7 +809,7 @@
   "stats": {
    "hp": 18,
    "ap": 5,
-   "attack": 6,
+   "attack": 7,
    "defense": 0,
    "jump": 1
   },
@@ -837,7 +837,7 @@
   "faction": "returning_tide",
   "cost": 35,
   "stats": {
-   "hp": 14,
+   "hp": 16,
    "ap": 6,
    "attack": 7,
    "defense": 0,
@@ -861,7 +861,7 @@
   "faction": "returning_tide",
   "cost": 35,
   "stats": {
-   "hp": 15,
+   "hp": 17,
    "ap": 8,
    "attack": 7,
    "defense": 0,
@@ -888,7 +888,7 @@
   "stats": {
    "hp": 22,
    "ap": 6,
-   "attack": 7,
+   "attack": 8,
    "defense": 1,
    "jump": 1
   },
@@ -913,7 +913,7 @@
   "stats": {
    "hp": 17,
    "ap": 6,
-   "attack": 6,
+   "attack": 7,
    "defense": 0,
    "jump": 1
   },
@@ -934,7 +934,7 @@
   "name": "Shroud-Mender",
   "role": "Healer",
   "faction": "returning_tide",
-  "cost": 40,
+  "cost": 35,
   "stats": {
    "hp": 18,
    "ap": 6,
@@ -963,7 +963,7 @@
   "stats": {
    "hp": 34,
    "ap": 5,
-   "attack": 7,
+   "attack": 8,
    "defense": 3,
    "jump": 1
   },
@@ -984,7 +984,7 @@
   "name": "Choirmaster",
   "role": "Commander",
   "faction": "returning_tide",
-  "cost": 55,
+  "cost": 50,
   "stats": {
    "hp": 22,
    "ap": 6,
@@ -1009,7 +1009,7 @@
   "name": "Undertow Singer",
   "role": "Controller",
   "faction": "returning_tide",
-  "cost": 55,
+  "cost": 50,
   "stats": {
    "hp": 20,
    "ap": 6,
@@ -1034,7 +1034,7 @@
   "name": "Bloat-Drowned",
   "role": "Bruiser",
   "faction": "returning_tide",
-  "cost": 55,
+  "cost": 50,
   "stats": {
    "hp": 38,
    "ap": 5,
@@ -1204,7 +1204,7 @@
   "stats": {
    "hp": 16,
    "ap": 6,
-   "attack": 7,
+   "attack": 6,
    "defense": 1,
    "jump": 1
   },
@@ -1229,7 +1229,7 @@
   "stats": {
    "hp": 20,
    "ap": 8,
-   "attack": 8,
+   "attack": 7,
    "defense": 1,
    "jump": 2
   },
@@ -1252,9 +1252,9 @@
   "faction": "salvage_compact",
   "cost": 35,
   "stats": {
-   "hp": 16,
+   "hp": 15,
    "ap": 7,
-   "attack": 8,
+   "attack": 7,
    "defense": 0,
    "jump": 1
   },
@@ -1279,7 +1279,7 @@
   "stats": {
    "hp": 17,
    "ap": 7,
-   "attack": 7,
+   "attack": 6,
    "defense": 0,
    "jump": 1
   },
@@ -1375,7 +1375,7 @@
   "name": "Hullbreaker",
   "role": "Big Melee",
   "faction": "salvage_compact",
-  "cost": 55,
+  "cost": 60,
   "stats": {
    "hp": 36,
    "ap": 5,
@@ -1426,11 +1426,11 @@
   "name": "Breach-Gunner",
   "role": "Ranged",
   "faction": "salvage_compact",
-  "cost": 50,
+  "cost": 55,
   "stats": {
-   "hp": 18,
+   "hp": 17,
    "ap": 6,
-   "attack": 10,
+   "attack": 9,
    "defense": 0,
    "jump": 1
   },
@@ -1451,11 +1451,11 @@
   "name": "Harpoon Engine",
   "role": "Engine",
   "faction": "salvage_compact",
-  "cost": 70,
+  "cost": 75,
   "stats": {
    "hp": 34,
    "ap": 5,
-   "attack": 10,
+   "attack": 9,
    "defense": 3,
    "jump": 1
   },
@@ -1562,9 +1562,9 @@
   "faction": "reef_ascendant",
   "cost": 15,
   "stats": {
-   "hp": 9,
+   "hp": 10,
    "ap": 5,
-   "attack": 4,
+   "attack": 5,
    "defense": 0,
    "jump": 1
   },
@@ -1589,9 +1589,9 @@
   "faction": "reef_ascendant",
   "cost": 20,
   "stats": {
-   "hp": 8,
+   "hp": 10,
    "ap": 5,
-   "attack": 4,
+   "attack": 5,
    "defense": 0,
    "jump": 1
   },
@@ -1616,9 +1616,9 @@
   "faction": "reef_ascendant",
   "cost": 25,
   "stats": {
-   "hp": 11,
+   "hp": 13,
    "ap": 7,
-   "attack": 5,
+   "attack": 6,
    "defense": 0,
    "jump": 2
   },
@@ -1643,9 +1643,9 @@
   "faction": "reef_ascendant",
   "cost": 20,
   "stats": {
-   "hp": 10,
+   "hp": 12,
    "ap": 5,
-   "attack": 4,
+   "attack": 5,
    "defense": 1,
    "jump": 1
   },
@@ -1672,7 +1672,7 @@
   "stats": {
    "hp": 14,
    "ap": 5,
-   "attack": 4,
+   "attack": 5,
    "defense": 1,
    "jump": 1
   },
@@ -1695,7 +1695,7 @@
   "name": "Brainstalk",
   "role": "Mind / Aura",
   "faction": "reef_ascendant",
-  "cost": 40,
+  "cost": 35,
   "stats": {
    "hp": 16,
    "ap": 5,
@@ -1723,7 +1723,7 @@
   "name": "Broodspire",
   "role": "Spawner",
   "faction": "reef_ascendant",
-  "cost": 45,
+  "cost": 40,
   "stats": {
    "hp": 20,
    "ap": 5,
@@ -1751,7 +1751,7 @@
   "name": "Reef Tender",
   "role": "Support / Healer",
   "faction": "reef_ascendant",
-  "cost": 35,
+  "cost": 30,
   "stats": {
    "hp": 14,
    "ap": 6,
@@ -1783,7 +1783,7 @@
   "stats": {
    "hp": 32,
    "ap": 5,
-   "attack": 7,
+   "attack": 8,
    "defense": 3,
    "jump": 1
   },
@@ -1807,11 +1807,11 @@
   "name": "Calcite Bloom",
   "role": "Terrain Spreader",
   "faction": "reef_ascendant",
-  "cost": 55,
+  "cost": 50,
   "stats": {
    "hp": 22,
    "ap": 5,
-   "attack": 5,
+   "attack": 6,
    "defense": 2,
    "jump": 1
   },
@@ -1863,7 +1863,7 @@
   "name": "Elder Colony",
   "role": "Exotic Mind / Summoner",
   "faction": "reef_ascendant",
-  "cost": 70,
+  "cost": 65,
   "stats": {
    "hp": 40,
    "ap": 6,
@@ -1894,11 +1894,11 @@
   "role": "Hero",
   "faction": "reef_ascendant",
   "hero": true,
-  "cost": 90,
+  "cost": 80,
   "stats": {
    "hp": 42,
    "ap": 5,
-   "attack": 9,
+   "attack": 10,
    "defense": 4,
    "jump": 1
   },
@@ -2054,7 +2054,7 @@
   "stats": {
    "hp": 16,
    "ap": 6,
-   "attack": 7,
+   "attack": 6,
    "defense": 1,
    "jump": 1
   },
@@ -2206,7 +2206,7 @@
   "stats": {
    "hp": 18,
    "ap": 6,
-   "attack": 8,
+   "attack": 7,
    "defense": 1,
    "jump": 1
   },
@@ -2227,7 +2227,7 @@
   "name": "Keeper of the Long Watch",
   "role": "Commander",
   "faction": "lanternkeepers",
-  "cost": 60,
+  "cost": 65,
   "stats": {
    "hp": 30,
    "ap": 6,
@@ -2253,11 +2253,11 @@
   "name": "First Flame",
   "role": "Exotic Beam Engine",
   "faction": "lanternkeepers",
-  "cost": 70,
+  "cost": 75,
   "stats": {
    "hp": 36,
    "ap": 6,
-   "attack": 10,
+   "attack": 9,
    "defense": 3,
    "jump": 1
   },

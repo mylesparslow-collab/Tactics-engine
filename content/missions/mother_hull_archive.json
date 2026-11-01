@@ -94,11 +94,6 @@
           "y": 9
         },
         {
-          "unit": "salvage_compact_hullbreaker",
-          "x": 17,
-          "y": 12
-        },
-        {
           "unit": "salvage_compact_rivet_slinger",
           "x": 12,
           "y": 6
@@ -109,27 +104,22 @@
           "y": 14
         },
         {
-          "unit": "salvage_compact_breach_gunner",
-          "x": 16,
-          "y": 9
-        },
-        {
           "unit": "salvage_compact_wrecker",
           "x": 13,
-          "y": 12
-        },
-        {
-          "unit": "salvage_compact_powder_monk",
-          "x": 16,
           "y": 12
         },
         {
           "unit": "salvage_compact_quartermaster",
           "x": 19,
           "y": 10
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 16,
+          "y": 12
         }
       ],
-      "startingEssence": 140,
+      "startingEssence": 55,
       "essencePerTurn": 30
     },
     {
@@ -165,8 +155,8 @@
       },
       {
         "type": "turn_limit",
-        "turns": 15,
-        "label": "Force the archive door before turn 15"
+        "turns": 17,
+        "label": "Force the archive door before turn 17"
       }
     ]
   },

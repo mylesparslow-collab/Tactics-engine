@@ -1,7 +1,7 @@
 {
  "sc_spell_salt_volley": {
   "name": "Salt Volley",
-  "description": "Deal 3 flat salt damage to an enemy within 3 of a friendly unit.",
+  "description": "Deal 5 flat salt damage to an enemy within 3 of a friendly unit.",
   "faction": "salt_concord",
   "rarity": "common",
   "cost": 20,
@@ -9,7 +9,7 @@
   "effects": [
    {
     "type": "damage",
-    "amount": 3,
+    "amount": 5,
     "damageType": "salt",
     "ignoreAttack": true
    }
@@ -75,7 +75,7 @@
  },
  "sc_spell_caustic_mist": {
   "name": "Caustic Mist",
-  "description": "Apply Caustic for 2 turns and deal 2 flat salt damage to enemies in radius 1 of a tile within 3 of a friendly unit.",
+  "description": "Apply Caustic for 2 turns and deal 3 flat salt damage to enemies in radius 1 of a tile within 3 of a friendly unit.",
   "faction": "salt_concord",
   "rarity": "uncommon",
   "cost": 30,
@@ -88,7 +88,7 @@
   "effects": [
    {
     "type": "damage",
-    "amount": 2,
+    "amount": 3,
     "damageType": "salt",
     "ignoreAttack": true
    },
@@ -962,7 +962,7 @@
  },
  "lk_spell_tithe_of_oil": {
   "name": "Tithe of Oil",
-  "description": "Gain 30 Tide as the keepers tip a store of lamp oil into the cistern.",
+  "description": "Gain 20 Tide as the keepers tip a store of lamp oil into the cistern.",
   "faction": "lanternkeepers",
   "rarity": "common",
   "cost": 20,
@@ -970,7 +970,7 @@
   "effects": [
    {
     "type": "essence",
-    "amount": 30,
+    "amount": 20,
     "team": "self"
    }
   ],

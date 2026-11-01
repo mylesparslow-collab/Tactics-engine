@@ -99,21 +99,6 @@
           "tag": "rainsayer"
         },
         {
-          "unit": "returning_tide_anchor_bearer",
-          "x": 4,
-          "y": 5
-        },
-        {
-          "unit": "returning_tide_penitent",
-          "x": 3,
-          "y": 4
-        },
-        {
-          "unit": "returning_tide_penitent",
-          "x": 5,
-          "y": 4
-        },
-        {
           "unit": "returning_tide_tear_slinger",
           "x": 8,
           "y": 4
@@ -124,7 +109,7 @@
           "y": 4
         }
       ],
-      "startingEssence": 130,
+      "startingEssence": 0,
       "essencePerTurn": 28
     }
   ],
@@ -154,8 +139,8 @@
       },
       {
         "type": "turn_limit",
-        "turns": 10,
-        "label": "End it before the ledge floods: turn 10"
+        "turns": 14,
+        "label": "End it before the ledge floods: turn 14"
       }
     ]
   },
@@ -197,20 +182,6 @@
           "unit": "returning_tide_penitent",
           "x": 13,
           "y": 12
-        },
-        {
-          "type": "spawn",
-          "team": 1,
-          "unit": "returning_tide_penitent",
-          "x": 14,
-          "y": 12
-        },
-        {
-          "type": "spawn",
-          "team": 1,
-          "unit": "returning_tide_penitent",
-          "x": 13,
-          "y": 14
         }
       ]
     },
