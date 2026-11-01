@@ -64,9 +64,10 @@ export class GameSession {
     this.renderer.start();
     this.renderer.onCue = c => playCue(c, this.game);
     this.game.on(e => this.onEvent(e));
-    const ro = new ResizeObserver(() => { this.renderer.resize(); this.layoutHand(); });
+    let roRaf = 0; // coalesce bursts of resize events into one pass per frame
+    const ro = new ResizeObserver(() => { if (roRaf) return; roRaf = requestAnimationFrame(() => { roRaf = 0; this.renderer.resize(); this.layoutHand(); }); });
     ro.observe(this.canvas.parentElement!);
-    this.cleanup.push(() => ro.disconnect());
+    this.cleanup.push(() => { ro.disconnect(); cancelAnimationFrame(roRaf); });
     const kd = (e: KeyboardEvent) => this.onKey(e);
     // WASD / arrow keys pan the camera while held
     const held = new Set<string>();
@@ -304,10 +305,10 @@ export class GameSession {
       try { more = steps++ < 80 && aiStep(g); } catch (err) { console.error('AI error', err); }
       if (!more && g.phase === 'playing') g.endTurn();
       this.refresh();
-      if (g.phase === 'playing' && g.teams[g.current].controller === 'ai') { steps = more ? steps : 0; this.aiTimer = window.setTimeout(tick, 350); }
+      if (g.phase === 'playing' && g.teams[g.current].controller === 'ai') { steps = more ? steps : 0; this.aiTimer = window.setTimeout(tick, 200); }
       else { this.aiRunning = false; this.refresh(); }
     };
-    this.aiTimer = window.setTimeout(tick, 600);
+    this.aiTimer = window.setTimeout(tick, 350);
   }
 
   // ---------- input ----------
@@ -502,6 +503,12 @@ export class GameSession {
   }
 
   // ---------- hand ----------
+  /** Show/hide the hand instantly: flip a class, no DOM rebuild and no animation. */
+  private setHandOpen(open: boolean, btn?: HTMLElement) {
+    this.handOpen = open; this.hand.classList.toggle('closed', !open);
+    btn?.querySelector('.chev')?.classList.toggle('up', !open); btn?.setAttribute('title', open ? 'Hide hand' : 'Show hand');
+    this.renderer.resize(); this.layoutHand();
+  }
   private renderHand() {
     const g = this.g, t = this.humanTeam(), team = g.teams[t];
     const scroll = this.hand.querySelector('.handrow')?.scrollLeft ?? 0;
@@ -538,10 +545,10 @@ export class GameSession {
       return k === 'spell' ? 'Choose a target to cast \u00B7 Esc cancels' : k === 'equipment' ? 'Choose a friendly unit to equip \u00B7 Esc cancels' : 'Choose a glowing tile to deploy \u00B7 Esc cancels';
     };
     const tabs = h('div', { class: 'htabs' }, ...([['all', 'All'], ['unit', 'Champions'], ['spell', 'Spells'], ['equipment', 'Gear']] as const).map(([k, n]) =>
-      h('button', { class: 'htab' + (this.handFilter === k ? ' on' : ''), disabled: !counts[k], onclick: (e: Event) => { e.stopPropagation(); this.handFilter = k; if (!this.handOpen) { this.handOpen = true; this.renderer.resize(); } this.renderHand(); } },
+      h('button', { class: 'htab' + (this.handFilter === k ? ' on' : ''), disabled: !counts[k], onclick: (e: Event) => { e.stopPropagation(); this.handFilter = k; if (!this.handOpen) this.handOpen = true; this.renderHand(); this.renderer.resize(); } },
         n, h('small', null, String(counts[k])))));
     const strip = h('div', { class: 'hstrip' },
-      h('button', { class: 'htoggle', title: this.handOpen ? 'Hide hand' : 'Show hand', onclick: () => { this.handOpen = !this.handOpen; this.hand.classList.toggle('closed', !this.handOpen); this.renderHand(); this.renderer.resize(); } },
+      h('button', { class: 'htoggle', title: this.handOpen ? 'Hide hand' : 'Show hand', onclick: (e: Event) => this.setHandOpen(!this.handOpen, e.currentTarget as HTMLElement) },
         h('span', { class: 'chev' + (this.handOpen ? '' : ' up') }, '\u25BE'), h('span', null, this.L('warband')), h('b', null, String(team.hand.length)), team.deck.length ? h('span', { class: 'hdeck', title: `${team.deck.length} cards left to draw` }, `+${team.deck.length}`) : null),
       tabs, h('span', { class: 'hint' }, hintFor()));
     const end = h('button', { id: 'endturn', class: 'endturn-big', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() },
