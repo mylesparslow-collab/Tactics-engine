@@ -30,7 +30,7 @@ def build(P):
     add(ragged_robe(P, hem=0.02, flare=1.05, top=1.06, rag=1.3, seed=9.2, droop=0.10, girth=0.9), 'robe', 0.0)
     add(shawl(P, depth=0.26, width=0.20, rag=1.4, seed=5.5, front_drop=0.12), 'black', 0.0)
     for s in ('r', 'l'):
-        sleeve_flare(P, add, s, 'robe', length=0.14, width=0.07)
+        sleeve_flare(P, add, s, 'robe', length=0.09, width=0.06)
     # the hauled line of water: from her fist out and down to the ground ahead
     hr = hand_pos(P, 'r')
     pull = P['cast_glow']
@@ -41,9 +41,9 @@ def build(P):
     drips(P, add, [hr + v3(0, -0.05, 0), P['wr_l'] + v3(0, -0.12, 0), P['head'] + v3(0.05, -0.30, -0.1)])
     puddle(P, add, r=0.32)
     mats = {
-        'robe': wet_cloth(_hex('#2e4a3d'), wet=0.8, low_dark=0.3),
+        'robe': wet_cloth(_hex('#3c5e4d'), wet=0.8, low_dark=0.3),
         'black': wet_cloth(_hex('#5f8f74'), wet=0.8, low_dark=0.1),
-        'hair': Material(_hex('#1c1a18'), spec=0.8, gloss=40, brush=0.05),
+        'hair': Material(_hex('#4a4038'), spec=0.6, gloss=34, brush=0.08),
         'skin': wet_skin(P, SKIN_PALE, hair=_hex('#1c1a18'), mouth=1.0),
         'water': Material(GLINT, spec=1.2, gloss=70, emissive=tuple(np.array(BRINE) * (0.35 + 0.5 * pull)), brush=0.0),
     }

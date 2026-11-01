@@ -78,7 +78,7 @@ def horse(P, add):
             sw = np.sin(ph * 2 * np.pi) if g is not None else 0.0
             lift = max(0.0, np.cos(ph * 2 * np.pi)) * 0.16 if g is not None else 0.0
             hoof = v3(sx * 0.13, 0.05 + lift, zz + 0.18 * sw + (0.03 if fr else -0.02))
-        L1, L2 = 0.42, 0.42
+        L1, L2 = 0.385, 0.385
         knee = rig.two_bone(top, hoof, L1, L2, (0, 0, 1) if fr else (0, 0, -1))
         add(Capsule(top, knee, 0.09, 0.05), 'coat_h', 0.04)
         add(Capsule(knee, hoof, 0.045, 0.036), 'leg_h', 0.01)

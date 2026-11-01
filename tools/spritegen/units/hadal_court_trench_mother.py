@@ -45,8 +45,8 @@ def build(P):
     for sx in (-1, 1):
         sh = ch + v3(sx * 0.20, 0.10, 0)
         lash = sk if sx == -1 else 0.2 * sk
-        el = sh + v3(sx * 0.34, -0.04 + 0.25 * cg, 0.10 + 0.25 * lash)
-        wr = el + v3(sx * (0.26 - 0.22 * lash), -0.02 + 0.25 * cg - 0.2 * lash, 0.12 + 0.45 * lash)
+        el = sh + v3(sx * 0.28, -0.04 + 0.25 * cg, 0.10 + 0.25 * lash)
+        wr = el + v3(sx * (0.20 - 0.18 * lash), -0.02 + 0.25 * cg - 0.2 * lash, 0.12 + 0.45 * lash)
         seg_limb(add, [sh, el, wr], [0.075, 0.06, 0.045], 'flesh', joint='iron', k=0.02)
         for f in (-1, 0, 1):
             add(Capsule(wr, wr + norm(wr - el) * 0.14 + v3(0, f * 0.05, f * 0.04), 0.018, 0.006), 'flesh', 0.01)
@@ -55,10 +55,12 @@ def build(P):
     # tendrils from the rim
     for k in range(7):
         a = -2.4 + k * 0.8
+        if k in (1, 2):
+            continue
         r0 = v3(np.sin(a) * 0.80, 0.18, np.cos(a) * 0.68 - 0.12)
         dirn = v3(np.sin(a), 0, np.cos(a))
         w = np.sin(2 * np.pi * P['tell'] + k) * 0.06
-        pts = [r0, r0 + dirn * 0.18 + v3(w, -0.12, 0), r0 + dirn * 0.34 + v3(-w, -0.15, w), r0 + dirn * 0.46 + v3(w, -0.14, 0)]
+        pts = [r0, r0 + dirn * 0.12 + v3(w, -0.12, 0), r0 + dirn * 0.22 + v3(-w, -0.15, w), r0 + dirn * 0.30 + v3(w, -0.14, 0)]
         seg_limb(add, pts, [0.06, 0.045, 0.03, 0.012], 'flesh', joint=None, k=0.02)
     # brood: small thralls clinging on the shell
     brood = [(-0.48, 0.95, 0.52), (0.50, 0.70, 0.55), (0.12, 1.30, 0.46), (-0.30, 0.40, 0.78)]
@@ -70,8 +72,8 @@ def build(P):
         add(Sphere(c + v3(0, 0.16, 0.03), 0.017), 'lamp', 0.0)
         tips.append(c)
     # vent at her base
-    add(Ellipsoid(v3(0, 0.02, 0.15), (0.75, 0.04, 0.6)), 'barnacle', 0.05)
-    parts[:] = transform_parts(creature_place(parts, P), t=(0, 0, 0.05))
+    add(Ellipsoid(v3(0, 0.02, 0.10), (0.62, 0.04, 0.5)), 'barnacle', 0.05)
+    parts[:] = transform_parts(creature_place(parts, P), t=(0.27, 0, -0.30), s=0.88)
     mats = hadal_mats(P, {
         'shell': shell_material(P, top, R),
         'helm': bell_metal(hd, np.eye(3), base=_hex('#58607f'), spacing=0.3, barn=0),

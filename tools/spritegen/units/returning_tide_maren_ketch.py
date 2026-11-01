@@ -8,7 +8,7 @@ from _returning_tide_common import *
 
 UNIT_ID = 'returning_tide_maren_ketch'
 
-C = Costume(top='robe', sleeve='black', legs='robe', boot='boot', hand='glove', skin='skin',
+C = Costume(top='robe', sleeve='sleeve', legs='robe', boot='boot', hand='glove', skin='skin',
             skirt=None, head='bald', belt='leather', boots_tall=False, girth=0.95)
 
 
@@ -33,7 +33,7 @@ def build(P):
     add(shawl(P, depth=0.18, width=0.20, rag=1.0, seed=7.1, front_drop=0.04), 'robe', 0.0)
     hood_down(P, add, 'black', size=0.95)
     for s in ('r', 'l'):
-        sleeve_flare(P, add, s, 'black', length=0.06, width=0.06)
+        sleeve_flare(P, add, s, 'sleeve', length=0.08, width=0.07)
     # gold cords at the wrists
     for s in ('r', 'l'):
         el, wr = P['el_' + s], P['wr_' + s]
@@ -55,6 +55,7 @@ def build(P):
     mats = {
         'robe': wet_cloth(_hex('#3f7a5c'), wet=0.8, low_dark=0.35),
         'black': wet_cloth(_hex('#1c2220'), wet=0.9, low_dark=0.0),
+        'sleeve': wet_cloth(_hex('#2c4a3c'), wet=0.8, low_dark=0.0),
         'glove': Material(_hex('#16191a'), spec=0.6, gloss=40, brush=0.03),
         'hair': Material(_hex('#4a4a44'), spec=0.7, gloss=40, brush=0.06),
         'flask': Material(_hex('#5f7a6c'), spec=1.0, gloss=60, emissive=tuple(np.array(BRINE) * 0.2), brush=0.02),

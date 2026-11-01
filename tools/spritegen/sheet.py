@@ -19,10 +19,25 @@ from render import render, Camera, Look
 _mod = None
 
 
+def _frames(mod, tw):
+    fr = mod.frames()
+    if tw:
+        from tween import tween_all
+        fr, _ = tween_all(fr, mod.ROWS)
+    return fr
+
+
+def _rows(mod, tw):
+    if tw:
+        from tween import tween_all
+        return tween_all(mod.frames(), mod.ROWS)[1]
+    return mod.ROWS
+
+
 def _job(args):
-    modname, row, i = args
+    modname, row, i, tw = args
     mod = importlib.import_module(modname)
-    P, over = mod.frames()[row][i]
+    P, over = _frames(mod, tw)[row][i]
     look = dataclasses.replace(getattr(mod, 'LOOK', Look()), **over)
     return row, i, render(mod.build(P), getattr(mod, 'CAMERA', Camera()), look)
 
@@ -38,11 +53,12 @@ def main():
     ap.add_argument('unit'); ap.add_argument('out')
     ap.add_argument('--jobs', type=int, default=os.cpu_count())
     ap.add_argument('--rows', default='')
+    ap.add_argument('--tween', action='store_true', help='insert eased in-between frames')
     a = ap.parse_args()
     mod = importlib.import_module(a.unit)
-    rows = [r for r in mod.ROWS if not a.rows or r[0] in a.rows.split(',')]
-    fr = mod.frames()
-    jobs = [(a.unit, r[0], i) for r in rows for i in range(len(fr[r[0]]))]
+    rows = [r for r in _rows(mod, a.tween) if not a.rows or r[0] in a.rows.split(',')]
+    fr = _frames(mod, a.tween)
+    jobs = [(a.unit, r[0], i, a.tween) for r in rows for i in range(len(fr[r[0]]))]
     t0 = time.time()
     with Pool(a.jobs) as pool:
         res = pool.map(_job, jobs)
