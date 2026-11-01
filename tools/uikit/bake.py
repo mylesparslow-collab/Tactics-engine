@@ -196,10 +196,10 @@ def coin(name, kind, S=96, seed=21):
 
 def logo(name, text='EBB', size=300, seed=31):
     from PIL import ImageDraw, ImageFont
-    font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), 'fonts', 'IMFellEnglishSC.ttf'), size * 4)
+    font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), 'fonts', 'CormorantGaramond-Bold.ttf'), size * 4)
     tw = int(font.getlength(text) + size * 4 * 0.6) + 200; th = int(size * 4 * 1.25)
     m = Image.new('L', (tw, th), 0); dr = ImageDraw.Draw(m)
-    spacing = size * 4 * 0.08; x = 100
+    spacing = size * 4 * 0.12; x = 100
     for ch in text:
         dr.text((x, size * 0.3), ch, font=font, fill=255); x += font.getlength(ch) + spacing
     bbox = m.getbbox(); m = m.crop((bbox[0] - 60, bbox[1] - 60, bbox[2] + 60, bbox[3] + 90))
@@ -210,7 +210,7 @@ def logo(name, text='EBB', size=300, seed=31):
     alb = bronze_albedo(Hh, W, hgt * 0.8 + 0.15, seed)
     rgb, ao = shade(hgt, alb, strength=9, spec=0.8, gloss=30)
     sc = salt_crust(Hh, W, mask * (1 - smooth(0.3, 0.8, hgt)), seed + 4, 0.9)
-    rgb = rgb * (1 - sc[..., None] * 0.85) + SALT * sc[..., None] * 0.85
+    rgb = rgb * (1 - sc[..., None] * 0.35) + SALT * sc[..., None] * 0.35
     # baked drop shadow + dark outline for legibility on any background
     sh = np.roll(np.roll(blur(mask, 5), 6, 0), 3, 1)
     outline = np.clip(blur(mask, 2) * 3, 0, 1)
@@ -218,6 +218,9 @@ def logo(name, text='EBB', size=300, seed=31):
     rgb = np.where((mask > 0.5)[..., None], rgb, np.array([0.04, 0.03, 0.02]))
     save(name, rgb, a)
 
+import sys
+if len(sys.argv) > 1 and sys.argv[1] == 'logo':
+    logo('logo.png'); sys.exit()
 logo('logo.png')
 frame('frame.png')
 frame('frame_sm.png', S=128, band=16, seed=2)

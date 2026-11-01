@@ -1,6 +1,8 @@
 // Original UI art for EBB, drawn as inline SVG: brass frames (9-slice), faction crests, title key art, and UI glyphs.
 // Everything here is static vector art; nothing uses filters on animated layers (keeps mobile fast).
 
+import { h } from './dom';
+
 let uid = 0;
 const nid = (p: string) => `${p}${++uid}`;
 
@@ -21,13 +23,24 @@ function chartSvg() {
 const KIT = import.meta.glob('./kit/*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 /** URL of a baked UI-kit texture (tools/uikit/bake.py). */
 export const kit = (n: string) => KIT[`./kit/${n}.png`];
+const ILL = import.meta.glob('./kit/ill/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+/** URL of a baked illuminated initial (tools/uikit/illuminate.py), or undefined for non A-Z. */
+export const illum = (ch: string) => ILL[`./kit/ill/${ch.toUpperCase()}.webp`];
+
+/** A menu heading whose first letter is an illuminated initial; other text is left as is. */
+export function illuminated(text: string) {
+  const m = /^(\W*)([A-Za-z])(.*)$/.exec(text);
+  const src = m && illum(m[2]);
+  if (!m || !src) return [text];
+  return [m[1] || null, h('span', { class: 'ill', role: 'img', 'aria-label': m[2], style: `--ill:url("${src}")` }), m[3]];
+}
 
 export function installArt() {
   if (document.getElementById('ebb-art')) return;
   if (!document.getElementById('ebb-fonts')) {
     const ln = document.createElement('link');
     ln.id = 'ebb-fonts'; ln.rel = 'stylesheet';
-    ln.href = 'https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@1,400;1,500&family=Alegreya+Sans:wght@400;500;700;800;900&display=swap';
+    ln.href = 'https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&display=swap';
     document.head.append(ln);
   }
   const st = document.createElement('style');
