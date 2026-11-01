@@ -124,32 +124,39 @@
           "x": 11,
           "y": 4
         }
-      ]
+      ],
+      "startingEssence": 130,
+      "essencePerTurn": 28
     }
   ],
   "objectives": {
     "victory": [
       {
         "type": "survive",
-        "turns": 9
+        "turns": 9,
+        "label": "Hold the Beacon for 9 turns until relief arrives"
       }
     ],
     "defeat": [
       {
         "type": "unit_lost",
-        "tag": "beacon_garrison"
+        "tag": "beacon_garrison",
+        "label": "The tower garrison must not fall"
       },
       {
         "type": "unit_lost",
-        "tag": "keeper_auster"
+        "tag": "keeper_auster",
+        "label": "Keeper Auster must survive"
       },
       {
         "type": "destroy_keystone",
-        "team": 0
+        "team": 0,
+        "label": "The Beacon must not fall"
       },
       {
         "type": "eliminate",
-        "team": 0
+        "team": 0,
+        "label": "Do not lose the whole company"
       }
     ]
   },
@@ -163,19 +170,6 @@
           "type": "message",
           "speaker": "Commander Orrel",
           "text": "Relief in nine turns. Until then: the wall, the tower, the lamp."
-        }
-      ]
-    },
-    {
-      "when": {
-        "turn": 1,
-        "team": 1
-      },
-      "do": [
-        {
-          "type": "grant_essence",
-          "team": 1,
-          "amount": 30
         }
       ]
     },
@@ -198,6 +192,22 @@
       },
       "do": [
         {
+          "type": "terrain",
+          "x": 3,
+          "y": 8,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 5
+        },
+        {
+          "type": "terrain",
+          "x": 12,
+          "y": 8,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 5
+        },
+        {
           "type": "message",
           "speaker": "Scout",
           "text": "The Drowned are climbing out of the brine pools!"
@@ -207,40 +217,57 @@
           "team": 1,
           "unit": "returning_tide_drowned",
           "x": 3,
-          "y": 8
+          "y": 8,
+          "tag": "drowned_wave"
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_drowned",
           "x": 12,
-          "y": 8
+          "y": 8,
+          "tag": "drowned_wave"
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_drowned",
           "x": 3,
-          "y": 9
+          "y": 9,
+          "tag": "drowned_wave"
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_drowned",
           "x": 12,
-          "y": 9
+          "y": 9,
+          "tag": "drowned_wave"
         }
       ]
     },
     {
       "when": {
-        "turn": 8
+        "turn": 8,
+        "team": 1
       },
       "do": [
         {
           "type": "message",
           "speaker": "Keeper Pell Auster",
           "text": "Look away. The second lamp is lit, and anything drowned beside the tower will burn."
+        },
+        {
+          "type": "status",
+          "tag": "drowned_wave",
+          "status": "burning",
+          "duration": 3
+        },
+        {
+          "type": "status",
+          "tag": "drowned_wave",
+          "status": "lk_dazzled",
+          "duration": 2
         }
       ]
     }
@@ -251,10 +278,21 @@
       {
         "condition": {
           "type": "defeat_unit",
-          "tag": "prophet_dunnock"
+          "tag": "prophet_dunnock",
+          "label": "Drive Dunnock from the field"
         },
         "pearls": 40,
         "label": "Drive Dunnock from the field"
+      },
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "keeper_auster",
+          "fraction": 0.5,
+          "label": "Keeper Auster above half strength"
+        },
+        "pearls": 10,
+        "label": "Keeper Auster above half strength"
       }
     ]
   }

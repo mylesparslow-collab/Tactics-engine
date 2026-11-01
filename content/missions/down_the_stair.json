@@ -101,7 +101,9 @@
           "x": 8,
           "y": 13
         }
-      ]
+      ],
+      "startingEssence": 100,
+      "essencePerTurn": 25
     }
   ],
   "objectives": {
@@ -135,33 +137,35 @@
             11
           ]
         ],
-        "tag": "supply_wagon_3"
+        "tag": "supply_wagon_3",
+        "label": "Bring the last wagon down to the Shelf landing"
       }
     ],
     "defeat": [
       {
         "type": "unit_lost",
-        "tag": "supply_wagon_1"
+        "tag": "supply_wagon_3",
+        "label": "The last wagon must not go over the edge"
       },
       {
         "type": "unit_lost",
-        "tag": "supply_wagon_2"
-      },
-      {
-        "type": "unit_lost",
-        "tag": "supply_wagon_3"
+        "tag": "commander_orrel",
+        "label": "Commander Orrel must survive"
       },
       {
         "type": "destroy_keystone",
-        "team": 0
+        "team": 0,
+        "label": "Our rally standard must not fall"
       },
       {
         "type": "eliminate",
-        "team": 0
+        "team": 0,
+        "label": "Do not lose the whole company"
       },
       {
         "type": "turn_limit",
-        "turns": 16
+        "turns": 16,
+        "label": "Reach the Shelf landing before turn 16"
       }
     ]
   },
@@ -231,6 +235,14 @@
       },
       "do": [
         {
+          "type": "terrain",
+          "x": 7,
+          "y": 11,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 6
+        },
+        {
           "type": "message",
           "speaker": "Scout",
           "text": "A Rainsayer on the lower landing. The tiles are turning to brine; the wagons will slow."
@@ -250,73 +262,33 @@
     "bonus": [
       {
         "condition": {
-          "type": "reach_tile",
-          "team": 0,
-          "tiles": [
-            [
-              5,
-              11
-            ],
-            [
-              6,
-              11
-            ],
-            [
-              7,
-              11
-            ],
-            [
-              8,
-              11
-            ],
-            [
-              9,
-              11
-            ],
-            [
-              10,
-              11
-            ]
-          ],
-          "tag": "supply_wagon_1"
+          "type": "unit_lost",
+          "tag": "supply_wagon_1",
+          "label": "The lead wagon must come through",
+          "not": true
         },
         "pearls": 20,
-        "label": "Lead wagon delivered"
+        "label": "The lead wagon must come through"
       },
       {
         "condition": {
-          "type": "reach_tile",
-          "team": 0,
-          "tiles": [
-            [
-              5,
-              11
-            ],
-            [
-              6,
-              11
-            ],
-            [
-              7,
-              11
-            ],
-            [
-              8,
-              11
-            ],
-            [
-              9,
-              11
-            ],
-            [
-              10,
-              11
-            ]
-          ],
-          "tag": "supply_wagon_2"
+          "type": "unit_lost",
+          "tag": "supply_wagon_2",
+          "label": "The second wagon must come through",
+          "not": true
         },
         "pearls": 20,
-        "label": "Second wagon delivered"
+        "label": "The second wagon must come through"
+      },
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "commander_orrel",
+          "fraction": 0.5,
+          "label": "Commander Orrel above half strength"
+        },
+        "pearls": 10,
+        "label": "Commander Orrel above half strength"
       }
     ]
   }

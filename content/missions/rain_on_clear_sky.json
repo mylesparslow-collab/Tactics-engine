@@ -28,27 +28,32 @@
         {
           "unit": "salt_concord_brineguard",
           "x": 2,
-          "y": 12
+          "y": 12,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_brineguard",
           "x": 4,
-          "y": 12
+          "y": 12,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_surveyor",
           "x": 2,
-          "y": 13
+          "y": 13,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_causeway_outrider",
           "x": 5,
-          "y": 12
+          "y": 12,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_brine_chirurgeon",
           "x": 4,
-          "y": 13
+          "y": 13,
+          "tag": "company"
         }
       ]
     },
@@ -118,32 +123,39 @@
           "x": 3,
           "y": 3
         }
-      ]
+      ],
+      "startingEssence": 130,
+      "essencePerTurn": 28
     }
   ],
   "objectives": {
     "victory": [
       {
         "type": "defeat_unit",
-        "tag": "rainsayer"
+        "tag": "rainsayer",
+        "label": "Kill all four Rainsayers"
       }
     ],
     "defeat": [
       {
         "type": "unit_lost",
-        "tag": "commander_orrel"
+        "tag": "commander_orrel",
+        "label": "Commander Orrel must survive"
       },
       {
         "type": "destroy_keystone",
-        "team": 0
+        "team": 0,
+        "label": "Our rally standard must not fall"
       },
       {
         "type": "eliminate",
-        "team": 0
+        "team": 0,
+        "label": "Do not lose the whole company"
       },
       {
         "type": "turn_limit",
-        "turns": 10
+        "turns": 10,
+        "label": "End it before the ledge floods: turn 10"
       }
     ]
   },
@@ -162,23 +174,18 @@
     },
     {
       "when": {
-        "turn": 1,
-        "team": 1
-      },
-      "do": [
-        {
-          "type": "grant_essence",
-          "team": 1,
-          "amount": 30
-        }
-      ]
-    },
-    {
-      "when": {
         "turn": 3,
         "team": 1
       },
       "do": [
+        {
+          "type": "terrain",
+          "x": 8,
+          "y": 6,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
         {
           "type": "message",
           "speaker": "Scout",
@@ -209,13 +216,50 @@
     },
     {
       "when": {
-        "turn": 5
+        "turn": 5,
+        "team": 1
       },
       "do": [
         {
           "type": "message",
           "speaker": "Keeper Pell Auster",
           "text": "That rain is the lamp's breath, Commander. It leaks when something pulls on it. Be quick."
+        },
+        {
+          "type": "status",
+          "tag": "company",
+          "status": "soaked",
+          "duration": 3
+        },
+        {
+          "type": "status",
+          "tag": "commander_orrel",
+          "status": "soaked",
+          "duration": 3
+        },
+        {
+          "type": "terrain",
+          "x": 5,
+          "y": 6,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 2,
+          "y": 5,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 8,
+          "y": 9,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
         }
       ]
     },
@@ -225,6 +269,22 @@
         "team": 1
       },
       "do": [
+        {
+          "type": "terrain",
+          "x": 6,
+          "y": 2,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 9,
+          "y": 4,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 4
+        },
         {
           "type": "message",
           "speaker": "Scout",
@@ -245,10 +305,21 @@
     "bonus": [
       {
         "condition": {
-          "type": "eliminate",
-          "team": 1
+          "type": "turn_limit",
+          "turns": 8,
+          "label": "Silence the Rainsayers before turn 8",
+          "not": true
         },
         "pearls": 30,
+        "label": "Silence the Rainsayers before turn 8"
+      },
+      {
+        "condition": {
+          "type": "eliminate",
+          "team": 1,
+          "label": "Leave no one singing"
+        },
+        "pearls": 20,
         "label": "Leave no one singing"
       }
     ]

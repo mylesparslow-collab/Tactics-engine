@@ -34,32 +34,38 @@
         {
           "unit": "salt_concord_stair_warden",
           "x": 8,
-          "y": 11
+          "y": 11,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_brineguard",
           "x": 5,
-          "y": 12
+          "y": 12,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_brineguard",
           "x": 9,
-          "y": 12
+          "y": 12,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_brineguard",
           "x": 6,
-          "y": 11
+          "y": 11,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_saltwright",
           "x": 5,
-          "y": 13
+          "y": 13,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_rim_marshal",
           "x": 9,
-          "y": 13
+          "y": 13,
+          "tag": "company"
         },
         {
           "unit": "lanternkeepers_keeper_pell_auster",
@@ -97,69 +103,92 @@
         {
           "unit": "returning_tide_choirmaster",
           "x": 7,
-          "y": 4
+          "y": 4,
+          "tag": "tide_host"
         },
         {
           "unit": "returning_tide_anchor_bearer",
           "x": 6,
-          "y": 4
+          "y": 4,
+          "tag": "tide_host"
         },
         {
           "unit": "returning_tide_anchor_bearer",
           "x": 8,
-          "y": 4
+          "y": 4,
+          "tag": "tide_host"
         },
         {
           "unit": "returning_tide_wringer",
           "x": 5,
-          "y": 3
+          "y": 3,
+          "tag": "tide_host"
         },
         {
           "unit": "returning_tide_bloat_drowned",
           "x": 9,
-          "y": 3
+          "y": 3,
+          "tag": "tide_host"
         },
         {
           "unit": "returning_tide_tear_slinger",
           "x": 4,
-          "y": 4
+          "y": 4,
+          "tag": "tide_host"
         },
         {
           "unit": "returning_tide_tear_slinger",
           "x": 10,
-          "y": 4
+          "y": 4,
+          "tag": "tide_host"
         },
         {
           "unit": "returning_tide_undertow_singer",
           "x": 7,
-          "y": 3
+          "y": 3,
+          "tag": "tide_host"
         }
-      ]
+      ],
+      "startingEssence": 160,
+      "essencePerTurn": 35
+    },
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "ai",
+      "units": [],
+      "startingEssence": 0,
+      "essencePerTurn": 0
     }
   ],
   "objectives": {
     "victory": [
       {
         "type": "defeat_unit",
-        "tag": "prophet_dunnock"
+        "tag": "prophet_dunnock",
+        "label": "Kill the Prophet Dunnock"
       }
     ],
     "defeat": [
       {
         "type": "unit_lost",
-        "tag": "beacon_garrison"
+        "tag": "beacon_garrison",
+        "label": "The lamp must not go dark: hold the Beacon"
       },
       {
         "type": "destroy_keystone",
-        "team": 0
+        "team": 0,
+        "label": "The Beacon must not fall"
       },
       {
         "type": "eliminate",
-        "team": 0
+        "team": 0,
+        "label": "Do not lose the whole company"
       },
       {
         "type": "turn_limit",
-        "turns": 16
+        "turns": 16,
+        "label": "Kill Dunnock before turn 16"
       }
     ]
   },
@@ -178,26 +207,20 @@
     },
     {
       "when": {
-        "turn": 1,
+        "turn": 2,
         "team": 1
-      },
-      "do": [
-        {
-          "type": "grant_essence",
-          "team": 1,
-          "amount": 60
-        }
-      ]
-    },
-    {
-      "when": {
-        "turn": 2
       },
       "do": [
         {
           "type": "message",
           "speaker": "Imre Dunnock",
           "text": "Look up, Commander. That is not weather. That is everything you ever took for granted, coming home."
+        },
+        {
+          "type": "status",
+          "tag": "company",
+          "status": "soaked",
+          "duration": 2
         }
       ]
     },
@@ -208,13 +231,29 @@
       },
       "do": [
         {
+          "type": "terrain",
+          "x": 4,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 5
+        },
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 5
+        },
+        {
           "type": "message",
           "speaker": "Scout",
-          "text": "Herald Vhaal and two Bell-Knights climb out of the flooded lower court. They only watch."
+          "text": "Herald Vhaal and two Bell-Knights climb out of the flooded lower court. They answer to no one here."
         },
         {
           "type": "spawn",
-          "team": 1,
+          "team": 2,
           "unit": "hadal_court_herald_vhaal",
           "x": 7,
           "y": 9,
@@ -222,17 +261,19 @@
         },
         {
           "type": "spawn",
-          "team": 1,
+          "team": 2,
           "unit": "hadal_court_bell_knight",
           "x": 6,
-          "y": 9
+          "y": 9,
+          "tag": "vhaal_guard"
         },
         {
           "type": "spawn",
-          "team": 1,
+          "team": 2,
           "unit": "hadal_court_bell_knight",
           "x": 8,
-          "y": 9
+          "y": 9,
+          "tag": "vhaal_guard"
         }
       ]
     },
@@ -243,6 +284,86 @@
       },
       "do": [
         {
+          "type": "terrain",
+          "x": 3,
+          "y": 8,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 8
+        },
+        {
+          "type": "terrain",
+          "x": 12,
+          "y": 8,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 8
+        },
+        {
+          "type": "terrain",
+          "x": 2,
+          "y": 11,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 8
+        },
+        {
+          "type": "terrain",
+          "x": 12,
+          "y": 11,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 8
+        },
+        {
+          "type": "status",
+          "tag": "company",
+          "status": "soaked",
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "commander_orrel",
+          "status": "soaked",
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "keeper_auster",
+          "status": "soaked",
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "beacon_garrison",
+          "status": "soaked",
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "tide_host",
+          "status": "soaked",
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "prophet_dunnock",
+          "status": "soaked",
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "herald_vhaal",
+          "status": "soaked",
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "vhaal_guard",
+          "status": "soaked",
+          "duration": 4
+        },
+        {
           "type": "message",
           "speaker": "Scout",
           "text": "The sky has broken. Seawater is falling on everything, and the pools are spreading!"
@@ -252,28 +373,32 @@
           "team": 1,
           "unit": "returning_tide_drowned",
           "x": 3,
-          "y": 8
+          "y": 8,
+          "tag": "drowned_wave"
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_drowned",
           "x": 12,
-          "y": 8
+          "y": 8,
+          "tag": "drowned_wave"
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_drowned",
           "x": 3,
-          "y": 9
+          "y": 9,
+          "tag": "drowned_wave"
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_drowned",
           "x": 12,
-          "y": 9
+          "y": 9,
+          "tag": "drowned_wave"
         }
       ]
     }
@@ -284,10 +409,21 @@
       {
         "condition": {
           "type": "eliminate",
-          "team": 1
+          "team": 1,
+          "label": "Break the whole Tide host"
         },
         "pearls": 40,
         "label": "Break the whole Tide host"
+      },
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "keeper_auster",
+          "fraction": 0.5,
+          "label": "Keeper Auster above half strength"
+        },
+        "pearls": 20,
+        "label": "Keeper Auster above half strength"
       }
     ]
   }

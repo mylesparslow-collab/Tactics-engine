@@ -34,22 +34,26 @@
         {
           "unit": "salt_concord_brineguard",
           "x": 6,
-          "y": 11
+          "y": 11,
+          "tag": "escort"
         },
         {
           "unit": "salt_concord_brineguard",
           "x": 8,
-          "y": 11
+          "y": 11,
+          "tag": "escort"
         },
         {
           "unit": "salt_concord_rim_marshal",
           "x": 7,
-          "y": 9
+          "y": 9,
+          "tag": "escort"
         },
         {
           "unit": "salt_concord_surveyor",
           "x": 6,
-          "y": 12
+          "y": 12,
+          "tag": "escort"
         }
       ]
     },
@@ -114,6 +118,8 @@
           "y": 1
         }
       ],
+      "startingEssence": 150,
+      "essencePerTurn": 32,
       "keystone": false
     }
   ],
@@ -136,25 +142,30 @@
             2
           ]
         ],
-        "tag": "keeper_auster"
+        "tag": "keeper_auster",
+        "label": "Bring Keeper Auster to the fallen lamp"
       }
     ],
     "defeat": [
       {
         "type": "unit_lost",
-        "tag": "keeper_auster"
+        "tag": "keeper_auster",
+        "label": "Keeper Auster must not fall"
       },
       {
         "type": "destroy_keystone",
-        "team": 0
+        "team": 0,
+        "label": "Our rally standard must not fall"
       },
       {
         "type": "eliminate",
-        "team": 0
+        "team": 0,
+        "label": "Do not lose the whole company"
       },
       {
         "type": "turn_limit",
-        "turns": 14
+        "turns": 14,
+        "label": "Reach the lamp before turn 14"
       }
     ]
   },
@@ -168,19 +179,6 @@
           "type": "message",
           "speaker": "Commander Orrel",
           "text": "Three bridges. Auster does not fall."
-        }
-      ]
-    },
-    {
-      "when": {
-        "turn": 1,
-        "team": 1
-      },
-      "do": [
-        {
-          "type": "grant_essence",
-          "team": 1,
-          "amount": 50
         }
       ]
     },
@@ -223,6 +221,24 @@
       },
       "do": [
         {
+          "type": "status",
+          "tag": "escort",
+          "status": "hc_darkened",
+          "duration": 3
+        },
+        {
+          "type": "status",
+          "tag": "commander_orrel",
+          "status": "hc_darkened",
+          "duration": 3
+        },
+        {
+          "type": "status",
+          "tag": "keeper_auster",
+          "status": "hc_darkened",
+          "duration": 3
+        },
+        {
           "type": "message",
           "speaker": "Scout",
           "text": "The light is going out. Follow the lamp. Nothing else."
@@ -242,8 +258,19 @@
     "bonus": [
       {
         "condition": {
+          "type": "unit_hp_above",
+          "tag": "keeper_auster",
+          "fraction": 0.5,
+          "label": "Keeper Auster above half strength"
+        },
+        "pearls": 30,
+        "label": "Keeper Auster above half strength"
+      },
+      {
+        "condition": {
           "type": "defeat_unit",
-          "tag": "deep_herald"
+          "tag": "deep_herald",
+          "label": "Put out the Deep Herald"
         },
         "pearls": 30,
         "label": "Put out the Deep Herald"

@@ -598,7 +598,8 @@ export class Game {
       }
       case 'terrain': {
         for (const { x, y } of area) {
-          if (this.content.terrain[e.terrain].impassable && this.unitAt(x, y)) continue;
+          const occ = this.unitAt(x, y);
+          if (occ && (this.def(occ).structure || this.content.terrain[e.terrain].impassable)) continue;
           const prev = this.tiles[y][x].terrain;
           if (prev === e.terrain) continue;
           this.setTerrain(x, y, e.terrain);
@@ -662,7 +663,8 @@ export class Game {
       case 'grant_essence': this.gainEssence(a.team, a.amount); break;
       case 'terrain': {
         for (const { x, y } of this.radiusTiles({ x: a.x, y: a.y }, a.radius ?? 0)) {
-          if (this.content.terrain[a.terrain]?.impassable && this.unitAt(x, y)) continue;
+          const occ = this.unitAt(x, y);
+          if (occ && (this.def(occ).structure || this.content.terrain[a.terrain]?.impassable)) continue;
           const prev = this.tiles[y][x].terrain;
           if (prev === a.terrain) continue;
           this.setTerrain(x, y, a.terrain);
@@ -700,7 +702,10 @@ export class Game {
     return out;
   }
 
-  /** Evaluate a condition right now (e.g. for salvage bonuses). `endOfRound` enables survive/turn_limit. */
+  /**
+   * Evaluate a condition right now. For salvage bonuses call it at the moment of victory with endOfRound = true,
+   * so survive/turn_limit compare against the current round ("not turn_limit 8" = won before round 8).
+   */
   conditionMet(c: Condition, endOfRound = false): boolean {
     return this.met(c, endOfRound);
   }

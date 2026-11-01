@@ -29,13 +29,13 @@
           "unit": "salt_concord_caustic_lantern",
           "x": 1,
           "y": 7,
-          "tag": "caustic_lantern_a"
+          "tag": "caustic_lantern"
         },
         {
           "unit": "salt_concord_caustic_lantern",
           "x": 3,
           "y": 7,
-          "tag": "caustic_lantern_b"
+          "tag": "caustic_lantern"
         },
         {
           "unit": "salt_concord_brineguard",
@@ -128,36 +128,45 @@
           "x": 15,
           "y": 7
         }
-      ]
+      ],
+      "startingEssence": 140,
+      "essencePerTurn": 30
+    },
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "ai",
+      "units": []
     }
   ],
   "objectives": {
     "victory": [
       {
         "type": "destroy_keystone",
-        "team": 1
+        "team": 1,
+        "label": "Break the archive door"
       }
     ],
     "defeat": [
       {
-        "type": "unit_lost",
-        "tag": "caustic_lantern_a"
-      },
-      {
-        "type": "unit_lost",
-        "tag": "caustic_lantern_b"
+        "type": "defeat_unit",
+        "tag": "caustic_lantern",
+        "label": "Keep at least one Caustic Lantern alive"
       },
       {
         "type": "destroy_keystone",
-        "team": 0
+        "team": 0,
+        "label": "Our rally standard must not fall"
       },
       {
         "type": "eliminate",
-        "team": 0
+        "team": 0,
+        "label": "Do not lose the whole company"
       },
       {
         "type": "turn_limit",
-        "turns": 15
+        "turns": 15,
+        "label": "Force the archive door before turn 15"
       }
     ]
   },
@@ -171,19 +180,6 @@
           "type": "message",
           "speaker": "Commander Orrel",
           "text": "Lanterns on the Harpoon Engine first. Then the gate."
-        }
-      ]
-    },
-    {
-      "when": {
-        "turn": 1,
-        "team": 1
-      },
-      "do": [
-        {
-          "type": "grant_essence",
-          "team": 1,
-          "amount": 40
         }
       ]
     },
@@ -215,7 +211,8 @@
           "team": 1,
           "unit": "salvage_compact_harpoon_engine",
           "x": 14,
-          "y": 2
+          "y": 2,
+          "tag": "harpoon_engine"
         },
         {
           "type": "spawn",
@@ -246,10 +243,11 @@
         },
         {
           "type": "spawn",
-          "team": 1,
+          "team": 2,
           "unit": "hadal_court_murk_diver",
           "x": 14,
-          "y": 5
+          "y": 5,
+          "tag": "court_watcher"
         }
       ]
     }
@@ -260,10 +258,21 @@
       {
         "condition": {
           "type": "defeat_unit",
-          "tag": "harpoon_engine"
+          "tag": "harpoon_engine",
+          "label": "Silence every Harpoon Engine"
         },
         "pearls": 30,
-        "label": "Silence the third-deck Harpoon Engine"
+        "label": "Silence every Harpoon Engine"
+      },
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "caustic_lantern",
+          "label": "Bring both Caustic Lanterns home",
+          "not": true
+        },
+        "pearls": 20,
+        "label": "Bring both Caustic Lanterns home"
       }
     ]
   }

@@ -102,6 +102,8 @@
           "y": 5
         }
       ],
+      "startingEssence": 120,
+      "essencePerTurn": 25,
       "keystone": false
     }
   ],
@@ -109,25 +111,30 @@
     "victory": [
       {
         "type": "defeat_unit",
-        "tag": "broker_varrow"
+        "tag": "broker_varrow",
+        "label": "Remove the forger Hesk Varrow"
       }
     ],
     "defeat": [
       {
         "type": "unit_lost",
-        "tag": "commander_orrel"
+        "tag": "commander_orrel",
+        "label": "Commander Orrel must survive"
       },
       {
         "type": "destroy_keystone",
-        "team": 0
+        "team": 0,
+        "label": "Our rally standard must not fall"
       },
       {
         "type": "eliminate",
-        "team": 0
+        "team": 0,
+        "label": "Do not lose the whole company"
       },
       {
         "type": "turn_limit",
-        "turns": 12
+        "turns": 12,
+        "label": "Take Varrow before turn 12"
       }
     ]
   },
@@ -141,19 +148,6 @@
           "type": "message",
           "speaker": "Odo Brask",
           "text": "Varrow keeps his gold under the third hull. His guards change at the bell. Don't ask how I know."
-        }
-      ]
-    },
-    {
-      "when": {
-        "turn": 1,
-        "team": 1
-      },
-      "do": [
-        {
-          "type": "grant_essence",
-          "team": 1,
-          "amount": 20
         }
       ]
     },
@@ -225,10 +219,31 @@
       {
         "condition": {
           "type": "defeat_unit",
-          "tag": "varrow_guard"
+          "tag": "varrow_guard",
+          "label": "Take Varrow's guard captain as well"
         },
         "pearls": 25,
         "label": "Take Varrow's guard captain as well"
+      },
+      {
+        "condition": {
+          "type": "turn_limit",
+          "turns": 8,
+          "label": "Quiet work: finish before turn 8",
+          "not": true
+        },
+        "pearls": 15,
+        "label": "Quiet work: finish before turn 8"
+      },
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "commander_orrel",
+          "fraction": 0.5,
+          "label": "Commander Orrel above half strength"
+        },
+        "pearls": 10,
+        "label": "Commander Orrel above half strength"
       }
     ]
   }

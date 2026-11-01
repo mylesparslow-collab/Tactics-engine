@@ -1,7 +1,7 @@
 {
   "id": "weeping_shelf",
   "name": "The Weeping Shelf",
-  "description": "A cliff that rains from a clear sky. A chasm splits the shelf; the only crossing is the long flank route round the east edge, where the wells weep.",
+  "description": "A cliff that rains from a clear sky. A chasm splits the shelf; two crossings span it: a short bone-road causeway near the Beacons, and the long flank route round the east edge. A well weeps on each.",
   "legend": {
     "~": "brine_pool",
     "c": "dead_coral",
@@ -11,7 +11,8 @@
     "X": "salt_wall",
     ",": "silt",
     "#": "trench",
-    "w": "wreck"
+    "w": "wreck",
+    "b": "bone_road"
   },
   "tiles": [
     ",,,,,,,,,,,,,,,,",
@@ -20,10 +21,10 @@
     ",,,,,,,,,,,~,,,,",
     ",,,,,,c,,~,,,,k,",
     "cc~,,,,,,,,,X,c,",
-    ",,,,,~,,~,,,Xck,",
-    "#############...",
-    "#############...",
-    ",,,,,~,,~,,,Xck,",
+    ",,,,,,,,,,,,Xck,",
+    "#####bb######...",
+    "#####bb######...",
+    ",,,,,,,,,,,,Xck,",
     "cc~,,,,,,,,,X,c,",
     ",,,,,,c,,~,,,,k,",
     ",,,,,,,,,,,~,,,,",
@@ -39,8 +40,8 @@
     "3333333333333333",
     "3333333333333333",
     "3333333333333333",
-    "0000000000000222",
-    "0000000000000222",
+    "0000033000000222",
+    "0000033000000222",
     "3333333333333333",
     "3333333333333333",
     "3333333333333333",
@@ -169,7 +170,7 @@
       "y": 7
     },
     {
-      "x": 14,
+      "x": 5,
       "y": 8
     }
   ]

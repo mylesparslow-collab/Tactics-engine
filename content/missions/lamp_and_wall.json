@@ -34,17 +34,20 @@
         {
           "unit": "salt_concord_brineguard",
           "x": 8,
-          "y": 12
+          "y": 12,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_salt_levy",
           "x": 5,
-          "y": 11
+          "y": 11,
+          "tag": "company"
         },
         {
           "unit": "salt_concord_salt_levy",
           "x": 9,
-          "y": 11
+          "y": 11,
+          "tag": "company"
         }
       ]
     },
@@ -89,36 +92,44 @@
           "x": 9,
           "y": 3
         }
-      ]
+      ],
+      "startingEssence": 100,
+      "essencePerTurn": 25
     }
   ],
   "objectives": {
     "victory": [
       {
         "type": "destroy_keystone",
-        "team": 1
+        "team": 1,
+        "label": "Destroy the Tide's forward shrine"
       },
       {
         "type": "eliminate",
-        "team": 1
+        "team": 1,
+        "label": "Or break the whole Tide column"
       }
     ],
     "defeat": [
       {
         "type": "unit_lost",
-        "tag": "beacon_garrison"
+        "tag": "beacon_garrison",
+        "label": "The Beacon garrison must not fall"
       },
       {
         "type": "destroy_keystone",
-        "team": 0
+        "team": 0,
+        "label": "The Beacon must not fall"
       },
       {
         "type": "eliminate",
-        "team": 0
+        "team": 0,
+        "label": "Do not lose the whole company"
       },
       {
         "type": "turn_limit",
-        "turns": 14
+        "turns": 14,
+        "label": "Break the column before turn 14"
       }
     ]
   },
@@ -183,6 +194,14 @@
       },
       "do": [
         {
+          "type": "terrain",
+          "x": 3,
+          "y": 11,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 6
+        },
+        {
           "type": "message",
           "speaker": "Scout",
           "text": "Something is climbing out of the ground behind us. A Wringer!"
@@ -192,7 +211,8 @@
           "team": 1,
           "unit": "returning_tide_wringer",
           "x": 3,
-          "y": 11
+          "y": 11,
+          "tag": "scout_wringer"
         }
       ]
     }
@@ -202,11 +222,23 @@
     "bonus": [
       {
         "condition": {
-          "type": "eliminate",
-          "team": 1
+          "type": "unit_lost",
+          "tag": "company",
+          "label": "Lose none of the line troops",
+          "not": true
         },
         "pearls": 25,
-        "label": "Rout the whole column"
+        "label": "Lose none of the line troops"
+      },
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "commander_orrel",
+          "fraction": 0.5,
+          "label": "Commander Orrel above half strength"
+        },
+        "pearls": 10,
+        "label": "Commander Orrel above half strength"
       }
     ]
   }
