@@ -1,5 +1,7 @@
 // Balance report: AI vs AI for every ordered faction pairing on every map. Run with `npm run balance`.
 import { it } from 'vitest';
+
+declare const process: { env: Record<string, string | undefined> };
 import { loadBundledContent } from '../src/engine/bundled';
 import { Game } from '../src/engine/game';
 import { playAiTurn } from '../src/engine/ai';
