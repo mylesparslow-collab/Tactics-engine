@@ -1,0 +1,261 @@
+{
+  "id": "hold_the_wall",
+  "name": "Hold the Wall",
+  "description": "Survive nine turns at the damaged garrison wall until relief arrives.",
+  "map": "lantern_shoal",
+  "briefing": [
+    "The Tide have found what we are protecting. They are coming in force. Brask says three thousand, which means perhaps eight hundred. Dunnock leads them, and for the first time we know the man's name and his old trade: tax clerk, Rim-born, brilliant. He has taken a hundred wells in the north and never lost a battle he chose to fight.",
+    "The relief column will arrive in nine turns. Until then we hold the wall, the tower, and the lamp. We have the Saltwright and her barricades. We have the Stair-Wardens. And we have a blind old woman who says she will talk to the sea.",
+    "I know what the regulations say about hopeless defences. I also know what the regulations say about retreat: that it is worse."
+  ],
+  "victoryText": "The relief bugle sounds across the dunes and the Tide fade back into the fog. Dunnock's last words reach the tower on the wind: \"You hold it up for them. You do not even know.\" Auster closes the shutters. \"He's right about that part.\"",
+  "defeatText": "The lamp goes dark for the length of a breath. Then Auster relights it with her bare hands. The Tide fall back, horrified at what they almost did, and Dunnock does not give the order to advance again.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salt Concord",
+      "color": "#5b7fa6",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salt_concord_tamsin_orrel",
+          "x": 7,
+          "y": 12,
+          "tag": "commander_orrel"
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 6,
+          "y": 12,
+          "tag": "beacon_garrison"
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 8,
+          "y": 11
+        },
+        {
+          "unit": "salt_concord_saltwright",
+          "x": 5,
+          "y": 13
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 6,
+          "y": 11
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 9,
+          "y": 12
+        },
+        {
+          "unit": "lanternkeepers_keeper_pell_auster",
+          "x": 8,
+          "y": 12,
+          "tag": "keeper_auster"
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_tear_slinger",
+        "returning_tide_tear_slinger",
+        "returning_tide_rainsayer",
+        "returning_tide_wringer",
+        "returning_tide_shroud_mender",
+        "returning_tide_undertow_singer",
+        "returning_tide_bloat_drowned"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_imre_dunnock",
+          "x": 7,
+          "y": 3,
+          "tag": "prophet_dunnock"
+        },
+        {
+          "unit": "returning_tide_choirmaster",
+          "x": 7,
+          "y": 2
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 6,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 8,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_wringer",
+          "x": 5,
+          "y": 2
+        },
+        {
+          "unit": "returning_tide_bloat_drowned",
+          "x": 9,
+          "y": 2
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 4,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 10,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_tideskulker",
+          "x": 11,
+          "y": 4
+        }
+      ]
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 9
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "beacon_garrison"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "keeper_auster"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0
+      },
+      {
+        "type": "eliminate",
+        "team": 0
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Commander Orrel",
+          "text": "Relief in nine turns. Until then: the wall, the tower, the lamp."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 1,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "grant_essence",
+          "team": 1,
+          "amount": 30
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Imre Dunnock",
+          "text": "We are not here to take the lamp, Commander. Only to ask it to stop."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "The Drowned are climbing out of the brine pools!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 3,
+          "y": 8
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 12,
+          "y": 8
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 3,
+          "y": 9
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 12,
+          "y": 9
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 8
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "Look away. The second lamp is lit, and anything drowned beside the tower will burn."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 50,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "prophet_dunnock"
+        },
+        "pearls": 40,
+        "label": "Drive Dunnock from the field"
+      }
+    ]
+  }
+}

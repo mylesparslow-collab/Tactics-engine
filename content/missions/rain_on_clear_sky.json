@@ -1,0 +1,256 @@
+{
+  "id": "rain_on_clear_sky",
+  "name": "Rain on Clear Sky",
+  "description": "Kill the four Rainsayers at the Weeping Shelf shrine before the ledge floods.",
+  "map": "weeping_shelf",
+  "briefing": [
+    "We go to the Weeping Shelf. The Tide cannot be pinned at the Shoal while their holy ground feeds them. Take away the Rainsayers and the faith loses its voice. There are four of them, working a shrine on a ledge above a fall of rain that comes from nowhere.",
+    "Brask warns that the rain gets heavier when we are loud. I have decided not to think about why. The rain soaks our troops and flows into the pools, so we must hit the Rainsayers before they flood the ledge. Quick, brutal, over by turn ten.",
+    "We will not touch Dunnock. He is not here. If he were, I might have to listen to him."
+  ],
+  "victoryText": "The last Rainsayer falls and the drizzle thins to a mist. Tamsin holds out her hand and catches a drop. It is warm. It tastes of salt, and of somewhere very far above.",
+  "defeatText": "The rain thickens until the ledge is a lake. The company retreats through brine up to their knees, and the Tide sing the whole way.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salt Concord",
+      "color": "#5b7fa6",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salt_concord_tamsin_orrel",
+          "x": 3,
+          "y": 12,
+          "tag": "commander_orrel"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 2,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 4,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 2,
+          "y": 13
+        },
+        {
+          "unit": "salt_concord_causeway_outrider",
+          "x": 5,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_brine_chirurgeon",
+          "x": 4,
+          "y": 13
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_tear_slinger",
+        "returning_tide_tear_slinger",
+        "returning_tide_tideskulker",
+        "returning_tide_shroud_mender",
+        "returning_tide_wringer",
+        "returning_tide_anchor_bearer"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 2,
+          "y": 2,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 4,
+          "y": 2,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 1,
+          "y": 3,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 5,
+          "y": 3,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 3,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 2,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 4,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 6,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_shroud_mender",
+          "x": 3,
+          "y": 3
+        }
+      ]
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "rainsayer"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "commander_orrel"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0
+      },
+      {
+        "type": "eliminate",
+        "team": 0
+      },
+      {
+        "type": "turn_limit",
+        "turns": 10
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Commander Orrel",
+          "text": "Four Rainsayers. Quick and brutal. Over by turn ten."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 1,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "grant_essence",
+          "team": 1,
+          "amount": 30
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Penitents surging from the lower terrace!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 10,
+          "y": 9
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 10
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "That rain is the lamp's breath, Commander. It leaks when something pulls on it. Be quick."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "A Choirmaster has risen from the pool at the shrine!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_choirmaster",
+          "x": 6,
+          "y": 2
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 55,
+    "bonus": [
+      {
+        "condition": {
+          "type": "eliminate",
+          "team": 1
+        },
+        "pearls": 30,
+        "label": "Leave no one singing"
+      }
+    ]
+  }
+}

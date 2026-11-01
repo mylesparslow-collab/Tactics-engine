@@ -1,0 +1,50 @@
+{
+  "id": "skirmish_crossing",
+  "name": "Skirmish: The Crossing",
+  "description": "Standard match. Destroy the enemy Keystone or wipe out their warband.",
+  "map": "crossing",
+  "briefing": [
+    "Deploy your warband with essence, push across the river, and shatter the enemy Keystone."
+  ],
+  "victoryText": "The enemy Keystone shatters.",
+  "defeatText": "Your Keystone has fallen.",
+  "teams": [
+    {
+      "name": "Ember Host",
+      "color": "#e0573d",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "warband": [
+        "warlord",
+        "vanguard",
+        "skirmisher",
+        "archer",
+        "pyromancer",
+        "mystic",
+        "archer",
+        "ember_rain",
+        "rally",
+        "iron_plate",
+        "ember_blade"
+      ]
+    },
+    {
+      "name": "The Brood",
+      "color": "#3d8fe0",
+      "controller": "ai",
+      "warband": [
+        "brood_mother",
+        "drone",
+        "drone",
+        "drone",
+        "drone",
+        "archer",
+        "vanguard",
+        "drone",
+        "drone",
+        "stone_wall",
+        "warding_charm"
+      ]
+    }
+  ]
+}

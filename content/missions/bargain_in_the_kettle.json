@@ -1,0 +1,235 @@
+{
+  "id": "bargain_in_the_kettle",
+  "name": "A Bargain in the Kettle",
+  "description": "Find and remove the forger Hesk Varrow in the Kettle market.",
+  "map": "the_kettle",
+  "briefing": [
+    "Brask says the Tide's raiders were armed by the Compact. I did not believe him until he showed me the receipts, which were in my own handwriting. Someone has been forging Concord requisitions and selling them to the Tide's quartermasters, and that someone is a broker named Hesk Varrow, who has a stall in the Kettle and thirty hired knives.",
+    "The Compact does not hand over its own. They do, however, tolerate a quiet word. I have a quiet word ready, and four Brineguard to deliver it.",
+    "We will go in disguised as traders, find Varrow and remove him. The Compact militia will not interfere if we do not break the market code. That means no fighting in the open aisles. Make it look like trade."
+  ],
+  "victoryText": "Varrow goes quietly. The market closes around the space where he stood like water around a dropped stone. Brask presses a map into Tamsin's hand: \"That's the way to the Weeping Shelf. It's free. Next one's not.\"",
+  "defeatText": "Orrel is dragged out of the market in a sack. The Compact will ransom her to the Concord, for a fee she will be reminded of for years.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salt Concord",
+      "color": "#5b7fa6",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salt_concord_tamsin_orrel",
+          "x": 7,
+          "y": 12,
+          "tag": "commander_orrel"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 6,
+          "y": 13
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 8,
+          "y": 13
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 5,
+          "y": 14
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 9,
+          "y": 14
+        }
+      ]
+    },
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_wrecker",
+        "salvage_compact_wrecker",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_bone_sled_rider",
+        "salvage_compact_tallow_mender",
+        "salvage_compact_snare_tinker"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_quartermaster",
+          "x": 8,
+          "y": 3,
+          "tag": "broker_varrow"
+        },
+        {
+          "unit": "salvage_compact_hullbreaker",
+          "x": 9,
+          "y": 3,
+          "tag": "varrow_guard"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 6,
+          "y": 2
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 10,
+          "y": 2
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 7,
+          "y": 4
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 9,
+          "y": 4
+        },
+        {
+          "unit": "salvage_compact_breach_gunner",
+          "x": 8,
+          "y": 5
+        }
+      ],
+      "keystone": false
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "broker_varrow"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "commander_orrel"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0
+      },
+      {
+        "type": "eliminate",
+        "team": 0
+      },
+      {
+        "type": "turn_limit",
+        "turns": 12
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Varrow keeps his gold under the third hull. His guards change at the bell. Don't ask how I know."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 1,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "grant_essence",
+          "team": 1,
+          "amount": 20
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Bone-sleds are ringing the market. It's an ambush, not a trap. Not yet."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 1,
+          "y": 8
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 14,
+          "y": 8
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 8,
+          "y": 9
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Varrow is running for a sled! The Wreckers are covering him!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_wrecker",
+          "x": 8,
+          "y": 4
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_wrecker",
+          "x": 7,
+          "y": 3
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 45,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "varrow_guard"
+        },
+        "pearls": 25,
+        "label": "Take Varrow's guard captain as well"
+      }
+    ]
+  }
+}

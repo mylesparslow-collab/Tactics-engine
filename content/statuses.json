@@ -1,0 +1,253 @@
+{
+ "soaked": {
+  "name": "Soaked",
+  "description": "Dripping with brine. -1 defense, -1 AP.",
+  "statMods": {
+   "defense": -1,
+   "ap": -1
+  }
+ },
+ "caustic": {
+  "name": "Caustic",
+  "description": "Salt eats at armour and skin. -2 defense.",
+  "statMods": {
+   "defense": -2
+  }
+ },
+ "crushed": {
+  "name": "Crushed",
+  "description": "Pressed down by abyssal weight. -2 AP.",
+  "statMods": {
+   "ap": -2
+  }
+ },
+ "burning": {
+  "name": "Burning",
+  "description": "Takes 2 fire damage at the start of its turn.",
+  "onTurnStart": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "fire"
+   }
+  ]
+ },
+ "regen": {
+  "name": "Mending",
+  "description": "Heals 2 at the start of its turn.",
+  "onTurnStart": [
+   {
+    "type": "heal",
+    "amount": 2
+   }
+  ]
+ },
+ "rooted": {
+  "name": "Rooted",
+  "description": "Cannot move.",
+  "preventsMove": true
+ },
+ "stunned": {
+  "name": "Stunned",
+  "description": "Cannot move or act this turn.",
+  "preventsAction": true,
+  "preventsMove": true
+ },
+ "shielded": {
+  "name": "Shielded",
+  "description": "+3 defense.",
+  "statMods": {
+   "defense": 3
+  }
+ },
+ "weakened": {
+  "name": "Weakened",
+  "description": "-2 attack.",
+  "statMods": {
+   "attack": -2
+  }
+ },
+ "hasted": {
+  "name": "Hasted",
+  "description": "+2 AP.",
+  "statMods": {
+   "ap": 2
+  }
+ },
+ "marked": {
+  "name": "Marked",
+  "description": "Surveyed and exposed. -2 defense, -1 attack.",
+  "statMods": {
+   "defense": -2,
+   "attack": -1
+  }
+ },
+ "emboldened": {
+  "name": "Emboldened",
+  "description": "+2 attack.",
+  "statMods": {
+   "attack": 2
+  }
+ },
+ "bleeding": {
+  "name": "Bleeding",
+  "description": "Takes 2 physical damage at the start of its turn.",
+  "onTurnStart": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sc_braced": {
+  "name": "Braced",
+  "description": "Planted behind a shield. +2 defense.",
+  "statMods": {
+   "defense": 2
+  }
+ },
+ "sc_parched": {
+  "name": "Parched",
+  "description": "Salt dries the body and the nerve. -1 AP, -1 attack.",
+  "statMods": {
+   "ap": -1,
+   "attack": -1
+  }
+ },
+ "hc_darkened": {
+  "name": "Darkened",
+  "description": "Blind in the lightless deep. -1 attack, -1 defense.",
+  "statMods": {
+   "attack": -1,
+   "defense": -1
+  }
+ },
+ "hc_lured": {
+  "name": "Lured",
+  "description": "Dazzled by a bioluminescent lure. -1 defense and -1 AP.",
+  "statMods": {
+   "defense": -1,
+   "ap": -1
+  }
+ },
+ "hc_pressure_plating": {
+  "name": "Pressure Plating",
+  "description": "Brine-armour sealed tight. +2 defense, -1 AP.",
+  "statMods": {
+   "defense": 2,
+   "ap": -1
+  }
+ },
+ "hc_hushed": {
+  "name": "Hushed",
+  "description": "The bell has rung over them. -2 attack and -1 AP.",
+  "statMods": {
+   "attack": -2,
+   "ap": -1
+  }
+ },
+ "rt_hymned": {
+  "name": "Hymned",
+  "description": "Carried by the choir. +1 attack, +1 defense.",
+  "statMods": {
+   "attack": 1,
+   "defense": 1
+  }
+ },
+ "rt_drowning": {
+  "name": "Drowning",
+  "description": "Takes 2 brine damage at the start of its turn.",
+  "onTurnStart": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "brine"
+   }
+  ]
+ },
+ "rt_wrung": {
+  "name": "Wrung",
+  "description": "Drained of water and will. -1 attack, -1 AP.",
+  "statMods": {
+   "attack": -1,
+   "ap": -1
+  }
+ },
+ "sv_sooted": {
+  "name": "Sooted",
+  "description": "Powder soot clogs the eyes. -1 defense and takes 1 fire damage at the start of its turn.",
+  "statMods": {
+   "defense": -1
+  },
+  "onTurnStart": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "fire"
+   }
+  ]
+ },
+ "sv_harpooned": {
+  "name": "Harpooned",
+  "description": "Hooked on a line. Cannot move and -1 defense.",
+  "preventsMove": true,
+  "statMods": {
+   "defense": -1
+  }
+ },
+ "sv_fleet_foot": {
+  "name": "Fleet Foot",
+  "description": "Greased boots. +1 AP.",
+  "statMods": {
+   "ap": 1
+  }
+ },
+ "sv_indebted": {
+  "name": "In Debt",
+  "description": "Owes the Compact and moves like it. -1 attack and -1 AP.",
+  "statMods": {
+   "attack": -1,
+   "ap": -1
+  }
+ },
+ "ra_bloom": {
+  "name": "Bloom",
+  "description": "Calcite growth surges through the body. +1 attack. Applying Bloom again adds another stack (+1 attack each).",
+  "statMods": {
+   "attack": 1
+  },
+  "stacks": true,
+  "maxStacks": 5
+ },
+ "ra_dazed": {
+  "name": "Dazed",
+  "description": "Cut off from the synapse. -2 AP.",
+  "statMods": {
+   "ap": -2
+  }
+ },
+ "ra_entangled": {
+  "name": "Entangled",
+  "description": "Creeping calcite tendrils drag at the legs. -1 AP.",
+  "statMods": {
+   "ap": -1
+  }
+ },
+ "lk_dazzled": {
+  "name": "Dazzled",
+  "description": "Blinded by lamplight. -1 attack, -1 AP.",
+  "statMods": {
+   "attack": -1,
+   "ap": -1
+  }
+ },
+ "lk_vigil": {
+  "name": "Vigil",
+  "description": "Kept awake by the lamp. +1 defense, +1 attack.",
+  "statMods": {
+   "defense": 1,
+   "attack": 1
+  }
+ }
+}

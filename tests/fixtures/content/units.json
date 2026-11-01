@@ -1,0 +1,211 @@
+{
+  "vanguard": {
+    "name": "Vanguard",
+    "role": "Tank",
+    "cost": 40,
+    "stats": {
+      "hp": 26,
+      "ap": 6,
+      "attack": 6,
+      "defense": 3,
+      "jump": 1
+    },
+    "abilities": [
+      "basic_strike",
+      "shield_bash",
+      "guard_aura"
+    ],
+    "sprite": {
+      "shape": "square",
+      "glyph": "V"
+    }
+  },
+  "skirmisher": {
+    "name": "Skirmisher",
+    "role": "Striker",
+    "cost": 35,
+    "stats": {
+      "hp": 18,
+      "ap": 8,
+      "attack": 7,
+      "defense": 1,
+      "jump": 2
+    },
+    "abilities": [
+      "basic_strike",
+      "dash_strike"
+    ],
+    "sprite": {
+      "shape": "triangle",
+      "glyph": "S"
+    }
+  },
+  "archer": {
+    "name": "Archer",
+    "role": "Ranged",
+    "cost": 35,
+    "stats": {
+      "hp": 16,
+      "ap": 6,
+      "attack": 6,
+      "defense": 1,
+      "jump": 1
+    },
+    "abilities": [
+      "basic_shot",
+      "pinning_shot"
+    ],
+    "sprite": {
+      "shape": "diamond",
+      "glyph": "A"
+    }
+  },
+  "pyromancer": {
+    "name": "Pyromancer",
+    "role": "Caster",
+    "cost": 45,
+    "stats": {
+      "hp": 15,
+      "ap": 6,
+      "attack": 4,
+      "defense": 0,
+      "jump": 1
+    },
+    "abilities": [
+      "basic_strike",
+      "fire_burst",
+      "hex"
+    ],
+    "sprite": {
+      "shape": "circle",
+      "glyph": "P"
+    }
+  },
+  "mystic": {
+    "name": "Mystic",
+    "role": "Support",
+    "cost": 40,
+    "stats": {
+      "hp": 16,
+      "ap": 6,
+      "attack": 3,
+      "defense": 1,
+      "jump": 1
+    },
+    "abilities": [
+      "basic_strike",
+      "mend",
+      "renewal",
+      "quicken"
+    ],
+    "sprite": {
+      "shape": "circle",
+      "glyph": "M"
+    }
+  },
+  "brute": {
+    "name": "Brute",
+    "role": "Bruiser",
+    "cost": 50,
+    "stats": {
+      "hp": 32,
+      "ap": 5,
+      "attack": 8,
+      "defense": 2,
+      "jump": 1
+    },
+    "abilities": [
+      "basic_strike",
+      "ground_slam"
+    ],
+    "sprite": {
+      "shape": "square",
+      "glyph": "B"
+    }
+  },
+  "keystone": {
+    "name": "Keystone",
+    "role": "Objective",
+    "cost": 0,
+    "structure": true,
+    "stats": {
+      "hp": 40,
+      "ap": 0,
+      "attack": 0,
+      "defense": 2,
+      "jump": 0
+    },
+    "abilities": [],
+    "sprite": {
+      "shape": "pillar",
+      "glyph": "K"
+    }
+  },
+  "warlord": {
+    "name": "Warlord Ashka",
+    "role": "Hero",
+    "hero": true,
+    "cost": 70,
+    "description": "Placeholder hero. Unique, buffs adjacent allies.",
+    "stats": {
+      "hp": 34,
+      "ap": 7,
+      "attack": 8,
+      "defense": 3,
+      "jump": 2
+    },
+    "abilities": [
+      "basic_strike",
+      "shield_bash",
+      "rally_cry"
+    ],
+    "sprite": {
+      "shape": "square",
+      "glyph": "W"
+    },
+    "revive": {
+      "hpFraction": 0.25
+    }
+  },
+  "drone": {
+    "name": "Drone",
+    "role": "Swarm",
+    "cost": 15,
+    "description": "Placeholder swarm unit. Stronger in packs.",
+    "stats": {
+      "hp": 8,
+      "ap": 6,
+      "attack": 3,
+      "defense": 0,
+      "jump": 2
+    },
+    "abilities": [
+      "basic_strike",
+      "swarm_instinct"
+    ],
+    "sprite": {
+      "shape": "triangle",
+      "glyph": "d"
+    }
+  },
+  "brood_mother": {
+    "name": "Brood Mother",
+    "role": "Summoner",
+    "cost": 55,
+    "stats": {
+      "hp": 24,
+      "ap": 6,
+      "attack": 5,
+      "defense": 1,
+      "jump": 1
+    },
+    "abilities": [
+      "basic_strike",
+      "spawn_brood"
+    ],
+    "sprite": {
+      "shape": "circle",
+      "glyph": "Q"
+    }
+  }
+}

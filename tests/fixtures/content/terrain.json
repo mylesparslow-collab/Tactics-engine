@@ -1,0 +1,58 @@
+{
+  "grass": {
+    "name": "Grass",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#6a9c4f"
+  },
+  "dirt": {
+    "name": "Dirt",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#9b7a52"
+  },
+  "forest": {
+    "name": "Forest",
+    "moveCost": 2,
+    "defense": 1,
+    "color": "#3f6f3a",
+    "blocksSight": false
+  },
+  "stone": {
+    "name": "Stone",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#8c8c94"
+  },
+  "sand": {
+    "name": "Sand",
+    "moveCost": 2,
+    "defense": 0,
+    "color": "#d6c28a"
+  },
+  "water": {
+    "name": "Water",
+    "moveCost": 99,
+    "defense": 0,
+    "color": "#3d6fa8",
+    "impassable": true
+  },
+  "lava": {
+    "name": "Ember Pit",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#c2502a",
+    "onEnter": {
+      "type": "damage",
+      "amount": 3,
+      "damageType": "fire"
+    }
+  },
+  "wall": {
+    "name": "Stone Wall",
+    "moveCost": 99,
+    "defense": 0,
+    "color": "#5d5d66",
+    "impassable": true
+  }
+}

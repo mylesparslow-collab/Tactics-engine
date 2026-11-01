@@ -1,0 +1,36 @@
+{
+  "id": "m1_hold_the_ford",
+  "name": "Hold the Ford",
+  "description": "Survive 6 rounds against raiders crossing the river. Keep the scout alive.",
+  "map": "crossing",
+  "briefing": [
+    "Raiders are crossing the river. Our scout has the only map of the passes.",
+    "Hold out for six rounds and do not let the scout fall."
+  ],
+  "victoryText": "The raiders fall back across the river.",
+  "defeatText": "The ford is lost.",
+  "startingEssence": 80,
+  "essencePerTurn": 20,
+  "teams": [
+    { "name": "Ember Host", "color": "#e0573d", "controller": "human", "useCampaignRoster": true,
+      "units": [{ "unit": "skirmisher", "x": 6, "y": 11, "tag": "scout" }] },
+    { "name": "Raiders", "color": "#3d8fe0", "controller": "ai", "keystone": false,
+      "units": [
+        { "unit": "skirmisher", "x": 3, "y": 2 }, { "unit": "vanguard", "x": 6, "y": 2 },
+        { "unit": "archer", "x": 8, "y": 1 }
+      ],
+      "warband": ["skirmisher", "brute"] }
+  ],
+  "objectives": {
+    "victory": [{ "type": "survive", "turns": 6 }, { "type": "eliminate", "team": 1 }],
+    "defeat": [{ "type": "unit_lost", "tag": "scout" }, { "type": "destroy_keystone", "team": 0 }]
+  },
+  "events": [
+    { "when": { "turn": 1 }, "do": [{ "type": "message", "speaker": "Scout", "text": "They're coming over the bridge! Keep them off me!" }] },
+    { "when": { "turn": 3, "team": 1 }, "do": [
+      { "type": "message", "speaker": "Scout", "text": "More of them, on the far bank!" },
+      { "type": "spawn", "team": 1, "unit": "archer", "x": 2, "y": 3 },
+      { "type": "spawn", "team": 1, "unit": "skirmisher", "x": 9, "y": 3 }
+    ] }
+  ]
+}

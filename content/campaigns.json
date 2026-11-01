@@ -1,0 +1,78 @@
+{
+  "light_at_lantern_shoal": {
+    "name": "The Light at Lantern Shoal",
+    "description": "Salt Concord survey company under Commander Tamsin Orrel uncovers what the lighthouses of the Ebb really hold up.",
+    "startingRoster": [
+      "salt_concord_tamsin_orrel",
+      "salt_concord_salt_levy",
+      "salt_concord_salt_levy",
+      "salt_concord_salt_levy",
+      "salt_concord_salt_levy",
+      "salt_concord_brine_slinger",
+      "salt_concord_brine_slinger",
+      "salt_concord_brine_slinger",
+      "salt_concord_tollkeeper",
+      "sc_spell_salt_volley",
+      "sc_spell_toll_gate",
+      "sc_equip_salt_crusted_helm"
+    ],
+    "missions": [
+      {
+        "mission": "lamp_and_wall",
+        "unlocks": [
+          "salt_concord_brineguard",
+          "salt_concord_surveyor"
+        ]
+      },
+      {
+        "mission": "down_the_stair",
+        "unlocks": [
+          "salt_concord_saltwright",
+          "salt_concord_stair_warden"
+        ]
+      },
+      {
+        "mission": "bargain_in_the_kettle",
+        "unlocks": [
+          "salt_concord_causeway_outrider",
+          "salt_concord_brine_chirurgeon"
+        ]
+      },
+      {
+        "mission": "hold_the_wall",
+        "unlocks": [
+          "salt_concord_caustic_lantern",
+          "salt_concord_rim_marshal"
+        ]
+      },
+      {
+        "mission": "rain_on_clear_sky",
+        "unlocks": [
+          "sc_equip_brine_ward_cloak",
+          "sc_equip_surveyors_chain"
+        ]
+      },
+      {
+        "mission": "mother_hull_archive",
+        "unlocks": [
+          "sc_equip_stairwardens_plate",
+          "salt_concord_saltmill_juggernaut"
+        ]
+      },
+      {
+        "mission": "race_to_deeplight",
+        "unlocks": [
+          "sc_equip_cairn_horn",
+          "sc_equip_road_marshals_baton"
+        ]
+      },
+      {
+        "mission": "the_light_goes_out",
+        "unlocks": [
+          "salt_concord_hesper_vael",
+          "salt_concord_ione_karst"
+        ]
+      }
+    ]
+  }
+}

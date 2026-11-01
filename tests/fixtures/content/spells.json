@@ -1,0 +1,17 @@
+{
+  "ember_rain": {
+    "name": "Ember Rain", "description": "3 fire damage to every enemy in a small area. Must target within 4 tiles of one of your units.",
+    "cost": 30, "castRange": 4, "target": "tile", "area": { "shape": "radius", "size": 1 }, "affects": "enemies",
+    "effects": [{ "type": "damage", "amount": 3, "damageType": "fire", "pierce": true }]
+  },
+  "rally": {
+    "name": "Rally", "description": "Haste an ally and restore 4 HP.",
+    "cost": 20, "target": "ally",
+    "effects": [{ "type": "heal", "amount": 4 }, { "type": "status", "status": "hasted", "duration": 2 }]
+  },
+  "stone_wall": {
+    "name": "Stone Rise", "description": "Raise impassable stone around a tile for 2 rounds.",
+    "cost": 15, "castRange": 3, "target": "empty", "area": { "shape": "radius", "size": 0 },
+    "effects": [{ "type": "terrain", "terrain": "wall", "duration": 2 }]
+  }
+}

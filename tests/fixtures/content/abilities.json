@@ -1,0 +1,326 @@
+{
+  "basic_strike": {
+    "name": "Strike",
+    "description": "A plain melee attack.",
+    "apCost": 2,
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "target": "enemy",
+    "effects": [
+      {
+        "type": "damage",
+        "amount": 0,
+        "damageType": "physical"
+      }
+    ]
+  },
+  "basic_shot": {
+    "name": "Shoot",
+    "description": "A ranged attack.",
+    "apCost": 2,
+    "range": {
+      "min": 2,
+      "max": 5
+    },
+    "target": "enemy",
+    "effects": [
+      {
+        "type": "damage",
+        "amount": 0,
+        "damageType": "physical"
+      }
+    ]
+  },
+  "shield_bash": {
+    "name": "Shield Bash",
+    "description": "Strike and push the target back 1 tile. Colliding deals 2 extra damage.",
+    "apCost": 3,
+    "cooldown": 2,
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "target": "enemy",
+    "effects": [
+      {
+        "type": "damage",
+        "amount": -1,
+        "damageType": "physical"
+      },
+      {
+        "type": "push",
+        "distance": 1,
+        "collisionDamage": 2
+      }
+    ]
+  },
+  "guard_aura": {
+    "name": "Bulwark",
+    "description": "Shield self and adjacent allies for 2 turns.",
+    "apCost": 2,
+    "cooldown": 3,
+    "range": {
+      "min": 0,
+      "max": 0
+    },
+    "target": "self",
+    "area": {
+      "shape": "radius",
+      "size": 1
+    },
+    "affects": "allies",
+    "effects": [
+      {
+        "type": "status",
+        "status": "shielded",
+        "duration": 2
+      }
+    ]
+  },
+  "fire_burst": {
+    "name": "Cinder Burst",
+    "description": "Fire damage in a small area; sets targets burning.",
+    "apCost": 4,
+    "cooldown": 2,
+    "range": {
+      "min": 1,
+      "max": 4
+    },
+    "target": "tile",
+    "area": {
+      "shape": "radius",
+      "size": 1
+    },
+    "affects": "enemies",
+    "effects": [
+      {
+        "type": "damage",
+        "amount": 3,
+        "damageType": "fire",
+        "ignoreAttack": true,
+        "pierce": true
+      },
+      {
+        "type": "status",
+        "status": "burning",
+        "duration": 2
+      }
+    ]
+  },
+  "mend": {
+    "name": "Mend",
+    "description": "Restore 6 HP to an ally.",
+    "apCost": 2,
+    "range": {
+      "min": 0,
+      "max": 3
+    },
+    "target": "ally",
+    "effects": [
+      {
+        "type": "heal",
+        "amount": 6
+      }
+    ]
+  },
+  "renewal": {
+    "name": "Renewal",
+    "description": "Grant regeneration to allies in an area.",
+    "apCost": 3,
+    "cooldown": 3,
+    "range": {
+      "min": 0,
+      "max": 3
+    },
+    "target": "tile",
+    "area": {
+      "shape": "radius",
+      "size": 1
+    },
+    "affects": "allies",
+    "effects": [
+      {
+        "type": "status",
+        "status": "regen",
+        "duration": 3
+      }
+    ]
+  },
+  "pinning_shot": {
+    "name": "Pinning Shot",
+    "description": "A weaker shot that roots the target for 1 turn.",
+    "apCost": 3,
+    "cooldown": 2,
+    "range": {
+      "min": 2,
+      "max": 5
+    },
+    "target": "enemy",
+    "effects": [
+      {
+        "type": "damage",
+        "amount": -2,
+        "damageType": "physical"
+      },
+      {
+        "type": "status",
+        "status": "rooted",
+        "duration": 1
+      }
+    ]
+  },
+  "ground_slam": {
+    "name": "Ground Slam",
+    "description": "Hit all adjacent enemies and stun them for 1 turn.",
+    "apCost": 4,
+    "cooldown": 3,
+    "range": {
+      "min": 0,
+      "max": 0
+    },
+    "target": "self",
+    "area": {
+      "shape": "radius",
+      "size": 1
+    },
+    "affects": "enemies",
+    "effects": [
+      {
+        "type": "damage",
+        "amount": -2,
+        "damageType": "physical"
+      },
+      {
+        "type": "status",
+        "status": "stunned",
+        "duration": 1
+      }
+    ]
+  },
+  "dash_strike": {
+    "name": "Lunge",
+    "description": "Leap to an empty tile up to 3 away, ignoring terrain.",
+    "apCost": 2,
+    "cooldown": 2,
+    "range": {
+      "min": 1,
+      "max": 3
+    },
+    "target": "empty",
+    "effects": [
+      {
+        "type": "teleport"
+      }
+    ]
+  },
+  "hex": {
+    "name": "Hex",
+    "description": "Weaken an enemy for 2 turns.",
+    "apCost": 2,
+    "cooldown": 1,
+    "range": {
+      "min": 1,
+      "max": 4
+    },
+    "target": "enemy",
+    "effects": [
+      {
+        "type": "status",
+        "status": "weakened",
+        "duration": 2
+      }
+    ]
+  },
+  "quicken": {
+    "name": "Quicken",
+    "description": "Haste an ally for their next turn.",
+    "apCost": 2,
+    "cooldown": 3,
+    "range": {
+      "min": 1,
+      "max": 3
+    },
+    "target": "ally",
+    "effects": [
+      {
+        "type": "status",
+        "status": "hasted",
+        "duration": 2
+      }
+    ]
+  },
+  "cinder_slash": {
+    "name": "Cinder Slash",
+    "description": "Melee strike that sets the target burning.",
+    "apCost": 3,
+    "cooldown": 2,
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "target": "enemy",
+    "effects": [
+      {
+        "type": "damage",
+        "amount": 0,
+        "damageType": "fire"
+      },
+      {
+        "type": "status",
+        "status": "burning",
+        "duration": 2
+      }
+    ]
+  },
+  "rally_cry": {
+    "name": "Warlord's Presence",
+    "description": "Passive: adjacent allies gain +1 attack.",
+    "passive": true,
+    "effects": [
+      {
+        "type": "aura",
+        "radius": 1,
+        "affects": "allies",
+        "statMods": {
+          "attack": 1
+        }
+      }
+    ]
+  },
+  "swarm_instinct": {
+    "name": "Swarm Instinct",
+    "description": "Passive: +1 attack for each adjacent ally (max 3).",
+    "passive": true,
+    "effects": [
+      {
+        "type": "aura",
+        "radius": 0,
+        "statMods": {
+          "attack": 1
+        },
+        "perAdjacentAlly": true,
+        "maxStacks": 3
+      }
+    ]
+  },
+  "spawn_brood": {
+    "name": "Spawn Brood",
+    "description": "Birth two drones on an empty tile nearby.",
+    "apCost": 4,
+    "cooldown": 3,
+    "range": {
+      "min": 1,
+      "max": 1
+    },
+    "target": "empty",
+    "effects": [
+      {
+        "type": "summon",
+        "unit": "drone",
+        "count": 2
+      }
+    ]
+  }
+}

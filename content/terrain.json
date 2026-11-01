@@ -1,0 +1,103 @@
+{
+  "salt_flat": {
+    "name": "Salt Flat",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#e8e4d8"
+  },
+  "silt": {
+    "name": "Silt",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#b9b09c"
+  },
+  "dead_coral": {
+    "name": "Dead Coral",
+    "moveCost": 2,
+    "defense": 1,
+    "color": "#c79a86"
+  },
+  "wreck": {
+    "name": "Wreck",
+    "moveCost": 2,
+    "defense": 2,
+    "color": "#8a4a2c"
+  },
+  "brine_pool": {
+    "name": "Brine Pool",
+    "moveCost": 3,
+    "defense": 0,
+    "color": "#4fa3a0",
+    "onEnter": {
+      "type": "status",
+      "status": "soaked",
+      "duration": 2
+    }
+  },
+  "trench": {
+    "name": "Trench",
+    "moveCost": 99,
+    "defense": 0,
+    "color": "#0c0e14",
+    "impassable": true
+  },
+  "bone_road": {
+    "name": "Bone Road",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#d9d0b4"
+  },
+  "salt_wall": {
+    "name": "Salt Wall",
+    "moveCost": 99,
+    "defense": 0,
+    "color": "#f7f5ef",
+    "impassable": true,
+    "destructible": true
+  },
+  "lamp_oil": {
+    "name": "Lamp Oil",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#d98a2b",
+    "onEnter": {
+      "type": "damage",
+      "amount": 3,
+      "damageType": "fire"
+    }
+  },
+  "kelp_husk": {
+    "name": "Kelp Husk",
+    "moveCost": 2,
+    "defense": 1,
+    "color": "#3e5a47",
+    "blocksSight": true
+  },
+  "lighthouse_stone": {
+    "name": "Lighthouse Stone",
+    "moveCost": 1,
+    "defense": 1,
+    "color": "#a8b2b9"
+  },
+  "brine_lake": {
+    "name": "Brine Lake",
+    "moveCost": 99,
+    "defense": 0,
+    "color": "#1a2a4d",
+    "impassable": true
+  },
+  "living_reef": {
+    "name": "Living Reef",
+    "moveCost": 2,
+    "defense": 1,
+    "color": "#e07a6a",
+    "description": "Waking coral. Reef units move through it freely and heal here; everyone else is slowed."
+  },
+  "calcite": {
+    "name": "Calcite",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#f1e9df",
+    "description": "Chalky remains left where something died. Reef units consume it to grow."
+  }
+}
