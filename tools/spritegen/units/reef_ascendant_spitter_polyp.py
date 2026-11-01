@@ -42,7 +42,7 @@ def build(P):
         add(Sphere(g, 0.045 * P['fx']), 'slurry', 0)
         add(Sphere(g - d * 0.06, 0.025 * P['fx']), 'slurry', 0.02)
     legs(add, P, v3(0, 0.15, 0.0), 0.11, 0.12, n=6, h=0.10, r=0.015, mat='calcite_b')
-    parts = scaled(body_pose(parts, P, lunge=0.0), 1.15)
+    parts = scaled(body_pose(parts, P, lunge=0.0), 1.7)
     m = reef_mats(P, glow=0.3)
     m['slurry'] = Material(_hex('#efe6d6'), spec=0.4, gloss=20, emissive=tuple(np.array(GLOW) * 0.45), brush=0.02)
     return finish(P, FACTION, parts, m)

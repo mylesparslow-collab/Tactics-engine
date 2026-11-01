@@ -49,7 +49,7 @@ def build(P):
         add(fan(piv, R, 0.14, 0.6, ribs=5, thick=0.009, scallop=0.25), 'coral', 0.0)
         add(Capsule(piv, piv + R @ v3(0, 0.1, 0), 0.008, 0.004), 'calcite_b', 0.004)
     legs(add, P, v3(0, 0.12, -0.0), 0.10, 0.11, n=6, h=0.09, r=0.019, mat='coral_dk')
-    parts = scaled(body_pose(parts, P, pivot=(0, 0.0, 0), lunge=0.07), 1.75)
+    parts = scaled(body_pose(parts, P, pivot=(0, 0.0, 0), lunge=0.07), 3.2)
     m = reef_mats(P, glow=0.3)
     m['lip'] = flesh_mat(col=_hex('#f59a8c'), inner=CORAL, P=P, glow=0.6)
     m['mouth'] = Material(_hex('#7a2430'), spec=0.5, gloss=30, sss=0.5, brush=0.02, rim=0.2)
