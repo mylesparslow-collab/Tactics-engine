@@ -73,5 +73,16 @@
  "units/salvage_compact_rivet_slinger/stats.hp": 15,
  "units/salvage_compact_breach_gunner/stats.hp": 17,
  "units/salt_concord_stair_warden/cost": 50,
- "units/salt_concord_caustic_lantern/cost": 50
+ "units/salt_concord_caustic_lantern/cost": 50,
+ "units/hadal_court_herald_vhaal/stats.attack": 8,
+ "units/hadal_court_pressure_lancer/stats.hp": 15,
+ "units/hadal_court_deep_herald/cost": 60,
+ "units/reef_ascendant_elder_colony/cost": 65,
+ "units/reef_ascendant_spireguard/stats.attack": 8,
+ "units/reef_ascendant_calcite_bloom/stats.attack": 6,
+ "units/returning_tide_bloat_drowned/cost": 50,
+ "units/salt_concord_tollkeeper/stats.hp": 20,
+ "units/hadal_court_bell_knight/cost": 45,
+ "units/hadal_court_pit_thrall/stats.hp": 18,
+ "units/hadal_court_lantern_spitter/cost": 40
 }
