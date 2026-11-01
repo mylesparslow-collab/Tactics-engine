@@ -49,6 +49,7 @@ class Scene:
     parts: list
     materials: dict
     lights: list = field(default_factory=list)
+    ground_clip: bool = False           # cut everything below y=0 (sinking deaths, burrowing)
 
 
 def _hex(h):
@@ -68,24 +69,42 @@ def lin_to_srgb(c):
 
 # --------------------------------------------------------------------------- scene eval
 
+def _bounds(scene):
+    bb = getattr(scene, '_bb', None)
+    if bb is None:
+        C = np.array([p.prim.bc for p in scene.parts], dtype=np.float64)
+        R = np.array([p.prim.br for p in scene.parts], dtype=np.float64)
+        bb = (C, R, (C * C).sum(1))
+        scene._bb = bb
+    return bb
+
+
 def scene_eval(scene, p, want_mat=False):
     n = len(p)
     D = np.full(n, 1e3)
     raw = np.full(n, 1e3)
     mat = np.zeros(n, dtype=np.int32)
+    C, R, C2 = _bounds(scene)
+    # distances to every part's bounding sphere in one matmul
+    d2 = (p * p).sum(1)[:, None] + C2[None, :] - 2.0 * (p @ C.T)
+    BD = np.sqrt(np.maximum(d2, 0.0)) - R[None, :]
     for i, part in enumerate(scene.parts):
-        pr = part.prim
-        bd = np.linalg.norm(p - pr.bc, axis=1) - pr.br
+        bd = BD[:, i]
         m = bd < (D + part.k + 0.02)
         if not m.any():
             continue
-        d = bd.copy()
-        d[m] = pr(p[m])
+        if m.all():
+            d = part.prim(p)
+        else:
+            d = bd.copy()
+            d[m] = part.prim(p[m])
         D = smin(D, d, part.k) if part.k > 0 else np.minimum(D, d)
         if want_mat:
             closer = d < raw
             raw = np.where(closer, d, raw)
             mat = np.where(closer, i, mat)
+    if scene.ground_clip:
+        D = np.maximum(D, -p[:, 1])
     return (D, mat) if want_mat else D
 
 
@@ -108,14 +127,19 @@ def calc_ao(scene, p, n):
 
 
 def soft_shadow(scene, ro, rd, k=10.0, tmax=2.5, steps=40):
-    res = np.ones(len(ro))
-    t = np.full(len(ro), 0.02)
+    """Soft shadow factor (1 = lit). Rays drop out once fully shadowed or past tmax."""
+    n = len(ro)
+    res = np.ones(n)
+    t = np.full(n, 0.02)
+    alive = np.arange(n)
     for _ in range(steps):
-        h = scene_eval(scene, ro + rd * t[:, None])
-        res = np.minimum(res, k * h / t)
-        t = t + np.clip(h, 0.01, 0.2)
-        if (t > tmax).all():
+        if len(alive) == 0:
             break
+        h = scene_eval(scene, ro[alive] + rd[alive] * t[alive, None])
+        res[alive] = np.minimum(res[alive], k * h / t[alive])
+        t[alive] = t[alive] + np.clip(h, 0.01, 0.2)
+        keep = (t[alive] < tmax) & (res[alive] > 0.002)
+        alive = alive[keep]
     return np.clip(res, 0.0, 1.0)
 
 
@@ -363,8 +387,16 @@ def render(scene: Scene, cam: Camera = Camera(), look: Look = Look(), debug=Fals
     # --- ground shadow: soft ellipse plus key-light cast shadow on y=0
     gy = ro[:, 1] / -fwd[1]
     G = ro + fwd * gy[:, None]
-    gsh = soft_shadow(scene, G + np.array([0, 0.003, 0]), np.broadcast_to(Lk, G.shape), k=6.0, tmax=2.2, steps=36)
-    cast = (1 - gsh).reshape(H, W)
+    # cast shadow only matters near the feet; compute it at 1x on those pixels and upsample
+    G1 = G.reshape(H, W, 3)[ss // 2::ss, ss // 2::ss].reshape(-1, 3)
+    near = (G1[:, 0] ** 2 + G1[:, 2] ** 2) < 0.9 ** 2
+    g1 = np.ones(len(G1))
+    if near.any():
+        g1[near] = soft_shadow(scene, G1[near] + np.array([0, 0.003, 0]),
+                               np.broadcast_to(Lk, G1[near].shape), k=6.0, tmax=2.2, steps=36)
+    g1 = g1.reshape(cam.height, cam.width)
+    cast = 1 - np.repeat(np.repeat(g1, ss, 0), ss, 1)
+    cast = box_blur(cast, ss // 2)
     ell = np.exp(-((G[:, 0] / 0.30) ** 2 + (G[:, 2] / 0.22) ** 2) * 2.2).reshape(H, W)
     feet = np.exp(-((G[:, 0] ** 2 + G[:, 2] ** 2) / 0.35 ** 2)).reshape(H, W)
     sh_a = np.clip(np.maximum(cast * 0.55 * feet, ell * 0.85), 0, 1) * look.ground_shadow

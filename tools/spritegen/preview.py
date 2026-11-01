@@ -50,7 +50,7 @@ def main():
     t0 = time.time()
     P = mod.neutral_pose()
     scene = mod.build(P)
-    img = render(scene, Camera(), getattr(mod, 'LOOK', Look()))
+    img = render(scene, getattr(mod, 'CAMERA', Camera()), getattr(mod, 'LOOK', Look()))
     print('render %.1fs' % (time.time() - t0))
     name = mod.UNIT_ID
     Image.fromarray(img).save(os.path.join(out, name + '.png'))

@@ -4,7 +4,9 @@ usage: python sheet.py <unit_module> <outdir> [--jobs N] [--rows idle,move]
 Writes <unit>.png (sheet, one animation per row), <unit>.json (manifest),
 <unit>_still.png (idle frame 0), and <unit>_preview.gif (all rows, 3x) for review.
 """
-import sys, os, json, time, argparse, importlib, dataclasses
+import os
+os.environ.setdefault("OMP_NUM_THREADS", "1"); os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+import sys, json, time, argparse, importlib, dataclasses
 from multiprocessing import Pool
 import numpy as np
 from PIL import Image
@@ -22,7 +24,7 @@ def _job(args):
     mod = importlib.import_module(modname)
     P, over = mod.frames()[row][i]
     look = dataclasses.replace(getattr(mod, 'LOOK', Look()), **over)
-    return row, i, render(mod.build(P), Camera(), look)
+    return row, i, render(mod.build(P), getattr(mod, 'CAMERA', Camera()), look)
 
 
 def quantize(img, colors=192):
@@ -60,6 +62,9 @@ def main():
     Image.fromarray(sheet).save(os.path.join(a.out, uid + '_rgba.png'))
     quantize(sheet).save(os.path.join(a.out, uid + '.png'), optimize=True)
     Image.fromarray(got[(rows[0][0], 0)]).save(os.path.join(a.out, uid + '_still.png'))
+    rv = Image.new('RGBA', (sheet.shape[1], sheet.shape[0]), (104, 106, 112, 255))
+    rv.alpha_composite(Image.fromarray(sheet))
+    rv.resize((rv.width * 2, rv.height * 2), Image.NEAREST).save(os.path.join(a.out, uid + '_review.png'))
     with open(os.path.join(a.out, uid + '.json'), 'w') as f:
         json.dump(manifest, f, indent=1)
     # review gif: every row played in sequence on grey, 3x

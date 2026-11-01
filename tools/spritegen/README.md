@@ -68,6 +68,30 @@ Needs only Python 3, numpy and Pillow. `sheet.py` writes:
 Non-human units (crabs, polyps, engines) work the same way. Swap the humanoid joint set for whatever
 the body needs and keep the camera, `Look` and paint pass, so every faction shares one look.
 
+## The kit (use this for the other 90 units)
+
+`kit/` holds the shared parts so each unit file stays short and every faction looks like one game:
+
+- `kit/humanoid.py`: `base_pose(height, build)`, the `Costume` dataclass (skirt coat/robe/tabard,
+  head hair/hood/helm/cap, belt, boots, girth), `body()`, `hair()`, `hood_shell()`, `capelet_shell()`,
+  `held(P, add, side, kind)` for props (spear, pike, blade, knife, staff, club, hammer, axe, hook, pistol,
+  long_gun, sling, lantern_pole, torch), `lantern()`, `shield()`, `face_albedo()`, and `finish()`, which
+  merges default materials (leather, boot, glove, wood, iron, steel, brass, glass, flame, flash, brine,
+  scrap, calcite) and applies the faction death end state.
+- `kit/anim.py`: `humanoid_rows(neutral_pose, attack_style=swing|thrust|shoot|slam|cast)` gives all six rows.
+  `creature_frames()` gives scalar channels (bob, lean, squash, stride, strike, glow, end...) for
+  non-humanoids to map onto their own parts.
+- `kit/xform.py`: `Xform` / `Squash` wrappers and `transform_parts()` to move, rotate or squash whole
+  bodies (creatures, engines, death falls).
+- `kit/endstates.py`: salt or calcite crust, sinking (`Scene.ground_clip`), brine pool, scrap scatter,
+  calcite crumble, lamp gutter.
+- `kit/looks.py`: `LOOKS[faction]` lighting presets and `PALETTES[faction]` from the art bible.
+
+`units/salt_concord_salt_levy.py` is the short kit example. `units/salt_concord_tamsin_orrel.py` is the
+hand-built reference. Big units may set `CAMERA = Camera(ppm=44)` so they fit the frame. Keep it at 44 or
+above so scale stays believable next to humans. `sheet.py` also writes `<unitId>_review.png` (the
+sheet at 2x on grey) for checking every frame. `contact.py <dir> <out.png>` builds a faction contact sheet.
+
 ## Tuning knobs
 
 | Knob | Where | Effect |
