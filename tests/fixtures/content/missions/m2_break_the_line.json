@@ -1,0 +1,26 @@
+{
+  "id": "m2_break_the_line",
+  "name": "Break the Line",
+  "description": "Defeat the enemy captain before round 10.",
+  "map": "crossing",
+  "briefing": ["Their captain commands from the high ground. Bring them down and the rest will scatter."],
+  "victoryText": "The captain falls and the line breaks.",
+  "defeatText": "We ran out of time.",
+  "teams": [
+    { "name": "Ember Host", "color": "#e0573d", "controller": "human", "useCampaignRoster": true },
+    { "name": "Tide Court", "color": "#3d8fe0", "controller": "ai",
+      "units": [
+        { "unit": "brute", "x": 6, "y": 1, "tag": "captain" },
+        { "unit": "vanguard", "x": 4, "y": 3 }, { "unit": "vanguard", "x": 7, "y": 3 },
+        { "unit": "archer", "x": 2, "y": 2 }
+      ],
+      "warband": ["mystic", "archer", "skirmisher"] }
+  ],
+  "objectives": {
+    "victory": [{ "type": "defeat_unit", "tag": "captain" }, { "type": "destroy_keystone", "team": 1 }],
+    "defeat": [{ "type": "destroy_keystone", "team": 0 }, { "type": "eliminate", "team": 0 }, { "type": "turn_limit", "turns": 10 }]
+  },
+  "events": [
+    { "when": { "unitDefeated": "captain" }, "do": [{ "type": "message", "speaker": "Captain", "text": "Fall back... fall back!" }] }
+  ]
+}

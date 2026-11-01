@@ -1,0 +1,475 @@
+{
+ "sc_equip_salt_crusted_helm": {
+  "name": "Salt-Crusted Helm",
+  "description": "Wearer gains +1 defense.",
+  "faction": "salt_concord",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "defense": 1
+  },
+  "art": "cards/sc_equip_salt_crusted_helm.svg"
+ },
+ "sc_equip_surveyors_chain": {
+  "name": "Surveyor's Chain",
+  "description": "Wearer gains +1 attack and +1 jump.",
+  "faction": "salt_concord",
+  "rarity": "common",
+  "cost": 12,
+  "statMods": {
+   "attack": 1,
+   "jump": 1
+  },
+  "art": "cards/sc_equip_surveyors_chain.svg"
+ },
+ "sc_equip_brine_ward_cloak": {
+  "name": "Brine-Ward Cloak",
+  "description": "Wearer takes 2 less salt damage and 1 less physical damage.",
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "cost": 18,
+  "resist": {
+   "salt": 2,
+   "physical": 1
+  },
+  "art": "cards/sc_equip_brine_ward_cloak.svg"
+ },
+ "sc_equip_cairn_horn": {
+  "name": "Cairn Horn",
+  "description": "Wearer gains the Cairn Horn ability, granting Emboldened to allies in radius 2 for 2 turns.",
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "cost": 20,
+  "grantAbilities": [
+   "sc_equip_cairn_shout"
+  ],
+  "art": "cards/sc_equip_cairn_horn.svg"
+ },
+ "sc_equip_stairwardens_plate": {
+  "name": "Stair-Warden's Plate",
+  "description": "Wearer gains +3 hp, +2 defense and takes 1 less pressure damage.",
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "cost": 30,
+  "statMods": {
+   "hp": 3,
+   "defense": 2
+  },
+  "resist": {
+   "pressure": 1
+  },
+  "art": "cards/sc_equip_stairwardens_plate.svg"
+ },
+ "sc_equip_road_marshals_baton": {
+  "name": "Road-Marshal's Baton",
+  "description": "Wearer gains +1 ap and +1 attack.",
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "cost": 28,
+  "statMods": {
+   "ap": 1,
+   "attack": 1
+  },
+  "art": "cards/sc_equip_road_marshals_baton.svg"
+ },
+ "hc_equip_brine_greaves": {
+  "name": "Brine Greaves",
+  "description": "+1 defense.",
+  "faction": "hadal_court",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "defense": 1
+  },
+  "art": "cards/hc_equip_brine_greaves.svg"
+ },
+ "hc_equip_vent_flask": {
+  "name": "Vent Flask",
+  "description": "+4 hp and resist 1 fire.",
+  "faction": "hadal_court",
+  "rarity": "common",
+  "cost": 15,
+  "statMods": {
+   "hp": 4
+  },
+  "resist": {
+   "fire": 1
+  },
+  "art": "cards/hc_equip_vent_flask.svg"
+ },
+ "hc_equip_stalklamp": {
+  "name": "Stalk-Lamp Lantern",
+  "description": "Grants Lamp Flash: apply Darkened and Lured for 1 turn at range 2-4.",
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "cost": 18,
+  "grantAbilities": [
+   "hc_equip_lurelamp_flash"
+  ],
+  "art": "cards/hc_equip_stalklamp.svg"
+ },
+ "hc_equip_pressure_mantle": {
+  "name": "Pressure Mantle",
+  "description": "+1 defense and resist 2 pressure.",
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "cost": 22,
+  "statMods": {
+   "defense": 1
+  },
+  "resist": {
+   "pressure": 2
+  },
+  "art": "cards/hc_equip_pressure_mantle.svg"
+ },
+ "hc_equip_resonant_clapper": {
+  "name": "Resonant Clapper",
+  "description": "+1 attack. Grants Bell Shock: adjacent enemies take 3 flat pressure damage.",
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "cost": 30,
+  "statMods": {
+   "attack": 1
+  },
+  "grantAbilities": [
+   "hc_equip_bellshock"
+  ],
+  "art": "cards/hc_equip_resonant_clapper.svg"
+ },
+ "hc_equip_deep_heart": {
+  "name": "Heart of the Deep",
+  "description": "+6 hp, resist 2 physical, and returns once on death with 30 percent hp.",
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "cost": 35,
+  "statMods": {
+   "hp": 6
+  },
+  "resist": {
+   "physical": 2
+  },
+  "revive": {
+   "hpFraction": 0.3
+  },
+  "art": "cards/hc_equip_deep_heart.svg"
+ },
+ "rt_equip_oilskin_cloak": {
+  "name": "Oilskin Cloak",
+  "description": "Wearer takes 2 less brine damage and has +2 hp.",
+  "faction": "returning_tide",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "hp": 2
+  },
+  "resist": {
+   "brine": 2
+  },
+  "art": "cards/rt_equip_oilskin_cloak.svg"
+ },
+ "rt_equip_knotted_cord": {
+  "name": "Knotted Cord",
+  "description": "Wearer gets +1 attack.",
+  "faction": "returning_tide",
+  "rarity": "common",
+  "cost": 12,
+  "statMods": {
+   "attack": 1
+  },
+  "art": "cards/rt_equip_knotted_cord.svg"
+ },
+ "rt_equip_barnacle_mail": {
+  "name": "Barnacle Mail",
+  "description": "Wearer gets +2 defense and takes 1 less physical damage.",
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "cost": 20,
+  "statMods": {
+   "defense": 2
+  },
+  "resist": {
+   "physical": 1
+  },
+  "art": "cards/rt_equip_barnacle_mail.svg"
+ },
+ "rt_equip_drowners_gaff": {
+  "name": "Drowner's Gaff",
+  "description": "Wearer gains Gaff Haul: deal attack physical damage at range 2 to 4 and pull the target 2 tiles.",
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "cost": 18,
+  "grantAbilities": [
+   "rt_gaff_haul"
+  ],
+  "art": "cards/rt_equip_drowners_gaff.svg"
+ },
+ "rt_equip_lungful_of_sea": {
+  "name": "Lungful of Sea",
+  "description": "Wearer gains Exhale the Deep: 4 brine damage and Soaked to all adjacent enemies, and +2 hp.",
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "cost": 28,
+  "statMods": {
+   "hp": 2
+  },
+  "grantAbilities": [
+   "rt_exhale_the_deep"
+  ],
+  "art": "cards/rt_equip_lungful_of_sea.svg"
+ },
+ "rt_equip_second_tide_shroud": {
+  "name": "Second Tide Shroud",
+  "description": "Wearer gets +1 defense and returns once after death with 40 percent of its hp.",
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "cost": 32,
+  "statMods": {
+   "defense": 1
+  },
+  "revive": {
+   "hpFraction": 0.4
+  },
+  "art": "cards/rt_equip_second_tide_shroud.svg"
+ },
+ "sv_equip_scrap_vest": {
+  "name": "Scrap Vest",
+  "description": "+1 defense and +2 HP.",
+  "faction": "salvage_compact",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "defense": 1,
+   "hp": 2
+  },
+  "art": "cards/sv_equip_scrap_vest.svg"
+ },
+ "sv_equip_lucky_lantern": {
+  "name": "Lucky Lantern",
+  "description": "Grants Lantern Flash (mark an enemy within 2-4 range).",
+  "faction": "salvage_compact",
+  "rarity": "common",
+  "cost": 12,
+  "grantAbilities": [
+   "sv_equip_lantern_flash"
+  ],
+  "art": "cards/sv_equip_lucky_lantern.svg"
+ },
+ "sv_equip_oilskin_coat": {
+  "name": "Oilskin Coat",
+  "description": "Reduces fire damage taken by 2 and grants +1 HP.",
+  "faction": "salvage_compact",
+  "rarity": "uncommon",
+  "cost": 18,
+  "resist": {
+   "fire": 2
+  },
+  "statMods": {
+   "hp": 1
+  },
+  "art": "cards/sv_equip_oilskin_coat.svg"
+ },
+ "sv_equip_tinker_gloves": {
+  "name": "Tinker's Gloves",
+  "description": "+1 AP and +1 attack.",
+  "faction": "salvage_compact",
+  "rarity": "uncommon",
+  "cost": 20,
+  "statMods": {
+   "ap": 1,
+   "attack": 1
+  },
+  "art": "cards/sv_equip_tinker_gloves.svg"
+ },
+ "sv_equip_harpoon_gauntlet": {
+  "name": "Harpoon Gauntlet",
+  "description": "+1 attack and grants Grapple Haul (pull an enemy up to 2 tiles).",
+  "faction": "salvage_compact",
+  "rarity": "rare",
+  "cost": 30,
+  "statMods": {
+   "attack": 1
+  },
+  "grantAbilities": [
+   "sv_equip_grapple_haul"
+  ],
+  "art": "cards/sv_equip_harpoon_gauntlet.svg"
+ },
+ "sv_equip_hull_plate_cuirass": {
+  "name": "Hull-Plate Cuirass",
+  "description": "+2 defense, +4 HP, and reduces physical damage taken by 2.",
+  "faction": "salvage_compact",
+  "rarity": "rare",
+  "cost": 28,
+  "statMods": {
+   "defense": 2,
+   "hp": 4
+  },
+  "resist": {
+   "physical": 2
+  },
+  "art": "cards/sv_equip_hull_plate_cuirass.svg"
+ },
+ "ra_equip_calcite_plate": {
+  "name": "Calcite Plate",
+  "description": "+2 hp and +1 defense.",
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "cost": 12,
+  "statMods": {
+   "hp": 2,
+   "defense": 1
+  },
+  "art": "cards/ra_equip_calcite_plate.svg"
+ },
+ "ra_equip_brine_sponge": {
+  "name": "Brine Sponge",
+  "description": "+1 hp. Resist brine 2.",
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "hp": 1
+  },
+  "resist": {
+   "brine": 2
+  },
+  "art": "cards/ra_equip_brine_sponge.svg"
+ },
+ "ra_equip_synapse_nodule": {
+  "name": "Synapse Nodule",
+  "description": "+1 ap and +1 attack.",
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "cost": 20,
+  "statMods": {
+   "ap": 1,
+   "attack": 1
+  },
+  "art": "cards/ra_equip_synapse_nodule.svg"
+ },
+ "ra_equip_spur_crown": {
+  "name": "Spur Crown",
+  "description": "+1 attack. Grants Spur Thrust.",
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "cost": 18,
+  "statMods": {
+   "attack": 1
+  },
+  "grantAbilities": [
+   "ra_spur_thrust"
+  ],
+  "art": "cards/ra_equip_spur_crown.svg"
+ },
+ "ra_equip_heartstone_geode": {
+  "name": "Heartstone Geode",
+  "description": "+2 hp. Returns the wearer once on death with 40% of its max hp.",
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "cost": 30,
+  "statMods": {
+   "hp": 2
+  },
+  "revive": {
+   "hpFraction": 0.4
+  },
+  "art": "cards/ra_equip_heartstone_geode.svg"
+ },
+ "ra_equip_tidal_husk": {
+  "name": "Tidal Husk",
+  "description": "+1 defense. Resist brine 3 and fire 2. Grants Husk Pulse.",
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "cost": 28,
+  "statMods": {
+   "defense": 1
+  },
+  "resist": {
+   "brine": 3,
+   "fire": 2
+  },
+  "grantAbilities": [
+   "ra_husk_pulse"
+  ],
+  "art": "cards/ra_equip_tidal_husk.svg"
+ },
+ "lk_equip_oilskin_cloak": {
+  "name": "Oilskin Cloak",
+  "description": "+3 hp and resist 1 brine damage.",
+  "faction": "lanternkeepers",
+  "rarity": "common",
+  "cost": 12,
+  "statMods": {
+   "hp": 3
+  },
+  "resist": {
+   "brine": 1
+  },
+  "art": "cards/lk_equip_oilskin_cloak.svg"
+ },
+ "lk_equip_wick_trimmers": {
+  "name": "Wick Trimmers",
+  "description": "+1 attack.",
+  "faction": "lanternkeepers",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "attack": 1
+  },
+  "art": "cards/lk_equip_wick_trimmers.svg"
+ },
+ "lk_equip_signal_horn": {
+  "name": "Keeper's Signal Horn",
+  "description": "Grants Signal Flare: allies in radius 2 gain Emboldened for 2 turns.",
+  "faction": "lanternkeepers",
+  "rarity": "uncommon",
+  "cost": 20,
+  "grantAbilities": [
+   "lk_flare_signal"
+  ],
+  "art": "cards/lk_equip_signal_horn.svg"
+ },
+ "lk_equip_stairwell_greaves": {
+  "name": "Stairwell Greaves",
+  "description": "+1 defense, +1 jump and resist 1 physical damage.",
+  "faction": "lanternkeepers",
+  "rarity": "uncommon",
+  "cost": 18,
+  "statMods": {
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "physical": 1
+  },
+  "art": "cards/lk_equip_stairwell_greaves.svg"
+ },
+ "lk_equip_lamplit_mantle": {
+  "name": "Lamplit Mantle",
+  "description": "+2 defense and resist 2 brine damage.",
+  "faction": "lanternkeepers",
+  "rarity": "rare",
+  "cost": 28,
+  "statMods": {
+   "defense": 2
+  },
+  "resist": {
+   "brine": 2
+  },
+  "art": "cards/lk_equip_lamplit_mantle.svg"
+ },
+ "lk_equip_first_lens": {
+  "name": "The First Lens",
+  "description": "+1 attack and grants Prism Beam: deal attack+2 light damage to enemies in radius 1 of a target at range 2-4.",
+  "faction": "lanternkeepers",
+  "rarity": "rare",
+  "cost": 32,
+  "statMods": {
+   "attack": 1
+  },
+  "grantAbilities": [
+   "lk_prism_beam"
+  ],
+  "art": "cards/lk_equip_first_lens.svg"
+ }
+}

@@ -1,0 +1,279 @@
+{
+  "id": "mother_hull_archive",
+  "name": "The Archive at Mother Hull",
+  "description": "Break through the ribs of Mother Hull and force the archive door.",
+  "map": "mother_hull",
+  "briefing": [
+    "Brask has betrayed us. Not in a dramatic way. He sold the Shoal's location to the Compact so they can sell it back to whoever pays most, and now the Compact's militia has sealed Mother Hull. That is fine. Brask also told me where the real prize is: the Charter archive, in the leviathan's skull, which holds the Compact's copy of the Vigil Book.",
+    "We go in through the ribs. The Compact militia is scattered and overconfident. The Harpoon Engine on the third deck will pin anything that moves, so the Caustic Lanterns need to take it out first.",
+    "We break the main gate, secure the skull, and leave. We do not stay for tea."
+  ],
+  "victoryText": "Inside, Tamsin finds the Vigil Book copy. Odo Brask is already reading it. \"I always wondered,\" he whispers. Then he reads the page about the hand held up, and sits down on the floor.",
+  "defeatText": "The Harpoon Engine pins the last Lantern. The company is held for three days and sent home with a polite bill and a longer reading list.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salt Concord",
+      "color": "#5b7fa6",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salt_concord_tamsin_orrel",
+          "x": 3,
+          "y": 9,
+          "tag": "commander_orrel"
+        },
+        {
+          "unit": "salt_concord_caustic_lantern",
+          "x": 1,
+          "y": 10,
+          "tag": "caustic_lantern"
+        },
+        {
+          "unit": "salt_concord_caustic_lantern",
+          "x": 4,
+          "y": 10,
+          "tag": "caustic_lantern"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 3,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 4,
+          "y": 9
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 4,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 1,
+          "y": 9
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 5,
+          "y": 10
+        }
+      ]
+    },
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_wrecker",
+        "salvage_compact_powder_monk",
+        "salvage_compact_tallow_mender",
+        "salvage_compact_bone_sled_rider",
+        "salvage_compact_hullbreaker",
+        "salvage_compact_snare_tinker"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_harpoon_engine",
+          "x": 13,
+          "y": 8,
+          "tag": "harpoon_engine"
+        },
+        {
+          "unit": "salvage_compact_hullbreaker",
+          "x": 17,
+          "y": 9
+        },
+        {
+          "unit": "salvage_compact_hullbreaker",
+          "x": 17,
+          "y": 12
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 12,
+          "y": 6
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 12,
+          "y": 14
+        },
+        {
+          "unit": "salvage_compact_breach_gunner",
+          "x": 16,
+          "y": 9
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 13,
+          "y": 12
+        },
+        {
+          "unit": "salvage_compact_powder_monk",
+          "x": 16,
+          "y": 12
+        },
+        {
+          "unit": "salvage_compact_quartermaster",
+          "x": 19,
+          "y": 10
+        }
+      ],
+      "startingEssence": 140,
+      "essencePerTurn": 30
+    },
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "ai",
+      "units": []
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Break the archive door"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "defeat_unit",
+        "tag": "caustic_lantern",
+        "label": "Keep at least one Caustic Lantern alive"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "Our rally standard must not fall"
+      },
+      {
+        "type": "eliminate",
+        "team": 0,
+        "label": "Do not lose the whole company"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 15,
+        "label": "Force the archive door before turn 15"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Commander Orrel",
+          "text": "Lanterns on the Harpoon Engine first. Then the gate."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Commander, I did the thing. Please don't hit me. The archive door has a gas trap. It's the third hinge. You're welcome."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "A Harpoon Engine crew and sled riders are coming up behind us!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_harpoon_engine",
+          "x": 18,
+          "y": 3,
+          "tag": "harpoon_engine"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 19,
+          "y": 19
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 18,
+          "y": 19
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 9,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Something is watching from inside the skull. Bronze, and very still."
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "hadal_court_murk_diver",
+          "x": 18,
+          "y": 8,
+          "tag": "court_watcher"
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 60,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "harpoon_engine",
+          "label": "Silence every Harpoon Engine"
+        },
+        "pearls": 30,
+        "label": "Silence every Harpoon Engine"
+      },
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "caustic_lantern",
+          "label": "Bring both Caustic Lanterns home",
+          "not": true
+        },
+        "pearls": 20,
+        "label": "Bring both Caustic Lanterns home"
+      }
+    ]
+  }
+}

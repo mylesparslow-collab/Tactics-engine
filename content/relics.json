@@ -1,0 +1,3228 @@
+{
+ "salt_concord_brineguard": {
+  "faction": "salt_concord",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Seasoned Line"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Salt-Hardened"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_phalanx",
+    "label": "Phalanx Step"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_brineguard",
+  "unit": "salt_concord_brineguard"
+ },
+ "salt_concord_salt_levy": {
+  "faction": "salt_concord",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Fed Rations"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Veteran Levy"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_lastlevy",
+    "label": "Last Levy"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_salt_levy",
+  "unit": "salt_concord_salt_levy"
+ },
+ "salt_concord_surveyor": {
+  "faction": "salt_concord",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Steady Chalk"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Long Road"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_triangulate",
+    "label": "Triangulate"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_surveyor",
+  "unit": "salt_concord_surveyor"
+ },
+ "salt_concord_brine_slinger": {
+  "faction": "salt_concord",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Strong Arm"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Pan-Hardened"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_brine_volley",
+    "label": "Brine Volley"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_brine_slinger",
+  "unit": "salt_concord_brine_slinger"
+ },
+ "salt_concord_saltwright": {
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Mason's Callus"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Trowel"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_brine_bind",
+    "label": "Brine Binding"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_saltwright",
+  "unit": "salt_concord_saltwright"
+ },
+ "salt_concord_causeway_outrider": {
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Fresh Horse"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Lance Drill"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_flank",
+    "label": "Flanking Run"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_causeway_outrider",
+  "unit": "salt_concord_causeway_outrider"
+ },
+ "salt_concord_brine_chirurgeon": {
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Steady Hands"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Leather Apron"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_triage",
+    "label": "Triage"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_brine_chirurgeon",
+  "unit": "salt_concord_brine_chirurgeon"
+ },
+ "salt_concord_tollkeeper": {
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Heavy Staff"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Toll Ledger"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_levy_tax",
+    "label": "Levy Tax"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_tollkeeper",
+  "unit": "salt_concord_tollkeeper"
+ },
+ "salt_concord_stair_warden": {
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Stair-Hardened"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Iron Mace"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_stairfall",
+    "label": "Stairfall"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_stair_warden",
+  "unit": "salt_concord_stair_warden"
+ },
+ "salt_concord_caustic_lantern": {
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Hotter Glass"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Reinforced Frame"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_sunder_shot",
+    "label": "Sunder Shot"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_caustic_lantern",
+  "unit": "salt_concord_caustic_lantern"
+ },
+ "salt_concord_rim_marshal": {
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Campaign Scars"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Drilled Staff"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_charge",
+    "label": "Marshal's Charge"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_rim_marshal",
+  "unit": "salt_concord_rim_marshal"
+ },
+ "salt_concord_saltmill_juggernaut": {
+  "faction": "salt_concord",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Thicker Plate"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Tuned Gears"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sc_r3_saltstorm",
+    "label": "Saltstorm"
+   }
+  ],
+  "type": "champion",
+  "card": "salt_concord_saltmill_juggernaut",
+  "unit": "salt_concord_saltmill_juggernaut"
+ },
+ "salt_concord_tamsin_orrel": {
+  "type": "hero",
+  "faction": "salt_concord",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Twice-Measured"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Steady Hand"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sc_legend_do_not_pave",
+    "label": "Do Not Pave the Ebb"
+   }
+  ],
+  "card": "salt_concord_tamsin_orrel",
+  "unit": "salt_concord_tamsin_orrel"
+ },
+ "salt_concord_hesper_vael": {
+  "type": "hero",
+  "faction": "salt_concord",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Forty Years Standing"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Iron Landing"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sc_legend_the_stair_stands",
+    "label": "The Stair Stands"
+   }
+  ],
+  "card": "salt_concord_hesper_vael",
+  "unit": "salt_concord_hesper_vael"
+ },
+ "salt_concord_ione_karst": {
+  "type": "hero",
+  "faction": "salt_concord",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Bitter Tongue"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Practised Pour"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sc_legend_grand_assay",
+    "label": "The Grand Assay"
+   }
+  ],
+  "card": "salt_concord_ione_karst",
+  "unit": "salt_concord_ione_karst"
+ },
+ "sc_spell_salt_volley": {
+  "type": "spell",
+  "faction": "salt_concord",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sc_spell_salt_volley"
+ },
+ "sc_spell_levy_summons": {
+  "type": "spell",
+  "faction": "salt_concord",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sc_spell_levy_summons"
+ },
+ "sc_spell_toll_gate": {
+  "type": "spell",
+  "faction": "salt_concord",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sc_spell_toll_gate"
+ },
+ "sc_spell_drill_order": {
+  "type": "spell",
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sc_spell_drill_order"
+ },
+ "sc_spell_caustic_mist": {
+  "type": "spell",
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sc_spell_caustic_mist"
+ },
+ "sc_spell_road_levy": {
+  "type": "spell",
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sc_spell_road_levy"
+ },
+ "sc_spell_salt_the_earth": {
+  "type": "spell",
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sc_spell_salt_the_earth"
+ },
+ "sc_spell_edict_of_assize": {
+  "type": "spell",
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sc_spell_edict_of_assize"
+ },
+ "sc_equip_salt_crusted_helm": {
+  "type": "equipment",
+  "faction": "salt_concord",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sc_equip_salt_crusted_helm"
+ },
+ "sc_equip_surveyors_chain": {
+  "type": "equipment",
+  "faction": "salt_concord",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sc_equip_surveyors_chain"
+ },
+ "sc_equip_brine_ward_cloak": {
+  "type": "equipment",
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sc_equip_brine_ward_cloak"
+ },
+ "sc_equip_cairn_horn": {
+  "type": "equipment",
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sc_equip_cairn_horn"
+ },
+ "sc_equip_stairwardens_plate": {
+  "type": "equipment",
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sc_equip_stairwardens_plate"
+ },
+ "sc_equip_road_marshals_baton": {
+  "type": "equipment",
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sc_equip_road_marshals_baton"
+ },
+ "hadal_court_pit_thrall": {
+  "faction": "hadal_court",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thicker Brine"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Hardened Shell"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_abyssal_lurch",
+    "label": "Abyssal Lurch"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_pit_thrall",
+  "unit": "hadal_court_pit_thrall"
+ },
+ "hadal_court_bell_knight": {
+  "faction": "hadal_court",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Heavier Bell"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Clapper Weight"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_tolling_ward",
+    "label": "Tolling Ward"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_bell_knight",
+  "unit": "hadal_court_bell_knight"
+ },
+ "hadal_court_lurecaller": {
+  "faction": "hadal_court",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Longer Stalk"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Restless Lamp"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_snare_light",
+    "label": "Snare Light"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_lurecaller",
+  "unit": "hadal_court_lurecaller"
+ },
+ "hadal_court_lantern_spitter": {
+  "faction": "hadal_court",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Brighter Glow"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thick Glass"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_gleam_burst",
+    "label": "Gleam Burst"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_lantern_spitter",
+  "unit": "hadal_court_lantern_spitter"
+ },
+ "hadal_court_vent_priest": {
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Banked Embers"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Open Vent"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_cauterise",
+    "label": "Cauterise"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_vent_priest",
+  "unit": "hadal_court_vent_priest"
+ },
+ "hadal_court_pressure_lancer": {
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Finer Bore"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Braced Hull"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_pinning_bore",
+    "label": "Pinning Bore"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_pressure_lancer",
+  "unit": "hadal_court_pressure_lancer"
+ },
+ "hadal_court_murk_diver": {
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Slick Hide"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Hooked Claw"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_vanishing_strike",
+    "label": "Vanishing Strike"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_murk_diver",
+  "unit": "hadal_court_murk_diver"
+ },
+ "hadal_court_trench_crab": {
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Thicker Carapace"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Barnacle Mass"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_trench_grip",
+    "label": "Trench Grip"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_trench_crab",
+  "unit": "hadal_court_trench_crab"
+ },
+ "hadal_court_crushing_maw": {
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Deeper Gullet"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Grinding Teeth"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_gulping_dark",
+    "label": "Gulping Dark"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_crushing_maw",
+  "unit": "hadal_court_crushing_maw"
+ },
+ "hadal_court_deep_herald": {
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Fuller Voice"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Endless Verse"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_dirge_of_night",
+    "label": "Dirge of Night"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_deep_herald",
+  "unit": "hadal_court_deep_herald"
+ },
+ "hadal_court_tollwarden": {
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Oathbound Plate"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Weight of Law"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_rallying_toll",
+    "label": "Rallying Toll"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_tollwarden",
+  "unit": "hadal_court_tollwarden"
+ },
+ "hadal_court_trench_mother": {
+  "faction": "hadal_court",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Fuller Brood"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Cradle Pressure"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hc_whelp_tide",
+    "label": "Whelp Tide"
+   }
+  ],
+  "type": "champion",
+  "card": "hadal_court_trench_mother",
+  "unit": "hadal_court_trench_mother"
+ },
+ "hadal_court_herald_vhaal": {
+  "type": "hero",
+  "faction": "hadal_court",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Heavier Brine"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharpened Weight"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hc_legend_answer_owed",
+    "label": "The Answer Owed"
+   }
+  ],
+  "card": "hadal_court_herald_vhaal",
+  "unit": "hadal_court_herald_vhaal"
+ },
+ "hadal_court_orrun_tessk": {
+  "type": "hero",
+  "faction": "hadal_court",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Heavier Brine"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharpened Weight"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hc_legend_last_watch",
+    "label": "The Last Watch"
+   }
+  ],
+  "card": "hadal_court_orrun_tessk",
+  "unit": "hadal_court_orrun_tessk"
+ },
+ "hadal_court_maelis_quell": {
+  "type": "hero",
+  "faction": "hadal_court",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Heavier Brine"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharpened Weight"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hc_legend_second_hearth",
+    "label": "The Second Hearth"
+   }
+  ],
+  "card": "hadal_court_maelis_quell",
+  "unit": "hadal_court_maelis_quell"
+ },
+ "hc_spell_pressure_spike": {
+  "type": "spell",
+  "faction": "hadal_court",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hc_spell_pressure_spike"
+ },
+ "hc_spell_lightless_veil": {
+  "type": "spell",
+  "faction": "hadal_court",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hc_spell_lightless_veil"
+ },
+ "hc_spell_vent_surge": {
+  "type": "spell",
+  "faction": "hadal_court",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hc_spell_vent_surge"
+ },
+ "hc_spell_undertow": {
+  "type": "spell",
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hc_spell_undertow"
+ },
+ "hc_spell_call_thralls": {
+  "type": "spell",
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hc_spell_call_thralls"
+ },
+ "hc_spell_bellward": {
+  "type": "spell",
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hc_spell_bellward"
+ },
+ "hc_spell_the_weight_returns": {
+  "type": "spell",
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hc_spell_the_weight_returns"
+ },
+ "hc_spell_tithe_of_depths": {
+  "type": "spell",
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hc_spell_tithe_of_depths"
+ },
+ "hc_equip_brine_greaves": {
+  "type": "equipment",
+  "faction": "hadal_court",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hc_equip_brine_greaves"
+ },
+ "hc_equip_vent_flask": {
+  "type": "equipment",
+  "faction": "hadal_court",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hc_equip_vent_flask"
+ },
+ "hc_equip_stalklamp": {
+  "type": "equipment",
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hc_equip_stalklamp"
+ },
+ "hc_equip_pressure_mantle": {
+  "type": "equipment",
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hc_equip_pressure_mantle"
+ },
+ "hc_equip_resonant_clapper": {
+  "type": "equipment",
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hc_equip_resonant_clapper"
+ },
+ "hc_equip_deep_heart": {
+  "type": "equipment",
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hc_equip_deep_heart"
+ },
+ "returning_tide_penitent": {
+  "faction": "returning_tide",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Zeal Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_martyr_rush",
+    "label": "Martyr's Rush"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_penitent",
+  "unit": "returning_tide_penitent"
+ },
+ "returning_tide_drowned": {
+  "faction": "returning_tide",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Waterlogged Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_clutching_hands",
+    "label": "Clutching Hands"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_drowned",
+  "unit": "returning_tide_drowned"
+ },
+ "returning_tide_tear_slinger": {
+  "faction": "returning_tide",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Bitter Aim Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_salt_tears",
+    "label": "Salt Tears"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_tear_slinger",
+  "unit": "returning_tide_tear_slinger"
+ },
+ "returning_tide_tideskulker": {
+  "faction": "returning_tide",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Knife Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_cutpurse",
+    "label": "Throat Cut"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_tideskulker",
+  "unit": "returning_tide_tideskulker"
+ },
+ "returning_tide_wringer": {
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Deeper Wring Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_squeeze",
+    "label": "Squeeze"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_wringer",
+  "unit": "returning_tide_wringer"
+ },
+ "returning_tide_rainsayer": {
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Gathering Storm Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_squall",
+    "label": "Squall"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_rainsayer",
+  "unit": "returning_tide_rainsayer"
+ },
+ "returning_tide_shroud_mender": {
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Last Rites Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_last_rites",
+    "label": "Last Rites"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_shroud_mender",
+  "unit": "returning_tide_shroud_mender"
+ },
+ "returning_tide_anchor_bearer": {
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Heavier Chain Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_tow",
+    "label": "Tow Chain"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_anchor_bearer",
+  "unit": "returning_tide_anchor_bearer"
+ },
+ "returning_tide_choirmaster": {
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Swelling Chorus"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_crescendo",
+    "label": "Crescendo"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_choirmaster",
+  "unit": "returning_tide_choirmaster"
+ },
+ "returning_tide_undertow_singer": {
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Pull of the Deep Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_riptide",
+    "label": "Riptide"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_undertow_singer",
+  "unit": "returning_tide_undertow_singer"
+ },
+ "returning_tide_bloat_drowned": {
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Putrid Surge Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_rotting_wave",
+    "label": "Rotting Wave"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_bloat_drowned",
+  "unit": "returning_tide_bloat_drowned"
+ },
+ "returning_tide_tide_prophet": {
+  "faction": "returning_tide",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Soaked Through"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Prophecy Fulfilled Rises"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "rt_baptism",
+    "label": "Baptism of Brine"
+   }
+  ],
+  "type": "champion",
+  "card": "returning_tide_tide_prophet",
+  "unit": "returning_tide_tide_prophet"
+ },
+ "returning_tide_imre_dunnock": {
+  "type": "hero",
+  "faction": "returning_tide",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Soaked Cloak"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Audit Concluded"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "rt_the_sea_is_merciful",
+    "label": "The Sea Is Merciful"
+   }
+  ],
+  "card": "returning_tide_imre_dunnock",
+  "unit": "returning_tide_imre_dunnock"
+ },
+ "returning_tide_maren_ketch": {
+  "type": "hero",
+  "faction": "returning_tide",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Dripping Sleeves"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Practised Grip"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "rt_the_last_wringing",
+    "label": "The Last Wringing"
+   }
+  ],
+  "card": "returning_tide_maren_ketch",
+  "unit": "returning_tide_maren_ketch"
+ },
+ "returning_tide_oswin_brack": {
+  "type": "hero",
+  "faction": "returning_tide",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Barnacle Plate"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Sea-Hardened"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "rt_the_tide_takes_the_ship",
+    "label": "The Tide Takes the Ship"
+   }
+  ],
+  "card": "returning_tide_oswin_brack",
+  "unit": "returning_tide_oswin_brack"
+ },
+ "rt_spell_brine_lash": {
+  "type": "spell",
+  "card": "rt_spell_brine_lash",
+  "faction": "returning_tide",
+  "rarity": "common",
+  "pearlCost": 30,
+  "tempering": []
+ },
+ "rt_spell_wet_blessing": {
+  "type": "spell",
+  "card": "rt_spell_wet_blessing",
+  "faction": "returning_tide",
+  "rarity": "common",
+  "pearlCost": 30,
+  "tempering": []
+ },
+ "rt_spell_pool_of_the_faithful": {
+  "type": "spell",
+  "card": "rt_spell_pool_of_the_faithful",
+  "faction": "returning_tide",
+  "rarity": "common",
+  "pearlCost": 30,
+  "tempering": []
+ },
+ "rt_spell_wringing_rite": {
+  "type": "spell",
+  "card": "rt_spell_wringing_rite",
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "tempering": []
+ },
+ "rt_spell_drowned_rise": {
+  "type": "spell",
+  "card": "rt_spell_drowned_rise",
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "tempering": []
+ },
+ "rt_spell_hymn_of_the_deep": {
+  "type": "spell",
+  "card": "rt_spell_hymn_of_the_deep",
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "tempering": []
+ },
+ "rt_spell_the_sea_remembers": {
+  "type": "spell",
+  "card": "rt_spell_the_sea_remembers",
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "tempering": []
+ },
+ "rt_spell_tithe_of_water": {
+  "type": "spell",
+  "card": "rt_spell_tithe_of_water",
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "tempering": []
+ },
+ "rt_equip_oilskin_cloak": {
+  "type": "equipment",
+  "card": "rt_equip_oilskin_cloak",
+  "faction": "returning_tide",
+  "rarity": "common",
+  "pearlCost": 30,
+  "tempering": []
+ },
+ "rt_equip_knotted_cord": {
+  "type": "equipment",
+  "card": "rt_equip_knotted_cord",
+  "faction": "returning_tide",
+  "rarity": "common",
+  "pearlCost": 30,
+  "tempering": []
+ },
+ "rt_equip_barnacle_mail": {
+  "type": "equipment",
+  "card": "rt_equip_barnacle_mail",
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "tempering": []
+ },
+ "rt_equip_drowners_gaff": {
+  "type": "equipment",
+  "card": "rt_equip_drowners_gaff",
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "tempering": []
+ },
+ "rt_equip_lungful_of_sea": {
+  "type": "equipment",
+  "card": "rt_equip_lungful_of_sea",
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "tempering": []
+ },
+ "rt_equip_second_tide_shroud": {
+  "type": "equipment",
+  "card": "rt_equip_second_tide_shroud",
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "tempering": []
+ },
+ "salvage_compact_lamplighter": {
+  "faction": "salvage_compact",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Oiled Hinges"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Thick Gloves"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_signal_fire",
+    "label": "Learns Signal Fire"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_lamplighter",
+  "unit": "salvage_compact_lamplighter"
+ },
+ "salvage_compact_scrapper": {
+  "faction": "salvage_compact",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Patched Coat"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Plate Apron"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_cut_and_run",
+    "label": "Learns Cut and Run"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_scrapper",
+  "unit": "salvage_compact_scrapper"
+ },
+ "salvage_compact_wrecker": {
+  "faction": "salvage_compact",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Honed Axe"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Light Boots"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_pry_open",
+    "label": "Learns Pry Open"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_wrecker",
+  "unit": "salvage_compact_wrecker"
+ },
+ "salvage_compact_rivet_slinger": {
+  "faction": "salvage_compact",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharper Rivets"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Bracing Jacket"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_ricochet",
+    "label": "Learns Ricochet"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_rivet_slinger",
+  "unit": "salvage_compact_rivet_slinger"
+ },
+ "salvage_compact_powder_monk": {
+  "faction": "salvage_compact",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Dry Powder"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Asbestos Habit"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_conflagration",
+    "label": "Learns Conflagration"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_powder_monk",
+  "unit": "salvage_compact_powder_monk"
+ },
+ "salvage_compact_bone_sled_rider": {
+  "faction": "salvage_compact",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Waxed Runners"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Longer Lance"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_ghost_sled",
+    "label": "Learns Ghost Sled"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_bone_sled_rider",
+  "unit": "salvage_compact_bone_sled_rider"
+ },
+ "salvage_compact_tallow_mender": {
+  "faction": "salvage_compact",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Warm Hands"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Rounds"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_tallow_wash",
+    "label": "Learns Tallow Wash"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_tallow_mender",
+  "unit": "salvage_compact_tallow_mender"
+ },
+ "salvage_compact_snare_tinker": {
+  "faction": "salvage_compact",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Spare Parts"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Better Springs"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_tripwire_snare",
+    "label": "Learns Tripwire Snare"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_snare_tinker",
+  "unit": "salvage_compact_snare_tinker"
+ },
+ "salvage_compact_hullbreaker": {
+  "faction": "salvage_compact",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Iron Plating"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Heavier Maul"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_keel_drop",
+    "label": "Learns Keel Drop"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_hullbreaker",
+  "unit": "salvage_compact_hullbreaker"
+ },
+ "salvage_compact_quartermaster": {
+  "faction": "salvage_compact",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Fat Purse"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Salvaged Coat"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_pay_out",
+    "label": "Learns Pay Out"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_quartermaster",
+  "unit": "salvage_compact_quartermaster"
+ },
+ "salvage_compact_breach_gunner": {
+  "faction": "salvage_compact",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Rifled Barrel"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Padded Vest"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_overcharge",
+    "label": "Learns Overcharge"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_breach_gunner",
+  "unit": "salvage_compact_breach_gunner"
+ },
+ "salvage_compact_harpoon_engine": {
+  "faction": "salvage_compact",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Reinforced Chain"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Heavier Head"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sv_twin_bolt",
+    "label": "Learns Twin Bolt"
+   }
+  ],
+  "type": "champion",
+  "card": "salvage_compact_harpoon_engine",
+  "unit": "salvage_compact_harpoon_engine"
+ },
+ "salvage_compact_odo_brask": {
+  "faction": "salvage_compact",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Fresh Ledger"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Fourth Coat"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sv_odo_betray_correctly",
+    "label": "Learns Betray, Correctly"
+   }
+  ],
+  "card": "salvage_compact_odo_brask",
+  "unit": "salvage_compact_odo_brask"
+ },
+ "salvage_compact_ketta_vane": {
+  "faction": "salvage_compact",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Waxed Runners"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharpened Prow"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sv_ketta_wake_of_ruin",
+    "label": "Learns Wake of Ruin"
+   }
+  ],
+  "card": "salvage_compact_ketta_vane",
+  "unit": "salvage_compact_ketta_vane"
+ },
+ "salvage_compact_brother_ashmaw": {
+  "faction": "salvage_compact",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Thicker Grease"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Blessed Wicks"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sv_ashmaw_cathedral_of_fire",
+    "label": "Learns Cathedral of Fire"
+   }
+  ],
+  "card": "salvage_compact_brother_ashmaw",
+  "unit": "salvage_compact_brother_ashmaw"
+ },
+ "sv_spell_flash_fire": {
+  "faction": "salvage_compact",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "tempering": [],
+  "card": "sv_spell_flash_fire"
+ },
+ "sv_spell_grease_the_deck": {
+  "faction": "salvage_compact",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "tempering": [],
+  "card": "sv_spell_grease_the_deck"
+ },
+ "sv_spell_cut_and_run_tonic": {
+  "faction": "salvage_compact",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "tempering": [],
+  "card": "sv_spell_cut_and_run_tonic"
+ },
+ "sv_spell_tripwire_alley": {
+  "faction": "salvage_compact",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "tempering": [],
+  "card": "sv_spell_tripwire_alley"
+ },
+ "sv_spell_hired_knives": {
+  "faction": "salvage_compact",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "tempering": [],
+  "card": "sv_spell_hired_knives"
+ },
+ "sv_spell_black_market_cut": {
+  "faction": "salvage_compact",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "tempering": [],
+  "card": "sv_spell_black_market_cut"
+ },
+ "sv_spell_powder_barrage": {
+  "faction": "salvage_compact",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "tempering": [],
+  "card": "sv_spell_powder_barrage"
+ },
+ "sv_spell_compact_embargo": {
+  "faction": "salvage_compact",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "tempering": [],
+  "card": "sv_spell_compact_embargo"
+ },
+ "sv_equip_scrap_vest": {
+  "faction": "salvage_compact",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "tempering": [],
+  "card": "sv_equip_scrap_vest"
+ },
+ "sv_equip_lucky_lantern": {
+  "faction": "salvage_compact",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "tempering": [],
+  "card": "sv_equip_lucky_lantern"
+ },
+ "sv_equip_oilskin_coat": {
+  "faction": "salvage_compact",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "tempering": [],
+  "card": "sv_equip_oilskin_coat"
+ },
+ "sv_equip_tinker_gloves": {
+  "faction": "salvage_compact",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "tempering": [],
+  "card": "sv_equip_tinker_gloves"
+ },
+ "sv_equip_harpoon_gauntlet": {
+  "faction": "salvage_compact",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "tempering": [],
+  "card": "sv_equip_harpoon_gauntlet"
+ },
+ "sv_equip_hull_plate_cuirass": {
+  "faction": "salvage_compact",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "tempering": [],
+  "card": "sv_equip_hull_plate_cuirass"
+ },
+ "reef_ascendant_polyp_drone": {
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Fed Colony"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Thick Calcite"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_budding",
+    "label": "Budding"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_polyp_drone",
+  "unit": "reef_ascendant_polyp_drone"
+ },
+ "reef_ascendant_spitter_polyp": {
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharp Spit"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Steady Gland"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_barbed_volley",
+    "label": "Barbed Volley"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_spitter_polyp",
+  "unit": "reef_ascendant_spitter_polyp"
+ },
+ "reef_ascendant_fanblade": {
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Honed Fan"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Growth"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_whirl",
+    "label": "Blade Whirl"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_fanblade",
+  "unit": "reef_ascendant_fanblade"
+ },
+ "reef_ascendant_sting_anemone": {
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Potent Venom"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Thick Mantle"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_paralytic_sting",
+    "label": "Paralytic Sting"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_sting_anemone",
+  "unit": "reef_ascendant_sting_anemone"
+ },
+ "reef_ascendant_shard_urchin": {
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Longer Spines"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Dense Shell"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_spiked_carapace",
+    "label": "Spiked Carapace"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_shard_urchin",
+  "unit": "reef_ascendant_shard_urchin"
+ },
+ "reef_ascendant_brainstalk": {
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Wider Reach"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Dense Ganglia"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_mind_surge",
+    "label": "Mind Surge"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_brainstalk",
+  "unit": "reef_ascendant_brainstalk"
+ },
+ "reef_ascendant_broodspire": {
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Rich Nursery"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Hardened Spire"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_calcite_spines",
+    "label": "Calcite Spines"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_broodspire",
+  "unit": "reef_ascendant_broodspire"
+ },
+ "reef_ascendant_reef_tender": {
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Gentle Tendrils"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sweet Sap"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_verdant_surge",
+    "label": "Verdant Surge"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_reef_tender",
+  "unit": "reef_ascendant_reef_tender"
+ },
+ "reef_ascendant_spireguard": {
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Thick Spire"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Deep Roots"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_toppling_crush",
+    "label": "Toppling Crush"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_spireguard",
+  "unit": "reef_ascendant_spireguard"
+ },
+ "reef_ascendant_calcite_bloom": {
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Far Roots"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Tough Petals"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_choking_bloom",
+    "label": "Choking Bloom"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_calcite_bloom",
+  "unit": "reef_ascendant_calcite_bloom"
+ },
+ "reef_ascendant_lensbearer": {
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Clear Lens"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Steady Stalk"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_prism_volley",
+    "label": "Prism Volley"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_lensbearer",
+  "unit": "reef_ascendant_lensbearer"
+ },
+ "reef_ascendant_elder_colony": {
+  "faction": "reef_ascendant",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Deeper Memory"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 1
+    },
+    "label": "Older Calcite"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "ra_r3_ancient_memory",
+    "label": "Ancient Memory"
+   }
+  ],
+  "type": "champion",
+  "card": "reef_ascendant_elder_colony",
+  "unit": "reef_ascendant_elder_colony"
+ },
+ "reef_ascendant_coralspire": {
+  "type": "hero",
+  "faction": "reef_ascendant",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Deeper Calcite"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Older Memory"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "ra_eldest_chorus",
+    "label": "The Eldest Chorus"
+   }
+  ],
+  "card": "reef_ascendant_coralspire",
+  "unit": "reef_ascendant_coralspire"
+ },
+ "reef_ascendant_marrowbloom": {
+  "type": "hero",
+  "faction": "reef_ascendant",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thicker Bloom"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharper Hunger"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "ra_ravenous_tide",
+    "label": "Ravenous Tide"
+   }
+  ],
+  "card": "reef_ascendant_marrowbloom",
+  "unit": "reef_ascendant_marrowbloom"
+ },
+ "reef_ascendant_glasswake": {
+  "type": "hero",
+  "faction": "reef_ascendant",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Clearer Glass"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Finer Focus"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "ra_first_dawn",
+    "label": "First Dawn"
+   }
+  ],
+  "card": "reef_ascendant_glasswake",
+  "unit": "reef_ascendant_glasswake"
+ },
+ "ra_spell_swarm_call": {
+  "type": "spell",
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "ra_spell_swarm_call"
+ },
+ "ra_spell_creeping_reef": {
+  "type": "spell",
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "ra_spell_creeping_reef"
+ },
+ "ra_spell_calcite_shard": {
+  "type": "spell",
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "ra_spell_calcite_shard"
+ },
+ "ra_spell_consume_calcite": {
+  "type": "spell",
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "ra_spell_consume_calcite"
+ },
+ "ra_spell_synapse_surge": {
+  "type": "spell",
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "ra_spell_synapse_surge"
+ },
+ "ra_spell_choking_overgrowth": {
+  "type": "spell",
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "ra_spell_choking_overgrowth"
+ },
+ "ra_spell_great_waking": {
+  "type": "spell",
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "ra_spell_great_waking"
+ },
+ "ra_spell_tithe_of_the_shelf": {
+  "type": "spell",
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "ra_spell_tithe_of_the_shelf"
+ },
+ "ra_equip_calcite_plate": {
+  "type": "equipment",
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "ra_equip_calcite_plate"
+ },
+ "ra_equip_brine_sponge": {
+  "type": "equipment",
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "ra_equip_brine_sponge"
+ },
+ "ra_equip_synapse_nodule": {
+  "type": "equipment",
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "ra_equip_synapse_nodule"
+ },
+ "ra_equip_spur_crown": {
+  "type": "equipment",
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "ra_equip_spur_crown"
+ },
+ "ra_equip_heartstone_geode": {
+  "type": "equipment",
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "ra_equip_heartstone_geode"
+ },
+ "ra_equip_tidal_husk": {
+  "type": "equipment",
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "ra_equip_tidal_husk"
+ },
+ "lanternkeepers_wick": {
+  "faction": "lanternkeepers",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Taper"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Steady Flame"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_wick_gutter",
+    "label": "Last Gutter"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_wick",
+  "unit": "lanternkeepers_wick"
+ },
+ "lanternkeepers_lamplit_sailor": {
+  "faction": "lanternkeepers",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Salt-Memory"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Long Drowning"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_sailor_tide",
+    "label": "Tide of Years"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_lamplit_sailor",
+  "unit": "lanternkeepers_lamplit_sailor"
+ },
+ "lanternkeepers_oilbearer": {
+  "faction": "lanternkeepers",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Full Can"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Steady Hand"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_oil_pyre",
+    "label": "Pyre Flask"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_oilbearer",
+  "unit": "lanternkeepers_oilbearer"
+ },
+ "lanternkeepers_signalman": {
+  "faction": "lanternkeepers",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Bright Shutter"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Long Sight"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_signal_beacon",
+    "label": "Beacon Call"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_signalman",
+  "unit": "lanternkeepers_signalman"
+ },
+ "lanternkeepers_beaconrunner": {
+  "faction": "lanternkeepers",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Light Foot"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharp Edge"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_runner_flash",
+    "label": "Flash Return"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_beaconrunner",
+  "unit": "lanternkeepers_beaconrunner"
+ },
+ "lanternkeepers_lantern_warden": {
+  "faction": "lanternkeepers",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Deep Oil"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Tireless"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_warden_dawn",
+    "label": "Dawnlight"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_lantern_warden",
+  "unit": "lanternkeepers_lantern_warden"
+ },
+ "lanternkeepers_stairkeeper": {
+  "faction": "lanternkeepers",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Worn Steps"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Iron Rail"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_stair_wall",
+    "label": "Closed Door"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_stairkeeper",
+  "unit": "lanternkeepers_stairkeeper"
+ },
+ "lanternkeepers_glassgrinder": {
+  "faction": "lanternkeepers",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Fine Cut"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Steady Bench"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_grind_prism",
+    "label": "Prism Burst"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_glassgrinder",
+  "unit": "lanternkeepers_glassgrinder"
+ },
+ "lanternkeepers_bellringer": {
+  "faction": "lanternkeepers",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Cast Bronze"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Long Peal"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_bell_requiem",
+    "label": "Requiem Toll"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_bellringer",
+  "unit": "lanternkeepers_bellringer"
+ },
+ "lanternkeepers_beamwright": {
+  "faction": "lanternkeepers",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "True Lens"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Patient Aim"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_beam_prism",
+    "label": "Prism Overcharge"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_beamwright",
+  "unit": "lanternkeepers_beamwright"
+ },
+ "lanternkeepers_keeper_of_the_long_watch": {
+  "faction": "lanternkeepers",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Sleepless"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Unshaken"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_keeper_vow",
+    "label": "Vow Unbroken"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_keeper_of_the_long_watch",
+  "unit": "lanternkeepers_keeper_of_the_long_watch"
+ },
+ "lanternkeepers_first_flame": {
+  "faction": "lanternkeepers",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Kindled Higher"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Unquenched"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "lk_r3_flame_dawn",
+    "label": "Dawn Over the Ebb"
+   }
+  ],
+  "type": "champion",
+  "card": "lanternkeepers_first_flame",
+  "unit": "lanternkeepers_first_flame"
+ },
+ "lanternkeepers_keeper_pell_auster": {
+  "faction": "lanternkeepers",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Steadfast Vigil"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Oil-Fed Flame"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "lk_pell_legend_do_not_let_it_go_dark",
+    "label": "Do Not Let It Go Dark"
+   }
+  ],
+  "card": "lanternkeepers_keeper_pell_auster",
+  "unit": "lanternkeepers_keeper_pell_auster"
+ },
+ "lanternkeepers_lensmaster_oriel_venn": {
+  "faction": "lanternkeepers",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "True Focus"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Hardened Lens"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "lk_venn_legend_dawn_line",
+    "label": "Dawn Line"
+   }
+  ],
+  "card": "lanternkeepers_lensmaster_oriel_venn",
+  "unit": "lanternkeepers_lensmaster_oriel_venn"
+ },
+ "lanternkeepers_captain_hollis_drenn": {
+  "faction": "lanternkeepers",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Salt-Cured Hull"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Lamp-Bound"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "lk_hollis_legend_roll_of_the_lost",
+    "label": "Roll of the Lost"
+   }
+  ],
+  "card": "lanternkeepers_captain_hollis_drenn",
+  "unit": "lanternkeepers_captain_hollis_drenn"
+ },
+ "lk_spell_lamp_flash": {
+  "faction": "lanternkeepers",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "lk_spell_lamp_flash"
+ },
+ "lk_spell_kindle_the_wick": {
+  "faction": "lanternkeepers",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "lk_spell_kindle_the_wick"
+ },
+ "lk_spell_tithe_of_oil": {
+  "faction": "lanternkeepers",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "lk_spell_tithe_of_oil"
+ },
+ "lk_spell_hooded_lamp": {
+  "faction": "lanternkeepers",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "lk_spell_hooded_lamp"
+ },
+ "lk_spell_beam_of_the_long_watch": {
+  "faction": "lanternkeepers",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "lk_spell_beam_of_the_long_watch"
+ },
+ "lk_spell_call_the_drowned": {
+  "faction": "lanternkeepers",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "lk_spell_call_the_drowned"
+ },
+ "lk_spell_dawn_over_the_shoal": {
+  "faction": "lanternkeepers",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "lk_spell_dawn_over_the_shoal"
+ },
+ "lk_spell_the_lamp_will_not_go_out": {
+  "faction": "lanternkeepers",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "lk_spell_the_lamp_will_not_go_out"
+ },
+ "lk_equip_oilskin_cloak": {
+  "faction": "lanternkeepers",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "lk_equip_oilskin_cloak"
+ },
+ "lk_equip_wick_trimmers": {
+  "faction": "lanternkeepers",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "lk_equip_wick_trimmers"
+ },
+ "lk_equip_signal_horn": {
+  "faction": "lanternkeepers",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "lk_equip_signal_horn"
+ },
+ "lk_equip_stairwell_greaves": {
+  "faction": "lanternkeepers",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "lk_equip_stairwell_greaves"
+ },
+ "lk_equip_lamplit_mantle": {
+  "faction": "lanternkeepers",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "lk_equip_lamplit_mantle"
+ },
+ "lk_equip_first_lens": {
+  "faction": "lanternkeepers",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "lk_equip_first_lens"
+ }
+}

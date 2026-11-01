@@ -1,0 +1,260 @@
+{
+  "salt_flat": {
+    "name": "Salt Flat",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#cfc6b4",
+    "tiles": {
+      "top": [
+        "tiles/salt_flat_top_0.png",
+        "tiles/salt_flat_top_1.png",
+        "tiles/salt_flat_top_2.png"
+      ],
+      "side": "tiles/salt_flat_side.png",
+      "props": [
+        "tiles/salt_flat_prop_0.png",
+        "tiles/salt_flat_prop_1.png",
+        "tiles/salt_flat_prop_2.png",
+        "tiles/salt_flat_prop_3.png",
+        "tiles/salt_flat_prop_4.png",
+        "tiles/salt_flat_prop_5.png"
+      ]
+    }
+  },
+  "silt": {
+    "name": "Silt",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#8d7f6a",
+    "tiles": {
+      "top": [
+        "tiles/silt_top_0.png",
+        "tiles/silt_top_1.png",
+        "tiles/silt_top_2.png"
+      ],
+      "side": "tiles/silt_side.png",
+      "props": [
+        "tiles/silt_prop_0.png",
+        "tiles/silt_prop_1.png",
+        "tiles/silt_prop_2.png",
+        "tiles/silt_prop_3.png",
+        "tiles/silt_prop_4.png"
+      ]
+    }
+  },
+  "dead_coral": {
+    "name": "Dead Coral",
+    "moveCost": 2,
+    "defense": 1,
+    "color": "#9c6f7a",
+    "tiles": {
+      "top": [
+        "tiles/dead_coral_top_0.png",
+        "tiles/dead_coral_top_1.png",
+        "tiles/dead_coral_top_2.png"
+      ],
+      "side": "tiles/dead_coral_side.png",
+      "props": [
+        "tiles/dead_coral_prop_0.png",
+        "tiles/dead_coral_prop_1.png",
+        "tiles/dead_coral_prop_2.png"
+      ]
+    }
+  },
+  "wreck": {
+    "name": "Wreck",
+    "moveCost": 2,
+    "defense": 2,
+    "color": "#6b4a3a",
+    "tiles": {
+      "top": [
+        "tiles/wreck_top_0.png",
+        "tiles/wreck_top_1.png",
+        "tiles/wreck_top_2.png"
+      ],
+      "side": "tiles/wreck_side.png",
+      "props": [
+        "tiles/wreck_prop_0.png",
+        "tiles/wreck_prop_1.png",
+        "tiles/wreck_prop_2.png"
+      ]
+    }
+  },
+  "brine_pool": {
+    "name": "Brine Pool",
+    "moveCost": 3,
+    "defense": 0,
+    "color": "#4fa3a0",
+    "onEnter": {
+      "type": "status",
+      "status": "soaked",
+      "duration": 2
+    },
+    "tiles": {
+      "top": [
+        "tiles/brine_pool_top_0.png",
+        "tiles/brine_pool_top_1.png",
+        "tiles/brine_pool_top_2.png"
+      ],
+      "side": "tiles/brine_pool_side.png",
+      "animatedTop": true
+    },
+    "underlay": "silt"
+  },
+  "trench": {
+    "name": "Trench",
+    "moveCost": 99,
+    "defense": 0,
+    "color": "#0c0e14",
+    "impassable": true,
+    "tiles": {
+      "top": [
+        "tiles/trench_top_0.png",
+        "tiles/trench_top_1.png",
+        "tiles/trench_top_2.png"
+      ],
+      "side": "tiles/trench_side.png"
+    },
+    "visualHeightOffset": -2
+  },
+  "bone_road": {
+    "name": "Bone Road",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#bfb39a",
+    "tiles": {
+      "top": [
+        "tiles/bone_road_top_0.png",
+        "tiles/bone_road_top_1.png",
+        "tiles/bone_road_top_2.png"
+      ],
+      "side": "tiles/bone_road_side.png"
+    }
+  },
+  "salt_wall": {
+    "name": "Salt Wall",
+    "moveCost": 99,
+    "defense": 0,
+    "color": "#f7f5ef",
+    "impassable": true,
+    "destructible": true,
+    "tiles": {
+      "top": [
+        "tiles/salt_wall_top_0.png",
+        "tiles/salt_wall_top_1.png",
+        "tiles/salt_wall_top_2.png"
+      ],
+      "side": "tiles/salt_wall_side.png"
+    },
+    "visualHeightOffset": 2
+  },
+  "lamp_oil": {
+    "name": "Lamp Oil",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#d98a2b",
+    "onEnter": {
+      "type": "damage",
+      "amount": 3,
+      "damageType": "fire"
+    },
+    "tiles": {
+      "top": [
+        "tiles/lamp_oil_top_0.png",
+        "tiles/lamp_oil_top_1.png",
+        "tiles/lamp_oil_top_2.png"
+      ],
+      "side": "tiles/lamp_oil_side.png",
+      "animatedTop": true
+    },
+    "underlay": "silt"
+  },
+  "kelp_husk": {
+    "name": "Kelp Husk",
+    "moveCost": 2,
+    "defense": 1,
+    "color": "#3e5a47",
+    "blocksSight": true,
+    "tiles": {
+      "top": [
+        "tiles/kelp_husk_top_0.png",
+        "tiles/kelp_husk_top_1.png",
+        "tiles/kelp_husk_top_2.png"
+      ],
+      "side": "tiles/kelp_husk_side.png",
+      "props": [
+        "tiles/kelp_husk_prop_0.png",
+        "tiles/kelp_husk_prop_1.png",
+        "tiles/kelp_husk_prop_2.png"
+      ]
+    }
+  },
+  "lighthouse_stone": {
+    "name": "Lighthouse Stone",
+    "moveCost": 1,
+    "defense": 1,
+    "color": "#7f8a96",
+    "tiles": {
+      "top": [
+        "tiles/lighthouse_stone_top_0.png",
+        "tiles/lighthouse_stone_top_1.png",
+        "tiles/lighthouse_stone_top_2.png"
+      ],
+      "side": "tiles/lighthouse_stone_side.png"
+    }
+  },
+  "brine_lake": {
+    "name": "Brine Lake",
+    "moveCost": 99,
+    "defense": 0,
+    "color": "#1a2a4d",
+    "impassable": true,
+    "tiles": {
+      "top": [
+        "tiles/brine_lake_top_0.png",
+        "tiles/brine_lake_top_1.png",
+        "tiles/brine_lake_top_2.png"
+      ],
+      "side": "tiles/brine_lake_side.png",
+      "animatedTop": true
+    },
+    "visualHeightOffset": -1
+  },
+  "living_reef": {
+    "name": "Living Reef",
+    "moveCost": 2,
+    "defense": 1,
+    "color": "#e07a6a",
+    "description": "Waking coral. Reef units move through it freely and heal here; everyone else is slowed.",
+    "tiles": {
+      "top": [
+        "tiles/living_reef_top_0.png",
+        "tiles/living_reef_top_1.png",
+        "tiles/living_reef_top_2.png"
+      ],
+      "side": "tiles/living_reef_side.png",
+      "props": [
+        "tiles/living_reef_prop_0.png",
+        "tiles/living_reef_prop_1.png",
+        "tiles/living_reef_prop_2.png"
+      ]
+    },
+    "underlay": "silt"
+  },
+  "calcite": {
+    "name": "Calcite",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#d9d0c2",
+    "description": "Chalky remains left where something died. Reef units consume it to grow.",
+    "tiles": {
+      "top": [
+        "tiles/calcite_top_0.png",
+        "tiles/calcite_top_1.png",
+        "tiles/calcite_top_2.png"
+      ],
+      "side": "tiles/calcite_side.png"
+    },
+    "underlay": "silt"
+  }
+}

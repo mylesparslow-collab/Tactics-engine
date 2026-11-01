@@ -1,0 +1,327 @@
+{
+  "id": "rain_on_clear_sky",
+  "name": "Rain on Clear Sky",
+  "description": "Kill the four Rainsayers at the Weeping Shelf shrine before the ledge floods.",
+  "map": "weeping_shelf",
+  "briefing": [
+    "We go to the Weeping Shelf. The Tide cannot be pinned at the Shoal while their holy ground feeds them. Take away the Rainsayers and the faith loses its voice. There are four of them, working a shrine on a ledge above a fall of rain that comes from nowhere.",
+    "Brask warns that the rain gets heavier when we are loud. I have decided not to think about why. The rain soaks our troops and flows into the pools, so we must hit the Rainsayers before they flood the ledge. Quick, brutal, over by turn ten.",
+    "We will not touch Dunnock. He is not here. If he were, I might have to listen to him."
+  ],
+  "victoryText": "The last Rainsayer falls and the drizzle thins to a mist. Tamsin holds out her hand and catches a drop. It is warm. It tastes of salt, and of somewhere very far above.",
+  "defeatText": "The rain thickens until the ledge is a lake. The company retreats through brine up to their knees, and the Tide sing the whole way.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salt Concord",
+      "color": "#5b7fa6",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salt_concord_tamsin_orrel",
+          "x": 4,
+          "y": 17,
+          "tag": "commander_orrel"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 3,
+          "y": 17,
+          "tag": "company"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 5,
+          "y": 17,
+          "tag": "company"
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 3,
+          "y": 18,
+          "tag": "company"
+        },
+        {
+          "unit": "salt_concord_causeway_outrider",
+          "x": 6,
+          "y": 17,
+          "tag": "company"
+        },
+        {
+          "unit": "salt_concord_brine_chirurgeon",
+          "x": 5,
+          "y": 18,
+          "tag": "company"
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_tear_slinger",
+        "returning_tide_tear_slinger",
+        "returning_tide_tideskulker",
+        "returning_tide_shroud_mender",
+        "returning_tide_wringer",
+        "returning_tide_anchor_bearer"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 3,
+          "y": 3,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 5,
+          "y": 3,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 1,
+          "y": 4,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 6,
+          "y": 4,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 4,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 3,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 5,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 8,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_shroud_mender",
+          "x": 4,
+          "y": 4
+        }
+      ],
+      "startingEssence": 130,
+      "essencePerTurn": 28
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "rainsayer",
+        "label": "Kill all four Rainsayers"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "commander_orrel",
+        "label": "Commander Orrel must survive"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "Our rally standard must not fall"
+      },
+      {
+        "type": "eliminate",
+        "team": 0,
+        "label": "Do not lose the whole company"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 10,
+        "label": "End it before the ledge floods: turn 10"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Commander Orrel",
+          "text": "Four Rainsayers. Quick and brutal. Over by turn ten."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 11,
+          "y": 8,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Penitents surging from the lower terrace!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 13,
+          "y": 12
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 14,
+          "y": 12
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 13,
+          "y": 14
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "That rain is the lamp's breath, Commander. It leaks when something pulls on it. Be quick."
+        },
+        {
+          "type": "status",
+          "tag": "company",
+          "status": "soaked",
+          "duration": 3
+        },
+        {
+          "type": "status",
+          "tag": "commander_orrel",
+          "status": "soaked",
+          "duration": 3
+        },
+        {
+          "type": "terrain",
+          "x": 6,
+          "y": 8,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 3,
+          "y": 7,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 11,
+          "y": 12,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 8,
+          "y": 3,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 13,
+          "y": 5,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "A Choirmaster has risen from the pool at the shrine!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_choirmaster",
+          "x": 8,
+          "y": 3
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 55,
+    "bonus": [
+      {
+        "condition": {
+          "type": "turn_limit",
+          "turns": 8,
+          "label": "Silence the Rainsayers before turn 8",
+          "not": true
+        },
+        "pearls": 30,
+        "label": "Silence the Rainsayers before turn 8"
+      },
+      {
+        "condition": {
+          "type": "eliminate",
+          "team": 1,
+          "label": "Leave no one singing"
+        },
+        "pearls": 20,
+        "label": "Leave no one singing"
+      }
+    ]
+  }
+}

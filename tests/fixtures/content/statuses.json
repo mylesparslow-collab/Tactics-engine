@@ -1,0 +1,9 @@
+{
+  "burning":  { "name": "Burning",  "description": "Takes 2 fire damage at the start of its turn.", "onTurnStart": [{ "type": "damage", "amount": 2, "damageType": "fire" }] },
+  "regen":    { "name": "Regenerating", "description": "Heals 2 at the start of its turn.", "onTurnStart": [{ "type": "heal", "amount": 2 }] },
+  "rooted":   { "name": "Rooted",   "description": "Cannot move.", "preventsMove": true },
+  "stunned":  { "name": "Stunned",  "description": "Cannot act this turn.", "preventsAction": true, "preventsMove": true },
+  "shielded": { "name": "Shielded", "description": "+3 defense.", "statMods": { "defense": 3 } },
+  "weakened": { "name": "Weakened", "description": "-2 attack.", "statMods": { "attack": -2 } },
+  "hasted":   { "name": "Hasted",   "description": "+2 AP.", "statMods": { "ap": 2 } }
+}

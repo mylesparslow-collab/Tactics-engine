@@ -1,0 +1,245 @@
+{
+  "id": "lamp_and_wall",
+  "name": "Lamp and Wall",
+  "description": "Hold the Beacon at Lantern Shoal and break the Tide column.",
+  "map": "lantern_shoal",
+  "briefing": [
+    "Commander Orrel's log, day 9. The Shoal stands where the survey said it would, which is more than I can say for the garrison. Forty men were posted here fifty years ago and the wall they built is still standing; the men are not. The lamp is lit. I have been told the lamp is not our business, and I have been told this by three different officers, which makes me curious about it.",
+    "We have a Beacon to hold: Concord regulations say a lighthouse is a Beacon whether or not anyone wishes to hold it. Our scouts report a wet, silent column coming in from the east: Tide penitents with a Wringer behind them. They want the lamp. We will not give it.",
+    "Hold the wall, use the ruins, bring up the Brineguard. Once their Wringer breaks, they will fall back. I would like them to fall back as far as possible."
+  ],
+  "victoryText": "The column breaks and flows back into the haze, leaving wet footprints that dry too fast. The lamp does not so much as flicker. Keeper Auster walks out of the tower for the first time in three years and says, \"Good. They'll be back.\"",
+  "defeatText": "The Wringer reaches the tower stair. The lamp gutters, and for a moment the air tastes of brine. The company withdraws in disorder. Somewhere above, someone has begun to cry.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salt Concord",
+      "color": "#5b7fa6",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salt_concord_tamsin_orrel",
+          "x": 10,
+          "y": 18,
+          "tag": "commander_orrel"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 9,
+          "y": 18,
+          "tag": "beacon_garrison"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 12,
+          "y": 18,
+          "tag": "company"
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 7,
+          "y": 16,
+          "tag": "company"
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 13,
+          "y": 16,
+          "tag": "company"
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_tear_slinger",
+        "returning_tide_tear_slinger",
+        "returning_tide_tideskulker",
+        "returning_tide_wringer",
+        "returning_tide_shroud_mender",
+        "returning_tide_rainsayer"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_wringer",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 12,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 7,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 13,
+          "y": 4
+        }
+      ],
+      "startingEssence": 100,
+      "essencePerTurn": 25
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Destroy the Tide's forward shrine"
+      },
+      {
+        "type": "eliminate",
+        "team": 1,
+        "label": "Or break the whole Tide column"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "beacon_garrison",
+        "label": "The Beacon garrison must not fall"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The Beacon must not fall"
+      },
+      {
+        "type": "eliminate",
+        "team": 0,
+        "label": "Do not lose the whole company"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Break the column before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "Don't touch the lamp. Don't let them near the lamp. That's all."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Penitents on the east flank!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 21,
+          "y": 6
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 21,
+          "y": 7
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 19,
+          "y": 6
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 19,
+          "y": 7
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 4,
+          "y": 16,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 6
+        },
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Something is climbing out of the ground behind us. A Wringer!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_wringer",
+          "x": 4,
+          "y": 16,
+          "tag": "scout_wringer"
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 30,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "company",
+          "label": "Lose none of the line troops",
+          "not": true
+        },
+        "pearls": 25,
+        "label": "Lose none of the line troops"
+      },
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "commander_orrel",
+          "fraction": 0.5,
+          "label": "Commander Orrel above half strength"
+        },
+        "pearls": 10,
+        "label": "Commander Orrel above half strength"
+      }
+    ]
+  }
+}

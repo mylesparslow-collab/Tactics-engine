@@ -1,0 +1,1106 @@
+{
+ "sc_spell_salt_volley": {
+  "name": "Salt Volley",
+  "description": "Deal 3 flat salt damage to an enemy within 3 of a friendly unit.",
+  "faction": "salt_concord",
+  "rarity": "common",
+  "cost": 20,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "salt",
+    "ignoreAttack": true
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sc_spell_salt_volley.svg"
+ },
+ "sc_spell_levy_summons": {
+  "name": "Levy Summons",
+  "description": "Summon 1 Salt Levy on an empty tile within 3 of a friendly unit.",
+  "faction": "salt_concord",
+  "rarity": "common",
+  "cost": 25,
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "salt_concord_salt_levy",
+    "count": 1
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sc_spell_levy_summons.svg"
+ },
+ "sc_spell_toll_gate": {
+  "name": "Toll Gate",
+  "description": "Raise a salt wall for 3 turns on an empty tile within 3 of a friendly unit.",
+  "faction": "salt_concord",
+  "rarity": "common",
+  "cost": 15,
+  "target": "empty",
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "salt_wall",
+    "duration": 3
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sc_spell_toll_gate.svg"
+ },
+ "sc_spell_drill_order": {
+  "name": "Drill Order",
+  "description": "Allies in radius 1 of the target ally gain Emboldened for 2 turns.",
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "ally",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "emboldened",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sc_spell_drill_order.svg"
+ },
+ "sc_spell_caustic_mist": {
+  "name": "Caustic Mist",
+  "description": "Apply Caustic for 2 turns and deal 2 flat salt damage to enemies in radius 1 of a tile within 3 of a friendly unit.",
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "salt",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "caustic",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sc_spell_caustic_mist.svg"
+ },
+ "sc_spell_road_levy": {
+  "name": "Road Levy",
+  "description": "Deal 1 flat salt damage to an enemy within 3 of a friendly unit and gain 3 Tide.",
+  "faction": "salt_concord",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "salt",
+    "ignoreAttack": true
+   },
+   {
+    "type": "essence",
+    "amount": 3,
+    "team": "self"
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sc_spell_road_levy.svg"
+ },
+ "sc_spell_salt_the_earth": {
+  "name": "Salt the Earth",
+  "description": "Deal 4 flat salt damage and apply Rooted for 2 turns to enemies in radius 2 of a tile within 3 of a friendly unit.",
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "cost": 45,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "salt",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sc_spell_salt_the_earth.svg"
+ },
+ "sc_spell_edict_of_assize": {
+  "name": "Edict of Assize",
+  "description": "Drain 4 Tide from the enemy team and give Shielded for 2 turns to allies in radius 2 of a friendly unit within 3.",
+  "faction": "salt_concord",
+  "rarity": "rare",
+  "cost": 40,
+  "target": "ally",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "essence",
+    "amount": -4,
+    "team": "enemy"
+   },
+   {
+    "type": "status",
+    "status": "shielded",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sc_spell_edict_of_assize.svg"
+ },
+ "hc_spell_pressure_spike": {
+  "name": "Pressure Spike",
+  "description": "Deal 6 flat pressure damage to an enemy within 3 tiles of a friendly unit and apply Crushed for 1 turn.",
+  "faction": "hadal_court",
+  "rarity": "common",
+  "cost": 20,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 6,
+    "damageType": "pressure",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "crushed",
+    "duration": 1
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/hc_spell_pressure_spike.svg"
+ },
+ "hc_spell_lightless_veil": {
+  "name": "Lightless Veil",
+  "description": "Enemies within 1 tile of the target tile are Darkened for 2 turns.",
+  "faction": "hadal_court",
+  "rarity": "common",
+  "cost": 15,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "hc_darkened",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/hc_spell_lightless_veil.svg"
+ },
+ "hc_spell_vent_surge": {
+  "name": "Vent Surge",
+  "description": "Heal an ally for 8 and apply Mending for 2 turns.",
+  "faction": "hadal_court",
+  "rarity": "common",
+  "cost": 20,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 8
+   },
+   {
+    "type": "status",
+    "status": "regen",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/hc_spell_vent_surge.svg"
+ },
+ "hc_spell_undertow": {
+  "name": "Undertow",
+  "description": "Pull an enemy up to 3 tiles toward the nearest caster-side ally and apply Lured for 1 turn.",
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "cost": 28,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "pull",
+    "distance": 3
+   },
+   {
+    "type": "status",
+    "status": "hc_lured",
+    "duration": 1
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/hc_spell_undertow.svg"
+ },
+ "hc_spell_call_thralls": {
+  "name": "Call the Thralls",
+  "description": "Summon 2 Pit Thralls on or near an empty tile within 3 tiles of a friendly unit.",
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "cost": 32,
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "hadal_court_pit_thrall",
+    "count": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/hc_spell_call_thralls.svg"
+ },
+ "hc_spell_bellward": {
+  "name": "Bellward",
+  "description": "An ally is Shielded and Emboldened for 2 turns.",
+  "faction": "hadal_court",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "status",
+    "status": "shielded",
+    "duration": 2
+   },
+   {
+    "type": "status",
+    "status": "emboldened",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/hc_spell_bellward.svg"
+ },
+ "hc_spell_the_weight_returns": {
+  "name": "The Weight Returns",
+  "description": "Enemies within 2 tiles of the target tile take 6 flat pressure damage, are Crushed for 2 turns, and the tile becomes a trench for 3 turns.",
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "cost": 45,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 6,
+    "damageType": "pressure",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "crushed",
+    "duration": 2
+   },
+   {
+    "type": "terrain",
+    "terrain": "trench",
+    "duration": 3
+   }
+  ],
+  "art": "cards/hc_spell_the_weight_returns.svg"
+ },
+ "hc_spell_tithe_of_depths": {
+  "name": "Tithe of the Depths",
+  "description": "Drain 15 Tide from the enemy and gain 10 Tide.",
+  "faction": "hadal_court",
+  "rarity": "rare",
+  "cost": 38,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "essence",
+    "amount": -15,
+    "team": "enemy"
+   },
+   {
+    "type": "essence",
+    "amount": 10,
+    "team": "self"
+   }
+  ],
+  "art": "cards/hc_spell_tithe_of_depths.svg"
+ },
+ "rt_spell_brine_lash": {
+  "name": "Brine Lash",
+  "description": "Deal 5 brine damage to an enemy within 3 of an ally and apply Soaked for 2 turns.",
+  "faction": "returning_tide",
+  "rarity": "common",
+  "cost": 18,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 5,
+    "damageType": "brine",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "soaked",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/rt_spell_brine_lash.svg"
+ },
+ "rt_spell_wet_blessing": {
+  "name": "Wet Blessing",
+  "description": "Heal an ally 6 and apply Mending for 2 turns.",
+  "faction": "returning_tide",
+  "rarity": "common",
+  "cost": 15,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 6
+   },
+   {
+    "type": "status",
+    "status": "regen",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/rt_spell_wet_blessing.svg"
+ },
+ "rt_spell_pool_of_the_faithful": {
+  "name": "Pool of the Faithful",
+  "description": "Flood a radius-1 area near an ally into brine_pool for 3 turns.",
+  "faction": "returning_tide",
+  "rarity": "common",
+  "cost": 20,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "brine_pool",
+    "duration": 3
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "castRange": 3,
+  "art": "cards/rt_spell_pool_of_the_faithful.svg"
+ },
+ "rt_spell_wringing_rite": {
+  "name": "Wringing Rite",
+  "description": "Deal 4 brine damage to an enemy within 3 of an ally and gain 8 Tide.",
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "cost": 28,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "brine",
+    "ignoreAttack": true
+   },
+   {
+    "type": "essence",
+    "amount": 8,
+    "team": "self"
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/rt_spell_wringing_rite.svg"
+ },
+ "rt_spell_drowned_rise": {
+  "name": "The Drowned Rise",
+  "description": "Raise 2 Drowned on or near an empty tile within 3 of an ally.",
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "returning_tide_drowned",
+    "count": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/rt_spell_drowned_rise.svg"
+ },
+ "rt_spell_hymn_of_the_deep": {
+  "name": "Hymn of the Deep",
+  "description": "Allies in radius 2 of the target tile gain Hymned (+1 attack, +1 defense) for 3 turns.",
+  "faction": "returning_tide",
+  "rarity": "uncommon",
+  "cost": 28,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "status",
+    "status": "rt_hymned",
+    "duration": 3
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "castRange": 3,
+  "art": "cards/rt_spell_hymn_of_the_deep.svg"
+ },
+ "rt_spell_the_sea_remembers": {
+  "name": "The Sea Remembers",
+  "description": "Anywhere on the map: flood a radius-2 area into brine_pool for 3 turns. Enemies inside take 4 brine damage and are Soaked for 2 turns.",
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "cost": 45,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "brine_pool",
+    "duration": 3
+   },
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "brine",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "soaked",
+    "duration": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "art": "cards/rt_spell_the_sea_remembers.svg"
+ },
+ "rt_spell_tithe_of_water": {
+  "name": "Tithe of Water",
+  "description": "Anywhere on the map: the target enemy takes Drowning for 3 turns, the enemy loses 12 Tide and you gain 12 Tide.",
+  "faction": "returning_tide",
+  "rarity": "rare",
+  "cost": 38,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "status",
+    "status": "rt_drowning",
+    "duration": 3
+   },
+   {
+    "type": "essence",
+    "amount": -12,
+    "team": "enemy"
+   },
+   {
+    "type": "essence",
+    "amount": 12,
+    "team": "self"
+   }
+  ],
+  "art": "cards/rt_spell_tithe_of_water.svg"
+ },
+ "sv_spell_flash_fire": {
+  "name": "Flash Fire",
+  "description": "Deal 4 flat fire damage to enemies within 1 tile of the target tile and apply Burning for 1 turn.",
+  "faction": "salvage_compact",
+  "rarity": "common",
+  "cost": 20,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "fire",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "burning",
+    "duration": 1
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sv_spell_flash_fire.svg"
+ },
+ "sv_spell_grease_the_deck": {
+  "name": "Grease the Deck",
+  "description": "Tiles within 1 of the target tile become lamp oil for 3 turns.",
+  "faction": "salvage_compact",
+  "rarity": "common",
+  "cost": 18,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "lamp_oil",
+    "duration": 3
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sv_spell_grease_the_deck.svg"
+ },
+ "sv_spell_cut_and_run_tonic": {
+  "name": "Cut-and-Run Tonic",
+  "description": "Heal an ally for 4 and apply Hasted for 1 turn.",
+  "faction": "salvage_compact",
+  "rarity": "common",
+  "cost": 22,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 4
+   },
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sv_spell_cut_and_run_tonic.svg"
+ },
+ "sv_spell_tripwire_alley": {
+  "name": "Tripwire Alley",
+  "description": "Enemies within 1 tile of the target tile are Rooted for 1 turn and Marked for 2 turns.",
+  "faction": "salvage_compact",
+  "rarity": "uncommon",
+  "cost": 28,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   },
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sv_spell_tripwire_alley.svg"
+ },
+ "sv_spell_hired_knives": {
+  "name": "Hired Knives",
+  "description": "Summon 2 Hull Scrappers on or near the target empty tile.",
+  "faction": "salvage_compact",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "salvage_compact_scrapper",
+    "count": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sv_spell_hired_knives.svg"
+ },
+ "sv_spell_black_market_cut": {
+  "name": "Black Market Cut",
+  "description": "Drain 6 essence from the enemy and gain 3 essence.",
+  "faction": "salvage_compact",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "unit",
+  "effects": [
+   {
+    "type": "essence",
+    "amount": -6,
+    "team": "enemy"
+   },
+   {
+    "type": "essence",
+    "amount": 3,
+    "team": "self"
+   }
+  ],
+  "art": "cards/sv_spell_black_market_cut.svg"
+ },
+ "sv_spell_powder_barrage": {
+  "name": "Powder Barrage",
+  "description": "Deal 6 flat fire damage to enemies within 2 tiles of the target tile and apply Burning for 2 turns.",
+  "faction": "salvage_compact",
+  "rarity": "rare",
+  "cost": 42,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 6,
+    "damageType": "fire",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "burning",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/sv_spell_powder_barrage.svg"
+ },
+ "sv_spell_compact_embargo": {
+  "name": "Compact Embargo",
+  "description": "Choose any enemy: it is Stunned for 1 turn and Marked for 2 turns.",
+  "faction": "salvage_compact",
+  "rarity": "rare",
+  "cost": 45,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "status",
+    "status": "stunned",
+    "duration": 1
+   },
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 2
+   }
+  ],
+  "art": "cards/sv_spell_compact_embargo.svg"
+ },
+ "ra_spell_swarm_call": {
+  "name": "Swarm Call",
+  "description": "Summon 2 Polyp Drones on or near an empty tile within 3 of a friendly unit.",
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "cost": 20,
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "reef_ascendant_polyp_drone",
+    "count": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/ra_spell_swarm_call.svg"
+ },
+ "ra_spell_creeping_reef": {
+  "name": "Creeping Reef",
+  "description": "The target tile and tiles within 1 become living reef.",
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "cost": 15,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "living_reef"
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/ra_spell_creeping_reef.svg"
+ },
+ "ra_spell_calcite_shard": {
+  "name": "Calcite Shard",
+  "description": "Deal 5 flat physical damage to an enemy.",
+  "faction": "reef_ascendant",
+  "rarity": "common",
+  "cost": 20,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 5,
+    "damageType": "physical",
+    "ignoreAttack": true
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/ra_spell_calcite_shard.svg"
+ },
+ "ra_spell_consume_calcite": {
+  "name": "Consume Calcite",
+  "description": "Allies within 1 of the target tile heal 6 and gain Bloom for 3 turns. The tiles become living reef, consuming any calcite on them.",
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 6
+   },
+   {
+    "type": "status",
+    "status": "ra_bloom",
+    "duration": 3
+   },
+   {
+    "type": "terrain",
+    "terrain": "living_reef"
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/ra_spell_consume_calcite.svg"
+ },
+ "ra_spell_synapse_surge": {
+  "name": "Synapse Surge",
+  "description": "Allies within 2 of the target ally become Emboldened and Hasted for 1 turn.",
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "ally",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "emboldened",
+    "duration": 1
+   },
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/ra_spell_synapse_surge.svg"
+ },
+ "ra_spell_choking_overgrowth": {
+  "name": "Choking Overgrowth",
+  "description": "Enemies within 1 of the target tile are Rooted and Soaked for 1 turn, and the tiles become living reef.",
+  "faction": "reef_ascendant",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   },
+   {
+    "type": "status",
+    "status": "soaked",
+    "duration": 1
+   },
+   {
+    "type": "terrain",
+    "terrain": "living_reef"
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/ra_spell_choking_overgrowth.svg"
+ },
+ "ra_spell_great_waking": {
+  "name": "The Great Waking",
+  "description": "Summon 4 Polyp Drones on or near an empty tile within 3 of a friendly unit.",
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "cost": 45,
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "reef_ascendant_polyp_drone",
+    "count": 4
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/ra_spell_great_waking.svg"
+ },
+ "ra_spell_tithe_of_the_shelf": {
+  "name": "Tithe of the Shelf",
+  "description": "Deal 5 flat physical damage to any enemy, drain 10 enemy Tide and gain 10 Tide.",
+  "faction": "reef_ascendant",
+  "rarity": "rare",
+  "cost": 35,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 5,
+    "damageType": "physical",
+    "ignoreAttack": true
+   },
+   {
+    "type": "essence",
+    "amount": -10,
+    "team": "enemy"
+   },
+   {
+    "type": "essence",
+    "amount": 10,
+    "team": "self"
+   }
+  ],
+  "art": "cards/ra_spell_tithe_of_the_shelf.svg"
+ },
+ "lk_spell_lamp_flash": {
+  "name": "Lamp Flash",
+  "description": "Deal 5 light damage to an enemy within 3 of a friendly unit and Mark it for 2 turns.",
+  "faction": "lanternkeepers",
+  "rarity": "common",
+  "cost": 20,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 5,
+    "damageType": "light",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 2
+   }
+  ],
+  "castRange": 3,
+  "art": "cards/lk_spell_lamp_flash.svg"
+ },
+ "lk_spell_kindle_the_wick": {
+  "name": "Kindle the Wick",
+  "description": "Heal an ally within 3 tiles of the Beacon for 7 and give it Mending for 2 turns.",
+  "faction": "lanternkeepers",
+  "rarity": "common",
+  "cost": 20,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 7
+   },
+   {
+    "type": "status",
+    "status": "regen",
+    "duration": 2
+   }
+  ],
+  "castRange": {
+   "nearKeystone": 3
+  },
+  "art": "cards/lk_spell_kindle_the_wick.svg"
+ },
+ "lk_spell_tithe_of_oil": {
+  "name": "Tithe of Oil",
+  "description": "Gain 30 Tide as the keepers tip a store of lamp oil into the cistern.",
+  "faction": "lanternkeepers",
+  "rarity": "common",
+  "cost": 20,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "essence",
+    "amount": 30,
+    "team": "self"
+   }
+  ],
+  "art": "cards/lk_spell_tithe_of_oil.svg"
+ },
+ "lk_spell_hooded_lamp": {
+  "name": "Hooded Lamp",
+  "description": "Give allies in radius 1 of a unit within 3 tiles of the Beacon Shielded for 2 turns.",
+  "faction": "lanternkeepers",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "status",
+    "status": "shielded",
+    "duration": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "castRange": {
+   "nearKeystone": 3
+  },
+  "art": "cards/lk_spell_hooded_lamp.svg"
+ },
+ "lk_spell_beam_of_the_long_watch": {
+  "name": "Beam of the Long Watch",
+  "description": "Deal 7 light damage to enemies in radius 1 of a tile within 3 of a friendly unit and Dazzle them for 2 turns.",
+  "faction": "lanternkeepers",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 7,
+    "damageType": "light",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "lk_dazzled",
+    "duration": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "castRange": 3,
+  "art": "cards/lk_spell_beam_of_the_long_watch.svg"
+ },
+ "lk_spell_call_the_drowned": {
+  "name": "Call the Drowned",
+  "description": "Summon 2 Lamplit Sailors on an empty tile within 3 tiles of the Beacon.",
+  "faction": "lanternkeepers",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "lanternkeepers_lamplit_sailor",
+    "count": 2
+   }
+  ],
+  "castRange": {
+   "nearKeystone": 3
+  },
+  "art": "cards/lk_spell_call_the_drowned.svg"
+ },
+ "lk_spell_dawn_over_the_shoal": {
+  "name": "Dawn over the Shoal",
+  "description": "Deal 6 light damage to enemies in radius 2 of a tile within 3 of a friendly unit and Mark them for 3 turns.",
+  "faction": "lanternkeepers",
+  "rarity": "rare",
+  "cost": 40,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 6,
+    "damageType": "light",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 3
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "castRange": 3,
+  "art": "cards/lk_spell_dawn_over_the_shoal.svg"
+ },
+ "lk_spell_the_lamp_will_not_go_out": {
+  "name": "The Lamp Will Not Go Out",
+  "description": "Heal allies in radius 3 of a tile within 3 of the Beacon for 8 and give them Shielded for 2 turns.",
+  "faction": "lanternkeepers",
+  "rarity": "rare",
+  "cost": 45,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 8
+   },
+   {
+    "type": "status",
+    "status": "shielded",
+    "duration": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 3
+  },
+  "affects": "allies",
+  "castRange": {
+   "nearKeystone": 3
+  },
+  "art": "cards/lk_spell_the_lamp_will_not_go_out.svg"
+ }
+}

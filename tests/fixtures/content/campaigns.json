@@ -1,0 +1,33 @@
+{
+  "first_march": {
+    "name": "The First March (placeholder)",
+    "description": "A short sample campaign showing mission chaining and unit unlocks.",
+    "startingRoster": [
+      "vanguard",
+      "skirmisher",
+      "archer",
+      "archer"
+    ],
+    "missions": [
+      {
+        "mission": "m1_hold_the_ford",
+        "unlocks": [
+          "mystic",
+          "rally"
+        ]
+      },
+      {
+        "mission": "m2_break_the_line",
+        "unlocks": [
+          "pyromancer",
+          "brute",
+          "ember_rain",
+          "iron_plate"
+        ]
+      },
+      {
+        "mission": "skirmish_crossing"
+      }
+    ]
+  }
+}

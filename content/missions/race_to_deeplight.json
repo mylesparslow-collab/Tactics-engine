@@ -1,0 +1,292 @@
+{
+  "id": "race_to_deeplight",
+  "name": "Race to Deeplight",
+  "description": "Escort Keeper Auster across three bridges to the fallen lamp.",
+  "map": "trench_deeplight",
+  "briefing": [
+    "The Vigil Book tells us a lamp fell into the trench at Deeplight, and burns still. The Court built a city around it. The Book also says a Beacon elsewhere is about to fail, and that Keeper Auster must reach the fallen lamp to relight the chain before it does.",
+    "We are racing a clock I do not understand and an enemy that does not hurry. The Court's Bell-Knights are slow. Slow is not the same as stoppable. Their Lurecallers will pull us off the bridges. Their Deep Herald will darken the ledge.",
+    "We escort Auster across three bridges to the lamp. If we lose her, we lose the chain. I do not want to find out what that means."
+  ],
+  "victoryText": "Auster puts her hand on the fallen lamp, and the glass sings. Far above, a column of grey brine begins to fall, slowly, from a cloudless sky. \"It's started,\" she says. \"Go home. Defend the Shoal.\"",
+  "defeatText": "Auster falls from the bridge and the lamp below flares once. The company retreats, and the Court does not pursue. They already know what comes next.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salt Concord",
+      "color": "#5b7fa6",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salt_concord_tamsin_orrel",
+          "x": 10,
+          "y": 16,
+          "tag": "commander_orrel"
+        },
+        {
+          "unit": "lanternkeepers_keeper_pell_auster",
+          "x": 10,
+          "y": 15,
+          "tag": "keeper_auster"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 9,
+          "y": 16,
+          "tag": "escort"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 12,
+          "y": 16,
+          "tag": "escort"
+        },
+        {
+          "unit": "salt_concord_rim_marshal",
+          "x": 10,
+          "y": 13,
+          "tag": "escort"
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 9,
+          "y": 18,
+          "tag": "escort"
+        }
+      ]
+    },
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "ai",
+      "warband": [
+        "hadal_court_bell_knight",
+        "hadal_court_bell_knight",
+        "hadal_court_pit_thrall",
+        "hadal_court_pit_thrall",
+        "hadal_court_pit_thrall",
+        "hadal_court_lurecaller",
+        "hadal_court_lurecaller",
+        "hadal_court_lantern_spitter",
+        "hadal_court_lantern_spitter",
+        "hadal_court_vent_priest",
+        "hadal_court_murk_diver",
+        "hadal_court_pressure_lancer"
+      ],
+      "units": [
+        {
+          "unit": "hadal_court_deep_herald",
+          "x": 9,
+          "y": 4,
+          "tag": "deep_herald"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 12,
+          "y": 4
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 10,
+          "y": 9
+        },
+        {
+          "unit": "hadal_court_lurecaller",
+          "x": 7,
+          "y": 4
+        },
+        {
+          "unit": "hadal_court_lurecaller",
+          "x": 13,
+          "y": 4
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 7,
+          "y": 3
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 13,
+          "y": 3
+        },
+        {
+          "unit": "hadal_court_pressure_lancer",
+          "x": 6,
+          "y": 1
+        }
+      ],
+      "startingEssence": 150,
+      "essencePerTurn": 32,
+      "keystone": false
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tiles": [
+          [
+            10,
+            4
+          ],
+          [
+            10,
+            5
+          ],
+          [
+            11,
+            4
+          ],
+          [
+            11,
+            5
+          ],
+          [
+            9,
+            3
+          ],
+          [
+            12,
+            3
+          ]
+        ],
+        "tag": "keeper_auster",
+        "label": "Bring Keeper Auster to the fallen lamp"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "keeper_auster",
+        "label": "Keeper Auster must not fall"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "Our rally standard must not fall"
+      },
+      {
+        "type": "eliminate",
+        "team": 0,
+        "label": "Do not lose the whole company"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Reach the lamp before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Commander Orrel",
+          "text": "Three bridges. Auster does not fall."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Herald Vhaal",
+          "text": "Concord. You carry the Keeper. Answer me one question and I will let her pass: who lifted the sea?"
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "The trench heaves. A Crushing Maw has come up onto the second bridge!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_crushing_maw",
+          "x": 10,
+          "y": 7
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 10,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "escort",
+          "status": "hc_darkened",
+          "duration": 3
+        },
+        {
+          "type": "status",
+          "tag": "commander_orrel",
+          "status": "hc_darkened",
+          "duration": 3
+        },
+        {
+          "type": "status",
+          "tag": "keeper_auster",
+          "status": "hc_darkened",
+          "duration": 3
+        },
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "The light is going out. Follow the lamp. Nothing else."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_deep_herald",
+          "x": 15,
+          "y": 10
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 70,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "keeper_auster",
+          "fraction": 0.5,
+          "label": "Keeper Auster above half strength"
+        },
+        "pearls": 30,
+        "label": "Keeper Auster above half strength"
+      },
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "deep_herald",
+          "label": "Put out the Deep Herald"
+        },
+        "pearls": 30,
+        "label": "Put out the Deep Herald"
+      }
+    ]
+  }
+}

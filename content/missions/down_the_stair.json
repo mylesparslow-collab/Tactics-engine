@@ -1,0 +1,335 @@
+{
+  "id": "down_the_stair",
+  "name": "Down the Stair",
+  "description": "Escort three supply wagons down the Greywater Stair.",
+  "map": "greywater_stair",
+  "briefing": [
+    "Our supplies sit at the top of the Stair. Our company sits at the bottom. Between us are nine landings, a thousand feet of cliff, and a Tide host that has apparently read the Concord road manual and found the weak bend.",
+    "Three supply wagons come down at dawn. I need them all at the Shelf landing, and I need the Stair-Wardens to hold each switchback long enough to let them pass. The Tide want to tip the wagons off the edge. I would prefer they did not.",
+    "I'll be honest: this is the first time I've used the Stair in anger. It was built to be walked down by conscripts and marched up by armies. Nobody planned for it to be a shooting gallery."
+  ],
+  "victoryText": "The last wagon rolls onto the Shelf at dusk. Odo Brask is waiting with a flask and an invoice. \"Free sample,\" he says, grinning. The invoice is for the flask.",
+  "defeatText": "The wagons go over the edge in a long, slow fall. The company will have to make do with what is in their packs, which is mostly salt.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salt Concord",
+      "color": "#5b7fa6",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salt_concord_tamsin_orrel",
+          "x": 11,
+          "y": 3,
+          "tag": "commander_orrel"
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 10,
+          "y": 4,
+          "tag": "supply_wagon_1"
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 11,
+          "y": 4,
+          "tag": "supply_wagon_2"
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 12,
+          "y": 4,
+          "tag": "supply_wagon_3"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 9,
+          "y": 4
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 13,
+          "y": 4
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 12,
+          "y": 1
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_tear_slinger",
+        "returning_tide_tear_slinger",
+        "returning_tide_tideskulker",
+        "returning_tide_wringer",
+        "returning_tide_rainsayer",
+        "returning_tide_undertow_singer"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 6,
+          "y": 17
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 15,
+          "y": 17
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 4,
+          "y": 11
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 16,
+          "y": 11
+        },
+        {
+          "unit": "returning_tide_wringer",
+          "x": 11,
+          "y": 18
+        }
+      ],
+      "startingEssence": 100,
+      "essencePerTurn": 25
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tiles": [
+          [
+            7,
+            15
+          ],
+          [
+            7,
+            16
+          ],
+          [
+            8,
+            15
+          ],
+          [
+            8,
+            16
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            9,
+            16
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            10,
+            16
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            11,
+            16
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            12,
+            16
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            13,
+            16
+          ],
+          [
+            14,
+            15
+          ],
+          [
+            14,
+            16
+          ]
+        ],
+        "tag": "supply_wagon_3",
+        "label": "Bring the last wagon down to the Shelf landing"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "supply_wagon_3",
+        "label": "The last wagon must not go over the edge"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "commander_orrel",
+        "label": "Commander Orrel must survive"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "Our rally standard must not fall"
+      },
+      {
+        "type": "eliminate",
+        "team": 0,
+        "label": "Do not lose the whole company"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 16,
+        "label": "Reach the Shelf landing before turn 16"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Commander Orrel",
+          "text": "Wagons down in order. Stair-Wardens, hold each switchback."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 2,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Penitents on the third landing! They dropped from the cliff face!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 6,
+          "y": 7
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 15,
+          "y": 7
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 11,
+          "y": 8
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Commander! Ambush at the fifth landing. You never heard this from me. Wait, you did. I'm sending the bill."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 15,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 6
+        },
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "A Rainsayer on the lower landing. The tiles are turning to brine; the wagons will slow."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_rainsayer",
+          "x": 10,
+          "y": 17
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 40,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "supply_wagon_1",
+          "label": "The lead wagon must come through",
+          "not": true
+        },
+        "pearls": 20,
+        "label": "The lead wagon must come through"
+      },
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "supply_wagon_2",
+          "label": "The second wagon must come through",
+          "not": true
+        },
+        "pearls": 20,
+        "label": "The second wagon must come through"
+      },
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "commander_orrel",
+          "fraction": 0.5,
+          "label": "Commander Orrel above half strength"
+        },
+        "pearls": 10,
+        "label": "Commander Orrel above half strength"
+      }
+    ]
+  }
+}

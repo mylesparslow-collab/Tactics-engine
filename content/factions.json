@@ -1,0 +1,38 @@
+{
+ "salt_concord": {
+  "name": "The Salt Concord",
+  "color": "#3f6e9e",
+  "accent": "#efe9dc",
+  "tagline": "Order is the only thing between the Rim and the salt."
+ },
+ "hadal_court": {
+  "name": "The Hadal Court",
+  "color": "#2b2f6b",
+  "accent": "#3fd6c4",
+  "tagline": "The sea was ours. We are coming up to collect it."
+ },
+ "returning_tide": {
+  "name": "The Returning Tide",
+  "color": "#3f7a5c",
+  "accent": "#101314",
+  "tagline": "The sea is above us. Hurry it home."
+ },
+ "salvage_compact": {
+  "name": "The Salvage Compact",
+  "color": "#a8552e",
+  "accent": "#efe6d6",
+  "tagline": "Everything on the floor belongs to whoever drags it off."
+ },
+ "reef_ascendant": {
+  "name": "The Reef Ascendant",
+  "color": "#e07a6a",
+  "accent": "#f1e9df",
+  "tagline": "One mind. Ten thousand bodies. The first dawn is ours."
+ },
+ "lanternkeepers": {
+  "name": "The Lanternkeepers",
+  "color": "#e3b04b",
+  "accent": "#7d8791",
+  "tagline": "Keep the lamp lit. Say nothing."
+ }
+}

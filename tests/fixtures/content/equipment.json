@@ -1,0 +1,14 @@
+{
+  "iron_plate": {
+    "name": "Iron Plate", "description": "+2 defense, -1 AP.", "cost": 15,
+    "statMods": { "defense": 2, "ap": -1 }
+  },
+  "ember_blade": {
+    "name": "Ember Blade", "description": "+2 attack and grants Cinder Slash.", "cost": 25,
+    "statMods": { "attack": 2 }, "grantAbilities": ["cinder_slash"]
+  },
+  "warding_charm": {
+    "name": "Warding Charm", "description": "Resist 2 fire damage.", "cost": 10,
+    "resist": { "fire": 2 }
+  }
+}

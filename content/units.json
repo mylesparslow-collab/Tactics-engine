@@ -1,0 +1,2382 @@
+{
+ "salt_concord_brineguard": {
+  "name": "Brineguard",
+  "role": "Line Infantry",
+  "faction": "salt_concord",
+  "cost": 35,
+  "stats": {
+   "hp": 22,
+   "ap": 6,
+   "attack": 7,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_spear_thrust",
+   "sc_shield_line",
+   "sc_salted_edge"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Bg",
+   "image": "sprites/salt_concord_brineguard.svg"
+  },
+  "description": "The salt-crusted spear line that paved the Shelf one road at a time. Alone it is a farmer with a pole; shoulder to shoulder it is a wall.",
+  "art": "cards/salt_concord_brineguard.svg"
+ },
+ "salt_concord_salt_levy": {
+  "name": "Salt Levy",
+  "role": "Cheap Body",
+  "faction": "salt_concord",
+  "cost": 30,
+  "stats": {
+   "hp": 14,
+   "ap": 5,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_levy_jab",
+   "sc_brace",
+   "sc_conscripts_grit"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Lv",
+   "image": "sprites/salt_concord_salt_levy.svg"
+  },
+  "description": "Conscripted by the road-tax and given a spear. Cheap, plentiful, and exactly as brave as the line around them.",
+  "art": "cards/salt_concord_salt_levy.svg"
+ },
+ "salt_concord_surveyor": {
+  "name": "Surveyor",
+  "role": "Ranged Spotter",
+  "faction": "salt_concord",
+  "cost": 35,
+  "stats": {
+   "hp": 15,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_survey_shot",
+   "sc_mark_target",
+   "sc_range_finding"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Sv",
+   "image": "sprites/salt_concord_surveyor.svg"
+  },
+  "description": "The Concord owns what it has measured. Surveyors chalk enemies onto the map before the line ever moves.",
+  "art": "cards/salt_concord_surveyor.svg"
+ },
+ "salt_concord_brine_slinger": {
+  "name": "Brine Slinger",
+  "role": "Ranged Salt",
+  "faction": "salt_concord",
+  "cost": 35,
+  "stats": {
+   "hp": 14,
+   "ap": 6,
+   "attack": 7,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_brine_sling",
+   "sc_caustic_sling",
+   "sc_salt_cloud"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Sl",
+   "image": "sprites/salt_concord_brine_slinger.svg"
+  },
+  "description": "A miner turned skirmisher who flings pans of cut brine. A hit leaves armour weeping and rust-red.",
+  "art": "cards/salt_concord_brine_slinger.svg"
+ },
+ "salt_concord_saltwright": {
+  "name": "Saltwright",
+  "role": "Engineer / Controller",
+  "faction": "salt_concord",
+  "cost": 45,
+  "stats": {
+   "hp": 16,
+   "ap": 6,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_trowel_strike",
+   "sc_raise_wall",
+   "sc_salt_poultice",
+   "sc_scour"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Sw",
+   "image": "sprites/salt_concord_saltwright.svg"
+  },
+  "description": "Salt-alchemist and mason in one. Saltwrights grow barricades from the dry flats in an afternoon, and cut the enemy's road to the Rim in two.",
+  "art": "cards/salt_concord_saltwright.svg"
+ },
+ "salt_concord_causeway_outrider": {
+  "name": "Causeway Outrider",
+  "role": "Skirmisher",
+  "faction": "salt_concord",
+  "cost": 40,
+  "stats": {
+   "hp": 16,
+   "ap": 8,
+   "attack": 8,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "sc_lance_prick",
+   "sc_causeway_dash",
+   "sc_hamstring"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Co",
+   "image": "sprites/salt_concord_causeway_outrider.svg"
+  },
+  "description": "Mounted courier of the salt roads. Outriders run down stragglers that break from their own formations.",
+  "art": "cards/salt_concord_causeway_outrider.svg"
+ },
+ "salt_concord_brine_chirurgeon": {
+  "name": "Brine Chirurgeon",
+  "role": "Healer",
+  "faction": "salt_concord",
+  "cost": 45,
+  "stats": {
+   "hp": 17,
+   "ap": 6,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_lancet",
+   "sc_brine_wash",
+   "sc_field_dressing",
+   "sc_stiff_tonic"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Ch",
+   "image": "sprites/salt_concord_brine_chirurgeon.svg"
+  },
+  "description": "Field surgeon who cleans wounds with brine and swears by it. The line holds because someone keeps stitching it.",
+  "art": "cards/salt_concord_brine_chirurgeon.svg"
+ },
+ "salt_concord_tollkeeper": {
+  "name": "Tollkeeper",
+  "role": "Controller",
+  "faction": "salt_concord",
+  "cost": 45,
+  "stats": {
+   "hp": 18,
+   "ap": 6,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_toll_staff",
+   "sc_toll_chain",
+   "sc_closed_road",
+   "sc_levy_shove"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Tk",
+   "image": "sprites/salt_concord_tollkeeper.svg"
+  },
+  "description": "Every road has a toll and every toll has a keeper. They reel in those who try to cross without paying.",
+  "art": "cards/salt_concord_tollkeeper.svg"
+ },
+ "salt_concord_stair_warden": {
+  "name": "Stair-Warden",
+  "role": "Tank",
+  "faction": "salt_concord",
+  "cost": 55,
+  "stats": {
+   "hp": 34,
+   "ap": 5,
+   "attack": 8,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_warden_mace",
+   "sc_hold_the_stair",
+   "sc_stair_bash",
+   "sc_wardens_bulwark"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "SW",
+   "image": "sprites/salt_concord_stair_warden.svg"
+  },
+  "description": "Sworn to the Greywater Stair, and to the idea that nothing climbs it uninvited. Neighbours stand taller beside them.",
+  "art": "cards/salt_concord_stair_warden.svg"
+ },
+ "salt_concord_caustic_lantern": {
+  "name": "Caustic Lantern",
+  "role": "Siege Engine",
+  "faction": "salt_concord",
+  "cost": 55,
+  "stats": {
+   "hp": 22,
+   "ap": 5,
+   "attack": 8,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_lantern_lob",
+   "sc_caustic_barrage",
+   "sc_brine_flare"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "CL",
+   "image": "sprites/salt_concord_caustic_lantern.svg"
+  },
+  "description": "A wheeled brazier that hurls burning salt-glass in long arcs. Slow, loud, and expensive to defend.",
+  "art": "cards/salt_concord_caustic_lantern.svg"
+ },
+ "salt_concord_rim_marshal": {
+  "name": "Rim Marshal",
+  "role": "Commander",
+  "faction": "salt_concord",
+  "cost": 60,
+  "stats": {
+   "hp": 28,
+   "ap": 6,
+   "attack": 8,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_marshal_blade",
+   "sc_marshals_line",
+   "sc_rally",
+   "sc_form_up"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "RM",
+   "image": "sprites/salt_concord_rim_marshal.svg"
+  },
+  "description": "Officer of the Rim Wardens, rank earned in road-surveys and border wars. Where the Marshal stands, the formation remembers its drill.",
+  "art": "cards/salt_concord_rim_marshal.svg"
+ },
+ "salt_concord_saltmill_juggernaut": {
+  "name": "Saltmill Juggernaut",
+  "role": "Exotic Siege Engine",
+  "faction": "salt_concord",
+  "cost": 70,
+  "stats": {
+   "hp": 40,
+   "ap": 5,
+   "attack": 11,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_ram_blow",
+   "sc_grinding_advance",
+   "sc_salt_press",
+   "sc_rolling_wall"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "SJ",
+   "image": "sprites/salt_concord_saltmill_juggernaut.svg"
+  },
+  "description": "A salt-grinding mill bolted to iron treads and sent against the enemy line. The Concord's proof that a road can walk.",
+  "art": "cards/salt_concord_saltmill_juggernaut.svg"
+ },
+ "salt_concord_tamsin_orrel": {
+  "name": "Commander Tamsin Orrel",
+  "title": "Surveyor-Commander of Lantern Shoal",
+  "role": "Hero",
+  "faction": "salt_concord",
+  "hero": true,
+  "cost": 80,
+  "stats": {
+   "hp": 34,
+   "ap": 7,
+   "attack": 10,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_orrel_survey_blade",
+   "sc_orrel_measure_twice",
+   "sc_orrel_hold_the_survey",
+   "sc_orrel_night_lamp"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "TO",
+   "image": "sprites/salt_concord_tamsin_orrel.svg"
+  },
+  "description": "A Rim Marshal's daughter and the youngest survey-company commander the Concord has, promoted because nobody senior would take the Shoal. She measures everything twice and keeps a night lamp lit, and she wants to hold the work together even if the paper does not.",
+  "art": "cards/salt_concord_tamsin_orrel.svg"
+ },
+ "salt_concord_hesper_vael": {
+  "name": "Warden-General Hesper Vael",
+  "title": "Marshal of the Greywater Stair",
+  "role": "Hero",
+  "faction": "salt_concord",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 42,
+   "ap": 5,
+   "attack": 9,
+   "defense": 4,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_vael_stair_halberd",
+   "sc_vael_shoulder_check",
+   "sc_vael_no_step_back",
+   "sc_vael_ward_of_the_stair"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "HV",
+   "image": "sprites/salt_concord_hesper_vael.svg"
+  },
+  "description": "Oldest living Stair-Warden, who has stood the top landing of the Greywater Stair for forty years and has never once given up a step. She wants one thing, which is that nothing climbs the Stair uninvited, and she will outlast anyone who tries.",
+  "art": "cards/salt_concord_hesper_vael.svg"
+ },
+ "salt_concord_ione_karst": {
+  "name": "Magister Ione Karst",
+  "title": "Assayer of the Saltpan Verge",
+  "role": "Hero",
+  "faction": "salt_concord",
+  "hero": true,
+  "cost": 70,
+  "stats": {
+   "hp": 26,
+   "ap": 6,
+   "attack": 8,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_karst_assay_rod",
+   "sc_karst_brine_assay",
+   "sc_karst_crystal_bulwark",
+   "sc_karst_residue"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "IK",
+   "image": "sprites/salt_concord_ione_karst.svg"
+  },
+  "description": "Chief salt-alchemist of the Verge, who has tasted every brine on the Shelf and trusts none of them. She wants a pure salt, one that holds the line without the people who dig it dying of it, and she will test every enemy as a sample.",
+  "resist": {
+   "salt": 2
+  },
+  "art": "cards/salt_concord_ione_karst.svg"
+ },
+ "hadal_court_pit_thrall": {
+  "name": "Pit Thrall",
+  "role": "Cheap Body",
+  "faction": "hadal_court",
+  "cost": 35,
+  "stats": {
+   "hp": 20,
+   "ap": 5,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_thrall_slam",
+   "hc_dead_weight"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Th",
+   "image": "sprites/hadal_court_pit_thrall.svg"
+  },
+  "description": "Brine-grown labourer of the vent pools, bred to fill a breach in the line and be walked over by something larger. The Court counts them as the floor its champions stand on.",
+  "art": "cards/hadal_court_pit_thrall.svg"
+ },
+ "hadal_court_bell_knight": {
+  "name": "Bell-Knight",
+  "role": "Tank",
+  "faction": "hadal_court",
+  "cost": 40,
+  "stats": {
+   "hp": 30,
+   "ap": 5,
+   "attack": 7,
+   "defense": 4,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_bell_strike",
+   "hc_toll",
+   "hc_pressure_plating"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "BK",
+   "image": "sprites/hadal_court_bell_knight.svg"
+  },
+  "description": "A knight sealed inside a brass pressure-bell that keeps the trench weight in and the Ebb out. It walks ahead of the Court so the bell's toll is the first thing the enemy hears.",
+  "art": "cards/hadal_court_bell_knight.svg"
+ },
+ "hadal_court_lurecaller": {
+  "name": "Lurecaller",
+  "role": "Controller",
+  "faction": "hadal_court",
+  "cost": 40,
+  "stats": {
+   "hp": 16,
+   "ap": 5,
+   "attack": 6,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_lure_dart",
+   "hc_beckon",
+   "hc_false_light"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Lc",
+   "image": "sprites/hadal_court_lurecaller.svg"
+  },
+  "description": "Carries a lamp-stalk grown from its own skull and swings it to draw the curious into reach. In the Court's hunts it is the one who decides where the prey will stand.",
+  "art": "cards/hadal_court_lurecaller.svg"
+ },
+ "hadal_court_lantern_spitter": {
+  "name": "Lantern Spitter",
+  "role": "Ranged",
+  "faction": "hadal_court",
+  "cost": 35,
+  "stats": {
+   "hp": 14,
+   "ap": 6,
+   "attack": 8,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_glow_spit",
+   "hc_blinding_spit"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Ls",
+   "image": "sprites/hadal_court_lantern_spitter.svg"
+  },
+  "description": "A glass-skinned gulper that spits luminous brine. Fired from behind the bells, it is how the Court teaches the sunlit to fear a sudden flash.",
+  "art": "cards/hadal_court_lantern_spitter.svg"
+ },
+ "hadal_court_vent_priest": {
+  "name": "Vent-Priest",
+  "role": "Support",
+  "faction": "hadal_court",
+  "cost": 45,
+  "stats": {
+   "hp": 20,
+   "ap": 5,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_vent_touch",
+   "hc_vent_mend",
+   "hc_warm_brine",
+   "hc_scald"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "VP",
+   "image": "sprites/hadal_court_vent_priest.svg"
+  },
+  "description": "Tends a portable vent-flame that keeps the Court alive far from the trench floor. Its prayers are warm water, and it is the reason the slow giants survive their long climb.",
+  "art": "cards/hadal_court_vent_priest.svg"
+ },
+ "hadal_court_pressure_lancer": {
+  "name": "Pressure Lancer",
+  "role": "Ranged",
+  "faction": "hadal_court",
+  "cost": 45,
+  "stats": {
+   "hp": 16,
+   "ap": 5,
+   "attack": 9,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_lance_shot",
+   "hc_bore_down",
+   "hc_sounding"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "PL",
+   "image": "sprites/hadal_court_pressure_lancer.svg"
+  },
+  "description": "Fires bored shafts of compressed brine that carry a little of the deep with them. The Court's artillery, for a people who never forgot what true weight feels like.",
+  "art": "cards/hadal_court_pressure_lancer.svg"
+ },
+ "hadal_court_murk_diver": {
+  "name": "Murk Diver",
+  "role": "Skirmisher",
+  "faction": "hadal_court",
+  "cost": 45,
+  "stats": {
+   "hp": 16,
+   "ap": 8,
+   "attack": 8,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "hc_diver_claw",
+   "hc_murk_step",
+   "hc_dark_ambush"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "MD",
+   "image": "sprites/hadal_court_murk_diver.svg"
+  },
+  "description": "A lean, quick scout that slips from shadow to shadow ahead of the army. It maps the dark places a Court column will have to cross.",
+  "art": "cards/hadal_court_murk_diver.svg"
+ },
+ "hadal_court_trench_crab": {
+  "name": "Trench Crab",
+  "role": "Bruiser",
+  "faction": "hadal_court",
+  "cost": 50,
+  "stats": {
+   "hp": 30,
+   "ap": 5,
+   "attack": 9,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_pincer",
+   "hc_clamp",
+   "hc_shell_slam"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "TC",
+   "image": "sprites/hadal_court_trench_crab.svg"
+  },
+  "description": "A barnacled, house-sized hunter-beast the Court breeds to pin and break the enemy's formation. It guards the roads the great houses use to climb out of the trench.",
+  "art": "cards/hadal_court_trench_crab.svg"
+ },
+ "hadal_court_crushing_maw": {
+  "name": "Crushing Maw",
+  "role": "Heavy Melee",
+  "faction": "hadal_court",
+  "cost": 60,
+  "stats": {
+   "hp": 38,
+   "ap": 5,
+   "attack": 11,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_maw_bite",
+   "hc_crush",
+   "hc_grinding_shove"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "CM",
+   "image": "sprites/hadal_court_crushing_maw.svg"
+  },
+  "description": "A walking mouth, thousands of years old, that the Court keeps in a tomb of brine and wakes only for war. Nothing that stands before it has ever stood again.",
+  "art": "cards/hadal_court_crushing_maw.svg"
+ },
+ "hadal_court_deep_herald": {
+  "name": "Deep Herald",
+  "role": "Debuffer",
+  "faction": "hadal_court",
+  "cost": 55,
+  "stats": {
+   "hp": 22,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_herald_staff",
+   "hc_pall_of_night",
+   "hc_drowning_hymn"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "DH",
+   "image": "sprites/hadal_court_deep_herald.svg"
+  },
+  "description": "Voice of the Court of Depths, who sings the dark across a battlefield before the army arrives. It exists so the enemy forgets the shape of the sky.",
+  "art": "cards/hadal_court_deep_herald.svg"
+ },
+ "hadal_court_tollwarden": {
+  "name": "Tollwarden",
+  "role": "Commander",
+  "faction": "hadal_court",
+  "cost": 55,
+  "stats": {
+   "hp": 26,
+   "ap": 6,
+   "attack": 8,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_tollrod",
+   "hc_court_presence",
+   "hc_decree_of_depths",
+   "hc_gavel"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "TW",
+   "image": "sprites/hadal_court_tollwarden.svg"
+  },
+  "description": "A magistrate of the Court who carries the weight of its oath into the field. Where the Tollwarden stands, the Court's champions fight as if the whole sea were behind them.",
+  "art": "cards/hadal_court_tollwarden.svg"
+ },
+ "hadal_court_trench_mother": {
+  "name": "Trench Mother",
+  "role": "Exotic Summoner",
+  "faction": "hadal_court",
+  "cost": 70,
+  "stats": {
+   "hp": 38,
+   "ap": 6,
+   "attack": 9,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_mother_lash",
+   "hc_spawn_brood",
+   "hc_birthing_pressure"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "TM",
+   "image": "sprites/hadal_court_trench_mother.svg"
+  },
+  "description": "The great brood-mother of the trench floors, hauled in a pressure-cradle at the heart of the Court's armies. She is there to prove the Court can raise an army from nothing, and does.",
+  "art": "cards/hadal_court_trench_mother.svg"
+ },
+ "hadal_court_herald_vhaal": {
+  "name": "Herald Vhaal",
+  "title": "The Third Bell of the Court of Depths",
+  "role": "Hero",
+  "faction": "hadal_court",
+  "hero": true,
+  "cost": 85,
+  "stats": {
+   "hp": 34,
+   "ap": 6,
+   "attack": 9,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_vhaal_bellstaff",
+   "hc_the_question",
+   "hc_third_toll",
+   "hc_brine_bell_seal"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Vh",
+   "image": "sprites/hadal_court_herald_vhaal.svg"
+  },
+  "description": "Envoy of the Court of Depths in a bronze brine-bell, formal and slow and unfailingly polite, who treats the surface as a house where a guest has been eating the furniture for three hundred years. She wants one question answered, who lifted the sea, and she will accept only the truth.",
+  "art": "cards/hadal_court_herald_vhaal.svg"
+ },
+ "hadal_court_orrun_tessk": {
+  "name": "Orrun Tessk",
+  "title": "Knight-Unrelieved of the Seventh Watch",
+  "role": "Hero",
+  "faction": "hadal_court",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 42,
+   "ap": 5,
+   "attack": 10,
+   "defense": 4,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_tessk_hookblade",
+   "hc_watch_breaker",
+   "hc_anchor_stance",
+   "hc_unrelieved_vow"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Ot",
+   "image": "sprites/hadal_court_orrun_tessk.svg"
+  },
+  "description": "A Bell-Knight who stood the night watch when the sea vanished and has never been relieved, his bell cracked and still tolling. He wants an officer of the surface to stand in front of him and sign the order that ends his watch.",
+  "art": "cards/hadal_court_orrun_tessk.svg"
+ },
+ "hadal_court_maelis_quell": {
+  "name": "Maelis Quell",
+  "title": "Hearth-Mother of the Warm Vents",
+  "role": "Hero",
+  "faction": "hadal_court",
+  "hero": true,
+  "cost": 70,
+  "stats": {
+   "hp": 28,
+   "ap": 6,
+   "attack": 8,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_quell_emberstaff",
+   "hc_hearth_surge",
+   "hc_vent_kiss",
+   "hc_warmth_of_the_deep"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Mq",
+   "image": "sprites/hadal_court_maelis_quell.svg"
+  },
+  "description": "Eldest Vent-Priest of the Court, who carried a flame up out of the trench cradled against the cold and has not let it gutter in forty years. She wants to see her giants reach the open sky alive, and to learn whether the surface sea is mercy or theft.",
+  "art": "cards/hadal_court_maelis_quell.svg"
+ },
+ "returning_tide_penitent": {
+  "name": "Penitent",
+  "role": "Cheap Body",
+  "faction": "returning_tide",
+  "cost": 30,
+  "stats": {
+   "hp": 16,
+   "ap": 6,
+   "attack": 6,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_scourge",
+   "rt_flagellate",
+   "rt_last_prayer"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Pe",
+   "image": "sprites/returning_tide_penitent.svg"
+  },
+  "description": "A shaven pilgrim who walks into the surf to be forgiven. The Tide spends them freely, and they would have it no other way.",
+  "art": "cards/returning_tide_penitent.svg"
+ },
+ "returning_tide_drowned": {
+  "name": "Drowned",
+  "role": "Cheap Body",
+  "faction": "returning_tide",
+  "cost": 30,
+  "stats": {
+   "hp": 18,
+   "ap": 5,
+   "attack": 6,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_drowned_grasp",
+   "rt_wet_grip"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Dr",
+   "image": "sprites/returning_tide_drowned.svg"
+  },
+  "description": "One of the faithful dead, kept wet so it can keep walking. It falls once, then gets back up, because the Rim has taught it patience.",
+  "requires": [
+   "revive_once"
+  ],
+  "revive": {
+   "hpFraction": 0.5
+  },
+  "art": "cards/returning_tide_drowned.svg"
+ },
+ "returning_tide_tear_slinger": {
+  "name": "Tear-Slinger",
+  "role": "Ranged",
+  "faction": "returning_tide",
+  "cost": 35,
+  "stats": {
+   "hp": 14,
+   "ap": 6,
+   "attack": 7,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_tear_sling",
+   "rt_wet_shot"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Ts",
+   "image": "sprites/returning_tide_tear_slinger.svg"
+  },
+  "description": "A mourner who hurls brine from a bag of collected grief. Its job is to leave enemy lines soaked before the first blade lands.",
+  "art": "cards/returning_tide_tear_slinger.svg"
+ },
+ "returning_tide_tideskulker": {
+  "name": "Tideskulker",
+  "role": "Skirmisher",
+  "faction": "returning_tide",
+  "cost": 35,
+  "stats": {
+   "hp": 15,
+   "ap": 8,
+   "attack": 7,
+   "defense": 0,
+   "jump": 2
+  },
+  "abilities": [
+   "rt_gutter_knife",
+   "rt_slip_away",
+   "rt_hamstring"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Tk",
+   "image": "sprites/returning_tide_tideskulker.svg"
+  },
+  "description": "A gutter-child who learned the shallows on the Weeping Shelf. It slips behind lines to cut the legs from anything that moves slowly.",
+  "art": "cards/returning_tide_tideskulker.svg"
+ },
+ "returning_tide_wringer": {
+  "name": "Wringer",
+  "role": "Bruiser",
+  "faction": "returning_tide",
+  "cost": 45,
+  "stats": {
+   "hp": 22,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_wringer_hands",
+   "rt_wring",
+   "rt_wring_dry"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Wr",
+   "image": "sprites/returning_tide_wringer.svg"
+  },
+  "description": "A priest of the oldest rite, who draws water from living things and carries it to the sea above. It exists to outlast whatever it holds.",
+  "art": "cards/returning_tide_wringer.svg"
+ },
+ "returning_tide_rainsayer": {
+  "name": "Rainsayer",
+  "role": "Caster",
+  "faction": "returning_tide",
+  "cost": 45,
+  "stats": {
+   "hp": 17,
+   "ap": 6,
+   "attack": 6,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_rain_bolt",
+   "rt_downpour",
+   "rt_drizzle"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Rs",
+   "image": "sprites/returning_tide_rainsayer.svg"
+  },
+  "description": "A prophet who calls rain from clear sky and floods the ground beneath enemy feet. It claims ground for the faithful and makes it theirs alone.",
+  "art": "cards/returning_tide_rainsayer.svg"
+ },
+ "returning_tide_shroud_mender": {
+  "name": "Shroud-Mender",
+  "role": "Healer",
+  "faction": "returning_tide",
+  "cost": 40,
+  "stats": {
+   "hp": 18,
+   "ap": 6,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_mender_touch",
+   "rt_shroud_mend",
+   "rt_second_breath"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Sm",
+   "image": "sprites/returning_tide_shroud_mender.svg"
+  },
+  "description": "A midwife of the Drowned who wraps wounds in wet cloth that never dries. It keeps the swarm on its feet long enough to finish its prayers.",
+  "art": "cards/returning_tide_shroud_mender.svg"
+ },
+ "returning_tide_anchor_bearer": {
+  "name": "Anchor-Bearer",
+  "role": "Tank",
+  "faction": "returning_tide",
+  "cost": 50,
+  "stats": {
+   "hp": 34,
+   "ap": 5,
+   "attack": 7,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_anchor_swing",
+   "rt_drag_down",
+   "rt_dead_weight"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Ab",
+   "image": "sprites/returning_tide_anchor_bearer.svg"
+  },
+  "description": "A penitent who chose to drag a ship's anchor until the tide took them. It holds the line and drags runners down to the Drowned.",
+  "art": "cards/returning_tide_anchor_bearer.svg"
+ },
+ "returning_tide_choirmaster": {
+  "name": "Choirmaster",
+  "role": "Commander",
+  "faction": "returning_tide",
+  "cost": 55,
+  "stats": {
+   "hp": 22,
+   "ap": 6,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_choir_staff",
+   "rt_hymn_of_rising",
+   "rt_dirge"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Cm",
+   "image": "sprites/returning_tide_choirmaster.svg"
+  },
+  "description": "A conductor of the faithful whose hymns keep a thousand throats in time. It exists so that cheap bodies fight like one great body.",
+  "art": "cards/returning_tide_choirmaster.svg"
+ },
+ "returning_tide_undertow_singer": {
+  "name": "Undertow Singer",
+  "role": "Controller",
+  "faction": "returning_tide",
+  "cost": 55,
+  "stats": {
+   "hp": 20,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_singer_lash",
+   "rt_undertow",
+   "rt_sinking_chant"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Us",
+   "image": "sprites/returning_tide_undertow_singer.svg"
+  },
+  "description": "A voice that tugs at ankles. It herds enemies into brine pools and holds them there until the choir arrives.",
+  "art": "cards/returning_tide_undertow_singer.svg"
+ },
+ "returning_tide_bloat_drowned": {
+  "name": "Bloat-Drowned",
+  "role": "Bruiser",
+  "faction": "returning_tide",
+  "cost": 55,
+  "stats": {
+   "hp": 38,
+   "ap": 5,
+   "attack": 9,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_bloat_slam",
+   "rt_gorge",
+   "rt_burst_belly"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Bd",
+   "image": "sprites/returning_tide_bloat_drowned.svg"
+  },
+  "description": "A corpse left to swell for a season until it carries a river inside. It walks into the enemy line and releases it.",
+  "art": "cards/returning_tide_bloat_drowned.svg"
+ },
+ "returning_tide_tide_prophet": {
+  "name": "Tide-Prophet",
+  "role": "Exotic",
+  "faction": "returning_tide",
+  "cost": 70,
+  "stats": {
+   "hp": 36,
+   "ap": 7,
+   "attack": 9,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_prophet_staff",
+   "rt_deluge",
+   "rt_rising_sea",
+   "rt_drown"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "TP",
+   "image": "sprites/returning_tide_tide_prophet.svg"
+  },
+  "description": "The one who heard the sea above and told the faithful where it went. It drops a flood on the world and does not pretend to be sorry.",
+  "art": "cards/returning_tide_tide_prophet.svg"
+ },
+ "returning_tide_imre_dunnock": {
+  "name": "Prophet Imre Dunnock",
+  "title": "the Wet Saint",
+  "role": "Hero",
+  "faction": "returning_tide",
+  "hero": true,
+  "cost": 85,
+  "stats": {
+   "hp": 36,
+   "ap": 7,
+   "attack": 10,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_wet_saints_rod",
+   "rt_audit_the_wells",
+   "rt_gentle_flood",
+   "rt_the_wet_saint"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "ID",
+   "image": "sprites/returning_tide_imre_dunnock.svg"
+  },
+  "description": "Once a Concord tax clerk, he audited the water ledgers, found they did not balance, and walked into the rain with a following of thousands. He wants every lighthouse put out because he believes the sea above will be merciful, and he knows in his gentler hours that it will not.",
+  "art": "cards/returning_tide_imre_dunnock.svg"
+ },
+ "returning_tide_maren_ketch": {
+  "name": "Sister Maren Ketch",
+  "title": "Matron of the Dry Hands",
+  "role": "Hero",
+  "faction": "returning_tide",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 38,
+   "ap": 6,
+   "attack": 11,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_ketch_hands",
+   "rt_wring_the_world_dry",
+   "rt_cup_the_flood",
+   "rt_thirst_unending"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "MK",
+   "image": "sprites/returning_tide_maren_ketch.svg"
+  },
+  "description": "The senior wringer of the Weeping Shelf, who has drawn the water out of more living things than she will admit to counting. She wants the faithful to be worth the sea when it arrives, and keeps what she takes.",
+  "art": "cards/returning_tide_maren_ketch.svg"
+ },
+ "returning_tide_oswin_brack": {
+  "name": "Captain Oswin Brack",
+  "title": "the Unsunk",
+  "role": "Hero",
+  "faction": "returning_tide",
+  "hero": true,
+  "cost": 70,
+  "stats": {
+   "hp": 42,
+   "ap": 5,
+   "attack": 9,
+   "defense": 4,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_brack_cutlass",
+   "rt_hook_and_drag",
+   "rt_muster_the_drowned",
+   "rt_unsunk"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "OB",
+   "image": "sprites/returning_tide_oswin_brack.svg"
+  },
+  "description": "A Hulk captain who went down with his ship on the night of the Long Ebb and has refused to stay down for three hundred years. He wants his crew back, all of them, and the Tide has promised him the sea will bring them.",
+  "revive": {
+   "hpFraction": 0.5
+  },
+  "resist": {
+   "brine": 2
+  },
+  "art": "cards/returning_tide_oswin_brack.svg"
+ },
+ "salvage_compact_lamplighter": {
+  "name": "Lamplighter",
+  "role": "Scout",
+  "faction": "salvage_compact",
+  "cost": 30,
+  "stats": {
+   "hp": 12,
+   "ap": 8,
+   "attack": 5,
+   "defense": 0,
+   "jump": 2
+  },
+  "abilities": [
+   "sv_lamp_hook",
+   "sv_lay_oil",
+   "sv_flare"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Lm",
+   "image": "sprites/salvage_compact_lamplighter.svg"
+  },
+  "description": "A hulk-kid with a lantern pole who runs ahead to light the way, and to pour oil where the enemy will step. Cheap, quick, and expected to be lost.",
+  "art": "cards/salvage_compact_lamplighter.svg"
+ },
+ "salvage_compact_scrapper": {
+  "name": "Hull Scrapper",
+  "role": "Cheap Body",
+  "faction": "salvage_compact",
+  "cost": 30,
+  "stats": {
+   "hp": 16,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_pry_bar",
+   "sv_dirty_trick",
+   "sv_scrap_toss"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Sc",
+   "image": "sprites/salvage_compact_scrapper.svg"
+  },
+  "description": "A deckhand paid in rope and rumour to hold a corridor of rusted plating for exactly as long as the Compact needs.",
+  "art": "cards/salvage_compact_scrapper.svg"
+ },
+ "salvage_compact_wrecker": {
+  "name": "Wrecker",
+  "role": "Skirmisher",
+  "faction": "salvage_compact",
+  "cost": 35,
+  "stats": {
+   "hp": 20,
+   "ap": 8,
+   "attack": 8,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "sv_wrecking_axe",
+   "sv_gutting_cut",
+   "sv_slip_away"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Wr",
+   "image": "sprites/salvage_compact_wrecker.svg"
+  },
+  "description": "Strips wrecks down to the nails and strips enemy lines the same way, in and out before anyone has finished shouting.",
+  "art": "cards/salvage_compact_wrecker.svg"
+ },
+ "salvage_compact_rivet_slinger": {
+  "name": "Rivet-Slinger",
+  "role": "Ranged",
+  "faction": "salvage_compact",
+  "cost": 35,
+  "stats": {
+   "hp": 16,
+   "ap": 7,
+   "attack": 8,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_rivet_gun",
+   "sv_nail_volley",
+   "sv_pin_shot"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Rv",
+   "image": "sprites/salvage_compact_rivet_slinger.svg"
+  },
+  "description": "Fires bent rivets and nails from a pneumatic gun built out of a ship's bilge pump. The Compact pays its marksmen in scrap.",
+  "art": "cards/salvage_compact_rivet_slinger.svg"
+ },
+ "salvage_compact_powder_monk": {
+  "name": "Powder-Monk",
+  "role": "Fire Caster",
+  "faction": "salvage_compact",
+  "cost": 45,
+  "stats": {
+   "hp": 17,
+   "ap": 7,
+   "attack": 7,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_powder_cane",
+   "sv_powder_flask",
+   "sv_blessed_fuse"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Pm",
+   "image": "sprites/salvage_compact_powder_monk.svg"
+  },
+  "description": "Keeper of the leviathan-fat kilns who blesses every fuse before it is lit. Sells fire to everyone, and burns those who do not pay.",
+  "art": "cards/salvage_compact_powder_monk.svg"
+ },
+ "salvage_compact_bone_sled_rider": {
+  "name": "Bone-Sled Rider",
+  "role": "Mobile",
+  "faction": "salvage_compact",
+  "cost": 45,
+  "stats": {
+   "hp": 19,
+   "ap": 8,
+   "attack": 8,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "sv_bone_lance",
+   "sv_sled_dash",
+   "sv_ram_run"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Bs",
+   "image": "sprites/salvage_compact_bone_sled_rider.svg"
+  },
+  "description": "Rides a sled of leviathan ribs over the salt faster than anyone can aim, carrying messages, cargo, and sudden violence.",
+  "art": "cards/salvage_compact_bone_sled_rider.svg"
+ },
+ "salvage_compact_tallow_mender": {
+  "name": "Tallow-Mender",
+  "role": "Support",
+  "faction": "salvage_compact",
+  "cost": 40,
+  "stats": {
+   "hp": 18,
+   "ap": 6,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_tallow_spoon",
+   "sv_tallow_salve",
+   "sv_fleet_foot"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Tm",
+   "image": "sprites/salvage_compact_tallow_mender.svg"
+  },
+  "description": "Hull-doctor who patches wounds with rendered fat and greases the boots of those who must run. The Compact's closest thing to a field hospital.",
+  "art": "cards/salvage_compact_tallow_mender.svg"
+ },
+ "salvage_compact_snare_tinker": {
+  "name": "Snare-Tinker",
+  "role": "Controller",
+  "faction": "salvage_compact",
+  "cost": 40,
+  "stats": {
+   "hp": 17,
+   "ap": 6,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_spanner",
+   "sv_slick_barrel",
+   "sv_net_snare"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Sn",
+   "image": "sprites/salvage_compact_snare_tinker.svg"
+  },
+  "description": "Builds every trap the Compact lays for invaders, and every one looks like something worth picking up.",
+  "art": "cards/salvage_compact_snare_tinker.svg"
+ },
+ "salvage_compact_hullbreaker": {
+  "name": "Hullbreaker",
+  "role": "Big Melee",
+  "faction": "salvage_compact",
+  "cost": 55,
+  "stats": {
+   "hp": 36,
+   "ap": 5,
+   "attack": 10,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_breaching_maul",
+   "sv_hull_smash",
+   "sv_armour_plating"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Hb",
+   "image": "sprites/salvage_compact_hullbreaker.svg"
+  },
+  "description": "Sledgehammer-wielder hired to bring down bulkheads, and sometimes the soldiers behind them. The one Compact piece that can hold ground.",
+  "art": "cards/salvage_compact_hullbreaker.svg"
+ },
+ "salvage_compact_quartermaster": {
+  "name": "Quartermaster",
+  "role": "Commander",
+  "faction": "salvage_compact",
+  "cost": 55,
+  "stats": {
+   "hp": 24,
+   "ap": 7,
+   "attack": 7,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_cutlass",
+   "sv_crew_rally",
+   "sv_shout_orders",
+   "sv_call_the_split"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Qm",
+   "image": "sprites/salvage_compact_quartermaster.svg"
+  },
+  "description": "Keeper of the ledger and the cutlass, who pays out shares mid-battle and gets everyone moving at once.",
+  "art": "cards/salvage_compact_quartermaster.svg"
+ },
+ "salvage_compact_breach_gunner": {
+  "name": "Breach-Gunner",
+  "role": "Ranged",
+  "faction": "salvage_compact",
+  "cost": 50,
+  "stats": {
+   "hp": 18,
+   "ap": 6,
+   "attack": 10,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_hand_cannon",
+   "sv_keg_lob",
+   "sv_grapeshot"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Bg",
+   "image": "sprites/salvage_compact_breach_gunner.svg"
+  },
+  "description": "Lobs powder kegs from a hull-mounted mortar and shoots anything that survives. Every shot costs more than the average sailor earns in a season.",
+  "art": "cards/salvage_compact_breach_gunner.svg"
+ },
+ "salvage_compact_harpoon_engine": {
+  "name": "Harpoon Engine",
+  "role": "Engine",
+  "faction": "salvage_compact",
+  "cost": 70,
+  "stats": {
+   "hp": 34,
+   "ap": 5,
+   "attack": 10,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_harpoon_bolt",
+   "sv_harpoon_haul",
+   "sv_whale_fat_shell"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "He",
+   "image": "sprites/salvage_compact_harpoon_engine.svg"
+  },
+  "description": "A whaling harpoon the size of a mast, bolted to a hull and wound with chain, built to haul anything that moves back to the Compact. It took a generation to build and no one is allowed to sell it.",
+  "art": "cards/salvage_compact_harpoon_engine.svg"
+ },
+ "salvage_compact_odo_brask": {
+  "name": "Odo Brask",
+  "title": "Fixer of the Kettle Market",
+  "role": "Hero",
+  "faction": "salvage_compact",
+  "hero": true,
+  "cost": 70,
+  "stats": {
+   "hp": 30,
+   "ap": 6,
+   "attack": 8,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_odo_cudgel",
+   "sv_odo_buy_out",
+   "sv_odo_fire_sale",
+   "sv_odo_three_coats"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Ob",
+   "image": "sprites/salvage_compact_odo_brask.svg"
+  },
+  "description": "A fat, cheerful broker in three coats who sells maps, grain, rumours and, when it pays, silence. He wants to stay solvent and alive, and has found that the two usually mean selling someone out at the right price.",
+  "art": "cards/salvage_compact_odo_brask.svg"
+ },
+ "salvage_compact_ketta_vane": {
+  "name": "Ketta Vane",
+  "title": "Sled-Queen of the Long Salt",
+  "role": "Hero",
+  "faction": "salvage_compact",
+  "hero": true,
+  "cost": 78,
+  "stats": {
+   "hp": 26,
+   "ap": 7,
+   "attack": 10,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "sv_ketta_boarding_lance",
+   "sv_ketta_cutwater_run",
+   "sv_ketta_vanish_in_salt",
+   "sv_ketta_never_still"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Kv",
+   "image": "sprites/salvage_compact_ketta_vane.svg"
+  },
+  "description": "The fastest rider on the salt, who has outrun three debts, two wars and her own reputation on a sled of leviathan ribs. She wants a stretch of open flat with nobody on it, and will burn anything that stands between her and it.",
+  "art": "cards/salvage_compact_ketta_vane.svg"
+ },
+ "salvage_compact_brother_ashmaw": {
+  "name": "Brother Ashmaw",
+  "title": "Fat-Cook of the Burning Chapel",
+  "role": "Hero",
+  "faction": "salvage_compact",
+  "hero": true,
+  "cost": 85,
+  "stats": {
+   "hp": 34,
+   "ap": 5,
+   "attack": 10,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_ashmaw_censer_swing",
+   "sv_ashmaw_pyre_psalm",
+   "sv_ashmaw_last_rite",
+   "sv_ashmaw_candle_smoke"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "As",
+   "image": "sprites/salvage_compact_brother_ashmaw.svg"
+  },
+  "description": "Head of the Powder-Monks, who renders leviathan fat into the finest blasting grease in the Hulks and blesses every barrel by name. He wants the old hulls to burn bright enough to be seen from the Rim, so that someone finally asks what the Compact has been guarding.",
+  "art": "cards/salvage_compact_brother_ashmaw.svg"
+ },
+ "reef_ascendant_polyp_drone": {
+  "name": "Polyp Drone",
+  "role": "Cheap Body",
+  "faction": "reef_ascendant",
+  "cost": 15,
+  "stats": {
+   "hp": 9,
+   "ap": 5,
+   "attack": 4,
+   "defense": 0,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "ra_bite",
+   "ra_gorge"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Pd",
+   "image": "sprites/reef_ascendant_polyp_drone.svg"
+  },
+  "description": "One mouth of the colony, grown in an hour and spent in a minute. The Reef does not mourn drones; it grows more.",
+  "art": "cards/reef_ascendant_polyp_drone.svg"
+ },
+ "reef_ascendant_spitter_polyp": {
+  "name": "Spitter Polyp",
+  "role": "Ranged Skirmisher",
+  "faction": "reef_ascendant",
+  "cost": 20,
+  "stats": {
+   "hp": 8,
+   "ap": 5,
+   "attack": 4,
+   "defense": 0,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "ra_spit",
+   "ra_acid_glob"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Sp",
+   "image": "sprites/reef_ascendant_spitter_polyp.svg"
+  },
+  "description": "A drone bred to lob caustic calcite slurry from behind the line. It exists so the front drones can die with company.",
+  "art": "cards/reef_ascendant_spitter_polyp.svg"
+ },
+ "reef_ascendant_fanblade": {
+  "name": "Fanblade",
+  "role": "Fast Melee Skirmisher",
+  "faction": "reef_ascendant",
+  "cost": 25,
+  "stats": {
+   "hp": 11,
+   "ap": 7,
+   "attack": 5,
+   "defense": 0,
+   "jump": 2
+  },
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "ra_slash",
+   "ra_flicker"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Fb",
+   "image": "sprites/reef_ascendant_fanblade.svg"
+  },
+  "description": "A drone grown around a fan of razored calcite. It is the colony's reach, sent to cut down whatever the slow bodies cannot catch.",
+  "art": "cards/reef_ascendant_fanblade.svg"
+ },
+ "reef_ascendant_sting_anemone": {
+  "name": "Sting Anemone",
+  "role": "Controller Drone",
+  "faction": "reef_ascendant",
+  "cost": 20,
+  "stats": {
+   "hp": 10,
+   "ap": 5,
+   "attack": 4,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "ra_sting",
+   "ra_numbing_touch"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "An",
+   "image": "sprites/reef_ascendant_sting_anemone.svg"
+  },
+  "description": "A rooted-looking thing that is not rooted at all. Its touch dulls the nerves of anything that threatens a mind.",
+  "art": "cards/reef_ascendant_sting_anemone.svg"
+ },
+ "reef_ascendant_shard_urchin": {
+  "name": "Shard Urchin",
+  "role": "Spiked Body",
+  "faction": "reef_ascendant",
+  "cost": 22,
+  "stats": {
+   "hp": 14,
+   "ap": 5,
+   "attack": 4,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "ra_spike_jab",
+   "ra_shard_burst"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Ur",
+   "image": "sprites/reef_ascendant_shard_urchin.svg"
+  },
+  "description": "A drone that bristles when cornered. The colony plants it in doorways so that passing through costs blood.",
+  "art": "cards/reef_ascendant_shard_urchin.svg"
+ },
+ "reef_ascendant_brainstalk": {
+  "name": "Brainstalk",
+  "role": "Mind / Aura",
+  "faction": "reef_ascendant",
+  "cost": 40,
+  "stats": {
+   "hp": 16,
+   "ap": 5,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 2
+  },
+  "abilities": [
+   "ra_lash",
+   "ra_synapse",
+   "ra_synapse_snap"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Bs",
+   "image": "sprites/reef_ascendant_brainstalk.svg"
+  },
+  "description": "A fluted tower of living calcite that thinks for the drones around it. Kill it and every body within its reach goes slack.",
+  "art": "cards/reef_ascendant_brainstalk.svg"
+ },
+ "reef_ascendant_broodspire": {
+  "name": "Broodspire",
+  "role": "Spawner",
+  "faction": "reef_ascendant",
+  "cost": 45,
+  "stats": {
+   "hp": 20,
+   "ap": 5,
+   "attack": 5,
+   "defense": 2,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 2
+  },
+  "abilities": [
+   "ra_spine_jet",
+   "ra_spawn_brood",
+   "ra_calcite_ward"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Bd",
+   "image": "sprites/reef_ascendant_broodspire.svg"
+  },
+  "description": "A budding spire that pushes out fresh drones the way a reef pushes out polyps. It is the reason the Reef is never really outnumbered.",
+  "art": "cards/reef_ascendant_broodspire.svg"
+ },
+ "reef_ascendant_reef_tender": {
+  "name": "Reef Tender",
+  "role": "Support / Healer",
+  "faction": "reef_ascendant",
+  "cost": 35,
+  "stats": {
+   "hp": 14,
+   "ap": 6,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 2
+  },
+  "abilities": [
+   "ra_tendril_lash",
+   "ra_mend_growth",
+   "ra_feed_the_many"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Tn",
+   "image": "sprites/reef_ascendant_reef_tender.svg"
+  },
+  "description": "A drone bred to feed its siblings from the colony's stores. It is the only mercy the Reef knows, and it is still just bookkeeping.",
+  "art": "cards/reef_ascendant_reef_tender.svg"
+ },
+ "reef_ascendant_spireguard": {
+  "name": "Spireguard",
+  "role": "Tank",
+  "faction": "reef_ascendant",
+  "cost": 50,
+  "stats": {
+   "hp": 32,
+   "ap": 5,
+   "attack": 7,
+   "defense": 3,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 3
+  },
+  "abilities": [
+   "ra_spire_ram",
+   "ra_growing_spire",
+   "ra_spire_slam"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Sg",
+   "image": "sprites/reef_ascendant_spireguard.svg"
+  },
+  "description": "A drone that never stops growing, layer on layer of calcite, until it is more wall than animal. The colony plants it in the road and waits.",
+  "art": "cards/reef_ascendant_spireguard.svg"
+ },
+ "reef_ascendant_calcite_bloom": {
+  "name": "Calcite Bloom",
+  "role": "Terrain Spreader",
+  "faction": "reef_ascendant",
+  "cost": 55,
+  "stats": {
+   "hp": 22,
+   "ap": 5,
+   "attack": 5,
+   "defense": 2,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 3
+  },
+  "abilities": [
+   "ra_thorn_whip",
+   "ra_spread_reef",
+   "ra_choking_growth"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Cb",
+   "image": "sprites/reef_ascendant_calcite_bloom.svg"
+  },
+  "description": "A flower the size of a house, its roots turning bare rock into Living Reef. Where it blooms the Reef is already home.",
+  "art": "cards/reef_ascendant_calcite_bloom.svg"
+ },
+ "reef_ascendant_lensbearer": {
+  "name": "Lensbearer",
+  "role": "Ranged Artillery",
+  "faction": "reef_ascendant",
+  "cost": 60,
+  "stats": {
+   "hp": 16,
+   "ap": 6,
+   "attack": 10,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 2
+  },
+  "abilities": [
+   "ra_lens_shot",
+   "ra_focused_beam",
+   "ra_refract"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Lb",
+   "image": "sprites/reef_ascendant_lensbearer.svg"
+  },
+  "description": "A colony grown around a lens of clear calcite that gathers the sun the Reef woke to. It sees far and burns what it sees.",
+  "art": "cards/reef_ascendant_lensbearer.svg"
+ },
+ "reef_ascendant_elder_colony": {
+  "name": "Elder Colony",
+  "role": "Exotic Mind / Summoner",
+  "faction": "reef_ascendant",
+  "cost": 70,
+  "stats": {
+   "hp": 40,
+   "ap": 6,
+   "attack": 8,
+   "defense": 3,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 3
+  },
+  "abilities": [
+   "ra_crushing_growth",
+   "ra_elder_synapse",
+   "ra_hive_call",
+   "ra_overgrowth"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "El",
+   "image": "sprites/reef_ascendant_elder_colony.svg"
+  },
+  "description": "One of the oldest minds on the Shelf, thinking a single slow thought for three centuries. Wherever it stands, the Reef is one body.",
+  "art": "cards/reef_ascendant_elder_colony.svg"
+ },
+ "reef_ascendant_coralspire": {
+  "name": "Coralspire",
+  "title": "The Mind of Coralspire",
+  "role": "Hero",
+  "faction": "reef_ascendant",
+  "hero": true,
+  "cost": 90,
+  "stats": {
+   "hp": 42,
+   "ap": 5,
+   "attack": 9,
+   "defense": 4,
+   "jump": 1
+  },
+  "abilities": [
+   "ra_spire_lash",
+   "ra_wake_the_shelf",
+   "ra_calcite_memory",
+   "ra_first_synapse"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "CS",
+   "image": "sprites/reef_ascendant_coralspire.svg"
+  },
+  "description": "Coralspire is the eldest colony of the Shelf, a petrified reef that woke at the first dawn and has thought slowly ever since. It wants the Ebb to last forever, because it can feel its own oldest branches crumbling as the sea stays gone.",
+  "art": "cards/reef_ascendant_coralspire.svg"
+ },
+ "reef_ascendant_marrowbloom": {
+  "name": "Marrowbloom",
+  "title": "The Slow Hunger of the Shelf",
+  "role": "Hero",
+  "faction": "reef_ascendant",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 34,
+   "ap": 6,
+   "attack": 10,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "ra_marrow_bite",
+   "ra_devour_calcite",
+   "ra_overgrow",
+   "ra_hungering_bloom"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "MB",
+   "image": "sprites/reef_ascendant_marrowbloom.svg"
+  },
+  "description": "Marrowbloom is a colony woken in a mass grave of wrecks, and it has learned that everything dead leaves calcite behind. It wants to eat the whole battlefield down to bare reef before the sea can come back for it.",
+  "art": "cards/reef_ascendant_marrowbloom.svg"
+ },
+ "reef_ascendant_glasswake": {
+  "name": "Glasswake",
+  "title": "The Lensmind of the Glass Shallows",
+  "role": "Hero",
+  "faction": "reef_ascendant",
+  "hero": true,
+  "cost": 65,
+  "stats": {
+   "hp": 26,
+   "ap": 7,
+   "attack": 10,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "ra_glass_spike",
+   "ra_refract_beam",
+   "ra_lens_wake",
+   "ra_lens_sight"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "GW",
+   "image": "sprites/reef_ascendant_glasswake.svg"
+  },
+  "description": "Glasswake is a young colony grown in clear stone lenses that bend the first sunlight into sight, and it remembers every shape that ever crossed its focus. It wants to see the end of every lighthouse, because the beams make its lenses ache.",
+  "art": "cards/reef_ascendant_glasswake.svg"
+ },
+ "lanternkeepers_wick": {
+  "name": "Wick",
+  "role": "Scout",
+  "faction": "lanternkeepers",
+  "cost": 30,
+  "stats": {
+   "hp": 14,
+   "ap": 7,
+   "attack": 5,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "lk_wick_dart",
+   "lk_flare",
+   "lk_wick_step"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Wk",
+   "image": "sprites/lanternkeepers_wick.svg"
+  },
+  "description": "The youngest keeper on every stair, sent ahead with a taper to see what the beam will meet. A Wick's whole job is to be the first light on a thing.",
+  "art": "cards/lanternkeepers_wick.svg"
+ },
+ "lanternkeepers_lamplit_sailor": {
+  "name": "Lamplit Sailor",
+  "role": "Cheap Body (Summon)",
+  "faction": "lanternkeepers",
+  "cost": 25,
+  "stats": {
+   "hp": 16,
+   "ap": 5,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_boathook",
+   "lk_drag_down"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Ls",
+   "image": "sprites/lanternkeepers_lamplit_sailor.svg"
+  },
+  "description": "A drowned sailor the beam revealed and the lamp bound, who serves because the lamp is all that stands between it and the sea. Keepers summon them by the dozen and do not learn their names.",
+  "art": "cards/lanternkeepers_lamplit_sailor.svg"
+ },
+ "lanternkeepers_oilbearer": {
+  "name": "Oilbearer",
+  "role": "Line Infantry",
+  "faction": "lanternkeepers",
+  "cost": 35,
+  "stats": {
+   "hp": 20,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_oil_cudgel",
+   "lk_oil_flask",
+   "lk_lamp_screen"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Ob",
+   "image": "sprites/lanternkeepers_oilbearer.svg"
+  },
+  "description": "The keeper who carries the lamp-oil up three hundred steps and the cudgel to guard it. A spill on the stairs is also a weapon.",
+  "art": "cards/lanternkeepers_oilbearer.svg"
+ },
+ "lanternkeepers_signalman": {
+  "name": "Signalman",
+  "role": "Ranged Marker",
+  "faction": "lanternkeepers",
+  "cost": 35,
+  "stats": {
+   "hp": 16,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_signal_shot",
+   "lk_signal_flare",
+   "lk_hail_the_line"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Sg",
+   "image": "sprites/lanternkeepers_signalman.svg"
+  },
+  "description": "Flashes shutter-codes between lighthouses across the dark water. In battle the flash lands on an enemy and every other keeper knows exactly where to aim.",
+  "art": "cards/lanternkeepers_signalman.svg"
+ },
+ "lanternkeepers_beaconrunner": {
+  "name": "Beaconrunner",
+  "role": "Skirmisher",
+  "faction": "lanternkeepers",
+  "cost": 40,
+  "stats": {
+   "hp": 18,
+   "ap": 8,
+   "attack": 7,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "lk_runners_blade",
+   "lk_lantern_step",
+   "lk_backlit_strike"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Br",
+   "image": "sprites/lanternkeepers_beaconrunner.svg"
+  },
+  "description": "Carries word between lamps faster than any boat, by stepping along the beams themselves. Where a beam is, a Beaconrunner can be.",
+  "art": "cards/lanternkeepers_beaconrunner.svg"
+ },
+ "lanternkeepers_lantern_warden": {
+  "name": "Lantern Warden",
+  "role": "Support / Healer",
+  "faction": "lanternkeepers",
+  "cost": 45,
+  "stats": {
+   "hp": 19,
+   "ap": 6,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_warden_crook",
+   "lk_lamp_mend",
+   "lk_lamp_halo",
+   "lk_keepers_vigil"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Lw",
+   "image": "sprites/lanternkeepers_lantern_warden.svg"
+  },
+  "description": "Tends the flame that tends the keepers: every wound is closed in lamplight and every vigil is shared. Wardens go where the lamp is dimmest.",
+  "art": "cards/lanternkeepers_lantern_warden.svg"
+ },
+ "lanternkeepers_stairkeeper": {
+  "name": "Stairkeeper",
+  "role": "Tank",
+  "faction": "lanternkeepers",
+  "cost": 45,
+  "stats": {
+   "hp": 30,
+   "ap": 5,
+   "attack": 7,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_stair_pole",
+   "lk_shoulder_the_door",
+   "lk_stand_fast",
+   "lk_hold_the_light"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Sk",
+   "image": "sprites/lanternkeepers_stairkeeper.svg"
+  },
+  "description": "Sworn to a single staircase and to the door at its top. Three centuries of climbing have left nothing in the Stairkeeper that can be pushed down it.",
+  "art": "cards/lanternkeepers_stairkeeper.svg"
+ },
+ "lanternkeepers_glassgrinder": {
+  "name": "Glassgrinder",
+  "role": "Controller",
+  "faction": "lanternkeepers",
+  "cost": 45,
+  "stats": {
+   "hp": 18,
+   "ap": 6,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_lens_flick",
+   "lk_glare",
+   "lk_lens_trap"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Gg",
+   "image": "sprites/lanternkeepers_glassgrinder.svg"
+  },
+  "description": "Cuts and polishes the great lenses, and knows precisely how to turn one into a blinding flash. Enemies that stare into a Glassgrinder's work do not stare long.",
+  "art": "cards/lanternkeepers_glassgrinder.svg"
+ },
+ "lanternkeepers_bellringer": {
+  "name": "Bellringer",
+  "role": "Summoner / Controller",
+  "faction": "lanternkeepers",
+  "cost": 50,
+  "stats": {
+   "hp": 20,
+   "ap": 6,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_bell_mallet",
+   "lk_call_lamplit",
+   "lk_toll_the_hour"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Bl",
+   "image": "sprites/lanternkeepers_bellringer.svg"
+  },
+  "description": "Rings the fog-bell that wakes the Lamplit from the water. Each toll calls another drowned sailor to the lamp's side.",
+  "art": "cards/lanternkeepers_bellringer.svg"
+ },
+ "lanternkeepers_beamwright": {
+  "name": "Beamwright",
+  "role": "Ranged Line Damage",
+  "faction": "lanternkeepers",
+  "cost": 55,
+  "stats": {
+   "hp": 18,
+   "ap": 6,
+   "attack": 8,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_lightbeam",
+   "lk_focus_beam",
+   "lk_focus_lens"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Bw",
+   "image": "sprites/lanternkeepers_beamwright.svg"
+  },
+  "description": "Builds and aims the great beams, trimming the lens until a line of light is as sharp as a drawn blade. Everything in its path is revealed, and most of it does not survive that.",
+  "art": "cards/lanternkeepers_beamwright.svg"
+ },
+ "lanternkeepers_keeper_of_the_long_watch": {
+  "name": "Keeper of the Long Watch",
+  "role": "Commander",
+  "faction": "lanternkeepers",
+  "cost": 60,
+  "stats": {
+   "hp": 30,
+   "ap": 6,
+   "attack": 8,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_watch_staff",
+   "lk_rally_flame",
+   "lk_keepers_judgment",
+   "lk_long_watch"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "KW",
+   "image": "sprites/lanternkeepers_keeper_of_the_long_watch.svg"
+  },
+  "description": "Head of a lighthouse garrison, who has not slept a full night in forty years and does not intend to start. The Long Watch is the vow, and the Keeper is the vow made flesh.",
+  "art": "cards/lanternkeepers_keeper_of_the_long_watch.svg"
+ },
+ "lanternkeepers_first_flame": {
+  "name": "First Flame",
+  "role": "Exotic Beam Engine",
+  "faction": "lanternkeepers",
+  "cost": 70,
+  "stats": {
+   "hp": 36,
+   "ap": 6,
+   "attack": 10,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_flame_lash",
+   "lk_first_light",
+   "lk_kindle",
+   "lk_flame_step"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "FF",
+   "image": "sprites/lanternkeepers_first_flame.svg"
+  },
+  "description": "The flame that was already lit on the night of the Long Ebb, burning in a lamp nobody had touched. It is the oldest Keeper there is, and it has never been quiet.",
+  "art": "cards/lanternkeepers_first_flame.svg"
+ },
+ "lanternkeepers_keeper_pell_auster": {
+  "name": "Keeper Pell Auster",
+  "title": "Last Keeper of Lantern Shoal",
+  "role": "Hero",
+  "faction": "lanternkeepers",
+  "hero": true,
+  "cost": 70,
+  "stats": {
+   "hp": 34,
+   "ap": 6,
+   "attack": 8,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_pell_hooded_flare",
+   "lk_pell_stand_before",
+   "lk_pell_vigil_light",
+   "lk_pell_last_watch"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Pl",
+   "image": "sprites/lanternkeepers_keeper_pell_auster.svg"
+  },
+  "description": "Elderly, half-blind and never asleep, Pell is the last Lanternkeeper of the Shoal and the one who knows exactly what the lamp holds up. She wants every lamp lit and every stranger kept from it, and she will stand in front of any blade to see it done.",
+  "art": "cards/lanternkeepers_keeper_pell_auster.svg"
+ },
+ "lanternkeepers_lensmaster_oriel_venn": {
+  "name": "Lensmaster Oriel Venn",
+  "title": "Mistress of the Seventh Lens",
+  "role": "Hero",
+  "faction": "lanternkeepers",
+  "hero": true,
+  "cost": 85,
+  "stats": {
+   "hp": 24,
+   "ap": 6,
+   "attack": 11,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_venn_lens_bolt",
+   "lk_venn_sweeping_beam",
+   "lk_venn_lantern_step",
+   "lk_venn_seventh_lens"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Vn",
+   "image": "sprites/lanternkeepers_lensmaster_oriel_venn.svg"
+  },
+  "description": "Venn grinds and aims the great lamp lenses, and can fold a beacon's beam into a blade of light a mile long. She wants to prove that a keeper can strike as well as watch, before the vow of silence cuts her order's last hope down.",
+  "art": "cards/lanternkeepers_lensmaster_oriel_venn.svg"
+ },
+ "lanternkeepers_captain_hollis_drenn": {
+  "name": "Captain Hollis Drenn",
+  "title": "First of the Drowned Watch",
+  "role": "Hero",
+  "faction": "lanternkeepers",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 40,
+   "ap": 5,
+   "attack": 9,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_hollis_boat_hook",
+   "lk_hollis_muster_the_watch",
+   "lk_hollis_drowned_grip",
+   "lk_hollis_bound_to_the_lamp"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Hd",
+   "image": "sprites/lanternkeepers_captain_hollis_drenn.svg"
+  },
+  "description": "Hollis went down with the last ship to founder off the Rim and woke bound to a lighthouse lamp, now commanding the Lamplit who share his fate. He wants to keep the beam burning so that the sea above never gets to finish what it started.",
+  "art": "cards/lanternkeepers_captain_hollis_drenn.svg"
+ },
+ "keystone": {
+  "name": "Beacon",
+  "role": "Objective",
+  "cost": 0,
+  "structure": true,
+  "stats": {
+   "hp": 60,
+   "ap": 0,
+   "attack": 0,
+   "defense": 2,
+   "jump": 0
+  },
+  "abilities": [],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "B",
+   "image": "sprites/keystone.svg"
+  },
+  "description": "A stranded lighthouse, still lit. It holds the sea off this stretch of the Ebb."
+ }
+}
