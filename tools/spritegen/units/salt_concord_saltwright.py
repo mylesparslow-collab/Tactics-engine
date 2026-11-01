@@ -16,15 +16,17 @@ FACTION = 'salt_concord'
 LOOK = LOOKS[FACTION]
 
 C = Costume(top='robe', sleeve='robe', legs='road', hand='glove', skirt='robe', skirt_mat='robe', hem=0.12,
-            flare=0.75, head='none', belt='leather', girth=1.0)
+            flare=0.75, head='hood', head_mat='hood', belt='leather', girth=1.0)
 
 
 def neutral_pose():
     P = base_pose(height=0.98, build=1.02)
     rig.lean(P, fwd=np.radians(4))
-    rig.place_arm(P, 'r', v3(-0.25, 1.00, 0.14), (-1, -0.2, -0.5))
-    P['item_r'] = norm(v3(-0.1, -0.35, 1.0))
-    rig.place_arm(P, 'l', v3(0.20, 1.06, 0.18), (1, -0.3, -0.5))
+    rig.place_arm(P, 'r', v3(-0.28, 1.00, 0.16), (-1, -0.4, -0.5))
+    # trowel held out to the side and forward, blade clear of the apron so it reads as a tool
+    P['item_r'] = norm(v3(-0.85, 0.35, 0.35))
+    # left hand rests on the apron, elbow down (was akimbo)
+    rig.place_arm(P, 'l', v3(0.15, 1.02, 0.17), (0.4, -1.0, -0.25))
     P['head_yaw'] = np.radians(-8)
     return P
 
@@ -57,10 +59,6 @@ def build(P):
     body(P, add, C)
     pel, ch, nk = P['pelvis'], P['chest'], P['neck']
     H, R, h = P['head'], head_R(P), P['height']
-    add(Ellipsoid(H, (0.078 * h, 0.097 * h, 0.088 * h), R), 'skin')
-    add(Ellipsoid(H + R @ v3(0, -0.05, 0.022) * h, (0.056 * h, 0.05 * h, 0.062 * h), R), 'skin', 0.03)
-    add(Capsule(H + R @ v3(0, 0.0, 0.078) * h, H + R @ v3(0, -0.028, 0.092) * h, 0.010, 0.013), 'skin', 0.01)
-    add(hood_shell(P, size=1.08, peak=0.02), 'hood')
     # squared canvas apron, front only, with a brass rule tucked in the belt
     tabard(P, add, 'apron', width=0.13, hem=0.30, top=0.24, zf=0.105, back=False)
     add(RoundBox(pel + v3(-0.10, 0.02, 0.13), (0.012, 0.10, 0.004), 0.002, rot_z(0.2)), 'brass')

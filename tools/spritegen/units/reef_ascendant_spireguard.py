@@ -27,9 +27,13 @@ def build(P):
     # inner core that the shelves grow from
     add(spire(v3(0, 0.3, 0), 0.85, 0.36, 0.16, n=12, flute=0.2), 'calcite_p', 0.0)
     for i, (y, rx, rz, ry) in enumerate(tiers):
-        c = v3(0.01 * sw * i, y, 0.02 * i)
-        add(ribbed(c, (rx, rz, ry), n=22, depth=0.03, R=rot_x(np.pi / 2), porous=0.01), 'calcite_b' if i % 2 else 'shelf', 0.0)
-        add(Ellipsoid(c + v3(0, -ry * 0.55, 0), (rx * 0.93, 0.03, rz * 0.93)), 'seam', 0.0)
+        # shelves grow unevenly (offset and tilted per tier) so the stack reads as grown, not as ladder rungs
+        jx, jz, tz, tx = rng.uniform(-0.05, 0.05), rng.uniform(-0.03, 0.05), rng.uniform(-0.12, 0.12), rng.uniform(-0.1, 0.1)
+        c = v3(0.01 * sw * i + jx, y, 0.02 * i + jz)
+        Rt = rot_z(tz) @ rot_x(tx)
+        add(ribbed(c, (rx, rz, ry * 1.25), n=22, depth=0.03, R=Rt @ rot_x(np.pi / 2), porous=0.015),
+            'calcite_b' if i % 2 else 'shelf', 0.035)
+        add(Ellipsoid(c + v3(0, -ry * 0.75, 0), (rx * 0.8, 0.02, rz * 0.8), Rt), 'seam', 0.0)
     # crown: thick fluted spire and two side horns, with a ram boss on the front
     add(spire(v3(0.05 * sw, 1.08, 0.08), 0.62, 0.16, 0.02, n=7, flute=0.25, twist=1.5, bend=(0.03 * sw, 0.04)), 'coral', 0.04)
     for sx in (-1, 1):
@@ -40,7 +44,7 @@ def build(P):
     m = reef_mats(P, glow=0.4)
     g = np.clip(0.4 + 0.3 * P['glow'] + 0.8 * P['cast_glow'], 0, 1.4)
     m['shelf'] = calcite_mat(flush=0.4)
-    m['seam'] = Material(PINK, spec=0.2, emissive=tuple(np.array(GLOW) * 0.45 * g), brush=0.03)
+    m['seam'] = Material(CORAL, spec=0.2, emissive=tuple(np.array(GLOW) * 0.25 * g), brush=0.03)
     return finish(P, FACTION, parts, m)
 
 

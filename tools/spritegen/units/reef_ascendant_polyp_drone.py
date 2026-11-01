@@ -33,23 +33,27 @@ def build(P):
     mz = 0.13 + 0.03 * op
     my = by - 0.005
     lip_R = 0.05 + 0.018 * op
-    add(Ellipsoid(v3(0, my, mz - 0.03), (0.07, 0.06 + 0.012 * op, 0.04)), 'flesh', 0.03)
-    add(Torus(v3(0, my, mz + 0.0), v3(0, 0.15, 1), lip_R * 0.75, 0.016), 'flesh', 0.01)
+    # fleshy pink snout, big enough to read at 1x: the drone is mostly calcite with one soft mouth
+    add(Ellipsoid(v3(0, my, mz - 0.035), (0.085, 0.075 + 0.015 * op, 0.055)), 'lip', 0.035)
+    add(Torus(v3(0, my, mz + 0.004), v3(0, 0.15, 1), lip_R * 0.82, 0.022), 'lip', 0.012)
     # ring of short feeding tentacles around the mouth, flaring as it opens
     add(crown(v3(0, my, mz - 0.005), 9, lip_R * 0.8, 0.03 + 0.03 * op, 0.035 + 0.02 * op, 0.009, 0.004,
               sway=lambda i: (0.0, 0.008 * np.sin(i * 2.1 + 6.28 * P['tell']), 0.006 * np.sin(i)),
-              curl=-0.01, R=rot_x(np.pi / 2 - 0.15)), 'flesh', 0.006)
-    add(Ellipsoid(v3(0, my, mz + 0.012), (lip_R * 0.62, lip_R * (0.25 + 0.5 * op) + 0.008, 0.02)), 'mouth', 0)
+              curl=-0.01, R=rot_x(np.pi / 2 - 0.15)), 'lip', 0.006)
+    add(Ellipsoid(v3(0, my, mz + 0.016), (lip_R * 0.66, lip_R * (0.35 + 0.55 * op) + 0.01, 0.022)), 'mouth', 0)
     # clawed fans on the shoulders
     for s in (-1, 1):
         piv = v3(0.085 * s, by + 0.03, 0.06)
         ang = 0.35 + 0.25 * w0 * s * 0.5 + 0.4 * P['strike']
         R = rot_y(s * 0.5) @ rot_z(-s * (0.9 - 0.2 * w1)) @ rot_x(ang)
-        add(fan(piv, R, 0.11, 0.55, ribs=5, thick=0.007, scallop=0.25), 'coral', 0.0)
+        add(fan(piv, R, 0.14, 0.6, ribs=5, thick=0.009, scallop=0.25), 'coral', 0.0)
         add(Capsule(piv, piv + R @ v3(0, 0.1, 0), 0.008, 0.004), 'calcite_b', 0.004)
-    legs(add, P, v3(0, 0.12, -0.0), 0.10, 0.11, n=6, h=0.09, r=0.014, mat='calcite_b')
-    parts = scaled(body_pose(parts, P, pivot=(0, 0.0, 0), lunge=0.07), 1.3)
-    return finish(P, FACTION, parts, reef_mats(P, glow=0.3))
+    legs(add, P, v3(0, 0.12, -0.0), 0.10, 0.11, n=6, h=0.09, r=0.019, mat='coral_dk')
+    parts = scaled(body_pose(parts, P, pivot=(0, 0.0, 0), lunge=0.07), 1.75)
+    m = reef_mats(P, glow=0.3)
+    m['lip'] = flesh_mat(col=_hex('#f59a8c'), inner=CORAL, P=P, glow=0.6)
+    m['mouth'] = Material(_hex('#7a2430'), spec=0.5, gloss=30, sss=0.5, brush=0.02, rim=0.2)
+    return finish(P, FACTION, parts, m)
 
 
 ROWS, frames = reef_rows(neutral_pose, sink=0.05)
