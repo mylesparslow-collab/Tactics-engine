@@ -18,8 +18,10 @@ function kindOf(c: Content, id: string): 'unit' | 'spell' | 'equipment' | undefi
 }
 
 /** Procedural heraldic emblem for cards without art (spells, equipment, units without sprites). */
+let emblemSeq = 0;
 export function emblemSvg(id: string, kind: string, color: string, accent: string): string {
   const r = hashStr(id);
+  const gid = `em${++emblemSeq}`;
   const pick = (n: number, k: number) => (r >>> (k * 4)) % n;
   const c2 = mix(color, '#ffffff', 0.35), dark = shade(color, 0.5);
   let body = '';
@@ -28,21 +30,21 @@ export function emblemSvg(id: string, kind: string, color: string, accent: strin
     let pts = '';
     for (let i = 0; i < rays * 2; i++) { const a = i / (rays * 2) * Math.PI * 2 - Math.PI / 2, rr = i % 2 ? 22 : 46; pts += `${50 + Math.cos(a) * rr},${50 + Math.sin(a) * rr} `; }
     body = `<circle cx="50" cy="50" r="40" fill="none" stroke="${accent}" stroke-width="1.5" stroke-dasharray="${3 + pick(5, 2)} ${4 + pick(4, 3)}" opacity=".8"/>
-      <polygon points="${pts}" fill="url(#g)" stroke="${accent}" stroke-width="1.2"/>
+      <polygon points="${pts}" fill="url(#${gid})" stroke="${accent}" stroke-width="1.2"/>
       <circle cx="50" cy="50" r="${8 + pick(5, 4)}" fill="${accent}" opacity=".9"/><circle cx="50" cy="50" r="3" fill="${dark}"/>`;
   } else if (kind === 'equipment') {
     const shape = pick(3, 1);
-    if (shape === 0) body = `<path d="M50 12 L82 24 L80 56 Q76 78 50 90 Q24 78 20 56 L18 24 Z" fill="url(#g)" stroke="${accent}" stroke-width="2"/><path d="M50 26 L50 76 M30 44 L70 44" stroke="${accent}" stroke-width="4" stroke-linecap="round"/>`;
-    else if (shape === 1) body = `<rect x="22" y="40" width="56" height="26" rx="4" fill="url(#g)" stroke="${accent}" stroke-width="2"/><rect x="44" y="18" width="12" height="64" rx="3" fill="${c2}" stroke="${accent}" stroke-width="1.5"/><circle cx="50" cy="53" r="6" fill="${accent}"/>`;
-    else body = `<path d="M30 80 L50 18 L70 80 Z" fill="url(#g)" stroke="${accent}" stroke-width="2"/><path d="M38 66 H62" stroke="${accent}" stroke-width="3"/><circle cx="50" cy="48" r="5" fill="${accent}"/>`;
+    if (shape === 0) body = `<path d="M50 12 L82 24 L80 56 Q76 78 50 90 Q24 78 20 56 L18 24 Z" fill="url(#${gid})" stroke="${accent}" stroke-width="2"/><path d="M50 26 L50 76 M30 44 L70 44" stroke="${accent}" stroke-width="4" stroke-linecap="round"/>`;
+    else if (shape === 1) body = `<rect x="22" y="40" width="56" height="26" rx="4" fill="url(#${gid})" stroke="${accent}" stroke-width="2"/><rect x="44" y="18" width="12" height="64" rx="3" fill="${c2}" stroke="${accent}" stroke-width="1.5"/><circle cx="50" cy="53" r="6" fill="${accent}"/>`;
+    else body = `<path d="M30 80 L50 18 L70 80 Z" fill="url(#${gid})" stroke="${accent}" stroke-width="2"/><path d="M38 66 H62" stroke="${accent}" stroke-width="3"/><circle cx="50" cy="48" r="5" fill="${accent}"/>`;
   } else {
     const inner = [`<circle cx="50" cy="50" r="16" fill="none" stroke="${accent}" stroke-width="2"/><circle cx="50" cy="50" r="6" fill="${accent}"/>`,
       `<path d="M50 28 L50 72 M36 42 L64 42 M40 60 L60 60" stroke="${accent}" stroke-width="3" stroke-linecap="round"/>`,
       `<path d="M34 64 Q50 30 66 64" fill="none" stroke="${accent}" stroke-width="3"/><circle cx="50" cy="40" r="5" fill="${accent}"/>`,
       `<path d="M50 30 L62 50 L50 70 L38 50 Z" fill="${accent}" opacity=".9"/>`][pick(4, 2)];
-    body = `<path d="M50 10 L84 24 L80 60 Q74 82 50 92 Q26 82 20 60 L16 24 Z" fill="url(#g)" stroke="${accent}" stroke-width="2"/>${inner}`;
+    body = `<path d="M50 10 L84 24 L80 60 Q74 82 50 92 Q26 82 20 60 L16 24 Z" fill="url(#${gid})" stroke="${accent}" stroke-width="2"/>${inner}`;
   }
-  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="g" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="${c2}"/><stop offset="1" stop-color="${dark}"/></radialGradient></defs>${body}</svg>`;
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="${gid}" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="${c2}"/><stop offset="1" stop-color="${dark}"/></radialGradient></defs>${body}</svg>`;
 }
 
 function statChip(cls: string, label: string, v: number, base?: number) {
@@ -71,6 +73,33 @@ export function cardColors(c: Content, id: string) {
   return { color, accent, kind, factionName: f?.name };
 }
 
+/** The art window for a relic: painted card art, else the unit's sprite still on a faction wash, else a heraldic emblem. */
+export function artNode(id: string, c: Content): HTMLElement {
+  const { color, accent, kind } = cardColors(c, id);
+  const ud = c.units[id];
+  const def = (ud ?? c.spells[id] ?? c.equipment[id]) as { art?: string } | undefined;
+  const art = h('div', { class: 'rc-art', style: `--fc:${color};--fcd:${shade(color, 0.55)};--fcl:${mix(color, '#ffffff', 0.3)}` });
+  const artUrl = cardArtUrl(id, def);
+  const painted = ud ? assetUrl(`sprites/${id}_still.png`) : undefined;
+  const still = ud ? assetUrl(ud.sprite.image) : undefined;
+  // generated placeholder cards (content/cards/*.svg) carry their own frame, cost and name: crop to the picture area
+  const ph = !!artUrl && (/cards\/[^/]*\.svg/.test(artUrl) || artUrl.startsWith('data:image/svg'));
+  if (artUrl && !ph) art.append(h('img', { src: artUrl, alt: '', draggable: 'false' }));
+  else if (painted) {
+    art.classList.add('painted');
+    art.append(h('div', { class: 'rc-ground' }), h('img', { class: 'figure', src: painted, alt: '', draggable: 'false' }));
+  } else if (artUrl) {
+    art.append(h('img', { class: 'cardart', src: artUrl, alt: '', draggable: 'false' }));
+  } else if (still) {
+    art.classList.add('painted');
+    art.append(h('div', { class: 'rc-ground' }), h('img', { class: 'figure', src: still, alt: '', draggable: 'false' }));
+  } else {
+    art.classList.add('painted', 'emblem');
+    const em = h('div', { class: 'rc-emblem' }); em.innerHTML = emblemSvg(id, kind, color, accent); art.append(em);
+  }
+  return art;
+}
+
 export function buildCard(id: string, o: CardOpts): HTMLElement {
   const c = o.content;
   const { color, accent, kind, factionName } = cardColors(c, id);
@@ -78,18 +107,7 @@ export function buildCard(id: string, o: CardOpts): HTMLElement {
   const def = (ud ?? sd ?? ed) as { name: string; description?: string; cost: number; art?: string } | undefined;
   const name = def?.name ?? id;
   const el = h('div', { class: `rcard ${kind} ${o.size}${ud?.hero ? ' hero' : ''}`, style: `--fc:${color};--fa:${accent};--fcd:${shade(color, 0.55)};--fcl:${mix(color, '#ffffff', 0.3)}` });
-  // art window
-  const art = h('div', { class: 'rc-art' });
-  const artUrl = cardArtUrl(id, def);
-  const still = ud ? assetUrl(ud.sprite.image) : undefined;
-  if (artUrl) art.append(h('img', { src: artUrl, alt: '', draggable: 'false' }));
-  else if (still) {
-    art.classList.add('painted');
-    art.append(h('div', { class: 'rc-ground' }), h('img', { class: 'figure', src: still, alt: '', draggable: 'false' }));
-  } else {
-    art.classList.add('painted', 'emblem');
-    const em = h('div', { class: 'rc-emblem' }); em.innerHTML = emblemSvg(id, kind, color, accent); art.append(em);
-  }
+  const art = artNode(id, c);
   const typeLine = kind === 'unit' ? `${ud?.hero ? 'Hero' : ud?.structure ? 'Structure' : 'Champion'}${ud?.role ? ' · ' + ud.role : ''}` : kind === 'spell' ? 'Spell' : 'Equipment';
   el.append(
     h('div', { class: 'rc-frame' }, h('i', { class: 'c1' }), h('i', { class: 'c2' }), h('i', { class: 'c3' }), h('i', { class: 'c4' })),

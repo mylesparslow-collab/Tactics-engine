@@ -7,7 +7,8 @@ import { Renderer } from '../render/renderer';
 import { key } from '../render/iso';
 import { statusColor } from '../render/sprites';
 import { clear, h } from './dom';
-import { buildCard } from './cards';
+import { artNode, buildCard } from './cards';
+import { abilityGlyph, crestSvg, glyph, installArt, teamFaction } from './art';
 import { effectText } from './text';
 
 export interface SessionOpts {
@@ -45,6 +46,9 @@ export class GameSession {
   private handOpen = typeof window === 'undefined' || window.innerHeight >= 500;
   private touch = typeof matchMedia === 'function' && matchMedia('(hover: none)').matches;
   private previewId: string | null = null;
+  private handFilter: 'all' | 'unit' | 'spell' | 'equipment' = 'all';
+  private hudTop!: HTMLElement;
+  private factions: (string | undefined)[] = [];
 
   constructor(container: HTMLElement, private opts: SessionOpts) {
     this.content = opts.content;
@@ -94,27 +98,32 @@ export class GameSession {
 
   // ---------- DOM ----------
   private build() {
+    installArt();
     clear(this.root); this.root.className = 'game';
-    this.top = h('header', { id: 'topbar' });
+    const g = this.g;
+    this.factions = g.teams.map((t, i) => teamFaction(this.content, [...t.hand, ...g.units.filter(u => u.team === i).map(u => u.defId)]));
+    this.hudTop = h('header', { id: 'hudtop' });
+    this.top = this.hudTop;
     this.hand = h('div', { id: 'hand' });
-    this.right = h('aside', { id: 'right', class: 'panel' });
+    this.right = h('aside', { id: 'right', class: 'hudpanel' });
     this.hoverBox = h('div', { class: 'hoverbox' });
     this.canvas = h('canvas', { id: 'canvas' });
     this.banner = h('div', { id: 'banner', class: 'hidden' });
-    this.toast = h('div', { id: 'toast', class: 'hidden' });
+    this.toast = h('div', { id: 'turnflash', class: 'hidden' });
     this.logList = h('div', { class: 'loglist' });
     this.ticker = h('div', { class: 'ticker' });
-    this.logBox = h('div', { id: 'log', onclick: () => { this.logOpen = !this.logOpen; this.logBox.classList.toggle('open', this.logOpen); this.logList.scrollTop = this.logList.scrollHeight; } },
-      h('div', { class: 'logtitle' }, h('span', null, 'Log'), h('span', { class: 'chev' }, '▴')), this.ticker, this.logList);
+    this.logBox = h('div', { id: 'log', class: 'hudpanel' },
+      h('button', { class: 'logtoggle', title: 'Battle log', onclick: () => { this.logOpen = !this.logOpen; this.logBox.classList.toggle('open', this.logOpen); this.logList.scrollTop = this.logList.scrollHeight; } },
+        glyph('log'), this.ticker), this.logList);
     this.preview = h('div', { id: 'cardpreview', class: 'hidden' });
+    const vb = (icon: string, title: string, f: () => void) => h('button', { class: 'iconbtn', title, onclick: f }, glyph(icon));
     const ctl = h('div', { id: 'viewctl' },
-      h('button', { title: 'Rotate view (Q)', onclick: () => this.renderer.rotate(-1) }, '⟲'),
-      h('button', { title: 'Rotate view (R)', onclick: () => this.renderer.rotate(1) }, '⟳'),
-      h('button', { title: 'Zoom in', onclick: () => this.renderer.zoomBy(1.25) }, '+'),
-      h('button', { title: 'Zoom out', onclick: () => this.renderer.zoomBy(0.8) }, '−'),
-      h('button', { title: 'Reset view', onclick: () => this.renderer.resetView() }, '⌖'));
-    this.stage = h('main', { id: 'stage' }, this.canvas, this.logBox, this.banner, this.toast, ctl, this.preview, this.right);
-    this.root.append(this.top, this.stage, this.hand);
+      vb('rotl', 'Rotate view (Q)', () => this.renderer.rotate(-1)), vb('rotr', 'Rotate view (R)', () => this.renderer.rotate(1)),
+      vb('plus', 'Zoom in', () => this.renderer.zoomBy(1.25)), vb('minus', 'Zoom out', () => this.renderer.zoomBy(0.8)),
+      vb('center', 'Reset view', () => this.renderer.resetView()));
+    const fade = h('div', { class: 'fadein' });
+    this.stage = h('main', { id: 'stage' }, this.canvas, this.hudTop, this.logBox, this.banner, this.toast, ctl, this.preview, this.right, fade);
+    this.root.append(this.stage, this.hand);
     this.bindPointer();
   }
 
@@ -188,7 +197,7 @@ export class GameSession {
       case 'deploy': this.logLine(`${this.uname(e.uid)} enters the field.`, 'move'); break;
       case 'essence': this.logLine(`${g.teams[e.team].name} ${e.amount >= 0 ? 'gains' : 'loses'} ${Math.abs(e.amount)} ${this.L('essence')}.`, 'sys'); break;
       case 'terrain': this.logLine(`The ground at ${e.x},${e.y} becomes ${g.content.terrain[e.terrain]?.name ?? e.terrain}.`, 'sys'); break;
-      case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color); break;
+      case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); break;
       case 'message': this.logLine(`${e.speaker ? e.speaker + ': ' : ''}${e.text}`, 'msg'); this.bannerQueue.push({ text: e.text, speaker: e.speaker }); this.pumpBanner(); break;
       case 'end': this.ended = true; this.logLine(e.phase === 'victory' ? 'Victory!' : 'Defeat.', 'turn'); this.waitForEnd(e.phase); break;
     }
@@ -201,9 +210,17 @@ export class GameSession {
     this.ticker.className = 'ticker ' + cls; this.ticker.textContent = text;
   }
 
-  private toastMsg(text: string, color?: string) {
-    this.toast.textContent = text; this.toast.style.borderColor = color ?? ''; this.toast.classList.remove('hidden');
-    this.toast.classList.remove('show'); void this.toast.offsetWidth; this.toast.classList.add('show');
+  private toastMsg(text: string, color?: string, team?: number) {
+    const f = this.toast;
+    clear(f);
+    const m = /^Round (\d+) - (.*)$/.exec(text);
+    const ti = team ?? this.g.current;
+    const mine = this.g.teams[ti]?.controller === 'human';
+    f.style.setProperty('--tc', color ?? this.g.teams[ti]?.color ?? '#e8c57a');
+    const cr = h('span', { class: 'tf-crest' }); cr.innerHTML = crestSvg(this.factions[ti], this.g.teams[ti]?.color);
+    f.append(h('div', { class: 'tf-band' }, cr, h('div', { class: 'tf-text' },
+      h('div', { class: 'tf-kick' }, m ? `Round ${m[1]}` : ''), h('div', { class: 'tf-main' }, m ? (mine ? 'Your Turn' : m[2]) : text))));
+    f.classList.remove('hidden', 'show'); void f.offsetWidth; f.classList.add('show');
   }
 
   private pumpBanner() {
@@ -238,16 +255,21 @@ export class GameSession {
       if (before === c.index) unlockedNames = unlocked.map(u => this.content.units[u]?.name ?? u);
     }
     const text = win ? (m.victoryText ?? 'The field is yours.') : (m.defeatText ?? 'Your force has been broken.');
-    const modal = h('div', { class: 'modal-back' },
-      h('div', { class: 'modal ' + (win ? 'win' : 'lose') },
-        h('h2', null, win ? 'Victory' : 'Defeat'),
-        h('div', { class: 'mname' }, m.name),
-        h('p', null, text),
-        unlockedNames.length ? h('div', { class: 'unlocks' }, h('b', null, 'Unlocked: '), unlockedNames.join(', ')) : null,
+    const ht = this.humanTeam();
+    const cr = h('span', { class: 'end-crest' }); cr.innerHTML = crestSvg(this.factions[ht], this.g.teams[ht]?.color);
+    const unlockIds = unlockedNames.length && c ? (this.content.campaigns[c.id].missions[c.index].unlocks ?? []) : [];
+    const modal = h('div', { class: 'endscreen ' + (win ? 'win' : 'lose') },
+      h('div', { class: 'end-inner' },
+        cr,
+        h('h2', { class: 'end-title' }, win ? 'Victory' : 'Defeat'),
+        h('div', { class: 'end-mission' }, m.name),
+        h('p', { class: 'end-text' }, text),
+        unlockIds.length ? h('div', { class: 'end-unlocks' }, h('div', { class: 'kicker' }, 'New relics join your Chart'),
+          h('div', { class: 'end-cards' }, ...unlockIds.map(id => buildCard(id, { size: 'hand', content: this.content })))) : null,
         h('div', { class: 'btnrow' },
-          win && this.opts.onNext ? h('button', { class: 'primary', onclick: () => this.opts.onNext!() }, 'Next mission') : null,
-          h('button', { class: win && this.opts.onNext ? '' : 'primary', onclick: () => this.opts.onRetry() }, 'Retry'),
-          h('button', { onclick: () => this.opts.onExit() }, 'Back to menu'))));
+          win && this.opts.onNext ? h('button', { class: 'btn-gold big', onclick: () => this.opts.onNext!() }, 'Next Mission') : null,
+          h('button', { class: win && this.opts.onNext ? 'btn-plain' : 'btn-gold big', onclick: () => this.opts.onRetry() }, win ? 'Replay' : 'Try Again'),
+          h('button', { class: 'btn-plain', onclick: () => this.opts.onExit() }, 'Main Menu'))));
     this.root.append(modal);
   }
 
@@ -418,48 +440,58 @@ export class GameSession {
   /** Highlights are shown while the player could act soon (also during animations, but not during AI turns). */
   private canActSoft() { const g = this.g; return !this.ended && !this.aiRunning && g.phase === 'playing' && g.teams[g.current].controller === 'human'; }
 
-  /** Tide vessel + Beacon lamp for a team. */
-  private teamGauge(i: number) {
+  /** Player plate: crest, name, Tide gauge and Beacon lamp. */
+  private teamGauge(i: number, side: 'left' | 'right') {
     const g = this.g, t = g.teams[i];
     const max = g.mission.maxEssence ?? DEFAULTS.maxEssence;
     const fill = Math.max(0, Math.min(1, t.essence / max));
     const ks = g.units.find(u => u.team === i && g.def(u).structure && u.tag?.startsWith('keystone'));
     const kf = ks ? (ks.alive ? ks.hp / g.def(ks).stats.hp : 0) : -1;
-    const el = h('div', { class: 'tg' + (i === g.current ? ' active' : ''), style: `--tc:${t.color}`, title: `${t.name}: ${t.essence} ${this.L('essence')}${ks ? ` · ${this.L('keystone')} ${ks.hp}/${g.def(ks).stats.hp}` : ''}` },
-      h('span', { class: 'tgname' }, t.name),
-      h('span', { class: 'vessel', title: `${this.L('essence')} ${t.essence}/${max}` }, h('i', { class: 'water', style: `height:${Math.round(fill * 100)}%` }), h('i', { class: 'glass' })),
-      h('b', { class: 'tide' }, String(t.essence)),
-      kf >= 0 ? h('span', { class: 'lamp', style: `--lk:${kf.toFixed(2)}`, title: `${this.L('keystone')} ${ks!.hp}/${g.def(ks!).stats.hp}` }, h('i', { class: 'flame' }), h('i', { class: 'tower' })) : null);
-    return el;
+    const cr = h('span', { class: 'pp-crest' }); cr.innerHTML = crestSvg(this.factions[i], t.color);
+    return h('div', { class: `pplate ${side}${i === g.current ? ' active' : ''}`, style: `--tc:${t.color}`, title: `${t.name}: ${t.essence} ${this.L('essence')}${ks ? ` \u00B7 ${this.L('keystone')} ${ks.hp}/${g.def(ks).stats.hp}` : ''}` },
+      cr,
+      h('div', { class: 'pp-body' },
+        h('div', { class: 'pp-name' }, t.name.replace(/^The /, '')),
+        h('div', { class: 'pp-row' },
+          h('div', { class: 'tidebar', title: `${this.L('essence')} ${t.essence}/${max}` }, h('i', { class: 'water', style: `width:${Math.round(fill * 100)}%` }), h('b', null, String(t.essence))),
+          kf >= 0 ? h('span', { class: 'lamp', style: `--lk:${kf.toFixed(2)}`, title: `${this.L('keystone')} ${ks!.hp}/${g.def(ks!).stats.hp}` }, h('i', { class: 'flame' }), h('i', { class: 'tower' })) : null)));
   }
 
   private renderTop() {
     const g = this.g;
     clear(this.top);
-    const cur = g.teams[g.current];
+    const cur = g.teams[g.current], me = this.humanTeam();
+    const myTurn = cur.controller === 'human';
+    const others = g.teams.map((_, i) => i).filter(i => i !== me);
+    const endBtn = h('button', { class: 'endturn-pill btn-gold', disabled: !this.canActSoft(), title: 'End turn (E / Enter)', onclick: () => this.endTurn() }, 'End Turn');
     this.top.append(
-      h('div', { class: 'brand' }, h('span', { class: 'ebb' }, this.content.config?.labels?.title ?? 'EBB'), h('span', { class: 'mission' }, g.mission.name)),
-      h('div', { class: 'turnbox', style: `--tc:${cur.color}` }, h('span', { class: 'round' }, `Round ${g.round}`), h('span', { class: 'who' }, `${cur.name}${this.aiRunning ? ' is thinking' : "'s turn"}`)),
-      h('div', { class: 'spacer' }),
-      ...g.teams.map((_, i) => this.teamGauge(i)),
-      h('button', { id: 'endturn', class: 'brass', disabled: !this.canActSoft(), title: 'End turn (E / Enter)', onclick: () => this.endTurn() }, h('span', null, 'End Turn')),
-      h('button', { class: 'quiet menu', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, 'Menu'));
+      h('div', { class: 'hud-l' }, this.teamGauge(me, 'left')),
+      h('div', { class: 'roundmed', style: `--tc:${cur.color}` },
+        h('div', { class: 'rm-ring' }, h('small', null, 'Round'), h('b', null, String(g.round))),
+        h('div', { class: 'rm-ribbon' }, myTurn ? 'Your turn' : this.aiRunning ? `${cur.name.replace(/^The /, '')} acting` : `${cur.name.replace(/^The /, '')}`)),
+      h('div', { class: 'hud-r' }, ...others.map(i => this.teamGauge(i, 'right')), endBtn,
+        h('button', { class: 'iconbtn menubtn', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, glyph('gear'))));
   }
 
   // ---------- hand ----------
   private renderHand() {
     const g = this.g, t = this.humanTeam(), team = g.teams[t];
+    const scroll = this.hand.querySelector('.handrow')?.scrollLeft ?? 0;
     clear(this.hand);
     this.hand.classList.toggle('closed', !this.handOpen);
     const row = h('div', { class: 'handrow' });
+    const counts = { all: team.hand.length, unit: 0, spell: 0, equipment: 0 } as Record<string, number>;
+    team.hand.forEach(id => { counts[g.cardKind(id) ?? 'unit']++; });
+    if (this.handFilter !== 'all' && !counts[this.handFilter]) this.handFilter = 'all';
     team.hand.forEach((id, i) => {
       const kind = g.cardKind(id) ?? 'unit';
+      if (this.handFilter !== 'all' && kind !== this.handFilter) return;
       const cost = g.cardCost(id);
       const ok = this.canActSoft() && t === g.current && g.cardTargets(t, i).length > 0;
       const active = this.mode.kind === 'card' && this.mode.index === i;
       const card = buildCard(id, { size: 'hand', content: this.content });
       const why = ok ? '' : cost > team.essence ? `Not enough ${this.L('essence')}` : 'Cannot be played now';
-      const slot = h('div', { class: `slot ${kind}${active ? ' active' : ''}${ok ? '' : ' off'}`, title: why,
+      const slot = h('div', { class: `slot ${kind}${active ? ' active' : ''}${ok ? ' ok' : ' off'}`, title: why,
         onclick: () => {
           if (this.touch && this.previewId !== id) this.showPreview(id, slot); else this.hidePreview();
           if (!ok || !this.canAct()) return;
@@ -470,26 +502,35 @@ export class GameSession {
       }, card, h('button', { class: 'info', title: 'Details', onclick: (e: Event) => { e.stopPropagation(); if (this.previewId === id) this.hidePreview(); else this.showPreview(id, slot); } }, 'i'));
       row.append(slot);
     });
-    if (!team.hand.length) row.append(h('div', { class: 'muted empty' }, 'No cards in reserve.'));
+    if (!team.hand.length) row.append(h('div', { class: 'empty' }, 'Every relic is on the field.'));
     const hintFor = () => {
-      if (this.mode.kind !== 'card') return `${this.L('warband')} · tap a card, then a highlighted tile`;
+      if (this.mode.kind !== 'card') return t === g.current && this.canActSoft() ? 'Play a relic, or select a unit on the board' : 'Waiting for the enemy';
       const k = g.cardKind(team.hand[this.mode.index] ?? '');
-      return k === 'spell' ? 'Choose a target tile to cast. Esc cancels.' : k === 'equipment' ? 'Choose a friendly unit to equip. Esc cancels.' : 'Choose a green tile to deploy. Esc cancels.';
+      return k === 'spell' ? 'Choose a target to cast \u00B7 Esc cancels' : k === 'equipment' ? 'Choose a friendly unit to equip \u00B7 Esc cancels' : 'Choose a glowing tile to deploy \u00B7 Esc cancels';
     };
-    const tab = h('div', { class: 'handtab', onclick: () => { this.handOpen = !this.handOpen; this.hand.classList.toggle('closed', !this.handOpen); this.renderer.resize(); } },
-      h('span', { class: 'chev' }, this.handOpen ? '▾' : '▴'), h('span', { class: 'hint' }, hintFor()), h('span', { class: 'count' }, `${team.hand.length}`));
-    this.hand.append(tab, row);
+    const tabs = h('div', { class: 'htabs' }, ...([['all', 'All'], ['unit', 'Champions'], ['spell', 'Spells'], ['equipment', 'Gear']] as const).map(([k, n]) =>
+      h('button', { class: 'htab' + (this.handFilter === k ? ' on' : ''), disabled: !counts[k], onclick: (e: Event) => { e.stopPropagation(); this.handFilter = k; if (!this.handOpen) { this.handOpen = true; this.renderer.resize(); } this.renderHand(); } },
+        n, h('small', null, String(counts[k])))));
+    const strip = h('div', { class: 'hstrip' },
+      h('button', { class: 'htoggle', title: this.handOpen ? 'Hide hand' : 'Show hand', onclick: () => { this.handOpen = !this.handOpen; this.hand.classList.toggle('closed', !this.handOpen); this.renderHand(); this.renderer.resize(); } },
+        h('span', { class: 'chev' + (this.handOpen ? '' : ' up') }, '\u25BE'), h('span', null, this.L('warband')), h('b', null, String(team.hand.length))),
+      tabs, h('span', { class: 'hint' }, hintFor()));
+    const end = h('button', { id: 'endturn', class: 'endturn-big', disabled: !this.canActSoft(), title: 'End turn (E / Enter)', onclick: () => this.endTurn() },
+      h('span', { class: 'et-ring' }), h('span', { class: 'et-text' }, 'End', h('br'), 'Turn'));
+    this.hand.append(strip, h('div', { class: 'hmain' }, row, end));
     this.layoutHand();
+    row.scrollLeft = scroll;
   }
   /** Fan the hand so every card fits in the available width (cards overlap when there are many). */
   private layoutHand() {
     const row = this.hand.querySelector<HTMLElement>('.handrow'); if (!row) return;
     const slots = row.querySelectorAll<HTMLElement>('.slot'); if (!slots.length) return;
-    const avail = row.clientWidth - 24, cw = slots[0].offsetWidth || 120, n = slots.length;
-    const overlap = n > 1 ? Math.min(0, (avail - n * cw) / (n - 1)) : 0;
     const narrow = window.innerWidth < 900 || window.innerHeight < 520;
-    row.classList.toggle('scroll', narrow);
-    slots.forEach((s, i) => { s.style.marginLeft = narrow || i === 0 ? '' : `${Math.max(overlap, -cw * 0.7)}px`; s.style.zIndex = String(i + 1); });
+    const avail = row.clientWidth - 24, cw = slots[0].offsetWidth || 120, n = slots.length;
+    const overlap = n > 1 ? Math.min(6, (avail - n * cw) / (n - 1)) : 0;
+    const tight = !narrow && overlap < -cw * 0.62;
+    row.classList.toggle('scroll', narrow || tight);
+    slots.forEach((s, i) => { s.style.marginLeft = narrow || tight || i === 0 ? '' : `${overlap}px`; s.style.zIndex = String(i + 1); });
   }
 
   private showPreview(id: string, anchor: HTMLElement) {
@@ -507,19 +548,26 @@ export class GameSession {
   private unitPanel(u: Unit, full: boolean) {
     const g = this.g, d = g.def(u), team = g.teams[u.team];
     const maxAp = g.stat(u, 'ap');
-    const box = h('div', { class: 'upanel', style: `--tc:${team.color}` },
-      buildCard(u.defId, { size: 'portrait', content: this.content, live: { game: g, unit: u } }),
-      h('div', { class: 'bars' },
-        h('div', { class: 'bar' }, h('div', { class: 'fill hp', style: `width:${Math.max(0, u.hp / d.stats.hp * 100)}%` }), h('span', null, `HP ${u.hp}/${d.stats.hp}`)),
-        d.structure ? null : h('div', { class: 'bar' }, h('div', { class: 'fill ap', style: `width:${maxAp ? Math.min(100, u.ap / maxAp * 100) : 0}%` }), h('span', null, `AP ${u.ap}/${maxAp}`))),
-      h('div', { class: 'teamline' }, h('i', { class: 'dot' }), team.name, d.hero ? ' · Hero' : ''),
+    const fc = d.faction ? this.content.factions?.[d.faction]?.color : undefined;
+    const stat = (cls: string, lab: string, v: number, base: number) => h('div', { class: `ustat ${cls}${v > base ? ' up' : v < base ? ' down' : ''}`, title: lab }, h('small', null, lab), h('b', null, String(v)));
+    const pips = d.structure ? null : maxAp <= 12
+      ? h('div', { class: 'pips', title: `AP ${u.ap}/${maxAp}` }, h('small', null, 'AP'), ...Array.from({ length: maxAp }, (_, i) => h('i', { class: i < u.ap ? 'on' : '' })))
+      : h('div', { class: 'ubar ap' }, h('div', { class: 'fill', style: `width:${Math.min(100, u.ap / maxAp * 100)}%` }), h('span', null, `AP ${u.ap}/${maxAp}`));
+    const box = h('div', { class: 'upanel', style: `--tc:${team.color};--fc:${fc ?? team.color}` },
+      h('div', { class: 'u-head' }, h('div', { class: 'u-name' }, d.name), h('div', { class: 'u-type' }, h('i', { class: 'dot' }), `${team.name.replace(/^The /, '')} \u00B7 ${d.hero ? 'Hero' : d.structure ? 'Structure' : 'Champion'}${d.role && d.role.toLowerCase() !== 'hero' ? ' \u00B7 ' + d.role : ''}`)),
+      h('div', { class: 'u-main' },
+        h('div', { class: 'u-portrait' }, artNode(u.defId, this.content)),
+        h('div', { class: 'u-stats' },
+          h('div', { class: 'ubar hp' }, h('div', { class: 'fill', style: `width:${Math.max(0, u.hp / d.stats.hp * 100)}%` }), h('span', null, `${u.hp} / ${d.stats.hp}`)),
+          pips,
+          h('div', { class: 'ustats' }, stat('atk', 'ATK', g.stat(u, 'attack'), d.stats.attack), stat('def', 'DEF', g.stat(u, 'defense'), d.stats.defense)))),
       d.resist && Object.keys(d.resist).length ? h('div', { class: 'line' }, 'Resist: ' + Object.entries(d.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', ')) : null,
-      g.equipmentOf(u) ? h('div', { class: 'line equip', title: g.equipmentOf(u)!.description ?? '' }, h('b', null, g.equipmentOf(u)!.name), g.equipmentOf(u)!.description ? ' - ' + g.equipmentOf(u)!.description : '') : null,
+      g.equipmentOf(u) ? h('div', { class: 'line equip', title: g.equipmentOf(u)!.description ?? '' }, h('b', null, g.equipmentOf(u)!.name), g.equipmentOf(u)!.description ? ' \u2014 ' + g.equipmentOf(u)!.description : '') : null,
       d.revive ? h('div', { class: 'line' }, u.revived ? 'Has risen once already.' : `Rises once on death (${Math.round(d.revive.hpFraction * 100)}% HP).`) : null);
     if (u.statuses.length) {
       box.append(h('div', { class: 'statuses' }, ...u.statuses.map(s => {
         const sd = g.content.statuses[s.id];
-        return h('div', { class: 'status', title: sd?.description ?? '' }, h('span', { class: 'sdot', style: `background:${statusColor(s.id)}` }), h('b', null, `${sd?.name ?? s.id}`), h('span', { class: 'muted' }, ` ${s.remaining}${s.stacks && s.stacks > 1 ? ` ×${s.stacks}` : ''}`));
+        return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
       })));
     }
     if (full && d.description) box.append(h('div', { class: 'desc' }, d.description));
@@ -531,10 +579,8 @@ export class GameSession {
     clear(this.right);
     const u = this.sel();
     this.right.classList.toggle('open', !!u || (!this.touch && !!this.hover && !!g.unitAt(this.hover.x, this.hover.y)));
-    if (!u) {
-      this.right.append(h('div', { class: 'ptitle' }, 'No selection'), h('div', { class: 'muted small' }, 'Select one of your units to see its relic, statuses and abilities.'));
-    } else {
-      this.right.append(h('div', { class: 'ptitle' }, h('span', null, 'Selected'), h('button', { class: 'close', title: 'Close (Esc)', onclick: () => this.cancel() }, '×')));
+    if (u) {
+      this.right.append(h('button', { class: 'iconbtn close', title: 'Close (Esc)', onclick: () => this.cancel() }, glyph('close')));
       this.right.append(this.unitPanel(u, true));
       const abs = g.abilitiesOf(u);
       if (abs.length) {
@@ -545,8 +591,9 @@ export class GameSession {
           if (!a) return;
           const tip = [a.description ?? '', `Range ${a.range.min === a.range.max ? a.range.max : a.range.min + '-' + a.range.max}${a.area ? `, area ${a.area.size}` : ''}`,
             ...a.effects.map(e => effectText(this.content, e)), a.cooldown ? `Cooldown ${a.cooldown} turns` : ''].filter(Boolean).join('\n');
+          const icon = h('span', { class: 'r-icon' }, glyph(abilityGlyph(a)));
           if (a.passive) {
-            list.append(h('div', { class: 'rune passive', title: tip }, h('span', { class: 'slotno' }, '◇'), h('span', { class: 'an' }, a.name, h('small', null, a.description ?? '')), h('span', { class: 'meta' }, 'Passive')));
+            list.append(h('div', { class: 'rune passive', title: tip }, icon, h('span', { class: 'an' }, a.name, h('small', null, a.description ?? '')), h('span', { class: 'meta' }, 'Passive')));
             return;
           }
           const cd = u.cooldowns[id] ?? 0;
@@ -556,10 +603,10 @@ export class GameSession {
           list.append(h('button', {
             class: 'rune' + (active ? ' active' : ''), disabled: !usable, title: tip,
             onclick: () => { if (!this.canAct()) return; this.mode = active ? { kind: 'move' } : { kind: 'ability', ability: id }; this.refresh(); },
-          }, h('span', { class: 'slotno' }, String(idx)), h('span', { class: 'an' }, a.name, h('small', null, a.description ?? '')),
-            h('span', { class: 'meta' }, `${a.apCost} AP${cd > 0 ? ` · cd ${cd}` : a.cooldown ? ` · cd ${a.cooldown}` : ''}`)));
+          }, icon, h('span', { class: 'key' }, String(idx)), h('span', { class: 'an' }, a.name, h('small', null, a.description ?? '')),
+            h('span', { class: 'meta' }, h('b', null, String(a.apCost)), ' AP', cd > 0 ? h('em', null, `${cd} turn${cd === 1 ? '' : 's'}`) : null)));
         });
-        this.right.append(h('div', { class: 'ptitle sub' }, 'Abilities'), list);
+        this.right.append(list);
       }
     }
     this.right.append(this.hoverBox);
@@ -579,15 +626,15 @@ export class GameSession {
     const occ = g.unitAt(hv.x, hv.y);
     if (!this.touch) this.right.classList.toggle('open', !!this.sel() || !!occ);
     const t = g.tiles[hv.y][hv.x], terr = g.content.terrain[t.terrain];
-    if (occ && occ.uid !== this.selected) { this.hoverBox.append(h('div', { class: 'ptitle sub' }, 'Under cursor'), this.unitPanel(occ, false)); }
+    if (occ && occ.uid !== this.selected) { this.hoverBox.append(this.unitPanel(occ, false)); }
     const pv = this.renderer.overlay.previews;
     if (pv.size) {
-      const box = h('div', { class: 'preview' }, h('b', null, 'Predicted'));
-      for (const [uid, p] of pv) box.append(h('div', { style: `color:${p.color}` }, `${this.uname(uid)}: ${p.text}`));
+      const box = h('div', { class: 'preview' }, h('div', { class: 'pv-h' }, 'Forecast'));
+      for (const [uid, p] of pv) box.append(h('div', { class: 'pv-row' }, h('span', null, this.uname(uid)), h('b', { style: `color:${p.color}` }, p.text)));
       this.hoverBox.append(box);
     }
     this.hoverBox.append(h('div', { class: 'tileinfo' },
-      h('b', null, terr?.name ?? t.terrain), ` · height ${t.height} · move ${terr?.moveCost} · def +${terr?.defense ?? 0}`,
-      g.map.wells?.some(w => w.x === hv.x && w.y === hv.y) ? ` · ${this.L('essence')} well` : ''));
+      h('b', null, terr?.name ?? t.terrain), h('span', null, `Height ${t.height}`), h('span', null, `Move ${terr?.moveCost}`), terr?.defense ? h('span', null, `DEF +${terr.defense}`) : null,
+      g.map.wells?.some(w => w.x === hv.x && w.y === hv.y) ? h('span', { class: 'well' }, `${this.L('essence')} well`) : null));
   }
 }
