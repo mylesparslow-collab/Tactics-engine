@@ -4,7 +4,9 @@ import { label } from '../engine/content';
 import { clear, h } from './dom';
 import { describeObjectives } from './text';
 import { buildSkirmish, playableFactions } from '../engine/skirmish';
-import { crestSvg, glyph, installArt, keyArtSvg, teamFaction } from './art';
+import { crestSvg, glyph, installArt, kit, teamFaction } from './art';
+import { Game } from '../engine/game';
+import { Renderer } from '../render/renderer';
 
 export interface MissionChoice { missionId: string; campaign?: { id: string; index: number } }
 
@@ -19,16 +21,43 @@ function svgEl(markup: string, cls: string) {
 }
 function crest(fid: string | undefined, cls = 'crest', color?: string) { return svgEl(crestSvg(fid, color), cls); }
 
-/** Persistent menu backdrop (key art + drifting salt motes); screens swap inside its host. */
-function shell(root: HTMLElement): HTMLElement {
+let backdrop: { r: Renderer; ro: ResizeObserver } | null = null;
+/** Stop the live board behind the menus (called when a battle starts). */
+export function stopBackdrop() { if (backdrop) { backdrop.r.stop(); backdrop.ro.disconnect(); backdrop = null; } }
+
+/** The real game board, idling under the menus: painted tiles and units instead of illustrated key art. */
+function liveBoard(content: Content): HTMLElement {
+  const wrap = h('div', { class: 'bg' });
+  const cv = h('canvas', { class: 'bg-board' });
+  wrap.append(h('div', { class: 'bg-drift' }, cv), h('div', { class: 'bg-shade' }));
+  stopBackdrop();
+  try {
+    const camp = Object.values(content.campaigns)[0];
+    const mid = camp?.missions[0]?.mission ?? Object.keys(content.missions)[0];
+    const game = new Game(content, mid, { roster: camp?.startingRoster });
+    // put the player's opening hand on the field so the backdrop shows a company, not an empty board
+    for (let i = game.teams[game.current].hand.length - 1, n = 0; i >= 0 && n < 6; i--) {
+      const id = game.teams[game.current].hand[i];
+      if (game.cardKind(id) !== 'unit') continue;
+      const t = game.cardTargets(game.current, i);
+      if (t.length) { game.teams[game.current].essence = 999; game.playCard(game.current, i, t[(n * 3) % t.length].x, t[(n * 3) % t.length].y); n++; }
+    }
+    const r = new Renderer(cv);
+    requestAnimationFrame(() => { r.setGame(game); r.zoomBy(1.35); r.pan(wrap.clientWidth * 0.2, wrap.clientHeight * 0.05); r.start(); });
+    const ro = new ResizeObserver(() => r.resize()); ro.observe(wrap);
+    backdrop = { r, ro };
+  } catch (e) { console.warn('menu backdrop unavailable', e); }
+  return wrap;
+}
+
+/** Persistent menu backdrop; screens swap inside its host. */
+function shell(root: HTMLElement, content: Content): HTMLElement {
   installArt();
   let host = root.querySelector<HTMLElement>(':scope > .shell > .host');
   if (!host || !root.classList.contains('screen')) {
     clear(root); root.className = 'screen';
-    const motes = h('div', { class: 'motes' }, ...Array.from({ length: 18 }, (_, i) =>
-      h('i', { style: `--x:${(i * 53) % 100}%;--d:${9 + (i * 7) % 11}s;--dl:${-((i * 13) % 17)}s;--s:${1 + (i % 3)}px` })));
     host = h('div', { class: 'host' });
-    root.append(h('div', { class: 'shell' }, svgEl(keyArtSvg(), 'bg'), motes, host));
+    root.append(h('div', { class: 'shell' }, liveBoard(content), host));
   }
   clear(host);
   root.scrollTop = 0;
@@ -50,29 +79,27 @@ function ornament(cls = 'orn') {
 
 export function showMenu(root: HTMLElement, content: Content, errors: string[], onPick: Pick) {
   const ctx: Ctx = { root, content, errors, onPick };
-  const host = shell(root);
+  const host = shell(root, content);
   const L = content.config?.labels ?? {};
   const camps = Object.entries(content.campaigns);
   const campDone = camps.reduce((n, [id, c]) => n + Math.min(loadProgress(id).completed, c.missions.length), 0);
   const campTotal = camps.reduce((n, [, c]) => n + c.missions.length, 0);
   const scen = Object.keys(content.missions).filter(id => !id.startsWith('skirmish:')).length;
-  const plaque = (icon: string, title: string, sub: string, on: (() => void) | null, extra = '') =>
-    h('button', { class: 'plaque' + extra, disabled: !on, onclick: on ?? undefined },
-      h('span', { class: 'pl-icon' }, glyph(icon)), h('span', { class: 'pl-text' }, h('span', { class: 'pl-title' }, title), h('span', { class: 'pl-sub' }, sub)),
-      h('span', { class: 'pl-arrow' }, on ? '›' : glyph('lock')));
+  const item = (title: string, sub: string, on: (() => void) | null, extra = '') =>
+    h('button', { class: 'mitem' + extra, disabled: !on, onclick: on ?? undefined }, h('span', { class: 'mi-title' }, title), h('span', { class: 'mi-sub' }, sub));
   const scr = h('div', { class: 'scr title-scr' },
     h('div', { class: 'logo-block' },
-      h('div', { class: 'logo' }, L.title ?? 'EBB'),
-      ornament('orn logo-orn'),
+      h('img', { class: 'logo-img', src: '', alt: L.title ?? 'EBB', draggable: 'false' }),
       h('div', { class: 'logo-sub' }, L.subtitle ?? 'A tactics game')),
     h('nav', { class: 'mainnav' },
-      plaque('campaign', 'Campaign', campTotal ? `${campDone} of ${campTotal} missions won` : 'No campaigns', camps.length ? () => showCampaign(ctx) : null, ' primary'),
-      plaque('skirmish', 'Skirmish', 'Any faction against any faction', playableFactions(content).length >= 2 ? () => showSkirmish(ctx) : null),
-      plaque('scenarios', 'Scenarios', `${scen} standalone battle${scen === 1 ? '' : 's'}`, scen ? () => showScenarios(ctx) : null),
-      plaque('collection', 'Collection', 'Relics and Charts, coming soon', null)),
+      item('Campaign', campTotal ? `${campDone} / ${campTotal}` : '', camps.length ? () => showCampaign(ctx) : null, ' primary'),
+      item('Skirmish', '', playableFactions(content).length >= 2 ? () => showSkirmish(ctx) : null),
+      item('Scenarios', String(scen), scen ? () => showScenarios(ctx) : null),
+      item('Collection', 'Soon', null)),
     errors.length ? h('details', { class: 'errbox' }, h('summary', null, `Content check: ${errors.length} problem${errors.length === 1 ? '' : 's'}`),
       h('ul', null, ...errors.slice(0, 30).map(e => h('li', null, e)))) : null,
     h('footer', { class: 'ver' }, 'Prototype build'));
+  (scr.querySelector('.logo-img') as HTMLImageElement).src = kit('logo');
   host.append(scr);
 }
 
@@ -80,7 +107,7 @@ export function showMenu(root: HTMLElement, content: Content, errors: string[], 
 
 function showCampaign(ctx: Ctx) {
   const { content } = ctx;
-  const host = shell(ctx.root);
+  const host = shell(ctx.root, ctx.content);
   const ids = Object.keys(content.campaigns);
   const cid = ids.includes(memo.campaign) ? memo.campaign : ids[0];
   memo.campaign = cid;
@@ -180,7 +207,7 @@ function mapPreview(content: Content, mapId: string) {
 
 function showSkirmish(ctx: Ctx) {
   const { content } = ctx;
-  const host = shell(ctx.root);
+  const host = shell(ctx.root, ctx.content);
   const factions = playableFactions(content);
   const maps = Object.keys(content.maps);
   if (!factions.includes(memo.mine)) memo.mine = factions[0];
@@ -236,7 +263,7 @@ function showSkirmish(ctx: Ctx) {
 
 function showScenarios(ctx: Ctx) {
   const { content } = ctx;
-  const host = shell(ctx.root);
+  const host = shell(ctx.root, ctx.content);
   const list = Object.entries(content.missions).filter(([id]) => !id.startsWith('skirmish:'));
   host.append(h('div', { class: 'scr scen-scr' },
     screenHeader('Scenarios', 'Standalone battles', () => showMenu(ctx.root, content, ctx.errors, ctx.onPick)),
@@ -261,7 +288,7 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
   const m = content.missions[choice.missionId];
   const obj = describeObjectives(content, m);
   const map = content.maps[m.map];
-  const host = shell(root);
+  const host = shell(root, content);
   const kicker = choice.campaign ? `${content.campaigns[choice.campaign.id].name} · Mission ${choice.campaign.index + 1}` : 'Skirmish';
   const teams = m.teams.map(t => ({ t, f: missionTeamFaction(content, m, t) }));
   host.append(h('div', { class: 'scr brief-scr' },

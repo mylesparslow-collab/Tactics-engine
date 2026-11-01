@@ -8,48 +8,6 @@ const enc = (svg: string) => `url("data:image/svg+xml,${encodeURIComponent(svg.r
 
 // ---------------------------------------------------------------- frames
 
-/** Brass corner plate with rivet and salt bloom, drawn for the top-left corner of a `s`-sized frame. */
-function corner(s: number, big: boolean) {
-  const k = big ? 1 : 0.62;
-  const a = 40 * k, b = 12 * k;
-  return `<path d="M3 3 H${a} L${a - 7 * k} ${10 * k} H${b + 6} Q${b} ${b} ${b} ${b + 6} V${a - 7 * k} L3 ${a} Z" fill="url(#bz)" stroke="#120b04" stroke-width="1.2"/>
-    <path d="M6 6 H${a - 4 * k} M6 6 V${a - 4 * k}" stroke="#fff3c8" stroke-opacity=".55" stroke-width="1"/>
-    <circle cx="${15 * k}" cy="${15 * k}" r="${4.2 * k}" fill="url(#rv)" stroke="#2a1a06" stroke-width=".8"/>
-    <circle cx="${13.8 * k}" cy="${13.8 * k}" r="${1.3 * k}" fill="#fff8dc"/>
-    <g fill="#f4f1e8" opacity=".75"><path d="M${4 * k} ${a + 3} l2 -4 l2 4 z"/><path d="M${a + 2} ${4 * k} l3 -1 l-1 4 z"/><circle cx="${a - 1}" cy="${13 * k}" r=".9"/><circle cx="${12 * k}" cy="${a + 6 * k}" r=".8"/></g>`;
-}
-
-function frameSvg(s: number, big: boolean) {
-  const c = corner(s, big);
-  const band = big ? 6 : 4;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">
-  <defs>
-    <linearGradient id="bz" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e1a3"/><stop offset=".35" stop-color="#c99a4b"/><stop offset=".6" stop-color="#7a5620"/><stop offset="1" stop-color="#d3ac5e"/></linearGradient>
-    <linearGradient id="bv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9cc84"/><stop offset=".5" stop-color="#a77a2d"/><stop offset="1" stop-color="#5e4213"/></linearGradient>
-    <radialGradient id="rv" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff2c0"/><stop offset=".5" stop-color="#c99a4b"/><stop offset="1" stop-color="#4a3310"/></radialGradient>
-  </defs>
-  <rect x="1" y="1" width="${s - 2}" height="${s - 2}" rx="5" fill="none" stroke="#0a0603" stroke-width="2"/>
-  <rect x="${2 + band / 2}" y="${2 + band / 2}" width="${s - 4 - band}" height="${s - 4 - band}" rx="4" fill="none" stroke="url(#bv)" stroke-width="${band}"/>
-  <rect x="${2.5 + band}" y="${2.5 + band}" width="${s - 5 - band * 2}" height="${s - 5 - band * 2}" rx="2" fill="none" stroke="#120b04" stroke-width="1.4"/>
-  <rect x="${4.5 + band}" y="${4.5 + band}" width="${s - 9 - band * 2}" height="${s - 9 - band * 2}" rx="1.5" fill="none" stroke="#e8c57a" stroke-opacity=".28" stroke-width="1"/>
-  <g>${c}</g>
-  <g transform="translate(${s} 0) scale(-1 1)">${c}</g>
-  <g transform="translate(0 ${s}) scale(1 -1)">${c}</g>
-  <g transform="translate(${s} ${s}) scale(-1 -1)">${c}</g>
-</svg>`;
-}
-
-/** Thin plate frame for buttons and small chips. */
-function plateSvg() {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-  <defs><linearGradient id="p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0d690"/><stop offset=".45" stop-color="#b48838"/><stop offset=".55" stop-color="#83601f"/><stop offset="1" stop-color="#d8b25f"/></linearGradient></defs>
-  <rect x=".5" y=".5" width="47" height="47" rx="6" fill="none" stroke="#0a0603"/>
-  <rect x="2" y="2" width="44" height="44" rx="5" fill="none" stroke="url(#p)" stroke-width="3"/>
-  <rect x="4.5" y="4.5" width="39" height="39" rx="3" fill="none" stroke="#120b04"/>
-  <rect x="5.5" y="5.5" width="37" height="37" rx="2.5" fill="none" stroke="#ffe7a6" stroke-opacity=".18"/>
-</svg>`;
-}
-
 /** Paper grain (static) used under chart panels. */
 function grainSvg(light: boolean) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 ${light ? '.35 0 0 0 0 .25 0 0 0 0 .1' : '.8 0 0 0 0 .75 0 0 0 0 .6'} 0 0 0 ${light ? '.16' : '.07'} 0"/></filter><rect width="220" height="220" filter="url(#n)"/></svg>`;
@@ -60,17 +18,22 @@ function chartSvg() {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><g stroke="#7fb3c8" stroke-opacity=".07" fill="none"><path d="M0 .5 H160 M.5 0 V160"/><path d="M0 80.5 H160 M80.5 0 V160" stroke-dasharray="2 4"/></g><g fill="#9fc4d0" fill-opacity=".07" font-family="serif" font-size="8" font-style="italic"><text x="22" y="40">14</text><text x="110" y="122">9</text><text x="120" y="30">22</text></g></svg>`;
 }
 
+const KIT = import.meta.glob('./kit/*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+/** URL of a baked UI-kit texture (tools/uikit/bake.py). */
+export const kit = (n: string) => KIT[`./kit/${n}.png`];
+
 export function installArt() {
   if (document.getElementById('ebb-art')) return;
   if (!document.getElementById('ebb-fonts')) {
     const ln = document.createElement('link');
     ln.id = 'ebb-fonts'; ln.rel = 'stylesheet';
-    ln.href = 'https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Cinzel+Decorative:wght@700;900&family=Alegreya:ital,wght@1,400;1,500&family=Alegreya+Sans:wght@400;500;700&display=swap';
+    ln.href = 'https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@1,400;1,500&family=Alegreya+Sans:wght@400;500;700;800;900&display=swap';
     document.head.append(ln);
   }
   const st = document.createElement('style');
   st.id = 'ebb-art';
-  st.textContent = `:root{--frame-lg:${enc(frameSvg(120, true))};--frame-sm:${enc(frameSvg(72, false))};--plate:${enc(plateSvg())};--grain:${enc(grainSvg(false))};--grain-paper:${enc(grainSvg(true))};--chart:${enc(chartSvg())};}`;
+  const u = (n: string) => `url("${kit(n)}")`;
+  st.textContent = `:root{--frame-lg:${u('frame')};--frame-sm:${u('frame_sm')};--plate:${u('plate')};--plate-gold:${u('plate_gold')};--slate:${u('slate')};--k-logo:${u('logo')};--k-endturn:${u('endturn')};--k-tide:${u('coin_tide')};--k-hp:${u('coin_hp')};--k-round:${u('coin_round')};--grain:${enc(grainSvg(false))};--grain-paper:${enc(grainSvg(true))};--chart:${enc(chartSvg())};}`;
   document.head.append(st);
 }
 
@@ -163,79 +126,6 @@ export function teamFaction(content: { units: Record<string, { faction?: string 
   let best: string | undefined, bn = 0;
   for (const [f, c] of n) if (c > bn) { best = f; bn = c; }
   return best;
-}
-
-// ---------------------------------------------------------------- title key art
-
-/** The drained seabed under the lifted sea, with a working lighthouse. Animated with SMIL/CSS transforms only. */
-export function keyArtSvg(): string {
-  const waves = Array.from({ length: 7 }, (_, i) => {
-    const y = 30 + i * 22, a = 6 + (i % 3) * 3, w = 140 + i * 20;
-    let d = `M-200 ${y}`;
-    for (let x = -200; x <= 1900; x += w) d += ` q${w / 4} ${-a} ${w / 2} 0 t${w / 2} 0`;
-    return `<path d="${d}" stroke="#bfe9e2" stroke-opacity="${(0.16 - i * 0.018).toFixed(3)}" stroke-width="${2 - i * 0.18}" fill="none"/>`;
-  }).join('');
-  const ribs = (x: number, y: number, s: number, n: number) => Array.from({ length: n }, (_, i) =>
-    `<path d="M${x + i * 16 * s} ${y} q${-10 * s} ${-60 * s} ${8 * s} ${-90 * s + i * 6 * s}" stroke="#2a2428" stroke-width="${5 * s}" fill="none" stroke-linecap="round"/>`).join('');
-  const coral = (x: number, y: number, s: number, flip = 1) => `<g transform="translate(${x} ${y}) scale(${s * flip} ${s})" stroke="#120f16" stroke-linecap="round" fill="none">
-    <path d="M0 0 C-4 -40 -20 -60 -36 -90 M-10 -36 C4 -60 12 -70 18 -96 M-22 -64 C-40 -74 -50 -80 -58 -98 M8 -70 C24 -80 30 -90 40 -100" stroke-width="7"/>
-    <path d="M-36 -90 l-6 -14 M18 -96 l2 -12 M-58 -98 l-8 -8 M40 -100 l8 -8" stroke-width="4"/></g>`;
-  return `<svg class="keyart" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <defs>
-    <linearGradient id="ka-sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#14202a"/><stop offset=".16" stop-color="#2a3a44"/><stop offset=".3" stop-color="#3e3a52"/>
-      <stop offset=".5" stop-color="#6a5c72"/><stop offset=".62" stop-color="#8f8a7c"/><stop offset=".7" stop-color="#9aa182"/></linearGradient>
-    <linearGradient id="ka-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b2a33" stop-opacity=".95"/><stop offset=".7" stop-color="#1e4650" stop-opacity=".35"/><stop offset="1" stop-color="#3f6d70" stop-opacity="0"/></linearGradient>
-    <radialGradient id="ka-haze" cx=".62" cy=".62" r=".5"><stop offset="0" stop-color="#f1edcf" stop-opacity=".55"/><stop offset="1" stop-color="#f1edcf" stop-opacity="0"/></radialGradient>
-    <linearGradient id="ka-floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8d887a"/><stop offset=".3" stop-color="#6b665e"/><stop offset="1" stop-color="#2a2629"/></linearGradient>
-    <linearGradient id="ka-rim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b5466"/><stop offset="1" stop-color="#3d3846"/></linearGradient>
-    <linearGradient id="ka-rim2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f3848"/><stop offset="1" stop-color="#29232f"/></linearGradient>
-    <linearGradient id="ka-beam" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#ffe7a0" stop-opacity=".55"/><stop offset=".5" stop-color="#ffe7a0" stop-opacity=".14"/><stop offset="1" stop-color="#ffe7a0" stop-opacity="0"/></linearGradient>
-    <radialGradient id="ka-lamp"><stop offset="0" stop-color="#fff8dc"/><stop offset=".2" stop-color="#ffd86b" stop-opacity=".9"/><stop offset="1" stop-color="#ffb84a" stop-opacity="0"/></radialGradient>
-    <radialGradient id="ka-mist" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#d9d6c8" stop-opacity=".32"/><stop offset="1" stop-color="#d9d6c8" stop-opacity="0"/></radialGradient>
-    <linearGradient id="ka-tower" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e9e4d4"/><stop offset=".55" stop-color="#b9b2a0"/><stop offset="1" stop-color="#6d6758"/></linearGradient>
-    <linearGradient id="ka-shaft" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8fff6" stop-opacity=".22"/><stop offset=".6" stop-color="#d8fff6" stop-opacity=".07"/><stop offset="1" stop-color="#d8fff6" stop-opacity="0"/></linearGradient>
-    <radialGradient id="ka-salt"><stop offset="0" stop-color="#efeadb" stop-opacity=".38"/><stop offset=".6" stop-color="#efeadb" stop-opacity=".12"/><stop offset="1" stop-color="#efeadb" stop-opacity="0"/></radialGradient>
-    <linearGradient id="ka-rock" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4a4352"/><stop offset=".5" stop-color="#2e2833"/><stop offset="1" stop-color="#1c1820"/></linearGradient>
-    <radialGradient id="ka-vig" cx=".5" cy=".45" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#05040a" stop-opacity=".85"/></radialGradient>
-  </defs>
-  <rect width="1600" height="900" fill="url(#ka-sky)"/>
-  <rect width="1600" height="260" fill="url(#ka-sea)"/>
-  <g class="ka-waves">${waves}</g>
-  <g fill="url(#ka-shaft)"><polygon points="300,0 360,0 560,620 420,620"/><polygon points="960,0 990,0 1080,560 1020,560"/><polygon points="1330,0 1360,0 1450,600 1400,600"/></g>
-  <rect width="1600" height="900" fill="url(#ka-haze)"/>
-  <path d="M0 520 L80 500 L140 512 L230 488 L300 500 L380 476 L470 498 L520 490 L560 530 L1600 530 L1600 470 L1530 480 L1460 458 L1400 474 L1330 452 L1260 476 L1200 470 L1150 500 L1100 530 L0 560 Z" fill="url(#ka-rim)" opacity=".85"/>
-  <g stroke="#7a7186" stroke-opacity=".35" fill="none"><path d="M0 532 L540 512 M1110 512 L1600 496 M0 546 L520 530 M1130 522 L1600 512"/></g>
-  <path d="M0 560 L60 548 L130 556 L220 540 L320 556 L420 548 L520 566 L620 560 L760 572 L900 566 L1040 574 L1180 560 L1320 566 L1440 552 L1600 560 L1600 900 L0 900 Z" fill="url(#ka-floor)"/>
-  <g fill="url(#ka-salt)"><ellipse cx="420" cy="640" rx="320" ry="34"/><ellipse cx="900" cy="606" rx="240" ry="16"/><ellipse cx="760" cy="730" rx="420" ry="54"/><ellipse cx="1350" cy="690" rx="260" ry="30"/></g>
-  <g stroke="#3a3530" stroke-opacity=".5" fill="none" stroke-width="1.4"><path d="M200 660 l60 -10 l40 18 l70 -6 M610 700 l50 14 l40 -12 l80 10 M980 640 l40 10 l60 -8 M340 760 l90 -14 l60 22"/></g>
-  <g transform="translate(780 604) rotate(-6)" opacity=".85">
-    <path d="M0 0 C40 -6 150 -8 230 -2 L250 -22 L262 -20 L244 4 C160 14 50 12 0 0 Z" fill="#2e282c"/>
-    ${ribs(18, 2, 0.42, 9)}
-    <path d="M60 -40 L64 -2 M62 -40 L40 -26" stroke="#2e282c" stroke-width="3"/>
-  </g>
-  <g opacity=".55">${ribs(330, 606, 0.5, 5)}</g>
-  <g class="ka-mist"><ellipse cx="500" cy="590" rx="520" ry="46" fill="url(#ka-mist)"/><ellipse cx="1200" cy="610" rx="460" ry="40" fill="url(#ka-mist)"/></g>
-  <g transform="translate(1188 0)">
-    <path d="M-130 660 C-120 620 -90 604 -60 600 L-44 560 C-30 548 30 546 46 562 L64 600 C96 606 124 626 136 660 Z" fill="url(#ka-rock)"/>
-    <path d="M-60 600 L-44 560 M46 562 L64 600 M-100 630 C-80 618 -60 616 -40 618" stroke="#5a5262" stroke-width="2" fill="none" opacity=".7"/>
-    <path d="M-26 560 L-18 360 H18 L26 560 Z" fill="url(#ka-tower)"/>
-    <g stroke="#6d6758" stroke-opacity=".5" stroke-width="1.2"><path d="M-25 530 H25 M-24 500 H24 M-23 470 H23 M-22 440 H22 M-21 410 H21 M-20 384 H20"/></g>
-    <rect x="-5" y="450" width="10" height="16" rx="5" fill="#2b2622"/><rect x="-4" y="398" width="8" height="12" rx="4" fill="#ffd86b" opacity=".8"/>
-    <rect x="-28" y="348" width="56" height="12" fill="#3b3430"/><rect x="-32" y="344" width="64" height="5" fill="#8a6a2a"/>
-    <path d="M-30 344 V334 M-20 344 V334 M-10 344 V334 M10 344 V334 M20 344 V334 M30 344 V334 M-31 334 H31" stroke="#3b3430" stroke-width="1.6"/>
-    <rect x="-15" y="312" width="30" height="34" fill="#2b2622"/><rect x="-11" y="316" width="22" height="26" fill="#ffe08a"/>
-    <path d="M-19 312 L0 292 L19 312 Z" fill="#3b3430"/><circle cx="0" cy="288" r="3" fill="#3b3430"/>
-    <g><animateTransform attributeName="transform" type="rotate" values="-9 0 329; 7 0 329; -9 0 329" dur="9s" repeatCount="indefinite"/>
-      <polygon points="0,322 -1250,180 -1250,470 0,336" fill="url(#ka-beam)"/></g>
-    <circle cx="0" cy="329" r="70" fill="url(#ka-lamp)"><animate attributeName="r" values="62;74;62" dur="3.2s" repeatCount="indefinite"/></circle>
-  </g>
-  <g transform="translate(742 676)"><circle r="18" fill="url(#ka-lamp)" opacity=".8"/><path d="M-3 0 L-4 -18 Q0 -24 4 -18 L3 0 Z M-2 -24 a3.4 3.4 0 1 1 4 0" fill="#1a1618"/><path d="M4 -16 L9 -10" stroke="#1a1618" stroke-width="1.6"/><circle cx="9.5" cy="-8" r="2.4" fill="#ffd86b"/></g>
-  <path d="M0 900 L0 760 C60 740 120 760 170 790 C240 760 300 800 340 840 L380 900 Z" fill="#141017"/>
-  <path d="M1600 900 L1600 740 C1540 720 1460 750 1420 780 C1360 770 1290 820 1260 860 L1240 900 Z" fill="#141017"/>
-  ${coral(180, 820, 1.1)}${coral(1450, 800, 1.25, -1)}${coral(1330, 870, 0.7)}
-  <rect width="1600" height="900" fill="url(#ka-vig)"/>
-</svg>`;
 }
 
 // ---------------------------------------------------------------- glyphs
