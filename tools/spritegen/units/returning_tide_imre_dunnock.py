@@ -67,7 +67,10 @@ def build(P):
     for sx in (-1, 1):
         add(Torus(H + R @ v3(sx * 0.035, 0.004, 0.088) * h, R[:, 2], 0.024, 0.0035), 'gold', 0.0)
     # the Wet Saint's rod
-    r = held(P, add, 'r', 'staff', shaft='rod', head='gold', below=1.12, above=0.62)
+    if P.get('rod_fwd'):
+        r = held(P, add, 'r', 'staff', shaft='rod', head='gold', below=0.35, above=1.25)
+    else:
+        r = held(P, add, 'r', 'staff', shaft='rod', head='gold', below=1.12, above=0.62)
     # the ledger
     pages = ledger(P, add, hand_pos(P, 'l'), P.get('ledger_open', 1.0))
     drips(P, add, pages + [P['pelvis'] + v3(-0.2, -0.66, 0.05), P['pelvis'] + v3(0.21, -0.68, -0.04)], fall=0.5)
@@ -98,6 +101,7 @@ def _post(fr):
     # attack: points the rod at the target. cast: lifts the ledger high and reads aloud.
     for i, (P, lk) in enumerate(fr['attack']):
         P['item_l'] = v3(0, 0, 1)
+        P['rod_fwd'] = True
     for i, (P, lk) in enumerate(fr['cast']):
         g = [v3(0.10, 1.30, 0.30), v3(0.12, 1.55, 0.30), v3(0.08, 1.30, 0.32)][i]
         rig.place_arm(P, 'l', g, (1, -0.6, -0.3))
