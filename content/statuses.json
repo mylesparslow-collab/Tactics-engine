@@ -9,16 +9,16 @@
  },
  "caustic": {
   "name": "Caustic",
-  "description": "Salt eats at armour and skin. -2 defense.",
+  "description": "Salt eats at armour and skin. -1 defense.",
   "statMods": {
-   "defense": -2
+   "defense": -1
   }
  },
  "crushed": {
   "name": "Crushed",
-  "description": "Pressed down by abyssal weight. -2 AP.",
+  "description": "Pressed down by abyssal weight. -1 AP.",
   "statMods": {
-   "ap": -2
+   "ap": -1
   }
  },
  "burning": {
