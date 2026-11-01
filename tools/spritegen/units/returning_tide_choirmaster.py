@@ -16,9 +16,10 @@ def neutral_pose():
     P = base_pose(height=1.08, build=0.95)
     rig.lean(P, fwd=np.radians(-3))
     P['head_pitch'] = np.radians(-8)
-    rig.place_arm(P, 'r', v3(-0.26, 1.90, 0.10), (-1, -0.2, -0.5), l1=0.29, l2=0.28)
-    rig.place_arm(P, 'l', v3(0.36, 1.26, 0.22), (1, -0.5, -0.3), l1=0.29, l2=0.28)
-    P['item_r'] = norm(v3(0.15, 0.6, 0.6))
+    # staff arm raised out to the side (not over the head, which hid the face behind the forearm)
+    rig.place_arm(P, 'r', v3(-0.44, 1.64, 0.20), (-1, -0.7, -0.3), l1=0.29, l2=0.28)
+    rig.place_arm(P, 'l', v3(0.34, 1.22, 0.30), (1, -0.8, -0.2), l1=0.29, l2=0.28)
+    P['item_r'] = norm(v3(-0.40, 1.0, 0.05))
     return P
 
 

@@ -311,8 +311,19 @@ def rain(add, center, w=0.28, n=9, length=0.12, phase=0.0, mat='drip', top=0.0, 
 
 def tide_rows(neutral_pose, attack_style='swing', weapon_side='r', sink=0.35, cast_side='l', post=None):
     """Kit humanoid rows with the Tide death (slight sink into a spreading brine pool)."""
-    ROWS, fr = humanoid_rows(neutral_pose, attack_style=attack_style, weapon_side=weapon_side,
-                             sink_depth=sink, cast_side=cast_side)
+    ROWS, fr0 = humanoid_rows(neutral_pose, attack_style=attack_style, weapon_side=weapon_side,
+                              sink_depth=sink, cast_side=cast_side)
+
+    def fr():
+        out = fr0()
+        # The kit kneel throws the back foot far behind the body. Under a Tide robe that bare pale
+        # foot pokes out alone and reads as a detached bone at 1x, so tuck it in under the hem.
+        for i in (1, 2):
+            P = out['death'][i][0]
+            h = P['height']
+            back = v3(P['an_r'][0] * 0.7, 0.07, P['pelvis'][2] - 0.13 * h)
+            rig.place_leg(P, 'r', back, l1=0.43 * h, l2=0.42 * h, pole=(0, -0.3, 1))
+        return out
     if post is None:
         return ROWS, fr
 

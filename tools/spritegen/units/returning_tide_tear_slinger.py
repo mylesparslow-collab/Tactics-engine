@@ -18,9 +18,10 @@ def neutral_pose():
     rig.shift(P, ('pelvis', 'hip_r', 'hip_l') + rig.UPPER, v3(0, -0.03, 0))
     rig.lean(P, fwd=np.radians(6), side=np.radians(-3))
     P['head_pitch'] = np.radians(2)
-    rig.place_arm(P, 'r', v3(-0.30, 0.98, -0.02), (-0.5, 0, -1))
-    rig.place_arm(P, 'l', v3(0.26, 1.12, 0.30), (0.6, -0.6, -0.3))
-    P['item_r'] = norm(v3(-0.15, -1.0, 0.15))
+    # sling arm hangs loose and a little out; the old backward elbow made a hard triangle
+    rig.place_arm(P, 'r', v3(-0.32, 1.02, 0.12), (-1, -0.2, 0.2))
+    rig.place_arm(P, 'l', v3(0.21, 1.16, 0.30), (0.6, -0.8, -0.3))
+    P['item_r'] = norm(v3(-0.40, -1.0, 0.20))
     return P
 
 
