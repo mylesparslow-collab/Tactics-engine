@@ -42,6 +42,7 @@ export class GameSession {
   private ended = false;
   private bannerQueue: { text: string; speaker?: string }[] = [];
   private bannerBusy = false;
+  private enterArmed = 0;
   private cleanup: (() => void)[] = [];
   private logOpen = false;
   private handOpen = typeof window === 'undefined' || window.innerHeight >= 500;
@@ -223,6 +224,8 @@ export class GameSession {
     const f = this.toast;
     clear(f);
     const m = /^Round (\d+) - (.*)$/.exec(text);
+    f.classList.toggle('hint', !m);
+    if (!m) { f.append(h('div', { class: 'tf-hint' }, text)); f.classList.remove('hidden', 'show'); void f.offsetWidth; f.classList.add('show'); return; }
     const ti = team ?? this.g.current;
     const mine = this.g.teams[ti]?.controller === 'human';
     f.style.setProperty('--tc', color ?? this.g.teams[ti]?.color ?? '#e8c57a');
@@ -326,7 +329,11 @@ export class GameSession {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const k = e.key.toLowerCase();
     if (k === 'escape') this.cancel();
-    else if (k === 'enter') { e.preventDefault(); this.endTurn(); } // not 'e': it sits next to WASD
+    else if (k === 'enter') { // press twice to end the turn (not 'e': it sits next to WASD)
+      e.preventDefault();
+      if (performance.now() < this.enterArmed) { this.enterArmed = 0; this.endTurn(); }
+      else if (this.canActSoft()) { this.enterArmed = performance.now() + 2500; this.toastMsg('Press Enter again to end turn'); }
+    }
     else if (k === 'q') this.renderer.rotate(-1);
     else if (k === 'r') this.renderer.rotate(1);
     else if (k === '+' || k === '=') this.renderer.zoomBy(1.2);
@@ -472,7 +479,7 @@ export class GameSession {
     const cur = g.teams[g.current], me = this.humanTeam();
     const myTurn = cur.controller === 'human';
     const others = g.teams.map((_, i) => i).filter(i => i !== me);
-    const endBtn = h('button', { class: 'endturn-pill btn-gold', disabled: !this.canActSoft(), title: 'End turn (Enter)', onclick: () => this.endTurn() }, 'End Turn');
+    const endBtn = h('button', { class: 'endturn-pill btn-gold', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() }, 'End Turn');
     this.top.append(
       h('div', { class: 'hud-l' }, this.teamGauge(me, 'left')),
       h('div', { class: 'roundmed', style: `--tc:${cur.color}` },
@@ -525,7 +532,7 @@ export class GameSession {
       h('button', { class: 'htoggle', title: this.handOpen ? 'Hide hand' : 'Show hand', onclick: () => { this.handOpen = !this.handOpen; this.hand.classList.toggle('closed', !this.handOpen); this.renderHand(); this.renderer.resize(); } },
         h('span', { class: 'chev' + (this.handOpen ? '' : ' up') }, '\u25BE'), h('span', null, this.L('warband')), h('b', null, String(team.hand.length))),
       tabs, h('span', { class: 'hint' }, hintFor()));
-    const end = h('button', { id: 'endturn', class: 'endturn-big', disabled: !this.canActSoft(), title: 'End turn (Enter)', onclick: () => this.endTurn() },
+    const end = h('button', { id: 'endturn', class: 'endturn-big', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() },
       h('span', { class: 'et-ring' }), h('span', { class: 'et-text' }, 'End', h('br'), 'Turn'));
     this.hand.append(strip, h('div', { class: 'hmain' }, row, end));
     this.layoutHand();
