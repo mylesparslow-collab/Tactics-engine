@@ -52,7 +52,7 @@ function sealedCard(c: Content, id: string, size: 'hand' | 'full'): HTMLElement 
 }
 
 function sourceText(c: Content, id: string, src = relicSources(c).get(id)) {
-  if (!src) return 'Not yet earnable. Future campaigns and the Pearl exchange will raise this relic.';
+  if (!src) return 'Open to all commanders until its faction\'s campaign arrives.';
   if (src.mission === undefined) return `Part of the starting company in ${src.campaignName}.`;
   return `Earned in ${src.campaignName}, mission ${src.mission + 1}: ${src.missionName}.`;
 }

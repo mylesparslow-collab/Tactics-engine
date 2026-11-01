@@ -52,9 +52,12 @@ export function relicSources(c: Content): Map<string, RelicSource> {
   return out;
 }
 
-/** Cards the player owns right now. */
+/** Cards the player owns right now. Relics that no campaign awards yet start unlocked, so every faction is
+ * available until its own campaign arrives to earn them through. */
 export function ownedRelics(c: Content): Set<string> {
   const owned = readSet(OWNED_KEY);
+  const sources = relicSources(c);
+  for (const id of allRelics(c)) if (!sources.has(id)) owned.add(id);
   for (const [cid, camp] of Object.entries(c.campaigns)) {
     camp.startingRoster.forEach(id => owned.add(id));
     const done = loadProgress(cid).completed;
@@ -66,8 +69,8 @@ export function ownedRelics(c: Content): Set<string> {
 /** Owned cards earned from missions that the player has not opened in the collection yet. */
 export function unseenRelics(c: Content, owned = ownedRelics(c)): Set<string> {
   const seen = readSet(SEEN_KEY);
-  const starting = new Set(Object.values(c.campaigns).flatMap(x => x.startingRoster));
-  return new Set([...owned].filter(id => !seen.has(id) && !starting.has(id)));
+  const sources = relicSources(c);
+  return new Set([...owned].filter(id => !seen.has(id) && sources.get(id)?.mission !== undefined));
 }
 export function markSeen(ids: string[]) {
   const s = readSet(SEEN_KEY); let changed = false;

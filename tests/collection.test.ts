@@ -25,7 +25,11 @@ describe('relic collection', () => {
   });
 
   it('owns the starting company and mission unlocks already won', () => {
-    expect([...ownedRelics(c)].sort()).toEqual([...new Set(camp.startingRoster)].sort());
+    const sources = relicSources(c);
+    const free = allRelics(c).filter(id => !sources.has(id));
+    expect(free.length).toBeGreaterThan(0);
+    expect([...ownedRelics(c)].sort()).toEqual([...new Set([...camp.startingRoster, ...free])].sort());
+    for (const id of camp.missions[0].unlocks ?? []) expect(ownedRelics(c).has(id)).toBe(false);
     saveProgress(cid, { completed: 2 });
     const owned = ownedRelics(c);
     for (const m of camp.missions.slice(0, 2)) for (const id of m.unlocks ?? []) expect(owned.has(id)).toBe(true);
