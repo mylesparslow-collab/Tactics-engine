@@ -149,13 +149,16 @@ export class Renderer {
     this.panX = Math.max(-lim, Math.min(lim, this.panX)); this.panY = Math.max(-lim, Math.min(lim, this.panY));
   }
   private userMoved = false;
+  private panVel = { x: 0, y: 0 };
+  /** Held-key camera pan direction (-1..1 per axis); applied each frame. */
+  setPanVelocity(x: number, y: number) { this.panVel = { x: Math.sign(x), y: Math.sign(y) }; }
   private applyView() {
     const { minX, maxX, minY, maxY } = this.bounds();
     const bw = maxX - minX, bh = maxY - minY;
     this.scale = this.fitScale * this.zoom;
     this.ox = this.cssW / 2 - (minX + bw / 2) * this.scale + this.panX;
     this.oy = (this.cssH - this.bottomInset) / 2 - (minY + bh / 2) * this.scale + this.panY;
-    const need = Math.min(2, this.scale * this.dpr);
+    const need = Math.min(2.5, this.scale * this.dpr);
     if (this.board && need > this.boardK * 1.3) { clearTimeout(this.zoomTimer); this.zoomTimer = setTimeout(() => { this.boardDirty = true; }, 150); }
   }
   private zoomTimer: ReturnType<typeof setTimeout> | undefined;
@@ -167,7 +170,7 @@ export class Renderer {
   /** Multiply zoom, keeping the CSS point (cx,cy) fixed. */
   zoomBy(f: number, cx = this.cssW / 2, cy = this.cssH / 2) {
     const z0 = this.zoom; this.userMoved = true;
-    this.zoom = Math.max(0.5, Math.min(4, this.zoom * f));
+    this.zoom = Math.max(0.5, Math.min(Math.max(4, 2.6 / this.fitScale), this.zoom * f));
     const k = this.zoom / z0;
     const wx = (cx - this.ox), wy = (cy - this.oy);
     this.panX += (wx - wx * k) ; this.panY += (wy - wy * k);
@@ -368,7 +371,7 @@ export class Renderer {
   private buildBoard() {
     visualTiles(this.game, this.vt);
     const { minX, maxX, minY, maxY } = this.bounds();
-    const want = Math.min(2, Math.max(0.5, this.scale * this.dpr));
+    const want = Math.min(2.5, Math.max(0.5, this.scale * this.dpr));
     const k = Math.min(want, Math.sqrt(12_000_000 / Math.max(1, (maxX - minX) * (maxY - minY)))); // stay under ~12 MP (mobile canvas limits)
     const W = Math.ceil((maxX - minX) * k), H = Math.ceil((maxY - minY) * k);
     if (!this.board || this.board.width !== W || this.board.height !== H) { this.board = document.createElement('canvas'); this.board.width = W; this.board.height = H; }
@@ -415,6 +418,7 @@ export class Renderer {
       this.particles = this.particles.filter(p => now - p.born < p.life);
       for (const p of this.particles) { p.x += p.vx * s; p.y += p.vy * s; p.vy += p.g * s; p.vx *= 0.98; }
     }
+    if (this.panVel.x || this.panVel.y) { const sp = Math.max(this.cssW, this.cssH) * 0.9 * dt / 1000; this.pan(this.panVel.x * sp, this.panVel.y * sp); }
     if (this.boardDirty) this.buildBoard();
 
     const ctx = this.ctx, g = this.game;
