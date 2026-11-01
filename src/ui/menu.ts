@@ -4,6 +4,7 @@ import { label } from '../engine/content';
 import { clear, h } from './dom';
 import { describeObjectives } from './text';
 import { buildSkirmish, playableFactions } from '../engine/skirmish';
+import { artNode } from './cards';
 import { crestSvg, glyph, installArt, kit, teamFaction } from './art';
 import { Game } from '../engine/game';
 import { Renderer } from '../render/renderer';
@@ -149,13 +150,13 @@ function showCampaign(ctx: Ctx) {
     clear(detail);
     const step = camp.missions[sel], md = content.missions[step.mission];
     const won = sel < prog.completed;
-    const unlocks = (step.unlocks ?? []).map(u => content.units[u]?.name ?? content.spells[u]?.name ?? content.equipment[u]?.name ?? u);
+    const unlocks = (step.unlocks ?? []).map(u => ({ id: u, name: content.units[u]?.name ?? content.spells[u]?.name ?? content.equipment[u]?.name ?? u }));
     detail.append(h('div', null,
       h('div', { class: 'kicker' }, `Mission ${sel + 1} of ${n}`),
       h('h2', null, md?.name ?? step.mission),
       ornament(),
       md?.description ? h('p', { class: 'lead' }, md.description) : null,
-      unlocks.length ? h('div', { class: 'rewards' }, h('div', { class: 'rw-h' }, won ? 'Earned' : 'Reward'), h('div', { class: 'rw-list' }, ...unlocks.map(u => h('span', { class: 'rw' }, u)))) : null,
+      unlocks.length ? h('div', { class: 'rewards' }, h('div', { class: 'rw-h' }, won ? 'Earned' : 'Reward'), h('div', { class: 'rw-list' }, ...unlocks.map(u => h('div', { class: 'rw', title: u.name }, h('div', { class: 'rw-art' }, artNode(u.id, content)), h('span', null, u.name))))) : null,
       h('div', { class: 'mstate' + (won ? ' won' : '') }, won ? 'Victory recorded' : 'Not yet won'),
       h('button', { class: 'btn-gold big', disabled: !md, onclick: () => { memo.node = sel; ctx.onPick({ missionId: step.mission, campaign: { id: cid, index: sel } }); } }, won ? 'Replay' : 'Begin')));
   };
