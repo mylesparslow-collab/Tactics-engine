@@ -213,6 +213,7 @@ export class Renderer {
     const dx = this.cssW / 2 - sx, dy = H / 2 - sy;
     const toX = this.panX + dx, toY = this.panY + dy;
     this.glide = { fromX: this.panX, fromY: this.panY, toX, toY, start: performance.now(), dur: 420 };
+    this.userMoved = true; // keep the followed view across resizes instead of snapping back to the Beacon
   }
   private stepGlide(now: number) {
     const gl = this.glide; if (!gl) return;
