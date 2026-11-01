@@ -12,7 +12,7 @@ UNIT_ID = 'lanternkeepers_lensmaster_oriel_venn'
 FACTION = 'lanternkeepers'
 LOOK = LOOKS[FACTION]
 
-C = Costume(top='slate', sleeve='slate', legs='slate', boot='boot', hand='glove', skirt='coat',
+C = Costume(top='wool', sleeve='wool', legs='slate', boot='boot', hand='glove', skirt='coat',
             skirt_mat='venncoat', hem=0.12, flare=0.55, head='hair', hair='hair', hair_style='tail',
             belt='leather', girth=0.88)
 
@@ -37,7 +37,8 @@ def lens_staff(add, lights, P):
     add(Capsule(butt, top, 0.016, 0.014), 'wood')
     add(Cylinder(top - d * 0.04, top + d * 0.01, 0.026, 0.005), 'brass')
     # lens faces "forward" relative to the staff
-    fwd = norm(v3(-0.35, 0, 1.0) - d * (v3(-0.35, 0, 1.0) @ d))
+    f0 = v3(-0.35, 0, 1.0)
+    fwd = norm(f0 - d * (f0 @ d) * 0.5)          # lens faces the enemy; the beam leaves level
     up = d
     c = top + up * 0.13
     add(Torus(c, fwd, 0.13, 0.012), 'brass')
@@ -53,7 +54,7 @@ def lens_staff(add, lights, P):
     light_at(lights, P, c + fwd * 0.08, 2.4, 0.24)
     fx = P['fx']
     if fx > 0:
-        add(Capsule(c + fwd * 0.03, c + fwd * (0.05 + 1.7 * fx), 0.035 * fx + 0.005, 0.008), 'beam')
+        add(Capsule(c + norm(f0) * 0.03, c + norm(f0) * (0.05 + 1.7 * fx), 0.035 * fx + 0.005, 0.008), 'beam')
         light_at(lights, P, c + fwd * 0.5, 3.0 * fx, 0.4, color=_hex('#ffd27a'))
 
 
@@ -71,10 +72,10 @@ def build(P):
     # lens case and ground-glass pouch
     pel = P['pelvis']
     add(RoundBox(pel + v3(0.15, 0.0, 0.06), (0.03, 0.05, 0.05), 0.012), 'leather')
-    mats = keeper_mats(P, hair=_hex('#24201f'), skin=W['skin_light'])
+    mats = keeper_mats(P, hair=_hex('#4a2e24'), skin=W['skin_light'])
     mats['venncoat'] = Material(lambda p, n: np.where(((p[:, 2] - P['pelvis'][2]) > 0.06)[:, None] &
                                                       (np.abs(p[:, 0] - P['pelvis'][0]) < 0.06)[:, None],
-                                                      np.array(_hex('#a88a4a'))[None, :], np.array(SLATE)[None, :] * 1.35),
+                                                      np.array(_hex('#a88a4a'))[None, :], np.array(_hex('#46505a'))[None, :]),
                                 spec=0.12, gloss=14, brush=0.08)
     mats['lens'] = Material(LENS, spec=1.4, gloss=90, emissive=tuple(np.array(LENS) * min(1.0, 0.18 + 0.82 * max(P['cast_glow'], P['fx']))), rim=0.6, brush=0.0)
     return finish(P, FACTION, parts, mats, lights=lights)
@@ -83,6 +84,7 @@ def build(P):
 def _post(fr):
     for i, (P, o) in enumerate(fr['attack']):
         P['fx'] = [0, 0, 1, 0.25][i]
+        P['item_r'] = norm(v3(-0.25, [1.0, 0.9, 0.8, 0.9][i], [0.2, 0.45, 0.6, 0.45][i]))
     return fr
 
 

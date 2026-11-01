@@ -54,4 +54,11 @@ def build(P):
     return finish(P, FACTION, parts, mats, lights=lights)
 
 
-ROWS, frames = keeper_rows(neutral_pose, attack_style='thrust', weapon_side='r', cast_side='l', pole='r')
+def _post(fr):
+    # she jabs the lamp end up and out at the foe, keeping the lantern in frame
+    for i, (P, o) in enumerate(fr['attack']):
+        P['item_r'] = norm(norm(P['item_r']) + v3(0.25, [0.9, 1.0, 0.75, 0.9][i], -0.2))
+    return fr
+
+
+ROWS, frames = keeper_rows(neutral_pose, attack_style='thrust', weapon_side='r', cast_side='l', post=_post, pole='r')

@@ -99,6 +99,12 @@ def _post(fr):
         for P, lk in fr[row]:
             rig.place_arm(P, 'r', P['sh_r'] + v3(-0.04, 0.04, 0.16), (-1, -0.6, 0.2), l1=0.29, l2=0.28)
             rig.place_arm(P, 'l', P['sh_r'] + v3(0.06, -0.10, 0.22), (1, -0.6, -0.2), l1=0.29, l2=0.28)
+    # wind-up: keep the crown inside the frame (swing it back, not straight up)
+    for i, (P, lk) in enumerate(fr['attack'][:2]):
+        d = [v3(-0.1, 0.12, -1.0), v3(-0.1, 0.45, -0.7)][i]
+        P['item_r'] = norm(d)
+        for s in ('r', 'l'):
+            rig.place_arm(P, s, P['wr_' + s] + v3(0, -0.22, 0), (-1 if s == 'r' else 1, -0.3, -0.5), l1=0.29, l2=0.28)
     for P, lk in fr['cast']:
         P['two_hand'] = False
     for P, lk in fr['death']:
