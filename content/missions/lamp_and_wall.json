@@ -21,32 +21,32 @@
       "units": [
         {
           "unit": "salt_concord_tamsin_orrel",
-          "x": 7,
-          "y": 12,
+          "x": 10,
+          "y": 18,
           "tag": "commander_orrel"
         },
         {
           "unit": "salt_concord_brineguard",
-          "x": 6,
-          "y": 12,
+          "x": 9,
+          "y": 18,
           "tag": "beacon_garrison"
         },
         {
           "unit": "salt_concord_brineguard",
-          "x": 8,
-          "y": 12,
+          "x": 12,
+          "y": 18,
           "tag": "company"
         },
         {
           "unit": "salt_concord_salt_levy",
-          "x": 5,
-          "y": 11,
+          "x": 7,
+          "y": 16,
           "tag": "company"
         },
         {
           "unit": "salt_concord_salt_levy",
-          "x": 9,
-          "y": 11,
+          "x": 13,
+          "y": 16,
           "tag": "company"
         }
       ]
@@ -69,28 +69,28 @@
       "units": [
         {
           "unit": "returning_tide_wringer",
-          "x": 7,
-          "y": 3
+          "x": 10,
+          "y": 4
         },
         {
           "unit": "returning_tide_penitent",
-          "x": 6,
-          "y": 2
-        },
-        {
-          "unit": "returning_tide_penitent",
-          "x": 8,
-          "y": 2
-        },
-        {
-          "unit": "returning_tide_tear_slinger",
-          "x": 5,
-          "y": 3
-        },
-        {
-          "unit": "returning_tide_tear_slinger",
           "x": 9,
           "y": 3
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 12,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 7,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 13,
+          "y": 4
         }
       ],
       "startingEssence": 100,
@@ -161,29 +161,29 @@
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_penitent",
-          "x": 14,
-          "y": 4
+          "x": 21,
+          "y": 6
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_penitent",
-          "x": 14,
-          "y": 5
+          "x": 21,
+          "y": 7
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_penitent",
-          "x": 13,
-          "y": 4
+          "x": 19,
+          "y": 6
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_penitent",
-          "x": 13,
-          "y": 5
+          "x": 19,
+          "y": 7
         }
       ]
     },
@@ -195,8 +195,8 @@
       "do": [
         {
           "type": "terrain",
-          "x": 3,
-          "y": 11,
+          "x": 4,
+          "y": 16,
           "terrain": "brine_pool",
           "radius": 1,
           "duration": 6
@@ -210,8 +210,8 @@
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_wringer",
-          "x": 3,
-          "y": 11,
+          "x": 4,
+          "y": 16,
           "tag": "scout_wringer"
         }
       ]

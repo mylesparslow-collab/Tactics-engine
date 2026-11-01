@@ -21,29 +21,29 @@
       "units": [
         {
           "unit": "salt_concord_tamsin_orrel",
-          "x": 7,
-          "y": 12,
+          "x": 10,
+          "y": 17,
           "tag": "commander_orrel"
         },
         {
           "unit": "salt_concord_brineguard",
-          "x": 6,
-          "y": 13
-        },
-        {
-          "unit": "salt_concord_brineguard",
           "x": 8,
-          "y": 13
+          "y": 18
         },
         {
           "unit": "salt_concord_brineguard",
-          "x": 5,
-          "y": 14
+          "x": 11,
+          "y": 18
         },
         {
           "unit": "salt_concord_brineguard",
-          "x": 9,
-          "y": 14
+          "x": 7,
+          "y": 20
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 12,
+          "y": 20
         }
       ]
     },
@@ -66,40 +66,40 @@
       "units": [
         {
           "unit": "salvage_compact_quartermaster",
-          "x": 8,
-          "y": 3,
+          "x": 11,
+          "y": 4,
           "tag": "broker_varrow"
         },
         {
           "unit": "salvage_compact_hullbreaker",
-          "x": 9,
-          "y": 3,
+          "x": 12,
+          "y": 4,
           "tag": "varrow_guard"
         },
         {
           "unit": "salvage_compact_wrecker",
-          "x": 6,
+          "x": 8,
           "y": 2
         },
         {
           "unit": "salvage_compact_wrecker",
-          "x": 10,
+          "x": 14,
           "y": 2
         },
         {
           "unit": "salvage_compact_rivet_slinger",
-          "x": 7,
-          "y": 4
+          "x": 10,
+          "y": 5
         },
         {
           "unit": "salvage_compact_rivet_slinger",
-          "x": 9,
-          "y": 4
+          "x": 12,
+          "y": 5
         },
         {
           "unit": "salvage_compact_breach_gunner",
-          "x": 8,
-          "y": 5
+          "x": 11,
+          "y": 7
         }
       ],
       "startingEssence": 120,
@@ -167,21 +167,21 @@
           "team": 1,
           "unit": "salvage_compact_bone_sled_rider",
           "x": 1,
-          "y": 8
+          "y": 11
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "salvage_compact_bone_sled_rider",
-          "x": 14,
-          "y": 8
+          "x": 20,
+          "y": 11
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "salvage_compact_bone_sled_rider",
-          "x": 8,
-          "y": 9
+          "x": 11,
+          "y": 12
         }
       ]
     },
@@ -200,15 +200,15 @@
           "type": "spawn",
           "team": 1,
           "unit": "salvage_compact_wrecker",
-          "x": 8,
-          "y": 4
+          "x": 11,
+          "y": 5
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "salvage_compact_wrecker",
-          "x": 7,
-          "y": 3
+          "x": 10,
+          "y": 4
         }
       ]
     }

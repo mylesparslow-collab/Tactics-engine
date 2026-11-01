@@ -21,46 +21,46 @@
       "units": [
         {
           "unit": "salt_concord_tamsin_orrel",
-          "x": 2,
-          "y": 6,
+          "x": 3,
+          "y": 9,
           "tag": "commander_orrel"
         },
         {
           "unit": "salt_concord_caustic_lantern",
           "x": 1,
-          "y": 7,
+          "y": 10,
           "tag": "caustic_lantern"
         },
         {
           "unit": "salt_concord_caustic_lantern",
-          "x": 3,
-          "y": 7,
+          "x": 4,
+          "y": 10,
           "tag": "caustic_lantern"
         },
         {
           "unit": "salt_concord_brineguard",
-          "x": 2,
-          "y": 8
+          "x": 3,
+          "y": 12
         },
         {
           "unit": "salt_concord_brineguard",
-          "x": 3,
-          "y": 6
+          "x": 4,
+          "y": 9
         },
         {
           "unit": "salt_concord_brineguard",
-          "x": 3,
-          "y": 8
+          "x": 4,
+          "y": 12
         },
         {
           "unit": "salt_concord_surveyor",
           "x": 1,
-          "y": 6
+          "y": 9
         },
         {
           "unit": "salt_concord_stair_warden",
-          "x": 4,
-          "y": 7
+          "x": 5,
+          "y": 10
         }
       ]
     },
@@ -84,49 +84,49 @@
       "units": [
         {
           "unit": "salvage_compact_harpoon_engine",
-          "x": 10,
-          "y": 5,
+          "x": 13,
+          "y": 8,
           "tag": "harpoon_engine"
         },
         {
           "unit": "salvage_compact_hullbreaker",
-          "x": 13,
-          "y": 6
+          "x": 17,
+          "y": 9
         },
         {
           "unit": "salvage_compact_hullbreaker",
-          "x": 13,
-          "y": 8
+          "x": 17,
+          "y": 12
         },
         {
           "unit": "salvage_compact_rivet_slinger",
-          "x": 9,
-          "y": 4
-        },
-        {
-          "unit": "salvage_compact_rivet_slinger",
-          "x": 9,
-          "y": 10
-        },
-        {
-          "unit": "salvage_compact_breach_gunner",
           "x": 12,
           "y": 6
         },
         {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 12,
+          "y": 14
+        },
+        {
+          "unit": "salvage_compact_breach_gunner",
+          "x": 16,
+          "y": 9
+        },
+        {
           "unit": "salvage_compact_wrecker",
-          "x": 10,
-          "y": 8
+          "x": 13,
+          "y": 12
         },
         {
           "unit": "salvage_compact_powder_monk",
-          "x": 12,
-          "y": 8
+          "x": 16,
+          "y": 12
         },
         {
           "unit": "salvage_compact_quartermaster",
-          "x": 15,
-          "y": 7
+          "x": 19,
+          "y": 10
         }
       ],
       "startingEssence": 140,
@@ -210,23 +210,23 @@
           "type": "spawn",
           "team": 1,
           "unit": "salvage_compact_harpoon_engine",
-          "x": 14,
-          "y": 2,
+          "x": 18,
+          "y": 3,
           "tag": "harpoon_engine"
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "salvage_compact_bone_sled_rider",
-          "x": 15,
-          "y": 13
+          "x": 19,
+          "y": 19
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "salvage_compact_bone_sled_rider",
-          "x": 14,
-          "y": 13
+          "x": 18,
+          "y": 19
         }
       ]
     },
@@ -245,8 +245,8 @@
           "type": "spawn",
           "team": 2,
           "unit": "hadal_court_murk_diver",
-          "x": 14,
-          "y": 5,
+          "x": 18,
+          "y": 8,
           "tag": "court_watcher"
         }
       ]

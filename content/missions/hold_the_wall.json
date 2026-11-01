@@ -21,40 +21,40 @@
       "units": [
         {
           "unit": "salt_concord_tamsin_orrel",
-          "x": 7,
-          "y": 12,
+          "x": 10,
+          "y": 18,
           "tag": "commander_orrel"
         },
         {
           "unit": "salt_concord_stair_warden",
-          "x": 6,
-          "y": 12,
+          "x": 9,
+          "y": 18,
           "tag": "beacon_garrison"
         },
         {
           "unit": "salt_concord_stair_warden",
-          "x": 8,
-          "y": 11
+          "x": 12,
+          "y": 16
         },
         {
           "unit": "salt_concord_saltwright",
-          "x": 5,
-          "y": 13
-        },
-        {
-          "unit": "salt_concord_brineguard",
-          "x": 6,
-          "y": 11
+          "x": 7,
+          "y": 19
         },
         {
           "unit": "salt_concord_brineguard",
           "x": 9,
-          "y": 12
+          "y": 16
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 13,
+          "y": 18
         },
         {
           "unit": "lanternkeepers_keeper_pell_auster",
-          "x": 8,
-          "y": 12,
+          "x": 12,
+          "y": 18,
           "tag": "keeper_auster"
         }
       ]
@@ -80,49 +80,49 @@
       "units": [
         {
           "unit": "returning_tide_imre_dunnock",
-          "x": 7,
-          "y": 3,
+          "x": 10,
+          "y": 4,
           "tag": "prophet_dunnock"
         },
         {
           "unit": "returning_tide_choirmaster",
-          "x": 7,
-          "y": 2
-        },
-        {
-          "unit": "returning_tide_anchor_bearer",
-          "x": 6,
-          "y": 3
-        },
-        {
-          "unit": "returning_tide_anchor_bearer",
-          "x": 8,
-          "y": 3
-        },
-        {
-          "unit": "returning_tide_wringer",
-          "x": 5,
-          "y": 2
-        },
-        {
-          "unit": "returning_tide_bloat_drowned",
-          "x": 9,
-          "y": 2
-        },
-        {
-          "unit": "returning_tide_tear_slinger",
-          "x": 4,
-          "y": 3
-        },
-        {
-          "unit": "returning_tide_tear_slinger",
           "x": 10,
           "y": 3
         },
         {
-          "unit": "returning_tide_tideskulker",
-          "x": 11,
+          "unit": "returning_tide_anchor_bearer",
+          "x": 9,
           "y": 4
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 12,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_wringer",
+          "x": 7,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_bloat_drowned",
+          "x": 13,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 6,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 15,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_tideskulker",
+          "x": 16,
+          "y": 6
         }
       ],
       "startingEssence": 130,
@@ -193,16 +193,16 @@
       "do": [
         {
           "type": "terrain",
-          "x": 3,
-          "y": 8,
+          "x": 4,
+          "y": 12,
           "terrain": "brine_pool",
           "radius": 1,
           "duration": 5
         },
         {
           "type": "terrain",
-          "x": 12,
-          "y": 8,
+          "x": 18,
+          "y": 12,
           "terrain": "brine_pool",
           "radius": 1,
           "duration": 5
@@ -216,32 +216,32 @@
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_drowned",
-          "x": 3,
-          "y": 8,
+          "x": 4,
+          "y": 12,
           "tag": "drowned_wave"
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_drowned",
-          "x": 12,
-          "y": 8,
+          "x": 18,
+          "y": 12,
           "tag": "drowned_wave"
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_drowned",
-          "x": 3,
-          "y": 9,
+          "x": 4,
+          "y": 13,
           "tag": "drowned_wave"
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_drowned",
-          "x": 12,
-          "y": 9,
+          "x": 18,
+          "y": 13,
           "tag": "drowned_wave"
         }
       ]

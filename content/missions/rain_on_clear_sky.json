@@ -21,38 +21,38 @@
       "units": [
         {
           "unit": "salt_concord_tamsin_orrel",
-          "x": 3,
-          "y": 12,
+          "x": 4,
+          "y": 17,
           "tag": "commander_orrel"
         },
         {
           "unit": "salt_concord_brineguard",
-          "x": 2,
-          "y": 12,
+          "x": 3,
+          "y": 17,
           "tag": "company"
         },
         {
           "unit": "salt_concord_brineguard",
-          "x": 4,
-          "y": 12,
+          "x": 5,
+          "y": 17,
           "tag": "company"
         },
         {
           "unit": "salt_concord_surveyor",
-          "x": 2,
-          "y": 13,
+          "x": 3,
+          "y": 18,
           "tag": "company"
         },
         {
           "unit": "salt_concord_causeway_outrider",
-          "x": 5,
-          "y": 12,
+          "x": 6,
+          "y": 17,
           "tag": "company"
         },
         {
           "unit": "salt_concord_brine_chirurgeon",
-          "x": 4,
-          "y": 13,
+          "x": 5,
+          "y": 18,
           "tag": "company"
         }
       ]
@@ -76,19 +76,7 @@
       "units": [
         {
           "unit": "returning_tide_rainsayer",
-          "x": 2,
-          "y": 2,
-          "tag": "rainsayer"
-        },
-        {
-          "unit": "returning_tide_rainsayer",
-          "x": 4,
-          "y": 2,
-          "tag": "rainsayer"
-        },
-        {
-          "unit": "returning_tide_rainsayer",
-          "x": 1,
+          "x": 3,
           "y": 3,
           "tag": "rainsayer"
         },
@@ -99,29 +87,41 @@
           "tag": "rainsayer"
         },
         {
+          "unit": "returning_tide_rainsayer",
+          "x": 1,
+          "y": 4,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 6,
+          "y": 4,
+          "tag": "rainsayer"
+        },
+        {
           "unit": "returning_tide_anchor_bearer",
+          "x": 4,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_penitent",
           "x": 3,
           "y": 4
         },
         {
           "unit": "returning_tide_penitent",
-          "x": 2,
-          "y": 3
-        },
-        {
-          "unit": "returning_tide_penitent",
-          "x": 4,
-          "y": 3
+          "x": 5,
+          "y": 4
         },
         {
           "unit": "returning_tide_tear_slinger",
-          "x": 6,
-          "y": 3
+          "x": 8,
+          "y": 4
         },
         {
           "unit": "returning_tide_shroud_mender",
-          "x": 3,
-          "y": 3
+          "x": 4,
+          "y": 4
         }
       ],
       "startingEssence": 130,
@@ -180,8 +180,8 @@
       "do": [
         {
           "type": "terrain",
-          "x": 8,
-          "y": 6,
+          "x": 11,
+          "y": 8,
           "terrain": "brine_pool",
           "radius": 1,
           "duration": 4
@@ -195,22 +195,22 @@
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_penitent",
-          "x": 9,
-          "y": 9
+          "x": 13,
+          "y": 12
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_penitent",
-          "x": 10,
-          "y": 9
+          "x": 14,
+          "y": 12
         },
         {
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_penitent",
-          "x": 9,
-          "y": 10
+          "x": 13,
+          "y": 14
         }
       ]
     },
@@ -239,24 +239,24 @@
         },
         {
           "type": "terrain",
-          "x": 5,
-          "y": 6,
+          "x": 6,
+          "y": 8,
           "terrain": "brine_pool",
           "radius": 1,
           "duration": 4
         },
         {
           "type": "terrain",
-          "x": 2,
-          "y": 5,
+          "x": 3,
+          "y": 7,
           "terrain": "brine_pool",
           "radius": 1,
           "duration": 4
         },
         {
           "type": "terrain",
-          "x": 8,
-          "y": 9,
+          "x": 11,
+          "y": 12,
           "terrain": "brine_pool",
           "radius": 1,
           "duration": 4
@@ -271,16 +271,16 @@
       "do": [
         {
           "type": "terrain",
-          "x": 6,
-          "y": 2,
+          "x": 8,
+          "y": 3,
           "terrain": "brine_pool",
           "radius": 2,
           "duration": 4
         },
         {
           "type": "terrain",
-          "x": 9,
-          "y": 4,
+          "x": 13,
+          "y": 5,
           "terrain": "brine_pool",
           "radius": 2,
           "duration": 4
@@ -294,8 +294,8 @@
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_choirmaster",
-          "x": 6,
-          "y": 2
+          "x": 8,
+          "y": 3
         }
       ]
     }

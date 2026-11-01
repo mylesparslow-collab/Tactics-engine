@@ -1,4 +1,5 @@
 import type { Game } from '../engine/game';
+import { label } from '../engine/content';
 import type { GameEvent, Pos, Tile, Unit } from '../engine/types';
 import { GROUND, LV, TH, TW, View, key, mix, rgba } from './iso';
 import { drawUnitSprite, figureHeight } from './sprites';
@@ -335,7 +336,10 @@ export class Renderer {
         break;
       }
       case 'terrain': { this.boardDirty = true; break; }
-      case 'essence': break; // handled by HUD
+      case 'essence': { // HUD shows totals; a well payout also pops over the well
+        if (e.at) { const at = e.at, t = this.cursor; this.at(t, () => { this.floatAt(at, `+${e.amount} ${label(this.game.content, 'essence')}`, '#7fe0ff', performance.now()); this.burst(at, 12, '#9fe8ff', { up: 70, spread: 18, life: 900, size: 2.5, g: -20, rise: true }); }); this.cursor += 250; }
+        break;
+      }
       default: break;
     }
   }
@@ -471,6 +475,26 @@ export class Renderer {
       ctx.strokeText(f.text, f.x, y); ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, y);
       ctx.globalAlpha = 1;
     }
+    this.drawWellHint(ctx);
+  }
+
+  /** Hovering a well explains it: who holds it and what it pays. */
+  private drawWellHint(ctx: CanvasRenderingContext2D) {
+    const h = this.overlay.hover, g = this.game; if (!h) return;
+    const w = g.map.wells?.find(q => q.x === h.x && q.y === h.y); if (!w) return;
+    const tide = label(g.content, 'essence'), holder = g.unitAt(w.x, w.y);
+    const owner = holder && !g.def(holder).structure ? g.teams[holder.team] : undefined;
+    const l1 = `${tide} Well  +${w.amount ?? 10} ${tide} per turn`;
+    const l2 = owner ? `Held by ${owner.name}` : 'Stand a unit here at the start of your turn';
+    const wp = this.view.project(w.x, w.y, this.vt[w.y][w.x].height);
+    const s = { sx: wp.sx * this.scale + this.ox, sy: wp.sy * this.scale + this.oy + 118 - 56 - 30 * this.scale }; // CSS px, sits above the tile
+    ctx.save(); ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); ctx.font = '600 15px Alegreya, Georgia, serif';
+    const tw = Math.max(ctx.measureText(l1).width, ctx.measureText(l2).width) + 24, th = 48, x = s.sx - tw / 2, y = s.sy - 118;
+    ctx.fillStyle = 'rgba(12,14,22,0.92)'; ctx.strokeStyle = '#b8913e'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.roundRect(x, y, tw, th, 6); ctx.fill(); ctx.stroke();
+    ctx.textAlign = 'center'; ctx.fillStyle = '#9fe8ff'; ctx.fillText(l1, s.sx, y + 20);
+    ctx.font = 'italic 13px Alegreya, Georgia, serif'; ctx.fillStyle = owner ? owner.color : '#cbbfa6'; ctx.fillText(l2, s.sx, y + 39);
+    ctx.restore();
   }
 
   /** A slow lighthouse beam sweeping the backdrop. */

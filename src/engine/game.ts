@@ -484,7 +484,7 @@ export class Game {
     this.emit({ kind: 'turn', team: this.current, turn: this.round });
     for (const w of this.map.wells ?? []) {
       const holder = this.unitAt(w.x, w.y);
-      if (holder && holder.team === this.current && !this.def(holder).structure) this.gainEssence(this.current, w.amount);
+      if (holder && holder.team === this.current && !this.def(holder).structure) this.gainEssence(this.current, w.amount, { x: w.x, y: w.y });
     }
     for (const u of this.aliveUnits(this.current)) {
       u.summonedThisTurn = false;
@@ -623,11 +623,11 @@ export class Game {
     this.emit({ kind: 'terrain', x, y, terrain });
   }
 
-  private gainEssence(team: number, amount: number) {
+  private gainEssence(team: number, amount: number, at?: Pos) {
     const t = this.teams[team];
     const before = t.essence;
     t.essence = Math.max(0, Math.min(this.mission.maxEssence ?? DEFAULTS.maxEssence, t.essence + amount));
-    if (t.essence !== before) this.emit({ kind: 'essence', team, amount: t.essence - before });
+    if (t.essence !== before) this.emit({ kind: 'essence', team, amount: t.essence - before, ...(at ? { at } : {}) });
   }
 
   private damage(u: Unit, amount: number, damageType?: string) {

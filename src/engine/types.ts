@@ -249,7 +249,7 @@ export type GameEvent =
   | { kind: 'push'; uid: number; from: Pos; to: Pos }
   | { kind: 'death'; uid: number }
   | { kind: 'revive'; uid: number; hp: number }
-  | { kind: 'essence'; team: number; amount: number }
+  | { kind: 'essence'; team: number; amount: number; at?: Pos }
   | { kind: 'terrain'; x: number; y: number; terrain: string }
   | { kind: 'deploy'; uid: number }
   | { kind: 'spell'; team: number; spell: string; target: Pos }
