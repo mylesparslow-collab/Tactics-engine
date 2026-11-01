@@ -40,6 +40,7 @@ export class GameSession {
   private ended = false;
   private bannerQueue: { text: string; speaker?: string }[] = [];
   private bannerBusy = false;
+  private enterArmed = 0;
   private cleanup: (() => void)[] = [];
   private logOpen = false;
   private handOpen = typeof window === 'undefined' || window.innerHeight >= 500;
@@ -303,7 +304,11 @@ export class GameSession {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const k = e.key.toLowerCase();
     if (k === 'escape') this.cancel();
-    else if (k === 'enter') { e.preventDefault(); this.endTurn(); } // not 'e': it sits next to WASD
+    else if (k === 'enter') { // press twice to end the turn (not 'e': it sits next to WASD)
+      e.preventDefault();
+      if (performance.now() < this.enterArmed) { this.enterArmed = 0; this.endTurn(); }
+      else if (this.canActSoft()) { this.enterArmed = performance.now() + 2500; this.toastMsg('Press Enter again to end turn'); }
+    }
     else if (k === 'q') this.renderer.rotate(-1);
     else if (k === 'r') this.renderer.rotate(1);
     else if (k === '+' || k === '=') this.renderer.zoomBy(1.2);
@@ -450,7 +455,7 @@ export class GameSession {
       h('div', { class: 'turnbox', style: `--tc:${cur.color}` }, h('span', { class: 'round' }, `Round ${g.round}`), h('span', { class: 'who' }, `${cur.name}${this.aiRunning ? ' is thinking' : "'s turn"}`)),
       h('div', { class: 'spacer' }),
       ...g.teams.map((_, i) => this.teamGauge(i)),
-      h('button', { id: 'endturn', class: 'brass', disabled: !this.canActSoft(), title: 'End turn (Enter)', onclick: () => this.endTurn() }, h('span', null, 'End Turn')),
+      h('button', { id: 'endturn', class: 'brass', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() }, h('span', null, 'End Turn')),
       h('button', { class: 'quiet menu', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, 'Menu'));
   }
 
