@@ -14,7 +14,7 @@ UNIT_ID = 'salt_concord_brine_slinger'
 FACTION = 'salt_concord'
 LOOK = LOOKS[FACTION]
 
-C = Costume(top='work', sleeve='skin', legs='road', hand='skin', skirt=None, head='hood', head_mat='wrap',
+C = Costume(top='work', sleeve='shirt', legs='road', hand='skin', skirt=None, head='hood', head_mat='wrap',
             belt='leather', girth=0.95, boots_tall=True)
 
 
@@ -23,7 +23,7 @@ def neutral_pose():
     # weight back, sling hanging loaded from the right hand, left hand fishing in the satchel
     rig.place_arm(P, 'r', v3(-0.26, 0.98, 0.10), (-1, -0.2, -0.4))
     P['item_r'] = norm(v3(-0.5, -0.8, 0.45))
-    rig.place_arm(P, 'l', v3(0.22, 0.98, 0.10), (1, -0.2, -0.6))
+    rig.place_arm(P, 'l', v3(0.21, 0.97, 0.13), (0.35, -1.0, -0.35))   # elbow down, not akimbo
     P['head_yaw'] = np.radians(-14)
     return P
 
@@ -67,8 +67,11 @@ def build(P):
             add(Sphere(tip + d * 0.15, 0.07 * P['fx']), 'spray')
     mats = base_mats(P)
     mats.update({
-        'work': salted(_hex('#8a8478'), 0.35, ground=0.6, gamt=0.9),
-        'apron': salted(_hex('#86664a'), 0.45, ground=0.8, gamt=1.0, spec=0.15, gloss=16),
+        # pale salt and steel blue, like the rest of the line: rolled road-grey sleeves instead of bare
+        # arms (bare skin and dark leather read as Compact at board scale)
+        'work': salted(_hex('#c4bcaa'), 0.35, ground=0.6, gamt=0.9),
+        'shirt': salted(ROAD, 0.3),
+        'apron': salted(STEEL_DK, 0.45, ground=0.8, gamt=1.0, spec=0.15, gloss=16),
         'wrap': salted(STEEL, 0.3),
         'wraps': salted(CANVAS, 0.2),
         'skin': skin_mat(P, skin=W['skin_mid'], hair=_hex('#2c2018')),

@@ -25,8 +25,12 @@ def build(P):
     sweep = [0.0, -0.45, 1.25, 0.7][0]
     a = -0.35 - 0.6 * P['strike'] * 0 + np.radians(8) * sw
     # strike maps 0 -> 0.4 (windup back) -> 1 (cut forward)
-    cut = np.interp(st, [0, 0.4, 1.0], [0.0, -0.45, 1.0])
-    R = rot_y(-0.35) @ rot_x(-0.25 + cut + np.radians(6) * sw) @ rot_z(0.15 + 0.06 * sw)
+    # the cut is a diagonal sweep across the body (yaw + roll), not a straight chop forward, so the fan
+    # never folds flat onto the ground and its face stays toward the camera on the hit frame
+    cut = np.interp(st, [0, 0.4, 1.0], [0.0, -0.4, 0.55])
+    yaw = np.interp(st, [0, 0.4, 1.0], [0.0, 0.2, -0.6])
+    roll = np.interp(st, [0, 0.4, 1.0], [0.0, 0.0, 0.5])
+    R = rot_y(-0.35 + yaw) @ rot_x(-0.25 + cut + np.radians(6) * sw) @ rot_z(0.15 + roll + 0.06 * sw)
     add(fan(piv, R, 0.50, 0.62, ribs=11, thick=0.010, scallop=0.10, rib_k=0.006), 'razor', 0)
     add(fan(piv + R @ v3(0, 0, 0.002), R, 0.465, 0.6, ribs=11, thick=0.014, scallop=0.10, rib_k=0.008), 'fanbody', 0)
     add(Capsule(piv - R @ v3(0, 0.02, 0), piv + R @ v3(0, 0.12, 0), 0.03, 0.018), 'calcite_p', 0.02)
