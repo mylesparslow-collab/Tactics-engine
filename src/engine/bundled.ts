@@ -6,7 +6,7 @@ const top = import.meta.glob('../../content/*.json', { eager: true, import: 'def
 const mapFiles = import.meta.glob('../../content/maps/*.json', { eager: true, import: 'default' });
 const missionFiles = import.meta.glob('../../content/missions/*.json', { eager: true, import: 'default' });
 // Sprite images referenced as "sprites/<file>" in units.json are bundled and rewritten to their built URL.
-const spriteFiles = import.meta.glob('../../content/sprites/*', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const spriteFiles = import.meta.glob('../../content/sprites/*.{png,webp}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 
 export function byId<T extends { id: string }>(files: Record<string, unknown>): Record<string, T> {
   const out: Record<string, T> = {};
