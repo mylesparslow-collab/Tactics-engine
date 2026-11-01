@@ -10,6 +10,7 @@ import { clear, h } from './dom';
 import { artNode, buildCard } from './cards';
 import { abilityGlyph, crestSvg, glyph, installArt, teamFaction } from './art';
 import { stopBackdrop } from './menu';
+import { isMuted, playCue, playEnd, playTurnBell, setMuted } from '../audio/sfx';
 import { effectText } from './text';
 
 export interface SessionOpts {
@@ -61,6 +62,7 @@ export class GameSession {
     this.renderer = new Renderer(this.canvas);
     this.renderer.setGame(this.game);
     this.renderer.start();
+    this.renderer.onCue = c => playCue(c, this.game);
     this.game.on(e => this.onEvent(e));
     const ro = new ResizeObserver(() => { this.renderer.resize(); this.layoutHand(); });
     ro.observe(this.canvas.parentElement!);
@@ -208,7 +210,7 @@ export class GameSession {
       case 'deploy': this.logLine(`${this.uname(e.uid)} enters the field.`, 'move'); break;
       case 'essence': this.logLine(`${g.teams[e.team].name} ${e.amount >= 0 ? 'gains' : 'loses'} ${Math.abs(e.amount)} ${this.L('essence')}.`, 'sys'); break;
       case 'terrain': this.logLine(`The ground at ${e.x},${e.y} becomes ${g.content.terrain[e.terrain]?.name ?? e.terrain}.`, 'sys'); break;
-      case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); break;
+      case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); playTurnBell(g.teams[e.team].controller === 'human'); break;
       case 'message': this.logLine(`${e.speaker ? e.speaker + ': ' : ''}${e.text}`, 'msg'); this.bannerQueue.push({ text: e.text, speaker: e.speaker }); this.pumpBanner(); break;
       case 'end': this.ended = true; this.logLine(e.phase === 'victory' ? 'Victory!' : 'Defeat.', 'turn'); this.waitForEnd(e.phase); break;
     }
@@ -253,7 +255,7 @@ export class GameSession {
     const poll = () => {
       if (this.destroyed) return;
       if (this.renderer.busy()) { setTimeout(poll, 150); return; }
-      setTimeout(() => !this.destroyed && this.showEnd(phase), 500);
+      setTimeout(() => { if (this.destroyed) return; playEnd(phase === 'victory'); this.showEnd(phase); }, 500);
     };
     poll();
   }
@@ -330,6 +332,7 @@ export class GameSession {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     const k = e.key.toLowerCase();
     if (k === 'escape') this.cancel();
+    else if (k === 'm') { setMuted(!isMuted()); this.toastMsg(isMuted() ? 'Sound off (M)' : 'Sound on (M)', '#b8913e', this.g.current); }
     else if (k === 'enter') { // press twice to end the turn (not 'e': it sits next to WASD)
       e.preventDefault();
       if (performance.now() < this.enterArmed) { this.enterArmed = 0; this.endTurn(); }
