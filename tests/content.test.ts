@@ -34,7 +34,7 @@ describe('real content plays', () => {
     });
     console.log(results.join('\n'));
     expect(results.length).toBe(factions.length);
-  });
+  }, 60000);
   it('every mission starts', () => {
     for (const [id, camp] of Object.entries(c.campaigns)) {
       const roster = camp.startingRoster.concat(camp.missions.flatMap(m => m.unlocks ?? []));

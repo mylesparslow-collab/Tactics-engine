@@ -1,5 +1,10 @@
 import type { Content, MissionDef } from './types';
 
+declare const process: { env: Record<string, string | undefined> } | undefined;
+const env = (k: string, d: number) => { try { const v = typeof process !== 'undefined' ? process.env[k] : undefined; return v ? Number(v) : d; } catch { return d; } };
+/** Skirmish economy. Tuned with AI-vs-AI sims (tests/balance.test.ts); env overrides are for tuning runs only. */
+export const SKIRMISH = { startingEssence: env('SK_START', 120), essencePerTurn: env('SK_INC', 30), secondPlayerBonus: env('SK_P2', 20) };
+
 /** Faction ids that have at least one deployable unit. */
 export function playableFactions(c: Content): string[] {
   const ids = new Set<string>();
@@ -43,6 +48,10 @@ export function buildSkirmish(c: Content, mapId: string, factions: [string, stri
       color: f(fid)?.color ?? (i === 0 ? '#e0573d' : '#3d8fe0'),
       controller: playerControllers[i],
       warband: factionDeck(c, fid),
+      // Going second is a real handicap (the first mover reaches the wells first): compensate with extra Tide.
+      ...(i === 1 ? { startingEssence: (SKIRMISH.startingEssence + SKIRMISH.secondPlayerBonus) } : {}),
     })),
+    startingEssence: SKIRMISH.startingEssence,
+    essencePerTurn: SKIRMISH.essencePerTurn,
   };
 }
