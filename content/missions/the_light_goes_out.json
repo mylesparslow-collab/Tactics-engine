@@ -113,20 +113,8 @@
           "tag": "tide_host"
         },
         {
-          "unit": "returning_tide_anchor_bearer",
-          "x": 12,
-          "y": 6,
-          "tag": "tide_host"
-        },
-        {
           "unit": "returning_tide_wringer",
           "x": 7,
-          "y": 4,
-          "tag": "tide_host"
-        },
-        {
-          "unit": "returning_tide_bloat_drowned",
-          "x": 13,
           "y": 4,
           "tag": "tide_host"
         },
@@ -149,7 +137,7 @@
           "tag": "tide_host"
         }
       ],
-      "startingEssence": 160,
+      "startingEssence": 20,
       "essencePerTurn": 35
     },
     {
@@ -187,8 +175,8 @@
       },
       {
         "type": "turn_limit",
-        "turns": 16,
-        "label": "Kill Dunnock before turn 16"
+        "turns": 20,
+        "label": "Kill Dunnock before turn 20"
       }
     ]
   },
@@ -382,22 +370,6 @@
           "unit": "returning_tide_drowned",
           "x": 18,
           "y": 12,
-          "tag": "drowned_wave"
-        },
-        {
-          "type": "spawn",
-          "team": 1,
-          "unit": "returning_tide_drowned",
-          "x": 4,
-          "y": 13,
-          "tag": "drowned_wave"
-        },
-        {
-          "type": "spawn",
-          "team": 1,
-          "unit": "returning_tide_drowned",
-          "x": 18,
-          "y": 13,
           "tag": "drowned_wave"
         }
       ]

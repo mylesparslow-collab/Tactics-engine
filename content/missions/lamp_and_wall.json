@@ -93,7 +93,7 @@
           "y": 4
         }
       ],
-      "startingEssence": 100,
+      "startingEssence": 74,
       "essencePerTurn": 25
     }
   ],
@@ -168,22 +168,8 @@
           "type": "spawn",
           "team": 1,
           "unit": "returning_tide_penitent",
-          "x": 21,
-          "y": 7
-        },
-        {
-          "type": "spawn",
-          "team": 1,
-          "unit": "returning_tide_penitent",
           "x": 19,
           "y": 6
-        },
-        {
-          "type": "spawn",
-          "team": 1,
-          "unit": "returning_tide_penitent",
-          "x": 19,
-          "y": 7
         }
       ]
     },

@@ -125,7 +125,7 @@
           "y": 6
         }
       ],
-      "startingEssence": 130,
+      "startingEssence": 108,
       "essencePerTurn": 28
     }
   ],
@@ -233,14 +233,6 @@
           "team": 1,
           "unit": "returning_tide_drowned",
           "x": 4,
-          "y": 13,
-          "tag": "drowned_wave"
-        },
-        {
-          "type": "spawn",
-          "team": 1,
-          "unit": "returning_tide_drowned",
-          "x": 18,
           "y": 13,
           "tag": "drowned_wave"
         }
