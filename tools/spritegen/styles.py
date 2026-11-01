@@ -73,8 +73,8 @@ def finish_pixel(img, n_colors, outline_strength=0.3, shadow=(24, 7), thresh=0.5
     return (np.dstack([rgb, alpha]) * 255 + 0.5).astype(np.uint8)
 
 
-def styled(mod, P, style):
-    look0 = getattr(mod, 'LOOK', Look())
+def styled(mod, P, style, over=None):
+    look0 = dataclasses.replace(getattr(mod, 'LOOK', Look()), **(over or {}))
     cam0 = getattr(mod, 'CAMERA', Camera())
     sc = mod.build(P)
     if style == 'painted':

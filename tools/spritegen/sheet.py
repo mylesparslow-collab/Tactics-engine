@@ -35,9 +35,12 @@ def _rows(mod, tw):
 
 
 def _job(args):
-    modname, row, i, tw = args
+    modname, row, i, tw, style = args
     mod = importlib.import_module(modname)
     P, over = _frames(mod, tw)[row][i]
+    if style != 'painted':
+        from styles import styled
+        return row, i, styled(mod, P, style, over)
     look = dataclasses.replace(getattr(mod, 'LOOK', Look()), **over)
     return row, i, render(mod.build(P), getattr(mod, 'CAMERA', Camera()), look)
 
@@ -54,11 +57,12 @@ def main():
     ap.add_argument('--jobs', type=int, default=os.cpu_count())
     ap.add_argument('--rows', default='')
     ap.add_argument('--tween', action='store_true', help='insert eased in-between frames')
+    ap.add_argument('--style', default='painted', help='painted | pixel | chunky | ink | smooth (see styles.py)')
     a = ap.parse_args()
     mod = importlib.import_module(a.unit)
     rows = [r for r in _rows(mod, a.tween) if not a.rows or r[0] in a.rows.split(',')]
     fr = _frames(mod, a.tween)
-    jobs = [(a.unit, r[0], i, a.tween) for r in rows for i in range(len(fr[r[0]]))]
+    jobs = [(a.unit, r[0], i, a.tween, a.style) for r in rows for i in range(len(fr[r[0]]))]
     t0 = time.time()
     with Pool(a.jobs) as pool:
         res = pool.map(_job, jobs)
