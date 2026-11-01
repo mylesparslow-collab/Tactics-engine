@@ -16,6 +16,20 @@ import type { Condition, Effect, Pos, SpellDef, StatusDef, Unit } from './types'
 interface TurnMemo { round: number; team: number; done: Set<number> }
 const memo = new WeakMap<Game, TurnMemo>();
 
+/**
+ * Optional decision noise, per game and team. Without it the AI is fully deterministic, so a matchup on a map
+ * always plays out the same way; simulations add a little jitter to sample a spread of games instead.
+ */
+const noiseOf = new WeakMap<Game, number[]>();
+/** Per-team jitter in score points, drawn from the game's seeded RNG (so a seed replays the same game). */
+export function setAiNoise(g: Game, amount: number | number[]) {
+  noiseOf.set(g, Array.isArray(amount) ? amount : [amount, amount]);
+}
+const jitter = (g: Game) => {
+  const amt = noiseOf.get(g)?.[g.current] ?? 0;
+  return amt ? (g.random() - 0.5) * 2 * amt : 0;
+};
+
 function turnMemo(g: Game): TurnMemo {
   let m = memo.get(g);
   if (!m || m.round !== g.round || m.team !== g.current) {
@@ -199,7 +213,7 @@ function bestPlan(g: Game, u: Unit, th: Threat, it: Intel): Plan | undefined {
       if (a.passive || a.effects.some(e => e.type === 'teleport' || e.type === 'swap' || e.type === 'sacrifice')) continue;
       for (const t of g.targetsFrom(u, ab, from)) {
         // Risk is discounted when the action is a kill: trading into danger for a kill is often right.
-        const s = scoreAbility(g, u, ab, t, from, it) - node.cost * 0.05 - hazard - a.apCost * 0.1 - risk * 0.6 + wellBonus(g, u, from) * 0.5;
+        const s = scoreAbility(g, u, ab, t, from, it) - node.cost * 0.05 - hazard - a.apCost * 0.1 - risk * 0.6 + wellBonus(g, u, from) * 0.5 + jitter(g);
         if (!best || s > best.score) best = { score: s, to: from, ability: ab, target: t };
       }
     }
@@ -251,7 +265,7 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
   let best: { p: Pos; d: number } | undefined;
   for (const [k, node] of reach) {
     const [x, y] = k.split(',').map(Number);
-    const d = cost({ x, y }, node.cost);
+    const d = cost({ x, y }, node.cost) + jitter(g) * 0.5;
     if (!best || d < best.d) best = { p: { x, y }, d };
   }
   return best && best.d < here - 0.5 ? best.p : undefined;
@@ -267,7 +281,7 @@ function tryDeploy(g: Game): boolean {
   if (!order.length) return false;
   const enemies = g.aliveUnits().filter(o => o.team !== g.current);
   const score = (p: Pos) => enemies.length ? Math.min(...enemies.map(o => manhattan(p, o))) : 0;
-  const tile = tiles.sort((a, b) => score(a) - score(b))[0];
+  const tile = tiles.map(p => ({ p, s: score(p) + Math.abs(jitter(g)) })).sort((a, b) => a.s - b.s)[0].p;
   return g.deploy(g.current, order[0].i, tile.x, tile.y);
 }
 

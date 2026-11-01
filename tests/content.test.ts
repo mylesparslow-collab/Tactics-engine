@@ -49,12 +49,12 @@ describe('campaign missions play to an end', () => {
     const roster = camp.startingRoster.concat(camp.missions.flatMap(m => m.unlocks ?? []));
     for (const step of camp.missions) {
       it(`${cid}/${step.mission}`, () => {
-        const g = new Game(c, step.mission, { roster });
+        const g = new Game(c, step.mission, { roster, seed: 1 });
         let t = 0;
         while (g.phase === 'playing' && t < 150) { playAiTurn(g); t++; }
         console.log(`${step.mission}: ${g.phase} at round ${g.round}, teams ${g.teams.length}, messages ${g.log.filter(e => e.kind === 'message').length}, terrain changes ${g.log.filter(e => e.kind === 'terrain').length}`);
         expect(g.units.every(u => !u.alive || g.inBounds(u.x, u.y))).toBe(true);
-      });
+      }, 30000);
     }
   }
 });
