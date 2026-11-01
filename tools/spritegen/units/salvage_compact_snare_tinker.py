@@ -39,13 +39,13 @@ def build(P):
     add(Capsule(a2, b2, 0.016), 'wood', 0.0)
     add(Capsule(back + v3(-0.2, 0.2, -0.06), back + v3(0.24, 0.12, -0.05), 0.014), 'wood', 0.0)
     # slick barrel (oil) on the bottom, net bundle above, rope coil, hull scrap fan sticking out
-    keg(add, back + v3(0.0, -0.12, -0.12), up=(1, 0.1, 0), r=0.10, hh=0.13, mat='plate', hoop='tin')
+    keg(add, back + v3(0.0, -0.12, -0.12), up=(1, 0.1, 0), r=0.10, hh=0.13, mat='wood', hoop='rust')
     add(Ellipsoid(back + v3(-0.02, 0.18, -0.14), (0.17, 0.12, 0.11)), 'net', 0.02)
     add(Torus(back + v3(0.10, 0.36, -0.10), v3(0.2, 0.3, 1), 0.08, 0.025), 'rope', 0.0)
     add(RoundBox(back + v3(-0.15, 0.36, -0.12), (0.06, 0.14, 0.008), 0.004, rot_z(0.5)), 'rust', 0.0)
-    lc = b1 + v3(-0.06, -0.06, 0.02)
+    lc = b1 + v3(-0.10, -0.30, 0.06)
     add(Capsule(b1, lc + v3(0, 0.07, 0), 0.006), 'tin', 0.0)
-    tin_lantern(add, lights, lc, P['glow'] * 0.6, size=0.8)
+    tin_lantern(add, lights, lc, P['glow'] * 0.35, size=0.8)
     # spanner
     d = P['item_r']
     if d is not None:
@@ -62,7 +62,7 @@ def build(P):
                         coat_colors=(DRAB, CANVAS, OCHRE, SAILCLOTH, MUTED_RUST))
     mats['net'] = Material(lambda p, n: np.where(((np.sin(p[:, 0] * 180 + p[:, 1] * 120) > 0.5) |
                                                   (np.sin(p[:, 2] * 180 - p[:, 1] * 120) > 0.5))[:, None],
-                                                 _arr(_hex('#b39a6a'), len(p)), _arr(_hex('#4a3b2c'), len(p))),
+                                                 _arr(_hex('#8f8a78'), len(p)), _arr(_hex('#3e3a33'), len(p))),
                            spec=0.02, brush=0.04)
     return finish(P, FACTION, parts, mats, lights=lights)
 

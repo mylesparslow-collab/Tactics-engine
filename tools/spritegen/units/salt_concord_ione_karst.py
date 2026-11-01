@@ -24,7 +24,7 @@ C = Costume(top='robe', sleeve='robe', legs='road', hand='glove', skirt='robe', 
 
 def neutral_pose():
     P = base_pose(height=1.06, build=0.9)
-    rig.place_arm(P, 'r', v3(-0.34, 1.20, 0.16), (-1, -0.4, -0.5))
+    rig.place_arm(P, 'r', v3(-0.28, 1.12, 0.17), (-0.4, -0.2, -1))
     P['item_r'] = norm(v3(-0.08, 1.0, 0.06))
     rig.place_arm(P, 'l', v3(0.12, 1.22, 0.24), (1, -0.4, -0.5))     # holds a sample up to the light
     P['head_yaw'] = np.radians(-4)
@@ -66,7 +66,8 @@ def build(P):
     if d is not None:
         d = norm(d)
         g = hand_pos(P, 'r')
-        butt, top = g - d * 1.15, g + d * 0.74
+        vert = d[1] > 0.85
+        butt, top = g - d * (1.08 if vert else 0.45), g + d * (0.80 if vert else 0.74)
         add(Capsule(butt, top, 0.014), 'brass')
         add(Cylinder(butt, butt + d * 0.05, 0.02, 0.004), 'iron')
         add(RoundBox(top, (0.04, 0.02, 0.04), 0.006, basis_from(d, (0, 0, 1))), 'brass')
@@ -78,8 +79,8 @@ def build(P):
         tip = top + d * 0.12
     # crystal bulwark: prisms burst out of the ground around her when casting
     if cg > 0.05:
-        for i, (x, z, hh) in enumerate(((-0.42, 0.18, 0.55), (-0.22, 0.32, 0.70), (0.10, 0.34, 0.5), (0.36, 0.20, 0.62),
-                                        (0.45, -0.10, 0.45), (-0.45, -0.15, 0.40))):
+        for i, (x, z, hh) in enumerate(((-0.40, 0.02, 0.55), (-0.22, 0.16, 0.66), (0.12, 0.14, 0.5), (0.38, -0.02, 0.62),
+                                        (0.30, -0.35, 0.50), (-0.30, -0.38, 0.45))):
             crystal(add, v3(x, -0.02, z), hh * cg, 0.06, 'bulwark', tilt=v3(x * 0.5, 1, z * 0.4))
     mats = base_mats(P)
     gl_amt = P['glow'] * (1 - P['end'])
