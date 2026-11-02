@@ -28,10 +28,10 @@ describe('relic collection', () => {
     const sources = relicSources(c);
     const free = allRelics(c).filter(id => !sources.has(id));
     expect(free.length).toBeGreaterThan(0);
-    expect([...ownedRelics(c)].sort()).toEqual([...new Set([...camp.startingRoster, ...free])].sort());
-    for (const id of camp.missions[0].unlocks ?? []) expect(ownedRelics(c).has(id)).toBe(false);
+    expect([...ownedRelics(c, false)].sort()).toEqual([...new Set([...camp.startingRoster, ...free])].sort());
+    for (const id of camp.missions[0].unlocks ?? []) expect(ownedRelics(c, false).has(id)).toBe(false);
     saveProgress(cid, { completed: 2 });
-    const owned = ownedRelics(c);
+    const owned = ownedRelics(c, false);
     for (const m of camp.missions.slice(0, 2)) for (const id of m.unlocks ?? []) expect(owned.has(id)).toBe(true);
     for (const id of camp.missions[2].unlocks ?? []) expect(owned.has(id)).toBe(false);
   });
@@ -41,10 +41,14 @@ describe('relic collection', () => {
     saveProgress(cid, { completed: 0 });
     const won = camp.missions[0].unlocks ?? [];
     expect(won.length).toBeGreaterThan(0);
-    for (const id of won) expect(ownedRelics(c).has(id)).toBe(true);
-    expect([...unseenRelics(c)].sort()).toEqual([...won].sort());
+    for (const id of won) expect(ownedRelics(c, false).has(id)).toBe(true);
+    expect([...unseenRelics(c, ownedRelics(c, false))].sort()).toEqual([...won].sort());
     markSeen(won);
-    expect(unseenRelics(c).size).toBe(0);
+    expect(unseenRelics(c, ownedRelics(c, false)).size).toBe(0);
+  });
+
+  it('owns everything while UNLOCK_ALL is on', () => {
+    expect(ownedRelics(c, true).size).toBe(allRelics(c).length);
   });
 
   it('knows which mission earns a relic', () => {

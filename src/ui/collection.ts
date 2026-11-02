@@ -3,7 +3,7 @@
 // where they are earned.
 import './collection.css';
 import type { Content } from '../engine/types';
-import { allRelics, markSeen, ownedRelics, relicFaction, relicSources, relicType, unseenRelics, type RelicType } from '../engine/collection';
+import { UNLOCK_ALL, allRelics, markSeen, ownedRelics, relicFaction, relicSources, relicType, unseenRelics, type RelicType } from '../engine/collection';
 import { label } from '../engine/content';
 import { assetUrl } from '../render/anim';
 import { mix, shade } from '../render/iso';
@@ -61,7 +61,7 @@ export function showCollection(host: HTMLElement, content: Content, onBack: () =
   const c = content;
   const ids = allRelics(c);
   const owned = ownedRelics(c);
-  const unseen = unseenRelics(c, owned);
+  const unseen = UNLOCK_ALL ? new Set<string>() : unseenRelics(c, owned); // no New badges while everything is open
   const fids = Object.keys(c.factions ?? {}).filter(f => ids.some(i => relicFaction(c, i) === f));
   if (memo.faction !== 'all' && !fids.includes(memo.faction)) memo.faction = 'all';
   const sorted = [...ids].sort((a, b) =>

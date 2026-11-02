@@ -7,6 +7,10 @@ import { loadProgress } from './campaign';
 export type RelicType = 'champion' | 'hero' | 'spell' | 'equipment';
 export interface RelicSource { campaign: string; campaignName: string; mission?: number; missionName?: string }
 
+/** Every relic counts as owned while this is on (playtesting, before Pearls and other campaigns exist).
+ * Turn it off to go back to earning relics through campaigns. */
+export const UNLOCK_ALL = true;
+
 const OWNED_KEY = 'tactics.collection.owned';
 const SEEN_KEY = 'tactics.collection.seen';
 
@@ -54,7 +58,8 @@ export function relicSources(c: Content): Map<string, RelicSource> {
 
 /** Cards the player owns right now. Relics that no campaign awards yet start unlocked, so every faction is
  * available until its own campaign arrives to earn them through. */
-export function ownedRelics(c: Content): Set<string> {
+export function ownedRelics(c: Content, unlockAll = UNLOCK_ALL): Set<string> {
+  if (unlockAll) return new Set(allRelics(c));
   const owned = readSet(OWNED_KEY);
   const sources = relicSources(c);
   for (const id of allRelics(c)) if (!sources.has(id)) owned.add(id);
