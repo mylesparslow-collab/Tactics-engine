@@ -31,6 +31,13 @@ Click a unit to select it (blue = where it can walk), pick an ability, click a t
 warband, then a green tile to deploy. `E`/`Enter` ends the turn, `Esc` or right-click cancels, `1-9` pick abilities, `Q`/`R` rotate the camera.
 In the browser console, `__tactics.game` is the live game state (handy for debugging content).
 
+## Hosting (Cloudflare Pages)
+
+The game is live at https://brinewake.pages.dev. Cloudflare Pages is connected to this repo through its GitHub
+integration (project `brinewake`, build command `npm run build`, output `dist`, `NODE_VERSION=22`): every push to `main`
+deploys to production and every other branch gets its own preview URL. Build settings live in the Cloudflare dashboard
+under Workers & Pages, brinewake, Settings. `.github/workflows/ci.yml` runs the tests and build on every push and PR.
+
 ## Audio
 
 Sound is built from licensed recordings only (CC0 / CC BY, nothing synthesised); see `src/audio/CREDITS.md`.
