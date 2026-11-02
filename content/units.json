@@ -2385,7 +2385,7 @@
   "faction": "overcurrent",
   "cost": 30,
   "stats": {
-   "hp": 12,
+   "hp": 11,
    "ap": 6,
    "attack": 7,
    "defense": 0,
@@ -2414,7 +2414,7 @@
   "faction": "overcurrent",
   "cost": 35,
   "stats": {
-   "hp": 16,
+   "hp": 15,
    "ap": 6,
    "attack": 9,
    "defense": 0,
@@ -2443,7 +2443,7 @@
   "faction": "overcurrent",
   "cost": 35,
   "stats": {
-   "hp": 13,
+   "hp": 12,
    "ap": 8,
    "attack": 7,
    "defense": 0,
@@ -2470,7 +2470,7 @@
   "faction": "overcurrent",
   "cost": 40,
   "stats": {
-   "hp": 18,
+   "hp": 17,
    "ap": 5,
    "attack": 8,
    "defense": 0,
@@ -2499,7 +2499,7 @@
   "faction": "overcurrent",
   "cost": 45,
   "stats": {
-   "hp": 20,
+   "hp": 19,
    "ap": 6,
    "attack": 8,
    "defense": 0,
@@ -2529,7 +2529,7 @@
   "faction": "overcurrent",
   "cost": 45,
   "stats": {
-   "hp": 30,
+   "hp": 29,
    "ap": 5,
    "attack": 7,
    "defense": 1,
@@ -2559,7 +2559,7 @@
   "faction": "overcurrent",
   "cost": 50,
   "stats": {
-   "hp": 16,
+   "hp": 15,
    "ap": 6,
    "attack": 8,
    "defense": 0,
@@ -2588,7 +2588,7 @@
   "faction": "overcurrent",
   "cost": 45,
   "stats": {
-   "hp": 24,
+   "hp": 23,
    "ap": 5,
    "attack": 5,
    "defense": 0,
@@ -2618,7 +2618,7 @@
   "faction": "overcurrent",
   "cost": 55,
   "stats": {
-   "hp": 20,
+   "hp": 19,
    "ap": 7,
    "attack": 10,
    "defense": 0,
@@ -2648,7 +2648,7 @@
   "faction": "overcurrent",
   "cost": 55,
   "stats": {
-   "hp": 22,
+   "hp": 21,
    "ap": 6,
    "attack": 7,
    "defense": 0,
@@ -2675,7 +2675,7 @@
   "faction": "overcurrent",
   "cost": 60,
   "stats": {
-   "hp": 22,
+   "hp": 21,
    "ap": 8,
    "attack": 10,
    "defense": 0,
@@ -2704,7 +2704,7 @@
   "faction": "overcurrent",
   "cost": 70,
   "stats": {
-   "hp": 38,
+   "hp": 37,
    "ap": 6,
    "attack": 9,
    "defense": 1,
@@ -2834,10 +2834,10 @@
   "faction": "gyre",
   "cost": 30,
   "stats": {
-   "hp": 11,
+   "hp": 20,
    "ap": 8,
    "attack": 5,
-   "defense": 0,
+   "defense": 1,
    "jump": 2
   },
   "flying": true,
@@ -2857,10 +2857,10 @@
   "faction": "gyre",
   "cost": 30,
   "stats": {
-   "hp": 10,
+   "hp": 19,
    "ap": 7,
    "attack": 6,
-   "defense": 0,
+   "defense": 1,
    "jump": 2
   },
   "flying": true,
@@ -2880,10 +2880,10 @@
   "faction": "gyre",
   "cost": 35,
   "stats": {
-   "hp": 14,
+   "hp": 23,
    "ap": 5,
    "attack": 6,
-   "defense": 0,
+   "defense": 1,
    "jump": 1
   },
   "abilities": [
@@ -2902,7 +2902,7 @@
   "faction": "gyre",
   "cost": 40,
   "stats": {
-   "hp": 22,
+   "hp": 31,
    "ap": 5,
    "attack": 7,
    "defense": 3,
@@ -2925,7 +2925,7 @@
   "faction": "gyre",
   "cost": 45,
   "stats": {
-   "hp": 14,
+   "hp": 23,
    "ap": 8,
    "attack": 8,
    "defense": 1,
@@ -2948,7 +2948,7 @@
   "faction": "gyre",
   "cost": 45,
   "stats": {
-   "hp": 18,
+   "hp": 27,
    "ap": 7,
    "attack": 6,
    "defense": 1,
@@ -2972,10 +2972,10 @@
   "faction": "gyre",
   "cost": 40,
   "stats": {
-   "hp": 15,
+   "hp": 24,
    "ap": 5,
    "attack": 5,
-   "defense": 0,
+   "defense": 1,
    "jump": 1
   },
   "abilities": [
@@ -2995,7 +2995,7 @@
   "faction": "gyre",
   "cost": 50,
   "stats": {
-   "hp": 15,
+   "hp": 24,
    "ap": 8,
    "attack": 8,
    "defense": 1,
@@ -3018,7 +3018,7 @@
   "faction": "gyre",
   "cost": 55,
   "stats": {
-   "hp": 20,
+   "hp": 29,
    "ap": 8,
    "attack": 8,
    "defense": 1,
@@ -3042,7 +3042,7 @@
   "faction": "gyre",
   "cost": 55,
   "stats": {
-   "hp": 15,
+   "hp": 24,
    "ap": 8,
    "attack": 7,
    "defense": 1,
@@ -3065,7 +3065,7 @@
   "faction": "gyre",
   "cost": 60,
   "stats": {
-   "hp": 18,
+   "hp": 27,
    "ap": 5,
    "attack": 9,
    "defense": 1,
@@ -3088,7 +3088,7 @@
   "faction": "gyre",
   "cost": 70,
   "stats": {
-   "hp": 32,
+   "hp": 41,
    "ap": 7,
    "attack": 9,
    "defense": 2,
@@ -3115,7 +3115,7 @@
   "hero": true,
   "cost": 70,
   "stats": {
-   "hp": 22,
+   "hp": 29,
    "ap": 8,
    "attack": 8,
    "defense": 1,
@@ -3142,7 +3142,7 @@
   "hero": true,
   "cost": 75,
   "stats": {
-   "hp": 28,
+   "hp": 35,
    "ap": 5,
    "attack": 7,
    "defense": 2,
@@ -3168,7 +3168,7 @@
   "hero": true,
   "cost": 80,
   "stats": {
-   "hp": 30,
+   "hp": 37,
    "ap": 7,
    "attack": 10,
    "defense": 2,
