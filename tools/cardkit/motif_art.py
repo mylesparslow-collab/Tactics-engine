@@ -6,12 +6,12 @@ import os, sys, json
 import numpy as np
 from PIL import Image, ImageFilter
 sys.path.insert(0, os.path.dirname(__file__))
-from interim_art import backdrop, paint, MOODS, W, H, xx, yy, OUT, ROOT
+from interim_art import backdrop, paint, PAL, W, H, xx, yy, OUT, ROOT
 
 def compose(cid, fid, motif, seed, kind):
     bg, _, key, hz = backdrop(fid, seed)
     bg = paint(bg)
-    acc = np.asarray(MOODS.get(fid, MOODS['salt_concord'])[5], np.float32)
+    acc = np.asarray(PAL.get(fid, PAL['salt_concord'])['acc'], np.float32)
     fg = motif.crop(motif.getbbox())
     # the subject sits in the open art window above the rules panel (which covers the lower ~40%)
     box_w, box_h = W * 0.84, H * 0.5
