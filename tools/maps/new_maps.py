@@ -109,6 +109,28 @@ class Grid:
             if hazard and self.beacon and any(abs(x - bx) + abs(y - by) <= 5 for bx, by in (self.beacon, self.rot(*self.beacon))): continue
             self.put(x, y, ch, h); placed += 1
 
+    def patches(self, ch, n, size=(3, 8), on='.,', where=None, h=None, spread=0):
+        """Place n symmetric connected patches (random flood growth, `size` tiles each) of `ch` on cells showing a char in `on`.
+        spread>0 keeps each new patch at least that far (manhattan) from every earlier patch of any kind placed by this call."""
+        hazard = TERRAIN[LEGEND[ch]].get('onEnter') or LEGEND[ch] in HAZARD
+        ok = lambda x, y: (self.inb(x, y) and self.t[y][x] in on and (where is None or where(x, y))
+                           and not (hazard and self.beacon and any(abs(x - bx) + abs(y - by) <= 5 for bx, by in (self.beacon, self.rot(*self.beacon)))))
+        placed = 0; tries = 0
+        while placed < n and tries < 200:
+            tries += 1
+            cells = [(x, y) for y in range(self.H) for x in range(self.W) if ok(x, y)]
+            if not cells: return
+            seed = self.rng.choice(cells)
+            want = self.rng.randint(*size)
+            reg = [seed]; rs = {seed}
+            while len(reg) < want:
+                fr = [(a + dx, b + dy) for a, b in reg for dx, dy in DIRS if (a + dx, b + dy) not in rs and ok(a + dx, b + dy)]
+                if not fr: break
+                c = self.rng.choice(fr); reg.append(c); rs.add(c)
+            if len(reg) < min(size[0], want): continue
+            for x, y in reg: self.put(x, y, ch, h)
+            placed += 1
+
     def cluster(self, ch, cx, cy, r, density=0.6, on='.,'):
         for y in range(cy - r, cy + r + 1):
             for x in range(cx - r, cx + r + 1):
@@ -179,7 +201,7 @@ def boiling_floor():
     # two ragged basalt plateaus (top one drawn; the rotation makes the bottom one)
     g.blob(12.5, 2.0, 13.0, 5.4, '.', 2, wobble=0.2)
     g.rect(0, 0, 25, 1, '.', 2)
-    g.bite(0.3, 1)
+    g.bite(0.15, 1)
     # central island with the vents
     g.blob(12.5, 11.5, 6.6, 3.5, ',', 1, wobble=0.15)
     # rifts: a void band between plateau and island, leaving causeways of bone road
@@ -188,16 +210,18 @@ def boiling_floor():
     g.rect(16, 6, 16, 9, '=', 1)
     g.rect(21, 4, 22, 8, '=', 1); g.rect(20, 9, 20, 10, '=', 1)
     # cracks through the plateau
-    for (x, y) in ((11, 5), (12, 5), (12, 6), (3, 2), (4, 2), (3, 3), (20, 1), (19, 2), (8, 3), (8, 4)): g.put(x, y, '_', 0)
+    for (x, y) in ((11, 5), (12, 5), (12, 6), (3, 2), (4, 2), (4, 3), (4, 4), (20, 1), (21, 2), (21, 1)): g.put(x, y, '_', 0)
     g.place_beacon(12, 2)
     g.put(12, 3, '='); g.put(12, 4, '='); g.put(13, 4, '=')
     # vents on the central island, ringed by sinkmud
-    for (x, y) in ((11, 10), (14, 10), (12, 11), (9, 11), (15, 12), (13, 9), (10, 13)): g.put(x, y, 'v')
-    g.cluster('u', 12, 11, 4, 0.25, on=',')
+    # two connected vent fields flank a sinkmud pool; one lone vent on the plateau
+    for (x, y) in ((10, 10), (11, 10), (11, 11), (10, 12)): g.put(x, y, 'v')
+    g.rect(13, 10, 14, 10, 'v'); g.put(14, 11, 'v')
+    g.blob(12.5, 12, 1.9, 1.0, 'u', 1, wobble=0.1, on=',')
     g.heights(lambda x, y: (3 if (y <= 1 and not 9 <= x <= 15) or (y <= 3 and (x <= 3 or x >= 22)) else 2) if y < 6 else 1)
-    g.scatter('c', 8, on='.'); g.scatter('a', 4, on='.,'); g.scatter('v', 3, on='.', where=lambda x, y: 2 < y < 6)
-    g.scatter('u', 3, on='.'); g.scatter('k', 3, on='.,'); g.scatter('T', 2, on='.', where=lambda x, y: y < 6)
-    g.scatter('w', 2, on='.'); g.scatter('s', 4, on=',', where=lambda x, y: y > 8); g.scatter('M', 2, on='.,'); g.scatter('g', 3, on='.,')
+    g.patches('c', 2, (5, 9), on='.'); g.patches('u', 2, (4, 7), on='.'); g.patches('m', 2, (4, 8), on='.')
+    g.patches('s', 1, (4, 6), on=',', where=lambda x, y: y > 8); g.patches('k', 1, (3, 5), on=',')
+    g.scatter('v', 1, on='.', where=lambda x, y: 2 < y < 6)
     g.finish(min_size=12)
     return g, dict(wells=[(5, 3), (19, 3)], big=False)
 
@@ -245,9 +269,9 @@ def glasswork_reach():
     # ruins and cover
     for (x, y) in ((11, 6), (17, 6), (11, 9), (17, 9)): g.put(x, y, 'X')
     g.put(12, 11, 'X'); g.put(17, 11, 'X')
-    g.scatter('m', 12, on='.', where=lambda x, y: abs(x - c) > 3 and abs(y - c) > 3 or abs(x - 14.5) > 3)
-    g.scatter('c', 12, on='.'); g.scatter('a', 6, on='.'); g.scatter('w', 6, on='.'); g.scatter('O', 4, on='.')
-    g.scatter('k', 6, on='.')
+    g.patches('m', 3, (5, 9), on='.', where=lambda x, y: abs(x - c) > 3 and abs(y - c) > 3 or abs(x - 14.5) > 3)
+    g.patches('c', 2, (4, 8), on='.'); g.patches('a', 1, (4, 6), on='.'); g.patches('O', 1, (3, 5), on='.')
+    g.scatter('w', 2, on='.')
     g.finish()
     return g, dict(wells=[(24, 13), (24, 5)], big=True)
 
@@ -277,46 +301,41 @@ def oyster_banks():
     g.cluster('O', 13, 12, 2, 0.5, on=',')
     g.cluster('g', 5, 9, 1, 0.9, on=',')
     g.cluster('g', 25, 7, 1, 0.8, on=',')
-    g.scatter('O', 3, on='s')
-    g.scatter('a', 5, on=','); g.scatter('c', 7, on=','); g.scatter('p', 3, on=','); g.scatter('k', 3, on=',')
-    g.scatter('s', 4, on=',')
+    g.patches('O', 1, (3, 4), on='s')
+    g.patches('c', 2, (4, 7), on=','); g.patches('a', 1, (4, 6), on=','); g.patches('k', 1, (4, 6), on=',')
+    g.scatter('p', 2, on=',')
     g.finish(min_size=12)
     return g, dict(wells=[(4, 8), (22, 6)], big=False)
 
 
 def breakers_yard():
     g = Grid(32, 20, base='.', h=1, seed=31)
-    # a wide scrapyard; a diagonal trench rift cuts across the whole yard through the centre
-    g.rect(0, 0, 31, 9, '.', 1)
+    # a wide scrapyard split by one continuous void rift running corner to corner, crossed by three bone-road causeways
     g.heights(lambda x, y: 1)
-    for x in range(0, 32):
-        pass
-    g.line(31, 0, 0, 19, 'T', 0, 3)
-    # gaps in the rift: bridges of bone road and scrap
-    for (x, y) in ((15, 9), (16, 10)):
-        pass
-    for (bx, by) in ((22, 5), (9, 14), (15, 9)):
-        g.rect(bx - 2, by - 1, bx + 2, by + 1, 'm', 1)
-        g.line(bx - 3, by - 2, bx + 3, by + 2, '=', 1, 2)
     # hulks (walls of salt plate + wreck) lined up like beached ships
-    for (x0, y0, x1, y1) in ((3, 6, 10, 6), (12, 2, 12, 6), (18, 3, 25, 3), (26, 4, 26, 8), (5, 9, 5, 12)):
+    for (x0, y0, x1, y1) in ((3, 6, 10, 6), (12, 2, 12, 6), (18, 3, 23, 3), (5, 9, 5, 12)):
         g.line(x0, y0, x1, y1, 'w', 1)
-    for (x0, y0, x1, y1) in ((4, 6, 6, 6), (12, 3, 12, 4), (20, 3, 22, 3), (26, 5, 26, 6)):
+    for (x0, y0, x1, y1) in ((4, 6, 6, 6), (12, 3, 12, 4), (20, 3, 22, 3)):
         g.line(x0, y0, x1, y1, 'X', 1)
+    # the rift: a 4-wide diagonal band, wider in the middle, with a ragged lip
+    g.line(31, 0, 0, 19, '_', 0, 4)
+    g.blob(15.5, 9.5, 4.2, 2.6, '_', 0, wobble=0.1)
+    for (bx, by) in ((22, 5), (15, 9), (9, 14)):
+        g.line(bx - 3, by - 4, bx + 3, by + 4, '=', 1, 3)
     g.place_beacon(9, 3)
     g.rect(8, 2, 10, 4, 'L', 2)
-    # raised decks around the two Beacons
+    # raised decks around the two Beacons and on the two far-corner gantries
     g.heights(lambda x, y: 2 if (abs(x - 9) + abs(y - 3) <= 5) else 1)
     g.put(9, 3, 'L'); g.put(8, 3, 'L'); g.put(10, 3, 'L')
-    for (mx, my) in ((26, 7), (6, 9)):
+    for (mx, my) in ((26, 8), (6, 9)):
         g.ellipse(mx, my, 4.5, 3.0, None, 2); g.ellipse(mx, my, 2.6, 1.6, None, 3)
-    g.scatter('m', 30, on='.'); g.scatter('o', 8, on='.'); g.scatter('c', 10, on='.'); g.scatter('=', 8, on='.')
-    g.scatter('k', 6, on='.'); g.scatter('p', 3, on='.'); g.scatter('w', 8, on='.'); g.scatter('a', 4, on='.')
-    g.scatter('X', 3, on='.'); g.scatter('s', 8, on='.'); g.scatter('u', 6, on='.'); g.scatter('v', 4, on='.'); g.scatter('g', 4, on='.'); g.scatter('M', 2, on='.')
+    # terrain in patches: scrap fields, oil seeps, coral, mud, shallows, a lone vent and two brine pools
+    g.patches('m', 4, (6, 12), on='.'); g.patches('o', 2, (3, 5), on='.'); g.patches('c', 2, (4, 8), on='.')
+    g.patches('u', 2, (4, 7), on='.'); g.patches('s', 1, (4, 8), on='.'); g.patches('g', 1, (3, 6), on='.')
+    g.scatter('v', 1, on='.'); g.scatter('p', 2, on='.')
     g.seal('X')
     g.finish(prune=False)
     return g, dict(wells=[(14, 4), (24, 7)], big=True)
-
 
 def tide_steps():
     g = Grid(24, 28, base='B', h=0, seed=41)
@@ -349,9 +368,10 @@ def tide_steps():
     g.rect(11, 5, 12, 5, '=', 3); g.rect(11, 6, 12, 6, '=', 3); g.rect(11, 7, 12, 7, '=', 2); g.rect(11, 8, 12, 9, '=', 2)
     g.path([(5, 5), (5, 10)], '=', None, 1)
     g.heights(lambda x, y: hh(x, y) if g.ch(x, y) != 'B' else 0)
-    g.scatter('s', 10, on='.', where=lambda x, y: abs(y - cy) < 7)
-    g.scatter('c', 16, on='.'); g.scatter('k', 8, on='.'); g.scatter('a', 6, on='.'); g.scatter('p', 4, on='.')
-    g.scatter('m', 6, on='.'); g.scatter('M', 3, on='.')
+    g.patches('s', 2, (5, 9), on='.', where=lambda x, y: abs(y - cy) < 7)
+    g.patches('c', 2, (5, 8), on='.'); g.patches('k', 1, (4, 7), on='.'); g.patches('a', 1, (4, 6), on='.')
+    g.patches('m', 2, (4, 6), on='.'); g.patches('M', 1, (3, 4), on='.')
+    g.scatter('p', 2, on='.')
     g.finish()
     return g, dict(wells=[(4, 9), (17, 11)], big=False)
 
@@ -361,12 +381,20 @@ def saltpan_bastions():
     g = Grid(30, 30, base='B', h=1, seed=53)
     cx = cy = 14.5
     # star fort: eight bastion lobes (sides and corners) on a round curtain, set in a flooded pan
+    def in_bastion(dx, dy):
+        # eight chunky lobes: along each axis/diagonal the half-width tapers 4.4 -> 2.3 and ends in a round cap (>= 4 tiles at the tip)
+        for k in range(8):
+            ang = k * math.pi / 4
+            u = dx * math.cos(ang) + dy * math.sin(ang); v = -dx * math.sin(ang) + dy * math.cos(ang)
+            if u < 5: continue
+            if u <= 12.4:
+                if abs(v) <= 4.4 - 2.1 * max(0.0, (u - 7.0)) / 5.4: return True
+            elif math.hypot(u - 12.4, v) <= 2.3: return True
+        return False
     for y in range(30):
         for x in range(30):
             dx, dy = x - cx, y - cy
-            d = math.hypot(dx, dy); a = math.atan2(dy, dx)
-            lobe = max(0.0, math.cos(8 * a)) ** 0.5
-            if d <= 8.6 + 6.4 * lobe: g.put(x, y, '.', 1)
+            if math.hypot(dx, dy) <= 8.6 or in_bastion(dx, dy): g.put(x, y, '.', 1)
     # inner curtain wall ring with four gates, bastions and the rampart outside it stand a level higher
     for y in range(30):
         for x in range(30):
@@ -383,44 +411,60 @@ def saltpan_bastions():
     g.rect(13, 1, 15, 1, 'L')
     # barricades of scrap in the bastion gorges, salt and glass cover
     for (x, y) in ((9, 5), (20, 5), (5, 9), (24, 9)): g.cluster('m', x, y, 1, 0.9, on='.')
-    g.scatter('m', 8, on='.'); g.scatter('c', 8, on='.'); g.scatter('a', 8, on='.'); g.scatter('s', 8, on='.')
-    g.scatter('g', 4, on='.'); g.scatter('w', 4, on='.'); g.scatter('M', 2, on='.')
+    g.patches('m', 2, (4, 8), on='.'); g.patches('c', 2, (4, 7), on='.'); g.patches('a', 2, (4, 7), on='.'); g.patches('s', 2, (4, 8), on='.')
+    g.patches('g', 1, (3, 5), on='.'); g.scatter('w', 2, on='.')
     g.finish(prune=False)
     return g, dict(wells=[(9, 8), (22, 6)], big=False)
 
 
 def kelpmire():
     import math
-    g = Grid(18, 26, base='k', h=2, seed=67)
-    # a winding valley: a cold shallows channel meanders down the long axis, banks climb to a kelp rim
-    pts = [(2, 0), (3, 4), (11, 6), (13, 9), (8, 12), (8, 13)]
-    g.path(pts, 's', 0, 3)
-    rp = [g.rot(*q) for q in pts]
+    g = Grid(18, 26, base='_', h=2, seed=67)
+    cx, cy = 8.5, 12.5
+    # organic outline: a lumpy superellipse (evaluated on the top half; the rotation mirrors it)
+    ph = [g.rng.random() * 6.28 for _ in range(3)]
+    for y in range(13):
+        for x in range(18):
+            dx, dy = (x - cx) / 9.0, (y - cy) / 13.2
+            a = math.atan2(dy, dx)
+            k = 1 + 0.07 * math.sin(3 * a + ph[0]) + 0.05 * math.sin(5 * a + ph[1]) + 0.03 * math.sin(8 * a + ph[2])
+            if abs(dx) ** 3 + abs(dy) ** 3 <= k ** 3: g.put(x, y, 'k', 2)
+    # a winding channel: a Catmull-Rom curve through diagonal-ish control points, stamped with discs of drifting radius
+    ctl = [(2.0, -2.0), (3.0, 0.5), (4.0, 3.5), (7.0, 5.5), (11.5, 6.5), (13.0, 9.0), (11.0, 11.5), (8.5, 12.5)]
+    ctl = [(2.0, -2.0)] + ctl + [(8.5, 12.5)]
+    curve = []
+    for i in range(1, len(ctl) - 2):
+        p0, p1, p2, p3 = ctl[i - 1], ctl[i], ctl[i + 1], ctl[i + 2]
+        for j in range(12):
+            t = j / 12
+            curve.append(tuple(0.5 * ((2 * p1[c]) + (-p0[c] + p2[c]) * t + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * t * t
+                                      + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * t ** 3) for c in (0, 1)))
+    curve.append((8.5, 12.5))
+    full = curve + [(17 - x, 25 - y) for x, y in reversed(curve)]
+    rad = lambda i: 1.25 + 0.45 * math.sin(i * 0.55) + 0.25 * math.sin(i * 1.3 + 1)
+    for i, (x, y) in enumerate(full):
+        r = rad(i)
+        for yy in range(int(y - r) - 1, int(y + r) + 2):
+            for xx in range(int(x - r) - 1, int(x + r) + 2):
+                if g.inb(xx, yy) and g.t[yy][xx] != '_' and (xx - x) ** 2 + (yy - y) ** 2 <= r * r: g.t[yy][xx] = 's'; g.t[25 - yy][17 - xx] = 's'
     def dist(x, y):
-        best = 99
-        for (a, b) in list(zip(pts, pts[1:])) + list(zip(rp, rp[1:])):
-            ax, ay = a; bx, by = b
-            L2 = (bx - ax) ** 2 + (by - ay) ** 2 or 1
-            t = max(0, min(1, ((x - ax) * (bx - ax) + (y - ay) * (by - ay)) / L2))
-            best = min(best, math.hypot(x - (ax + t * (bx - ax)), y - (ay + t * (by - ay))))
-        return best
+        return min(math.hypot(x - a, y - b) for a, b in full)
     g.heights(lambda x, y: min(3, dist(x, y) / 2.4))
     for y in range(26):
         for x in range(18):
-            if g.t[y][x] != 's':
-                d = dist(x, y)
-                g.put(x, y, ',' if d < 4.5 else 'k', None)
+            if g.t[y][x] not in 's_': g.t[y][x] = ',' if dist(x, y) < 4.2 else 'k'
     g.place_beacon(7, 2)
     g.rect(6, 1, 8, 1, 'L')
-    g.cluster('u', 9, 6, 2, 0.7, on=',k'); g.cluster('u', 5, 3, 1, 0.8, on=',k'); g.cluster('u', 13, 11, 2, 0.6, on=',k')
-    g.cluster('g', 6, 9, 2, 0.6, on=',k'); g.cluster('g', 14, 6, 2, 0.6, on=',k'); g.cluster('g', 3, 8, 1, 0.8, on=',k')
-    g.put(6, 5, 'T'); g.put(11, 4, 'T'); g.put(7, 11, 'T')
-    g.cluster('M', 4, 11, 1, 0.8, on=',k')
-    g.scatter('k', 10, on=','); g.scatter('c', 8, on=',k'); g.scatter('w', 4, on=',k'); g.scatter('a', 4, on=',k')
-    g.scatter('s', 6, on=','); g.scatter('p', 3, on=',')
+    # real chasms in the banks: void pits with a ragged edge
+    for (x, y, rx, ry) in ((10.0, 3.0, 1.7, 1.3), (5.0, 8.5, 1.5, 1.2)):
+        g.blob(x, y, rx, ry, '_', 0, wobble=0.3, on=',k')
+    g.patches('u', 2, (4, 8), on=',k'); g.patches('g', 3, (4, 9), on=',k'); g.patches('M', 1, (3, 5), on=',k')
+    g.patches('c', 1, (3, 5), on=',k'); g.patches('a', 1, (3, 4), on=',k'); g.patches('k', 2, (5, 9), on=',')
+    g.scatter('w', 2, on=',k')
+    g.heights(lambda x, y: None)
+    g.seal('k')
     g.finish(prune=False)
     return g, dict(wells=[(3, 8), (13, 7)], big=False)
-
 
 def gull_stacks():
     g = Grid(28, 28, base='_', h=1, seed=79)
@@ -455,9 +499,9 @@ def gull_stacks():
     g.free |= {(x, y) for y in range(g.H) for x in range(g.W) if g.h[y][x] == 5 and g.ch(x, y) == 'a'}
     g.place_beacon(13, 2)
     g.rect(12, 1, 14, 1, 'L')
-    g.cluster('c', 13, 4, 2, 0.4, on=',.'); g.cluster('k', 4, 6, 2, 0.4, on='.'); g.cluster('a', 23, 4, 2, 0.4, on='.')
-    g.scatter('c', 8, on=',.'); g.scatter('a', 5, on=',.'); g.scatter('m', 6, on='.'); g.scatter('w', 4, on=',.')
-    g.scatter('O', 3, on=',', where=lambda x, y: y > 8); g.scatter('s', 4, on=',.'); g.scatter('M', 3, on=',.'); g.scatter('g', 4, on=',.'); g.scatter('v', 2, on='.')
+    g.patches('c', 2, (4, 7), on=',.'); g.patches('a', 1, (4, 6), on=',.'); g.patches('m', 2, (3, 6), on='.')
+    g.patches('O', 1, (3, 5), on=',', where=lambda x, y: y > 8); g.patches('s', 1, (3, 5), on=',.'); g.patches('M', 1, (3, 4), on=',.')
+    g.patches('g', 1, (3, 5), on=',.'); g.scatter('v', 1, on='.')
     g.finish()
     return g, dict(wells=[(4, 6), (22, 12)], big=True, allow_stranded=True)
 
