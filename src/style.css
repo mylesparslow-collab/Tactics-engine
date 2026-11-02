@@ -68,10 +68,9 @@ p { margin: 0; }
 .crest { display: inline-block; width: 40px; aspect-ratio: 120 / 140; flex: none; }
 .crest svg { width: 100%; height: 100%; display: block; overflow: visible; }
 
-/* Illuminated initial: the first letter of a menu heading, as a baked gilt block. */
+/* Illuminated initial: used once, as the drop cap opening a briefing's story. */
 .ill { display: inline-block; width: 1.32em; height: 1.32em; margin: -.16em .08em -.16em 0; vertical-align: middle; flex: none;
   background: var(--ill) center / contain no-repeat; filter: drop-shadow(0 3px 6px #000c); }
-.ill-word { display: inline-flex; align-items: center; }
 
 /* ------------------------------------------------------------------ menu shell */
 .screen { position: relative; height: 100%; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; background: #0b0b12; }
@@ -92,7 +91,6 @@ p { margin: 0; }
 .scr-head { display: flex; align-items: center; gap: 16px; max-width: 1240px; margin: 0 auto 20px; }
 .scr-head .scr-title { flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .scr-head h1 { font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; color: var(--gold-hi); letter-spacing: .04em; text-shadow: 0 2px 16px #000; display: inline-flex; align-items: center; }
-.scr-head h1 .ill { width: 1.5em; height: 1.5em; margin-right: .14em; }
 .scr-head-sp { width: 40px; }
 
 /* ------------------------------------------------------------------ title */
@@ -107,11 +105,9 @@ p { margin: 0; }
 .mitem::after { content: ""; position: absolute; left: 6px; right: 14px; bottom: 0; height: 1px; background: linear-gradient(90deg, var(--line), transparent); }
 .mitem:last-child::after { display: none; }
 .mi-title { flex: 1; display: inline-flex; align-items: center; font-family: var(--font-display); font-weight: 600; font-size: clamp(28px, 2.8vw, 36px); line-height: 1.1; letter-spacing: .03em; text-shadow: 0 2px 12px #000; }
-.mi-title .ill { width: 1.5em; height: 1.5em; margin-right: .2em; transition: transform .2s, filter .2s; }
 .mi-sub { font-family: var(--font-ui); font-weight: 600; font-size: 13px; letter-spacing: .14em; color: var(--gold-mid); font-variant-numeric: tabular-nums; }
 .mitem:hover:not(:disabled), .mitem:focus-visible { color: var(--gold-hi); background: linear-gradient(90deg, #e2c27e1c, transparent 80%); outline: none; }
-.mitem:hover:not(:disabled) .ill, .mitem:focus-visible .ill { transform: scale(1.06); filter: drop-shadow(0 3px 6px #000c) drop-shadow(0 0 12px #e2c27e55); }
-.mitem:disabled { color: #8a857a; cursor: default; } .mitem:disabled .ill { filter: grayscale(1) brightness(.6); } .mitem:disabled .mi-sub { color: #6f6a60; }
+.mitem:disabled { color: #8a857a; cursor: default; } .mitem:disabled .mi-sub { color: #6f6a60; }
 .errbox { grid-row: 4; width: min(400px, 100%); margin-top: 14px; background: #2a0f10d8; border: 1px solid #a8433d; color: #ffd6d4; padding: 8px 12px; border-radius: 3px; font-size: 12px; align-self: start; }
 .errbox summary { cursor: pointer; } .errbox ul { margin: 6px 0 0; padding-left: 18px; max-height: 30vh; overflow: auto; }
 .ver { grid-row: 5; grid-column: 1 / -1; font-family: var(--font-ui); font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: #ffffff40; padding-top: 12px; }
@@ -197,10 +193,10 @@ p { margin: 0; }
 .brief-story { max-width: 600px; }
 .brief-story .kicker { margin-bottom: 14px; }
 .brief-title { display: flex; align-items: center; font-size: clamp(38px, 5vw, 64px); line-height: 1.02; color: var(--gold-hi); letter-spacing: .02em; text-shadow: 0 3px 24px #000; }
-.brief-title .ill { width: 1.45em; height: 1.45em; margin-right: .16em; align-self: flex-start; margin-top: -.06em; }
 .brief-story .lead { margin-top: 20px; font-size: clamp(19px, 1.6vw, 23px); line-height: 1.45; color: #e6dcc4; text-shadow: 0 1px 10px #000; }
 .brief-text { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 12px; }
 .brief-text p { font-size: 15.5px; line-height: 1.65; color: #c9c3b6; text-shadow: 0 1px 8px #000; }
+.brief-text p.dropcap .ill { float: left; width: 4.9em; height: 4.9em; margin: .3em .8em 0 0; }
 .brief-side { display: flex; flex-direction: column; gap: 18px; }
 .bs-map { display: grid; grid-template-columns: 130px 1fr; gap: 14px; align-items: center; padding-bottom: 16px; border-bottom: 1px solid var(--line-dim); }
 .bs-map .mapprev { width: 130px; height: 86px; margin: 0; }

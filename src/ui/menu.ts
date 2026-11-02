@@ -70,7 +70,7 @@ function shell(root: HTMLElement, content: Content): HTMLElement {
 function screenHeader(title: string, kicker: string | null, onBack: () => void) {
   return h('header', { class: 'scr-head' },
     h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back')),
-    h('div', { class: 'scr-title' }, kicker ? h('div', { class: 'kicker' }, kicker) : null, h('h1', null, ...illuminated(title))),
+    h('div', { class: 'scr-title' }, kicker ? h('div', { class: 'kicker' }, kicker) : null, h('h1', null, title)),
     h('div', { class: 'scr-head-sp' }));
 }
 
@@ -89,7 +89,7 @@ export function showMenu(root: HTMLElement, content: Content, errors: string[], 
   const campTotal = camps.reduce((n, [, c]) => n + c.missions.length, 0);
   const scen = Object.keys(content.missions).filter(id => !id.startsWith('skirmish:')).length;
   const item = (title: string, sub: string, on: (() => void) | null, extra = '') =>
-    h('button', { class: 'mitem' + extra, disabled: !on, onclick: on ?? undefined }, h('span', { class: 'mi-title' }, ...illuminated(title)), h('span', { class: 'mi-sub' }, sub));
+    h('button', { class: 'mitem' + extra, disabled: !on, onclick: on ?? undefined }, h('span', { class: 'mi-title' }, title), h('span', { class: 'mi-sub' }, sub));
   const scr = h('div', { class: 'scr title-scr' },
     h('div', { class: 'logo-block' },
       h('img', { class: 'logo-img', src: '', alt: L.title ?? 'Brinewake', draggable: 'false' }),
@@ -302,9 +302,9 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
     h('div', { class: 'brief-grid' },
       h('section', { class: 'brief-story' },
         h('div', { class: 'kicker' }, kicker),
-        h('h1', { class: 'brief-title' }, ...illuminated(m.name)),
+        h('h1', { class: 'brief-title' }, m.name),
         m.description ? h('p', { class: 'lead' }, m.description) : null,
-        story.length ? h('div', { class: 'brief-text' }, ...story.map(t => h('p', null, t))) : null),
+        story.length ? h('div', { class: 'brief-text' }, ...story.map((t, i) => i ? h('p', null, t) : h('p', { class: 'dropcap' }, ...illuminated(t)))) : null),
       h('aside', { class: 'brief-side framed' },
         h('div', { class: 'bs-map' }, mapPreview(content, m.map),
           h('div', { class: 'bs-mapname' }, h('span', { class: 'kicker' }, 'Battlefield'), h('b', null, map?.name ?? m.map),

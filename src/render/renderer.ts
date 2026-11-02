@@ -36,7 +36,7 @@ const HIT_MS = 280;
 const HOVER = 18;
 
 interface Seg { start: number; dur: number; path: Pos[]; arc: boolean }
-interface Float { x: number; y: number; text: string; color: string; born: number; life: number; icon?: string; size?: number }
+interface Float { x: number; y: number; ax: number; ay: number; text: string; color: string; born: number; life: number; icon?: string; size?: number }
 
 /** A sound-worthy moment, fired when its visual lands (not when the rules resolve it). */
 export type Cue =
@@ -259,8 +259,10 @@ export class Renderer {
   private tileZ(p: Pos) { return this.game.tiles[Math.round(p.y)]?.[Math.round(p.x)]?.height ?? 0; }
   private floatAt(p: Pos, text: string, color: string, born: number, icon?: string, size = 1) {
     const s = this.view.project(p.x, p.y, this.tileZ(p));
-    const n = this.floats.filter(f => Math.abs(f.born - born) < 300 && Math.abs(f.x - s.sx) < 4 && Math.abs(f.y - s.sy) < 80).length;
-    this.floats.push({ x: s.sx, y: s.sy - 96 - n * 18, text, color, born, life: size > 1 ? 1500 : 1200, icon, size });
+    // Labels that land on the same unit at about the same time stack upward and start a beat apart,
+    // so each one stays readable instead of drawing over the last.
+    const n = this.floats.filter(f => Math.abs(f.born - born) < 700 && Math.abs(f.ax - s.sx) < 4 && Math.abs(f.ay - s.sy) < 4).length;
+    this.floats.push({ x: s.sx, y: s.sy - 96 - n * 28 * size, ax: s.sx, ay: s.sy, text, color, born: born + n * 160, life: size > 1 ? 1500 : 1200, icon, size });
   }
   private shakeCamera(t: number, mag: number, ms: number) {
     if (this.reduced) return;
@@ -686,9 +688,10 @@ export class Renderer {
     }
     for (const f of this.floats) {
       const k = (now - f.born) / f.life;
+      if (k < 0) continue;
       ctx.globalAlpha = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3;
       const sc = k < 0.15 ? 0.6 + k / 0.15 * 0.5 : 1.1 - Math.min(0.1, (k - 0.15));
-      ctx.font = `bold ${Math.round(22 * sc * (f.size ?? 1))}px Cinzel, Georgia, serif`;
+      ctx.font = `700 ${Math.round(23 * sc * (f.size ?? 1))}px 'Barlow Semi Condensed', Barlow, system-ui, sans-serif`;
       ctx.lineWidth = 4 * (f.size ?? 1); ctx.strokeStyle = 'rgba(0,0,0,0.85)';
       const y = f.y - k * 40;
       ctx.strokeText(f.text, f.x, y); ctx.fillStyle = f.color; ctx.fillText(f.text, f.x, y);
