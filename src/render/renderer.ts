@@ -15,6 +15,8 @@ export interface Overlay {
   targets: Set<string>;
   area: Set<string>;
   deploy: Set<string>;
+  /** Skyfall-only drop tiles (the unit lands next turn). */
+  skyfall: Set<string>;
   path: Pos[];
   pathCost: number | null;
   selected: Pos | null;
@@ -22,7 +24,7 @@ export interface Overlay {
   previews: Map<number, Preview>;
 }
 export const emptyOverlay = (): Overlay => ({
-  reach: new Set(), range: new Set(), targets: new Set(), area: new Set(), deploy: new Set(), path: [], pathCost: null,
+  reach: new Set(), range: new Set(), targets: new Set(), area: new Set(), deploy: new Set(), skyfall: new Set(), path: [], pathCost: null,
   selected: null, hover: null, previews: new Map(),
 });
 
@@ -30,6 +32,8 @@ const MS_PER_TILE = 150;
 const DEATH_MS = 650;
 const POP_MS = 420;
 const HIT_MS = 280;
+/** Flyers hover this many px above the tile (plus a gentle bob). */
+const HOVER = 18;
 
 interface Seg { start: number; dur: number; path: Pos[]; arc: boolean }
 interface Float { x: number; y: number; text: string; color: string; born: number; life: number; icon?: string; size?: number }
@@ -457,6 +461,16 @@ export class Renderer {
         this.at(t, () => { const u = this.uname(e.uid); if (u) { this.floatAt(this.unitPos(u, t), 'Equipped', '#ffe27a', performance.now()); this.burst(u, 8, '#ffe9a0', { up: 50, spread: 20, life: 700, size: 2.5, g: -10, rise: true }); } });
         break;
       }
+      case 'land': {
+        const t = this.cursor;
+        this.at(t, () => {
+          this.rings.push({ pos: e.to, start: t, dur: 520, color: '#d9c2ff' });
+          this.burst(e.to, 20, '#e6d6ff', { up: 70, spread: 70, life: 700, size: 3 });
+          this.shakeCamera(t, 4, 220);
+        });
+        this.endAt = Math.max(this.endAt, t + 520);
+        break;
+      }
       case 'terrain': { this.boardDirty = true; break; }
       case 'essence': { // HUD shows totals; a well payout also pops over the well
         if (e.at) { const at = e.at, t = this.cursor; this.cue(t, { kind: 'essence' }); this.at(t, () => { this.floatAt(at, `+${e.amount} ${label(this.game.content, 'essence')}`, '#7fe0ff', performance.now()); this.burst(at, 12, '#9fe8ff', { up: 70, spread: 18, life: 900, size: 2.5, g: -20, rise: true }); }); this.cursor += 250; }
@@ -675,7 +689,7 @@ export class Renderer {
     const h = this.overlay.hover, g = this.game; if (!h) return;
     const w = g.map.wells?.find(q => q.x === h.x && q.y === h.y); if (!w) return;
     const tide = label(g.content, 'essence'), holder = g.unitAt(w.x, w.y);
-    const owner = holder && !g.def(holder).structure ? g.teams[holder.team] : undefined;
+    const owner = holder && !g.def(holder).structure && !g.def(holder).flying ? g.teams[holder.team] : undefined;
     const l1 = `${tide} Well  +${w.amount ?? 10} ${tide} per turn`;
     const l2 = owner ? `Held by ${owner.name} \u00B7 deploy beside it` : 'Hold it: Tide each turn, deploy beside it';
     const wp = this.view.project(w.x, w.y, this.vt[w.y][w.x].height);
@@ -760,6 +774,29 @@ export class Renderer {
     }
   }
 
+  /** Pending skyfall landings: a pulsing ring and falling chevron on the tile, visible to both sides. */
+  private drawLandings(now: number) {
+    const g = this.game, ctx = this.ctx;
+    for (const l of g.landings) {
+      const t = this.vt[l.y]?.[l.x]; if (!t) continue;
+      const { sx, sy } = this.view.project(l.x, l.y, t.height);
+      const col = g.teams[l.team].color, ph = this.reduced ? 0 : (now / 900 + l.uid * 0.37) % 1;
+      ctx.save();
+      ctx.lineWidth = 3; ctx.setLineDash([7, 5]); ctx.lineDashOffset = this.reduced ? 0 : -now / 50;
+      ctx.strokeStyle = rgba(col, 0.95); ctx.shadowColor = col; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.ellipse(sx, sy, 30, 15, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([]); ctx.shadowBlur = 0; ctx.lineWidth = 1.5; ctx.strokeStyle = rgba('#ffffff', 0.5 * (1 - ph));
+      ctx.beginPath(); ctx.ellipse(sx, sy, 30 * (0.4 + ph * 0.6), 15 * (0.4 + ph * 0.6), 0, 0, Math.PI * 2); ctx.stroke();
+      const cy = sy - 34 + ph * 14;
+      ctx.globalAlpha = 0.9 - ph * 0.5; ctx.fillStyle = '#efe6ff'; ctx.strokeStyle = rgba(col, 0.9); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(sx - 9, cy - 8); ctx.lineTo(sx, cy + 4); ctx.lineTo(sx + 9, cy - 8); ctx.lineTo(sx, cy - 3); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.globalAlpha = 1; ctx.font = 'bold 13px Cinzel, Georgia, serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.75)';
+      const gl = g.content.units[l.defId]?.sprite.glyph ?? '?'; ctx.strokeText(gl, sx, sy); ctx.fillStyle = '#fff'; ctx.fillText(gl, sx, sy);
+      ctx.restore();
+    }
+  }
+
   private drawOverlays(now: number) {
     const ov = this.overlay, ctx = this.ctx;
     const pulse = this.reduced ? 0.8 : 0.72 + 0.18 * Math.sin(now / 300);
@@ -771,6 +808,8 @@ export class Renderer {
       ctx.drawImage(s, sx - s.width / 4, sy - s.height / 4, s.width / 2, s.height / 2);
     };
     for (const k of ov.deploy) glow(k, '#4cd964', pulse);
+    for (const k of ov.skyfall) glow(k, '#b48cff', pulse);
+    this.drawLandings(now);
     for (const k of ov.reach) glow(k, '#4aa3ff', 0.8);
     for (const k of ov.range) if (!ov.targets.has(k)) glow(k, '#ffd23d', 0.5);
     for (const k of ov.targets) glow(k, '#ff6a3d', pulse + 0.1);
@@ -834,6 +873,7 @@ export class Renderer {
     const state: AnimState = an?.state ?? 'idle';
     const el = an ? now - an.start : now + u.uid * 173;
     let squash = 1, tilt = 0, lift = d.hop, glow = 0, alpha = 1, scale = 1;
+    if (def.flying) lift += HOVER + (this.reduced ? 0 : Math.sin(now / 520 + u.uid * 1.7) * 3);
     // procedural layer
     if (!this.reduced && !def.structure) {
       if (state === 'idle') { squash = 1 + Math.sin(now / 700 + u.uid * 1.3) * 0.018; sx += Math.sin(now / 1100 + u.uid) * 0.8; }
@@ -885,7 +925,7 @@ export class Renderer {
       statuses: u.statuses.map(s => ({ id: s.id, name: g.content.statuses[s.id]?.name ?? s.id })),
       selected: !!ov.selected && ov.selected.x === u.x && ov.selected.y === u.y && !this.segs.has(u.uid),
       hovered: !!ov.hover && ov.hover.x === u.x && ov.hover.y === u.y,
-      scale, time: now, frame, facing: d.facing, squash, tilt, lift, glow,
+      flying: !!def.flying, scale, time: now, frame, facing: d.facing, squash, tilt, lift, glow,
       lampGlow: def.structure ? Math.max(0.08, hpNow / def.stats.hp) : undefined,
       reduced: this.reduced,
     });
@@ -929,7 +969,7 @@ export class Renderer {
       const d = list[i]; if (d.kind !== 'unit' || !d.u.alive) continue;
       const s = this.view.project(d.px, d.py, d.pz);
       const fh = figureHeight({ frame: frameFor(unitArt(d.u.defId, g.def(d.u)), 'idle', 0, !!g.def(d.u).structure), def: g.def(d.u) });
-      if (Math.abs(wx - s.sx) <= 32 && wy >= s.sy - fh - 6 && wy <= s.sy + 10) return { x: d.u.x, y: d.u.y };
+      if (Math.abs(wx - s.sx) <= 32 && wy >= s.sy - fh - 6 - (g.def(d.u).flying ? HOVER : 0) && wy <= s.sy + 10) return { x: d.u.x, y: d.u.y };
     }
     // 3) rest of a top face, then cliff sides
     for (let i = list.length - 1; i >= 0; i--) {

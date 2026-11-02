@@ -44,6 +44,12 @@ export function validateContent(c: Content): string[] {
     if (!EFFECT_TYPES.includes(e.type)) errs.push(`${where}: unknown effect type "${(e as Effect).type}"`);
     if (e.type === 'summon' && !has(c.units, e.unit)) errs.push(`${where}: unknown summon unit "${e.unit}"`);
     if (e.type === 'terrain' && !has(c.terrain, e.terrain)) errs.push(`${where}: unknown terrain "${e.terrain}"`);
+    if (e.type === 'damage' && e.vsWounded && (typeof e.vsWounded.below !== 'number' || typeof e.vsWounded.bonus !== 'number')) errs.push(`${where}: vsWounded needs numeric below and bonus`);
+    if (e.ifTargetStatus !== undefined && !has(c.statuses, e.ifTargetStatus)) errs.push(`${where}: ifTargetStatus names unknown status "${e.ifTargetStatus}"`);
+    if (e.type === 'aura' && e.keepsWet !== undefined && typeof e.keepsWet !== 'boolean') errs.push(`${where}: keepsWet must be true or false`);
+    const f = (e as { filter?: Record<string, unknown> }).filter;
+    if (f && (typeof f !== 'object' || Object.entries(f).some(([k, v]) => k !== 'flying' || typeof v !== 'boolean'))) errs.push(`${where}: filter only supports { flying: boolean }`);
+    if (e.type === 'status' && e.target !== undefined && e.target !== 'caster') errs.push(`${where}: status target must be "caster"`);
     if (e.type === 'aura' && typeof e.radius !== 'number') errs.push(`${where}: aura needs a numeric radius`);
   };
 
@@ -54,6 +60,7 @@ export function validateContent(c: Content): string[] {
     if (a.range.min > a.range.max) errs.push(`ability ${id}: range.min > range.max`);
   }
   for (const [id, s] of Object.entries(c.statuses)) {
+    if (s.wet !== undefined && typeof s.wet !== 'boolean') errs.push(`status ${id}: wet must be true or false`);
     s.onTurnStart?.forEach((e, i) => {
       if (e.type !== 'damage' && e.type !== 'heal') errs.push(`status ${id} onTurnStart ${i}: only damage/heal supported`);
     });
@@ -62,13 +69,16 @@ export function validateContent(c: Content): string[] {
     for (const ab of u.abilities) if (!has(c.abilities, ab)) errs.push(`unit ${id}: unknown ability "${ab}"`);
     for (const k of ['hp', 'ap', 'attack', 'defense', 'jump'] as const)
       if (typeof u.stats?.[k] !== 'number') errs.push(`unit ${id}: stats.${k} missing`);
+    if (u.skyfall !== undefined && typeof u.skyfall?.impact !== 'number') errs.push(`unit ${id}: skyfall needs a numeric impact`);
+    if (u.dries !== undefined && (typeof u.dries !== 'number' || u.dries < 0)) errs.push(`unit ${id}: dries must be a number >= 0`);
+    if (u.flying !== undefined && typeof u.flying !== 'boolean') errs.push(`unit ${id}: flying must be true or false`);
   }
   for (const [id, sp] of Object.entries(c.spells ?? {})) {
     if (!sp.effects?.length) errs.push(`spell ${id}: has no effects`);
     if ((sp.area?.shape as string) === 'line') errs.push(`spell ${id}: line areas need a caster; use radius`);
     sp.effects?.forEach((e, i) => {
       checkEffect(e, `spell ${id} effect ${i}`);
-      if (e.type === 'teleport' || e.type === 'swap' || e.type === 'aura' || e.type === 'sacrifice' || (e.type === 'heal' && e.target === 'caster')) errs.push(`spell ${id} effect ${i}: "${e.type}" needs a caster unit; not allowed in spells`);
+      if (e.type === 'teleport' || e.type === 'swap' || e.type === 'aura' || e.type === 'sacrifice' || ((e.type === 'heal' || e.type === 'status') && e.target === 'caster')) errs.push(`spell ${id} effect ${i}: "${e.type}" needs a caster unit; not allowed in spells`);
     });
   }
   for (const [id, eq] of Object.entries(c.equipment ?? {}))
@@ -87,7 +97,10 @@ export function validateContent(c: Content): string[] {
     if (dup) errs.push(`${where}: hero "${dup}" appears more than once`);
   };
 
-  for (const [id, t] of Object.entries(c.terrain)) if (t.onEnter) checkEffect(t.onEnter, `terrain ${id} onEnter`);
+  for (const [id, t] of Object.entries(c.terrain)) {
+    if (t.onEnter) checkEffect(t.onEnter, `terrain ${id} onEnter`);
+    if (t.wet !== undefined && typeof t.wet !== 'boolean') errs.push(`terrain ${id}: wet must be true or false`);
+  }
 
   for (const [id, m] of Object.entries(c.maps)) {
     const h = m.tiles.length;

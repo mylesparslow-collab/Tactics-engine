@@ -14,7 +14,7 @@ import { isMuted, playCard, playCardPlay, playCue, playEnd, playTurnBell, playTu
 import { onSettingsChange } from '../audio/engine';
 import { playError } from '../audio/ui';
 import { openSoundPanel } from './soundpanel';
-import { effectText } from './text';
+import { effectText, traitLine } from './text';
 
 export interface SessionOpts {
   content: Content;
@@ -213,6 +213,8 @@ export class GameSession {
       case 'spell': this.logLine(`${g.teams[e.team].name} casts ${g.content.spells[e.spell]?.name ?? e.spell}.`, 'ability'); break;
       case 'equip': this.logLine(`${this.uname(e.uid)} is equipped with ${g.content.equipment[e.equipment]?.name ?? e.equipment}.`, 'status'); break;
       case 'deploy': this.logLine(`${this.uname(e.uid)} enters the field.`, 'move'); break;
+      case 'skyfall': this.logLine(`${g.content.units[e.defId]?.name ?? e.defId} is falling toward ${e.x},${e.y}.`, 'move'); break;
+      case 'land': this.logLine(`${this.uname(e.uid)} crashes down at ${e.to.x},${e.to.y}.`, 'move'); break;
       case 'essence': this.logLine(`${g.teams[e.team].name} ${e.amount >= 0 ? 'gains' : 'loses'} ${Math.abs(e.amount)} ${this.L('essence')}.`, 'sys'); break;
       case 'terrain': this.logLine(`The ground at ${e.x},${e.y} becomes ${g.content.terrain[e.terrain]?.name ?? e.terrain}.`, 'sys'); break;
       case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); playTurnBell(g.teams[e.team].controller === 'human'); break;
@@ -429,7 +431,7 @@ export class GameSession {
 
   private updateOverlay() {
     const g = this.g, ov = this.renderer.overlay;
-    ov.reach.clear(); ov.range.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.path = []; ov.pathCost = null; ov.previews = new Map();
+    ov.reach.clear(); ov.range.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.skyfall.clear(); ov.path = []; ov.pathCost = null; ov.previews = new Map();
     ov.hover = this.hover;
     const u = this.sel();
     ov.selected = u ? { x: u.x, y: u.y } : null;
@@ -438,7 +440,8 @@ export class GameSession {
     if (this.mode.kind === 'card') {
       const id = g.teams[g.current].hand[this.mode.index];
       const targets = g.cardTargets(g.current, this.mode.index);
-      for (const t of targets) ov.deploy.add(key(t.x, t.y));
+      const instant = new Set(g.deployTiles(g.current).map(p => key(p.x, p.y)));
+      for (const t of targets) (g.content.units[id]?.skyfall && !instant.has(key(t.x, t.y)) ? ov.skyfall : ov.deploy).add(key(t.x, t.y));
       const sp = g.content.spells[id];
       if (sp && hv && targets.some(t => t.x === hv.x && t.y === hv.y)) {
         const size = sp.area?.size ?? 0;
@@ -548,7 +551,7 @@ export class GameSession {
       if (this.mode.kind === 'ability') { const a = g.ability(this.mode.ability); return `${a?.name ?? ''}: choose a target \u00B7 Esc cancels`; }
       if (this.mode.kind !== 'card') return t === g.current && this.canActSoft() ? 'Play a relic, or select a unit on the board' : 'Waiting for the enemy';
       const k = g.cardKind(team.hand[this.mode.index] ?? '');
-      return k === 'spell' ? 'Choose a target to cast \u00B7 Esc cancels' : k === 'equipment' ? 'Choose a friendly unit to equip \u00B7 Esc cancels' : 'Choose a glowing tile to deploy \u00B7 Esc cancels';
+      return k === 'spell' ? 'Choose a target to cast \u00B7 Esc cancels' : k === 'equipment' ? 'Choose a friendly unit to equip \u00B7 Esc cancels' : g.content.units[team.hand[this.mode.index] ?? '']?.skyfall ? 'Green: deploy now \u00B7 Violet: drops in next turn \u00B7 Esc cancels' : 'Choose a glowing tile to deploy \u00B7 Esc cancels';
     };
     const tabs = h('div', { class: 'htabs' }, ...([['all', 'All'], ['unit', 'Champions'], ['spell', 'Spells'], ['equipment', 'Gear']] as const).map(([k, n]) =>
       h('button', { class: 'htab' + (this.handFilter === k ? ' on' : ''), disabled: !counts[k], onclick: (e: Event) => { e.stopPropagation(); this.handFilter = k; if (!this.handOpen) this.handOpen = true; this.renderHand(); this.renderer.resize(); } },
@@ -606,6 +609,7 @@ export class GameSession {
           const sd = g.content.statuses[s.id];
           return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
         })) : null,
+        traitLine(d) ? h('div', { class: 'line' }, traitLine(d)) : null,
         g.equipmentOf(u) ? h('div', { class: 'line equip', title: g.equipmentOf(u)!.description ?? '' }, h('b', null, g.equipmentOf(u)!.name)) : null));
     return box;
   }

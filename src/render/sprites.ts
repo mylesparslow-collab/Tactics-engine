@@ -20,6 +20,7 @@ export interface SpriteOpts {
   time: number;
   frame: Frame | null;
   facing: 1 | -1;                 // 1 = lower-right (native), -1 = mirrored
+  flying?: boolean;               // hovering: drawn with a tighter ground shadow
   squash: number;                 // vertical stretch factor (breathing / landing)
   tilt: number;                   // radians, death tilt
   lift: number;                   // px raised above the feet (hops)
@@ -87,6 +88,10 @@ export function drawUnitSprite(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
   const sg = ctx.createRadialGradient(x, y, 2, x, y, 34);
   sg.addColorStop(0, 'rgba(0,0,0,0.5)'); sg.addColorStop(0.6, 'rgba(0,0,0,0.25)'); sg.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = sg; ctx.save(); ctx.translate(x, y); ctx.scale(1, 0.5); ctx.beginPath(); ctx.arc(0, 0, 34 * o.scale, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  if (o.flying) { // crisp shadow on the ground under the hovering figure; it shrinks as the figure bobs up
+    const k = Math.max(0.6, 1 - Math.max(0, o.lift - 18) / 40);
+    ctx.fillStyle = 'rgba(0,0,0,0.38)'; ctx.beginPath(); ctx.ellipse(x, y + 1, 19 * k * o.scale, 8.5 * k * o.scale, 0, 0, Math.PI * 2); ctx.fill();
+  }
   // team base ring
   ctx.lineWidth = 3; ctx.strokeStyle = rgba(o.teamColor, 0.95);
   ctx.beginPath(); ctx.ellipse(x, y, 30 * o.scale, 15 * o.scale, 0, 0, Math.PI * 2); ctx.stroke();
