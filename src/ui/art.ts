@@ -6,18 +6,20 @@ import { h } from './dom';
 let uid = 0;
 const nid = (p: string) => `${p}${++uid}`;
 
-const enc = (svg: string) => `url("data:image/svg+xml,${encodeURIComponent(svg.replace(/\s+/g, ' '))}")`;
 
 // ---------------------------------------------------------------- frames
 
-/** Paper grain (static) used under chart panels. */
-function grainSvg(light: boolean) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 ${light ? '.35 0 0 0 0 .25 0 0 0 0 .1' : '.8 0 0 0 0 .75 0 0 0 0 .6'} 0 0 0 ${light ? '.16' : '.07'} 0"/></filter><rect width="220" height="220" filter="url(#n)"/></svg>`;
-}
-
-/** Sea-chart grid with depth soundings, for dark panels. */
-function chartSvg() {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><g stroke="#7fb3c8" stroke-opacity=".07" fill="none"><path d="M0 .5 H160 M.5 0 V160"/><path d="M0 80.5 H160 M80.5 0 V160" stroke-dasharray="2 4"/></g><g fill="#9fc4d0" fill-opacity=".07" font-family="serif" font-size="8" font-style="italic"><text x="22" y="40">14</text><text x="110" y="122">9</text><text x="120" y="30">22</text></g></svg>`;
+/** Paper grain (static) for the campaign chart, painted once into a PNG so no vector media ships. */
+function grainPng(): string {
+  const c = document.createElement('canvas'); c.width = c.height = 220;
+  const x = c.getContext('2d'); if (!x) return 'none';
+  const img = x.createImageData(220, 220); let s = 9;
+  for (let i = 0; i < img.data.length; i += 4) {
+    s = (s * 1103515245 + 12345) & 0x7fffffff;
+    img.data[i] = 90; img.data[i + 1] = 64; img.data[i + 2] = 26; img.data[i + 3] = (s >> 16) % 42;
+  }
+  x.putImageData(img, 0, 0);
+  return `url("${c.toDataURL('image/png')}")`;
 }
 
 const KIT = import.meta.glob('./kit/*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
@@ -46,7 +48,7 @@ export function installArt() {
   const st = document.createElement('style');
   st.id = 'brinewake-art';
   const u = (n: string) => `url("${kit(n)}")`;
-  st.textContent = `:root{--frame-lg:${u('frame')};--frame-sm:${u('frame_sm')};--plate:${u('plate')};--plate-gold:${u('plate_gold')};--slate:${u('slate')};--k-logo:${u('logo')};--k-endturn:${u('endturn')};--k-tide:${u('coin_tide')};--k-hp:${u('coin_hp')};--k-round:${u('coin_round')};--grain:${enc(grainSvg(false))};--grain-paper:${enc(grainSvg(true))};--chart:${enc(chartSvg())};}`;
+  st.textContent = `:root{--frame-lg:${u('frame')};--frame-sm:${u('frame_sm')};--plate:${u('plate')};--plate-gold:${u('plate_gold')};--slate:${u('slate')};--k-logo:${u('logo')};--k-endturn:${u('endturn')};--k-tide:${u('coin_tide')};--k-hp:${u('coin_hp')};--k-round:${u('coin_round')};--grain-paper:${grainPng()};}`;
   document.head.append(st);
 }
 

@@ -90,7 +90,7 @@ export function artNode(id: string, c: Content): HTMLElement {
   const painted = ud ? assetUrl(`sprites/${id}_still.png`) : undefined;
   const still = ud ? assetUrl(ud.sprite.image) : undefined;
   // generated placeholder cards (content/cards/*.ph.webp) carry their own frame, cost and name: crop to the picture area
-  const ph = !!artUrl && (isPlaceholderArt(artUrl) || artUrl.startsWith('data:image/svg'));
+  const ph = !!artUrl && isPlaceholderArt(artUrl);
   if (artUrl && !ph) art.append(h('img', { src: artUrl, alt: '', draggable: 'false' }));
   else if (painted) {
     art.classList.add('painted');
