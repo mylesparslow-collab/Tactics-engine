@@ -216,6 +216,10 @@ export class GameSession {
       case 'skyfall': this.logLine(`${g.content.units[e.defId]?.name ?? e.defId} is falling toward ${e.x},${e.y}.`, 'move'); break;
       case 'land': this.logLine(`${this.uname(e.uid)} crashes down at ${e.to.x},${e.to.y}.`, 'move'); break;
       case 'essence': this.logLine(`${g.teams[e.team].name} ${e.amount >= 0 ? 'gains' : 'loses'} ${Math.abs(e.amount)} ${this.L('essence')}.`, 'sys'); break;
+      case 'cooldown': if (g.teams[e.team].controller === 'human') this.logLine(`${g.cardName(e.card)} rests for ${e.turns} turn${e.turns === 1 ? '' : 's'}.`, 'sys'); break;
+      case 'ready': if (g.teams[e.team].controller === 'human') this.logLine(`${g.cardName(e.card)} returns to ${e.toHand ? 'your hand' : 'the top of your draw pile'}.`, 'sys'); break;
+      case 'drop': this.logLine(`${e.amount} ${this.L('essence')} spills on the seabed.`, 'sys'); break;
+      case 'pickup': this.logLine(`${this.uname(e.uid)} collects ${e.amount} ${this.L('essence')}.`, 'sys'); break;
       case 'terrain': this.logLine(`The ground at ${e.x},${e.y} becomes ${g.content.terrain[e.terrain]?.name ?? e.terrain}.`, 'sys'); break;
       case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); playTurnBell(g.teams[e.team].controller === 'human'); break;
       case 'message': this.logLine(`${e.speaker ? e.speaker + ': ' : ''}${e.text}`, 'msg'); this.bannerQueue.push({ text: e.text, speaker: e.speaker }); this.pumpBanner(); break;
@@ -546,7 +550,16 @@ export class GameSession {
       }, card, h('button', { class: 'info', title: 'Details', onclick: (e: Event) => { e.stopPropagation(); if (this.previewId === id) this.hidePreview(); else this.showPreview(id, slot); } }, 'i'));
       row.append(slot);
     });
-    if (!team.hand.length) row.append(h('div', { class: 'empty' }, team.deck.length ? 'Your hand is empty. You draw a card each turn.' : 'Every relic is on the field.'));
+    for (const cd of team.cooldown) { // resting cards: dimmed, not playable, badge = turns left
+      const kind = g.cardKind(cd.card) ?? 'unit', tip = `Returns in ${cd.turns} turn${cd.turns === 1 ? '' : 's'}`;
+      const slot = h('div', { class: `slot cd ${kind}`, title: tip,
+        onclick: () => { if (this.touch && this.previewId !== cd.card) this.showPreview(cd.card, slot); else this.hidePreview(); },
+        onmouseenter: () => { if (!this.touch) this.showPreview(cd.card, slot); }, onmouseleave: () => { if (!this.touch) this.hidePreview(); },
+      }, this.runeTile(cd.card, g.cardCost(cd.card)), h('span', { class: 'cd-badge', title: tip }, String(cd.turns)));
+      row.append(slot);
+    }
+    if (!team.hand.length && !team.cooldown.length) row.append(h('div', { class: 'empty' }, team.deck.length ? 'Your hand is empty. You draw 2 cards each turn.' : 'Every relic is on the field.'));
+    else if (!team.hand.length) row.prepend(h('div', { class: 'empty' }, 'Hand empty. You draw 2 cards each turn; resting relics return soon.'));
     const hintFor = () => {
       if (this.mode.kind === 'ability') { const a = g.ability(this.mode.ability); return `${a?.name ?? ''}: choose a target \u00B7 Esc cancels`; }
       if (this.mode.kind !== 'card') return t === g.current && this.canActSoft() ? 'Play a relic, or select a unit on the board' : 'Waiting for the enemy';
@@ -672,6 +685,8 @@ export class GameSession {
       for (const [uid, p] of pv) box.append(h('div', { class: 'pv-row' }, h('span', null, this.uname(uid)), h('b', { style: `color:${p.color}` }, p.text)));
       this.hoverBox.append(box);
     }
+    const drop = g.drops.find(d => d.x === hv.x && d.y === hv.y);
+    if (drop) this.hoverBox.append(h('div', { class: 'tileinfo dropinfo' }, h('b', null, `${drop.amount} ${this.L('essence')}`), h('span', null, 'Step here to collect')));
     this.hoverBox.append(h('div', { class: 'tileinfo' },
       h('b', null, terr?.name ?? t.terrain), h('span', null, `Height ${t.height}`), h('span', null, `Move ${terr?.moveCost}`), terr?.defense ? h('span', null, `DEF +${terr.defense}`) : null,
       g.map.wells?.some(w => w.x === hv.x && w.y === hv.y) ? h('span', { class: 'well' }, `${this.L('essence')} well`) : null));

@@ -252,7 +252,15 @@ export interface Unit {
   alive: boolean;
   revived?: boolean;
   equipment?: string;
+  /** Deployed from the hand (or landed by skyfall): goes on cooldown and returns to the hand when it dies. */
+  fromCard?: boolean;
 }
+
+/** Tide spilled where a unit died; the first unit to step on the tile collects it for its team. */
+export interface TideDrop { x: number; y: number; amount: number }
+
+/** A played spell/equipment or a fallen champion resting before it returns to the hand. */
+export interface CardCooldown { card: string; turns: number }
 
 /** A skyfall unit that has been paid for and is on its way down; it lands at the start of its owner's next turn. */
 export interface Landing { uid: number; defId: string; team: number; x: number; y: number }
@@ -265,6 +273,8 @@ export interface TeamState {
   hand: string[]; // cards you can play now: unit, spell or equipment ids
   /** Shuffled draw pile (rest of the Chart). One card is drawn at the start of each of your turns. */
   deck: string[];
+  /** Cards on cooldown: each ticks down at the start of the owner's turn and returns to the hand at 0. */
+  cooldown: CardCooldown[];
 }
 
 export type Phase = 'playing' | 'victory' | 'defeat';
@@ -287,5 +297,9 @@ export type GameEvent =
   | { kind: 'equip'; uid: number; equipment: string }
   | { kind: 'turn'; team: number; turn: number }
   | { kind: 'draw'; team: number; card: string }
+  | { kind: 'cooldown'; team: number; card: string; turns: number }
+  | { kind: 'ready'; team: number; card: string; toHand: boolean }
+  | { kind: 'drop'; x: number; y: number; amount: number }
+  | { kind: 'pickup'; uid: number; team: number; x: number; y: number; amount: number }
   | { kind: 'message'; text: string; speaker?: string }
   | { kind: 'end'; phase: Phase };

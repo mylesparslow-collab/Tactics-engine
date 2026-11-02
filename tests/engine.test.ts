@@ -477,7 +477,7 @@ describe('mission scripting batch 2', () => {
 });
 
 describe('card draw', () => {
-  it('deals an opening hand of 5 with champions, then draws one per turn', async () => {
+  it('deals an opening hand of 5 with champions, then draws DRAW.perTurn per turn', async () => {
     const { loadBundledContent } = await import('../src/engine/bundled');
     const { buildSkirmish } = await import('../src/engine/skirmish');
     const { Game: G, DRAW } = await import('../src/engine/game');
@@ -492,9 +492,9 @@ describe('card draw', () => {
     expect(total).toBe(m.teams[0].warband!.length);
     // Team 1 draws on its first turn; team 0 draws from round 2.
     g.endTurn();
-    expect(g.teams[1].hand.length).toBe(DRAW.opening + 1);
+    expect(g.teams[1].hand.length).toBe(DRAW.opening + DRAW.perTurn);
     g.endTurn();
-    expect(t0.hand.length).toBe(DRAW.opening + 1);
+    expect(t0.hand.length).toBe(DRAW.opening + DRAW.perTurn);
     // Same seed, same shuffle.
     expect(new G(c, m.id, { seed: 7 }).teams[0].hand).toEqual(new G(c, m.id, { seed: 7 }).teams[0].hand);
   });

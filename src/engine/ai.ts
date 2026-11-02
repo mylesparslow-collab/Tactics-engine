@@ -138,6 +138,12 @@ function wellBonus(g: Game, u: Unit, p: Pos): number {
   return occ?.uid === u.uid ? 2 : 6; // holding is good, taking is better
 }
 
+/** Spilled Tide on the tile: collected by walking onto it. */
+function dropBonus(g: Game, p: Pos): number {
+  const d = g.drops.find(d => d.x === p.x && d.y === p.y);
+  return d ? d.amount / 3 : 0;
+}
+
 // ---------- scoring ----------
 interface Plan { score: number; to: Pos; ability?: string; target?: Pos }
 
@@ -216,7 +222,7 @@ function bestPlan(g: Game, u: Unit, th: Threat, it: Intel): Plan | undefined {
       if (a.passive || a.effects.some(e => e.type === 'teleport' || e.type === 'swap' || e.type === 'sacrifice')) continue;
       for (const t of g.targetsFrom(u, ab, from)) {
         // Risk is discounted when the action is a kill: trading into danger for a kill is often right.
-        const s = scoreAbility(g, u, ab, t, from, it) - node.cost * 0.05 - hazard - a.apCost * 0.1 - risk * 0.6 + wellBonus(g, u, from) * 0.5 + jitter(g);
+        const s = scoreAbility(g, u, ab, t, from, it) - node.cost * 0.05 - hazard - a.apCost * 0.1 - risk * 0.6 + wellBonus(g, u, from) * 0.5 + dropBonus(g, from) * 0.5 + jitter(g);
         if (!best || s > best.score) best = { score: s, to: from, ability: ab, target: t };
       }
     }
@@ -247,7 +253,7 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
     return Math.min(...enemies.map(o => Math.abs(manhattan(p, o) - want) - (isVip(o, it.hunt) ? 4 : 0) + (g.def(o).structure ? 1 : 0)));
   };
   const cost = (p: Pos, steps: number) => {
-    let c = value(p) + steps * 0.01 + (g.terrainAt(p.x, p.y).onEnter && !g.def(u).flying ? 4 : 0) - (vip ? 0 : wellBonus(g, u, p)) + g.dryingLoss(u, p) * 3;
+    let c = value(p) + steps * 0.01 + (g.terrainAt(p.x, p.y).onEnter && !g.def(u).flying ? 4 : 0) - (vip ? 0 : wellBonus(g, u, p) + dropBonus(g, p)) + g.dryingLoss(u, p) * 3;
     // An open well within a turn's walk pulls a unit off its march.
     if (!vip && !goal && !g.def(u).flying) {
       const open = (g.map.wells ?? []).filter(w => { const o = g.unitAt(w.x, w.y); return !o || o.uid === u.uid; });

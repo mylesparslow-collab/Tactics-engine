@@ -1,12 +1,21 @@
 import { CAST_LEVEL_EFFECTS } from './types';
 import type {
   AbilityDef, Affects, CardKind, EquipmentDef, SpellDef, Condition, Content, Effect, GameEvent, MapDef, MissionAction, MissionDef,
-  Landing, Phase, Pos, StatKey, TeamState, Tile, Unit, UnitDef,
+  Landing, Phase, Pos, StatKey, TeamState, TideDrop, Tile, Unit, UnitDef,
 } from './types';
 
 export const DEFAULTS = { startingEssence: 100, essencePerTurn: 25, maxEssence: 200 };
 /** Card draw: opening hand size, cards drawn per turn, hand limit (a full hand skips the draw; the card stays on top). */
-export const DRAW = { opening: 5, perTurn: 1, maxHand: 8, minOpeningUnits: 2 };
+export const DRAW = { opening: 5, perTurn: 2, maxHand: 8, minOpeningUnits: 2 };
+/**
+ * Card cooldowns (PoxNora-style rune rest): a cast spell, an attached equipment, or a champion that dies rests for
+ * max(min, ceil(cost / tidePerTurn)) of its owner's turns, then returns to the hand (or the top of the draw pile if the hand is full).
+ */
+export const COOLDOWN = { tidePerTurn: 15, min: 2 };
+export const cooldownFor = (cost: number) => Math.max(COOLDOWN.min, Math.ceil(cost / COOLDOWN.tidePerTurn));
+/** Tide a dying champion spills on its tile: max(min, cost × fraction) rounded to 5. Free summons and structures drop nothing. */
+export const TIDE_DROP = { fraction: 0.25, min: 5 };
+export const tideDropFor = (cost: number) => cost > 0 ? Math.max(TIDE_DROP.min, Math.round(cost * TIDE_DROP.fraction / 5) * 5) : 0;
 
 /** Small seeded PRNG (mulberry32) so a game can be replayed from its seed. */
 export function rng(seed: number) {
@@ -34,6 +43,8 @@ export class Game {
   units: Unit[] = [];
   /** Skyfall units in flight: paid for, shown as a marker, landing at the start of their owner's next turn. */
   landings: Landing[] = [];
+  /** Tide lying on the board where units fell. */
+  drops: TideDrop[] = [];
   teams: TeamState[];
   current = 0;
   round = 1;
@@ -67,7 +78,7 @@ export class Game {
     const start = mission.startingEssence ?? DEFAULTS.startingEssence;
     this.teams = mission.teams.map(t => ({
       name: t.name, color: t.color, controller: t.controller, essence: t.startingEssence ?? start,
-      hand: [...((t.useCampaignRoster && opts.roster) ? opts.roster : (t.warband ?? []))], deck: [],
+      hand: [...((t.useCampaignRoster && opts.roster) ? opts.roster : (t.warband ?? []))], deck: [], cooldown: [],
     }));
     this.seed = opts.seed ?? Math.floor(Math.random() * 2 ** 31);
     this.random = rng(this.seed);
@@ -434,6 +445,7 @@ export class Game {
     if (kind === 'unit') return this.deploy(team, handIndex, x, y);
     this.teams[team].essence -= this.cardCost(id);
     this.teams[team].hand.splice(handIndex, 1);
+    this.startCooldown(team, id);
     if (kind === 'equipment') {
       const u = this.unitAt(x, y)!;
       u.equipment = id;
@@ -557,6 +569,7 @@ export class Game {
       u.x = step.x; u.y = step.y;
       this.enterTile(u);
       if (!u.alive) break;
+      this.collectAt(u);
     }
     this.afterAction();
     return true;
@@ -599,6 +612,7 @@ export class Game {
       return true;
     }
     const u = this.spawn(id, team, x, y);
+    u.fromCard = true;
     this.emit({ kind: 'deploy', uid: u.uid });
     this.afterAction();
     return true;
@@ -638,6 +652,14 @@ export class Game {
     if (this.round > 1)
       team.essence = Math.min(this.mission.maxEssence ?? DEFAULTS.maxEssence, team.essence + (this.mission.teams[this.current]?.essencePerTurn ?? this.mission.essencePerTurn ?? DEFAULTS.essencePerTurn));
     this.emit({ kind: 'turn', team: this.current, turn: this.round });
+    // Rested cards come back first: into the hand, or onto the top of the draw pile when the hand is full.
+    for (const c of team.cooldown) c.turns--;
+    for (const c of team.cooldown.filter(c => c.turns <= 0)) {
+      const toHand = team.hand.length < DRAW.maxHand;
+      if (toHand) team.hand.push(c.card); else team.deck.unshift(c.card);
+      this.emit({ kind: 'ready', team: this.current, card: c.card, toHand });
+    }
+    team.cooldown = team.cooldown.filter(c => c.turns > 0);
     // Draw (not on the very first turn of the game: going first is already an edge).
     if (this.round > 1 || this.current > 0) for (let i = 0; i < DRAW.perTurn; i++) {
       if (!team.deck.length || team.hand.length >= DRAW.maxHand) break;
@@ -650,6 +672,7 @@ export class Game {
       if (holder && holder.team === this.current && this.holdsWell(holder)) this.gainEssence(this.current, w.amount, { x: w.x, y: w.y });
     }
     const landed = this.resolveLandings();
+    this.collectDrops();
     for (const u of this.aliveUnits(this.current)) {
       u.summonedThisTurn = false;
       u.usedAbilities = [];
@@ -681,6 +704,7 @@ export class Game {
       }
       if (!at) continue; // nowhere to land: the unit is lost
       const u = this.spawn(l.defId, l.team, at.x, at.y, undefined, l.uid);
+      u.fromCard = true;
       landed.add(u.uid);
       this.emit({ kind: 'deploy', uid: u.uid });
       this.emit({ kind: 'land', uid: u.uid, from: { x: l.x, y: l.y }, to: at });
@@ -840,6 +864,16 @@ export class Game {
       }
       u.hp = 0; u.alive = false;
       this.emit({ kind: 'death', uid: u.uid });
+      const d = this.def(u);
+      if (!d.structure) {
+        const amount = tideDropFor(d.cost ?? 0);
+        if (amount > 0) {
+          const at = this.drops.find(p => p.x === u.x && p.y === u.y);
+          if (at) at.amount += amount; else this.drops.push({ x: u.x, y: u.y, amount });
+          this.emit({ kind: 'drop', x: u.x, y: u.y, amount });
+        }
+        if (u.fromCard) this.startCooldown(u.team, u.defId);
+      }
       if (u.tag) this.runEvents(ev => 'unitDefeated' in ev.when && ev.when.unitDefeated === u.tag);
     }
   }
@@ -888,7 +922,27 @@ export class Game {
     return undefined;
   }
 
-  private afterAction() { this.checkConditions(); }
+  private afterAction() { this.collectDrops(); this.checkConditions(); }
+
+  private startCooldown(team: number, card: string) {
+    const turns = cooldownFor(this.cardCost(card));
+    this.teams[team].cooldown.push({ card, turns });
+    this.emit({ kind: 'cooldown', team, card, turns });
+  }
+
+  /** Any non-structure unit standing on spilled Tide picks it up (pushes, teleports and deploys included). */
+  private collectDrops() {
+    if (!this.drops.length) return;
+    for (const u of this.aliveUnits()) this.collectAt(u);
+  }
+  private collectAt(u: Unit) {
+    if (this.def(u).structure) return;
+    const i = this.drops.findIndex(d => d.x === u.x && d.y === u.y);
+    if (i < 0) return;
+    const [d] = this.drops.splice(i, 1);
+    this.emit({ kind: 'pickup', uid: u.uid, team: u.team, x: d.x, y: d.y, amount: d.amount });
+    this.gainEssence(u.team, d.amount, { x: d.x, y: d.y });
+  }
 
   private defaultConditions(enemyOf: number): Condition[] {
     const other = enemyOf === 0 ? 1 : 0;
