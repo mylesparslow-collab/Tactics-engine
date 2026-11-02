@@ -34,5 +34,17 @@
   "color": "#e3b04b",
   "accent": "#7d8791",
   "tagline": "Keep the lamp lit. Say nothing."
+ },
+ "overcurrent": {
+  "name": "The Overcurrent",
+  "color": "#8cc7e8",
+  "accent": "#f4f0ff",
+  "tagline": "Where the light thins, the hungry fall."
+ },
+ "gyre": {
+  "name": "The Gyre",
+  "color": "#5a6470",
+  "accent": "#e8892f",
+  "tagline": "Wherever there is a battle, there is carrion. The carrion is ours."
  }
 }

@@ -249,5 +249,53 @@
    "defense": 1,
    "attack": 1
   }
+ },
+ "oc_wet": {
+  "name": "Wet",
+  "description": "Slick with the old sea. The unit does not dry out.",
+  "wet": true
+ },
+ "oc_dread": {
+  "name": "Dread",
+  "description": "Something is looking up at it. -1 attack, -1 AP.",
+  "statMods": {
+   "attack": -1,
+   "ap": -1
+  }
+ },
+ "oc_latched": {
+  "name": "Latched",
+  "description": "A parasite is feeding. Lose 2 HP at the start of each turn per stack; stacks to 3.",
+  "onTurnStart": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical"
+   }
+  ],
+  "stacks": true,
+  "maxStacks": 3
+ },
+ "oc_inked": {
+  "name": "Inked",
+  "description": "Blinded in a cloud of black. -2 attack, -1 defense.",
+  "statMods": {
+   "attack": -2,
+   "defense": -1
+  }
+ },
+ "gy_pinned": {
+  "name": "Pinned",
+  "description": "Skewered to the ground by a shrike-spike or nest-hook. Cannot move.",
+  "preventsMove": true
+ },
+ "gy_harried": {
+  "name": "Harried",
+  "description": "Circled and pecked at. -1 defense per stack (stacks to 2).",
+  "statMods": {
+   "defense": -1
+  },
+  "stacks": true,
+  "maxStacks": 2
  }
 }

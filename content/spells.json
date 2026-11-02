@@ -1102,5 +1102,362 @@
    "nearKeystone": 3
   },
   "art": "cards/lk_spell_the_lamp_will_not_go_out.svg"
+ },
+ "oc_spell_rain_of_fish": {
+  "name": "Rain of Fish",
+  "description": "Summon 2 Bellyeye Shoals on an empty tile anywhere on the board.",
+  "faction": "overcurrent",
+  "rarity": "common",
+  "cost": 25,
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "overcurrent_bellyeye_shoal",
+    "count": 2
+   }
+  ],
+  "requires": [
+   "summon"
+  ]
+ },
+ "oc_spell_brine_squall": {
+  "name": "Brine Squall",
+  "description": "Turn the tiles within 1 of a tile within 3 of a friendly unit into brine pool for 2 turns and apply Soaked to enemies there for 2 turns.",
+  "faction": "overcurrent",
+  "rarity": "common",
+  "cost": 20,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "brine_pool",
+    "duration": 2
+   },
+   {
+    "type": "status",
+    "status": "soaked",
+    "duration": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "requires": [
+   "terrain"
+  ],
+  "castRange": 3
+ },
+ "oc_spell_something_heavy": {
+  "name": "Something Heavy",
+  "description": "Something falls out of the sky onto one enemy anywhere on the board: 6 physical damage.",
+  "faction": "overcurrent",
+  "rarity": "common",
+  "cost": 20,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 6,
+    "damageType": "physical",
+    "ignoreAttack": true
+   }
+  ]
+ },
+ "oc_spell_ink_bloom": {
+  "name": "Ink Bloom",
+  "description": "Apply Inked (-2 attack, -1 defense) for 2 turns to enemies within 1 of a tile within 3 of a friendly unit.",
+  "faction": "overcurrent",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "status",
+    "status": "oc_inked",
+    "duration": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "castRange": 3
+ },
+ "oc_spell_undertow_from_above": {
+  "name": "Undertow from Above",
+  "description": "Pull every enemy within 2 of a tile within 3 of a friendly unit 2 tiles toward that tile.",
+  "faction": "overcurrent",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "pull",
+    "distance": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "requires": [
+   "pull"
+  ],
+  "castRange": 3
+ },
+ "oc_spell_spawning_water": {
+  "name": "Spawning Water",
+  "description": "Heal allies within 2 of a friendly unit for 3 and make them Wet for 3 turns.",
+  "faction": "overcurrent",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 3
+   },
+   {
+    "type": "status",
+    "status": "oc_wet",
+    "duration": 3
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies"
+ },
+ "oc_spell_the_sky_opens": {
+  "name": "The Sky Opens",
+  "description": "Turn the tiles within 2 of a tile within 3 of a friendly unit into brine pool for 3 turns and deal 3 brine damage to enemies there.",
+  "faction": "overcurrent",
+  "rarity": "rare",
+  "cost": 40,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "brine_pool",
+    "duration": 3
+   },
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "brine",
+    "ignoreAttack": true
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "requires": [
+   "terrain"
+  ],
+  "castRange": 3
+ },
+ "oc_spell_hunger": {
+  "name": "Hunger",
+  "description": "Deal 2 physical damage to enemies within 3 of a tile within 3 of a friendly unit, +5 to any below half HP.",
+  "faction": "overcurrent",
+  "rarity": "rare",
+  "cost": 40,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical",
+    "ignoreAttack": true,
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 5
+    }
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 3
+  },
+  "affects": "enemies",
+  "requires": [
+   "vsWounded"
+  ],
+  "castRange": 3
+ },
+ "gy_spell_carrion_call": {
+  "name": "Carrion Call",
+  "description": "Summon 2 Salt Crows on an empty tile within 3 of a friendly unit.",
+  "faction": "gyre",
+  "rarity": "common",
+  "cost": 25,
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "gyre_salt_crow",
+    "count": 2
+   }
+  ],
+  "castRange": 3
+ },
+ "gy_spell_updraft": {
+  "name": "Updraft",
+  "description": "Give allies in radius 1 of a tile within 3 of a friendly unit Hasted for 1 turn.",
+  "faction": "gyre",
+  "rarity": "common",
+  "cost": 20,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "castRange": 3
+ },
+ "gy_spell_dive_signal": {
+  "name": "Dive Signal",
+  "description": "Mark an enemy within 4 of a friendly unit for 2 turns and apply Harried for 2 turns. Best cast with a flier nearby.",
+  "faction": "gyre",
+  "rarity": "common",
+  "cost": 20,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 2
+   },
+   {
+    "type": "status",
+    "status": "gy_harried",
+    "duration": 2
+   }
+  ],
+  "castRange": 4
+ },
+ "gy_spell_feather_squall": {
+  "name": "Feather Squall",
+  "description": "Give enemies in radius 1 of a tile within 4 of a friendly unit Weakened for 2 turns.",
+  "faction": "gyre",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "status",
+    "status": "weakened",
+    "duration": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "castRange": 4
+ },
+ "gy_spell_wrong_sky_gale": {
+  "name": "Wrong-Sky Gale",
+  "description": "Push enemies in radius 1 of a tile within 4 of a friendly unit 2 tiles away, dealing 2 damage if they hit something.",
+  "faction": "gyre",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "push",
+    "distance": 2,
+    "collisionDamage": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "castRange": 4
+ },
+ "gy_spell_black_sky": {
+  "name": "Black Sky",
+  "description": "Deal 3 flat physical damage to enemies in radius 2 of a tile within 4 of a friendly unit.",
+  "faction": "gyre",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "physical",
+    "ignoreAttack": true,
+    "pierce": true
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "castRange": 4
+ },
+ "gy_spell_the_wheel_turns": {
+  "name": "The Wheel Turns",
+  "description": "Give all allies Hasted for 2 turns.",
+  "faction": "gyre",
+  "rarity": "rare",
+  "cost": 45,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 30
+  },
+  "affects": "allies",
+  "requires": [
+   "global_area"
+  ]
+ },
+ "gy_spell_picked_clean": {
+  "name": "Picked Clean",
+  "description": "Deal 5 flat physical damage to an enemy within 5 of a friendly unit (+5 if it is below half HP).",
+  "faction": "gyre",
+  "rarity": "rare",
+  "cost": 40,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 5,
+    "damageType": "physical",
+    "ignoreAttack": true,
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 5
+    }
+   }
+  ],
+  "castRange": 5
  }
 }

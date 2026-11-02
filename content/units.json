@@ -2378,5 +2378,813 @@
    "image": "sprites/keystone.svg"
   },
   "description": "A stranded lighthouse, still lit. It holds the sea off this stretch of the Ebb."
+ },
+ "overcurrent_bellyeye_shoal": {
+  "name": "Bellyeye Shoal",
+  "role": "Cheap Body",
+  "faction": "overcurrent",
+  "cost": 30,
+  "stats": {
+   "hp": 12,
+   "ap": 6,
+   "attack": 7,
+   "defense": 0,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 2
+  },
+  "dries": 1,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_shoal_nip",
+   "oc_shoal_swarm"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Bs"
+  },
+  "description": "A knot of hand-sized pale fish with a wet pink eye on every belly, turning as one animal toward anything that glows. They fall by the hundred and eat what they land on."
+ },
+ "overcurrent_gulper": {
+  "name": "Gulper",
+  "role": "Melee",
+  "faction": "overcurrent",
+  "cost": 35,
+  "stats": {
+   "hp": 16,
+   "ap": 6,
+   "attack": 9,
+   "defense": 0,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 3
+  },
+  "dries": 1,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_gulper_bite",
+   "oc_engulf"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Gp"
+  },
+  "description": "An eel that is mostly mouth, the jaw unhinging to three times the length of its body. It does not chew; it closes around a thing and waits for the thing to stop."
+ },
+ "overcurrent_tongue_louse": {
+  "name": "Tongue-Louse",
+  "role": "Skirmisher",
+  "faction": "overcurrent",
+  "cost": 35,
+  "stats": {
+   "hp": 13,
+   "ap": 8,
+   "attack": 7,
+   "defense": 0,
+   "jump": 2
+  },
+  "skyfall": {
+   "impact": 2
+  },
+  "dries": 1,
+  "abilities": [
+   "oc_louse_rasp",
+   "oc_latch",
+   "oc_feed"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Tl"
+  },
+  "description": "A dog-sized parasitic isopod, glassy and many-legged, that crawls into a mouth and replaces the tongue. It lives on the blood of whatever it is bolted to."
+ },
+ "overcurrent_driftbell": {
+  "name": "Driftbell",
+  "role": "Ranged / Area",
+  "faction": "overcurrent",
+  "cost": 40,
+  "stats": {
+   "hp": 18,
+   "ap": 5,
+   "attack": 8,
+   "defense": 0,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 3
+  },
+  "dries": 1,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_bell_sting",
+   "oc_discharge"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Db"
+  },
+  "description": "A translucent jelly the size of a cart, its organs plainly visible and pulsing, trailing threads that hang the length of a street. It drifts over a battlefield like a slow cold bruise."
+ },
+ "overcurrent_lure_mother": {
+  "name": "Lure-Mother",
+  "role": "Controller",
+  "faction": "overcurrent",
+  "cost": 45,
+  "stats": {
+   "hp": 20,
+   "ap": 6,
+   "attack": 8,
+   "defense": 0,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 4
+  },
+  "dries": 1,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_lure_snap",
+   "oc_false_beacon",
+   "oc_lure_flicker"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Lm"
+  },
+  "description": "An anglerfish whose lure has learned to look exactly like a lighthouse beam. Things walk toward it weeping with relief, and the mouth behind it is very patient."
+ },
+ "overcurrent_hagwyrm": {
+  "name": "Hagwyrm",
+  "role": "Tank",
+  "faction": "overcurrent",
+  "cost": 45,
+  "stats": {
+   "hp": 30,
+   "ap": 5,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 4
+  },
+  "dries": 1,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_hag_gnaw",
+   "oc_slime_knot",
+   "oc_slime_skin"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Hw"
+  },
+  "description": "A hagfish the length of a wagon, knotted like a rope and slick with a slime that sets around anything that touches it. It does not fight so much as fill the space where you were."
+ },
+ "overcurrent_siphon_chain": {
+  "name": "Siphon Chain",
+  "role": "Ranged",
+  "faction": "overcurrent",
+  "cost": 50,
+  "stats": {
+   "hp": 16,
+   "ap": 6,
+   "attack": 8,
+   "defense": 0,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 3
+  },
+  "dries": 1,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_chain_sting",
+   "oc_chain_lash"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Sc"
+  },
+  "description": "A siphonophore strung across the air, a hundred lantern-bodies sharing one nerve, each stinging bell lit from inside. It is not one animal and has never been alone."
+ },
+ "overcurrent_weeping_sunfish": {
+  "name": "Weeping Sunfish",
+  "role": "Support / Healer",
+  "faction": "overcurrent",
+  "cost": 45,
+  "stats": {
+   "hp": 24,
+   "ap": 5,
+   "attack": 5,
+   "defense": 0,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 3
+  },
+  "dries": 1,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_sunfish_nudge",
+   "oc_sunfish_weep",
+   "oc_sunfish_brine_tears"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Ws"
+  },
+  "description": "A vast, slow, flat moon of a fish, its flank bruised with parasites, weeping brine from both eyes without end. The others crowd under it to be rained on."
+ },
+ "overcurrent_downward_shark": {
+  "name": "Downward Shark",
+  "role": "Burst",
+  "faction": "overcurrent",
+  "cost": 55,
+  "stats": {
+   "hp": 20,
+   "ap": 7,
+   "attack": 10,
+   "defense": 0,
+   "jump": 2
+  },
+  "skyfall": {
+   "impact": 6
+  },
+  "dries": 2,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_shark_bite",
+   "oc_jaw_thrust",
+   "oc_frill_rend"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Ds"
+  },
+  "description": "A frilled, goblin-jawed shark that falls point-first, rows of needle teeth already open, jaws cocked forward on a ligament. It reaches the ground before its scream does."
+ },
+ "overcurrent_barrelgaze": {
+  "name": "Barrelgaze",
+  "role": "Commander",
+  "faction": "overcurrent",
+  "cost": 55,
+  "stats": {
+   "hp": 22,
+   "ap": 6,
+   "attack": 7,
+   "defense": 0,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 4
+  },
+  "dries": 2,
+  "abilities": [
+   "oc_barrel_nip",
+   "oc_barrelgaze_aura",
+   "oc_look_up"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Bg"
+  },
+  "description": "A fish with a clear dome for a head, the brain visible inside, and two green eyes that roll upward through its own skull to track the beam. Where it stares, the shoal strikes."
+ },
+ "overcurrent_ribbon_king": {
+  "name": "Ribbon King",
+  "role": "Mobile",
+  "faction": "overcurrent",
+  "cost": 60,
+  "stats": {
+   "hp": 22,
+   "ap": 8,
+   "attack": 10,
+   "defense": 0,
+   "jump": 2
+  },
+  "skyfall": {
+   "impact": 4
+  },
+  "dries": 2,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_ribbon_lash",
+   "oc_ribbon_pass"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Rk"
+  },
+  "description": "An oarfish thirty feet long, silver and boneless, crowned in a crest of red filaments that streams behind it like blood in water. It slides through a battle line without once seeming to move."
+ },
+ "overcurrent_the_thinning": {
+  "name": "The Thinning",
+  "role": "Exotic Big Body",
+  "faction": "overcurrent",
+  "cost": 70,
+  "stats": {
+   "hp": 38,
+   "ap": 6,
+   "attack": 9,
+   "defense": 1,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 5
+  },
+  "dries": 2,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_thinning_buffet",
+   "oc_underside",
+   "oc_smother",
+   "oc_thinning_shadow"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Th"
+  },
+  "description": "A ray so vast its shadow lands a turn before it does, its pale belly alive with a field of watching eyes and its mouth a slot the width of a wall. Where it passes, the floor of the sky is thin."
+ },
+ "overcurrent_mother_mantle": {
+  "name": "Mother Mantle",
+  "title": "the Hook-Armed Deep",
+  "role": "Hero",
+  "faction": "overcurrent",
+  "hero": true,
+  "cost": 85,
+  "stats": {
+   "hp": 36,
+   "ap": 6,
+   "attack": 10,
+   "defense": 1,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 5
+  },
+  "dries": 2,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_mantle_grab",
+   "oc_mantle_ink_sea",
+   "oc_mantle_eight_fold",
+   "oc_mantle_slick_arms"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Mm"
+  },
+  "description": "A colossal squid whose suckers turn out to be rotating hooks, with an eye the size of a door that never blinks and a beak that works behind the arms. She fell through the thinning sky holding two ships' worth of drowned crew, and she has not let go."
+ },
+ "overcurrent_saint_rictus": {
+  "name": "Saint Rictus",
+  "title": "the Jaw That Prays",
+  "role": "Hero",
+  "faction": "overcurrent",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 26,
+   "ap": 7,
+   "attack": 10,
+   "defense": 0,
+   "jump": 2
+  },
+  "skyfall": {
+   "impact": 5
+  },
+  "dries": 2,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_rictus_snap",
+   "oc_rictus_sling_jaw",
+   "oc_rictus_frenzy",
+   "oc_rictus_blood_in_the_air"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Sr"
+  },
+  "description": "A goblin shark whose jaw slings out on a ligament longer than its body, fed by a Tide splinter that kneels on the shore and calls it a saint. It has understood exactly one thing about worship, which is that it is dinner."
+ },
+ "overcurrent_the_undersinging": {
+  "name": "The Undersinging",
+  "title": "what feeds below the beam",
+  "role": "Hero",
+  "faction": "overcurrent",
+  "hero": true,
+  "cost": 80,
+  "stats": {
+   "hp": 30,
+   "ap": 6,
+   "attack": 8,
+   "defense": 0,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 4
+  },
+  "dries": 2,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_undersinging_sting",
+   "oc_undersinging_call_shoal",
+   "oc_undersinging_choir",
+   "oc_undersinging_drone"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Us"
+  },
+  "description": "A siphonophore choir a hundred bodies long, every bell humming the exact pitch of the lamps, strung down the dark like a drowned cathedral organ. The Lanternkeepers' Vigil Book keeps a locked page about it."
+ },
+ "gyre_roost_runner": {
+  "name": "Roost-Runner",
+  "role": "Scout",
+  "faction": "gyre",
+  "cost": 30,
+  "stats": {
+   "hp": 11,
+   "ap": 8,
+   "attack": 5,
+   "defense": 0,
+   "jump": 2
+  },
+  "flying": true,
+  "abilities": [
+   "gy_gull_jab",
+   "gy_snatch"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Rr"
+  },
+  "description": "A roost kid on a half-tame gull, sent to lift a purse, a map or a boot off anything that stops moving. The Gyre sends them in first because nobody has ever caught one."
+ },
+ "gyre_salt_crow": {
+  "name": "Salt Crow",
+  "role": "Cheap Body (Summon)",
+  "faction": "gyre",
+  "cost": 30,
+  "stats": {
+   "hp": 10,
+   "ap": 7,
+   "attack": 6,
+   "defense": 0,
+   "jump": 2
+  },
+  "flying": true,
+  "abilities": [
+   "gy_crow_peck",
+   "gy_pick_the_bones"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Sc"
+  },
+  "description": "A crow the size of a hunting dog that has learned exactly how long a wounded thing takes to stop kicking. Roost-folk keep them for company, and for cleaning up."
+ },
+ "gyre_gullwife": {
+  "name": "Gullwife",
+  "role": "Ranged",
+  "faction": "gyre",
+  "cost": 35,
+  "stats": {
+   "hp": 14,
+   "ap": 5,
+   "attack": 6,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "gy_flock_sling",
+   "gy_loose_the_flock"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Gw"
+  },
+  "description": "A cliff-woman who keeps a flock of screaming gulls in her apron and throws it at whatever she dislikes. She has been in forty fights and has never once been hit by her own birds."
+ },
+ "gyre_roostwarden": {
+  "name": "Roostwarden",
+  "role": "Tank",
+  "faction": "gyre",
+  "cost": 40,
+  "stats": {
+   "hp": 22,
+   "ap": 5,
+   "attack": 7,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "gy_nest_pike",
+   "gy_hook_down",
+   "gy_feathered_brace"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Rw"
+  },
+  "description": "A cliff-guard in feathered oilskin with a hooked nest-pike, who holds the ground the birds cannot. When the wheel is overhead, he is the one who stays put."
+ },
+ "gyre_skua_lancer": {
+  "name": "Skua Lancer",
+  "role": "Skirmisher",
+  "faction": "gyre",
+  "cost": 45,
+  "stats": {
+   "hp": 14,
+   "ap": 8,
+   "attack": 8,
+   "defense": 1,
+   "jump": 2
+  },
+  "flying": true,
+  "abilities": [
+   "gy_skua_lance",
+   "gy_stoop"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Sk"
+  },
+  "description": "A rider on a hook-beaked skua, trained to drop on anything already bleeding and be gone before it turns around. They pick their targets the way a creditor does."
+ },
+ "gyre_pelican_hauler": {
+  "name": "Pelican Hauler",
+  "role": "Controller",
+  "faction": "gyre",
+  "cost": 45,
+  "stats": {
+   "hp": 18,
+   "ap": 7,
+   "attack": 6,
+   "defense": 1,
+   "jump": 2
+  },
+  "flying": true,
+  "abilities": [
+   "gy_pelican_bill",
+   "gy_scoop",
+   "gy_ferry"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Ph"
+  },
+  "description": "An enormous pelican whose pouch holds a fisherman, a goat or a Concord marksman, in that order of complaint. Roost-folk use it to fetch the enemy and to ferry their own across the gaps."
+ },
+ "gyre_windreader": {
+  "name": "Windreader",
+  "role": "Support / Healer",
+  "faction": "gyre",
+  "cost": 40,
+  "stats": {
+   "hp": 15,
+   "ap": 5,
+   "attack": 5,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "gy_kite_staff",
+   "gy_wind_reading",
+   "gy_updraft_cry"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Wd"
+  },
+  "description": "An old roost-reader with a kite-staff, who reads the wrong-coloured sky the way other people read faces. She tells the wheel when to dive and the wounded when to keep still."
+ },
+ "gyre_shrike_harrier": {
+  "name": "Shrike Harrier",
+  "role": "Controller",
+  "faction": "gyre",
+  "cost": 50,
+  "stats": {
+   "hp": 15,
+   "ap": 8,
+   "attack": 8,
+   "defense": 1,
+   "jump": 2
+  },
+  "flying": true,
+  "abilities": [
+   "gy_shrike_beak",
+   "gy_impale"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Sh"
+  },
+  "description": "A rider on a shrike that keeps its larder on salt-spikes, and has been taught to treat a battlefield as a larder too. What it spikes stays where it was put."
+ },
+ "gyre_wheel_captain": {
+  "name": "Wheel-Captain",
+  "role": "Commander",
+  "faction": "gyre",
+  "cost": 55,
+  "stats": {
+   "hp": 20,
+   "ap": 8,
+   "attack": 8,
+   "defense": 1,
+   "jump": 2
+  },
+  "flying": true,
+  "abilities": [
+   "gy_captain_cutlass",
+   "gy_the_wheel_aura",
+   "gy_call_the_dive"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Wc"
+  },
+  "description": "The leader of a wheel of riders, on a black-backed gull the colour of a funeral coat. She does not give orders; she circles, and the others learn what that means."
+ },
+ "gyre_frigate_thief": {
+  "name": "Frigate Thief",
+  "role": "Disruptor",
+  "faction": "gyre",
+  "cost": 55,
+  "stats": {
+   "hp": 15,
+   "ap": 8,
+   "attack": 7,
+   "defense": 1,
+   "jump": 2
+  },
+  "flying": true,
+  "abilities": [
+   "gy_thief_claw",
+   "gy_rob_the_well"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Ft"
+  },
+  "description": "A rider on a red-throated frigatebird, the thief of the air, who steals from the Tide itself. Every faction on the Rim has a Frigate Thief story and every one of them ends with an empty purse."
+ },
+ "gyre_stormkite_gunner": {
+  "name": "Stormkite Gunner",
+  "role": "Long Ranged",
+  "faction": "gyre",
+  "cost": 60,
+  "stats": {
+   "hp": 18,
+   "ap": 5,
+   "attack": 9,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "gy_harpoon_bolt",
+   "gy_plunging_bolt",
+   "gy_winch_line"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Sg"
+  },
+  "description": "A gunner on a kite-platform tethered to the cliff, firing harpoon-bolts down from a height. The platform will not leave the ground, and neither will the gunner's opinion of anyone who calls it a toy."
+ },
+ "gyre_mother_of_the_wheel": {
+  "name": "Mother of the Wheel",
+  "role": "Exotic Commander",
+  "faction": "gyre",
+  "cost": 70,
+  "stats": {
+   "hp": 32,
+   "ap": 7,
+   "attack": 9,
+   "defense": 2,
+   "jump": 2
+  },
+  "flying": true,
+  "abilities": [
+   "gy_albatross_beak",
+   "gy_wheel_wings_aura",
+   "gy_shadow_of_the_wheel",
+   "gy_stoop_of_ages"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Mw"
+  },
+  "description": "An albatross the size of a sail-barge and the eldest bird on the Rim, said to have taught the first gull to follow a ship. When her shadow crosses the field every rider in the Gyre knows which way to turn."
+ },
+ "gyre_wren_halloway": {
+  "name": "Wren Halloway",
+  "title": "the Rimfall Thief",
+  "role": "Hero",
+  "faction": "gyre",
+  "hero": true,
+  "cost": 70,
+  "stats": {
+   "hp": 22,
+   "ap": 8,
+   "attack": 8,
+   "defense": 1,
+   "jump": 1
+  },
+  "flying": true,
+  "abilities": [
+   "gy_wren_knife",
+   "gy_wren_pickpocket",
+   "gy_wren_cut_and_climb",
+   "gy_wren_vanishing_act"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Wh"
+  },
+  "description": "A young roost-thief on a frigatebird who has robbed the Concord, the Compact and, once, famously, a Lanternkeeper. She wants a score so big the whole Rim has to admit she was the one who took it."
+ },
+ "gyre_roost_mother_oskeline": {
+  "name": "Roost-Mother Oskeline",
+  "title": "Keeper of the High Nests",
+  "role": "Hero",
+  "faction": "gyre",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 28,
+   "ap": 5,
+   "attack": 7,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "gy_oskeline_crook",
+   "gy_oskeline_summon_crows",
+   "gy_oskeline_mothers_call",
+   "gy_oskeline_high_nests"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Os"
+  },
+  "description": "An ancient woman who has raised every great bird on her cliff and can call any of them by the sound of her knees. She wants her nests safe and her chicks fed, and she is prepared to be unpleasant about it."
+ },
+ "gyre_captain_torr_ashby": {
+  "name": "Captain Torr Ashby",
+  "title": "of the Black Wheel",
+  "role": "Hero",
+  "faction": "gyre",
+  "hero": true,
+  "cost": 80,
+  "stats": {
+   "hp": 30,
+   "ap": 7,
+   "attack": 10,
+   "defense": 2,
+   "jump": 1
+  },
+  "flying": true,
+  "abilities": [
+   "gy_torr_talon",
+   "gy_torr_carrion_dive",
+   "gy_torr_gorge",
+   "gy_torr_black_wheel"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Ta"
+  },
+  "description": "A mercenary who rides a vast bald vulture and follows armies for the dead, selling the Rim's battles their own cleanup. He wants only what every scavenger wants: for the fighting to last a little longer."
  }
 }

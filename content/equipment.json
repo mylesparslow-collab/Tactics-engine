@@ -471,5 +471,133 @@
    "lk_prism_beam"
   ],
   "art": "cards/lk_equip_first_lens.svg"
+ },
+ "oc_equip_gill_bladder": {
+  "name": "Gill-Bladder",
+  "description": "+4 hp. A second, pulsing bladder swells under the gills.",
+  "faction": "overcurrent",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "hp": 4
+  }
+ },
+ "oc_equip_lure_stalk": {
+  "name": "Lure Stalk",
+  "description": "Grants Lure Tug: pull an enemy within 2-4 two tiles toward the bearer.",
+  "faction": "overcurrent",
+  "rarity": "common",
+  "cost": 12,
+  "grantAbilities": [
+   "oc_lure_tug"
+  ]
+ },
+ "oc_equip_hookskin": {
+  "name": "Hookskin",
+  "description": "+1 defense and resist 1 physical damage. Barbed denticles push up through the skin.",
+  "faction": "overcurrent",
+  "rarity": "uncommon",
+  "cost": 18,
+  "statMods": {
+   "defense": 1
+  },
+  "resist": {
+   "physical": 1
+  }
+ },
+ "oc_equip_parasite_crown": {
+  "name": "Parasite Crown",
+  "description": "+2 attack, -2 hp. A louse rides the bearer's head and eats while it bites.",
+  "faction": "overcurrent",
+  "rarity": "uncommon",
+  "cost": 20,
+  "statMods": {
+   "attack": 2,
+   "hp": -2
+  }
+ },
+ "oc_equip_belly_lantern": {
+  "name": "Belly Lantern",
+  "description": "+1 AP and +1 attack. A lit lure swells on the underside, pulling the whole body toward the light.",
+  "faction": "overcurrent",
+  "rarity": "rare",
+  "cost": 30,
+  "statMods": {
+   "ap": 1,
+   "attack": 1
+  }
+ },
+ "oc_equip_drowned_heart": {
+  "name": "Drowned Heart",
+  "description": "Grants Weep: heal the bearer 4 and make it Wet for 3 turns.",
+  "faction": "overcurrent",
+  "rarity": "rare",
+  "cost": 30,
+  "grantAbilities": [
+   "oc_drowned_weep"
+  ]
+ },
+ "gy_equip_beak_mask": {
+  "name": "Beak-Mask",
+  "description": "+1 attack.",
+  "faction": "gyre",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "attack": 1
+  }
+ },
+ "gy_equip_oilskin_flight_coat": {
+  "name": "Oilskin Flight Coat",
+  "description": "+3 hp and resist 1 brine damage.",
+  "faction": "gyre",
+  "rarity": "common",
+  "cost": 12,
+  "statMods": {
+   "hp": 3
+  },
+  "resist": {
+   "brine": 1
+  }
+ },
+ "gy_equip_bone_harness": {
+  "name": "Bone Harness",
+  "description": "+1 defense.",
+  "faction": "gyre",
+  "rarity": "uncommon",
+  "cost": 18,
+  "statMods": {
+   "defense": 1
+  }
+ },
+ "gy_equip_hooded_lure": {
+  "name": "Hooded Lure",
+  "description": "Grants Tether: pull an enemy within 2-4 two tiles toward you.",
+  "faction": "gyre",
+  "rarity": "uncommon",
+  "cost": 20,
+  "grantAbilities": [
+   "gy_tether"
+  ]
+ },
+ "gy_equip_gull_bell": {
+  "name": "Gull-Bell",
+  "description": "+1 AP.",
+  "faction": "gyre",
+  "rarity": "rare",
+  "cost": 28,
+  "statMods": {
+   "ap": 1
+  }
+ },
+ "gy_equip_wing_knives": {
+  "name": "Wing-Knives",
+  "description": "+2 attack.",
+  "faction": "gyre",
+  "rarity": "rare",
+  "cost": 32,
+  "statMods": {
+   "attack": 2
+  }
  }
 }
