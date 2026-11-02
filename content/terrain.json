@@ -78,7 +78,11 @@
         "tiles/wreck_prop_1.png",
         "tiles/wreck_prop_2.png"
       ]
-    }
+    },
+    "factionMoveCost": {
+      "salvage_compact": 1
+    },
+    "description": "Broken hull and ribs. Hard going and good cover; Salvage Compact crews climb it freely."
   },
   "brine_pool": {
     "name": "Brine Pool",
@@ -239,7 +243,21 @@
         "tiles/living_reef_prop_2.png"
       ]
     },
-    "underlay": "silt"
+    "underlay": "silt",
+    "factionMoveCost": {
+      "reef_ascendant": 1
+    },
+    "onTurnStart": [
+      {
+        "type": "heal",
+        "amount": 2,
+        "filter": {
+          "faction": [
+            "reef_ascendant"
+          ]
+        }
+      }
+    ]
   },
   "calcite": {
     "name": "Calcite",
@@ -256,5 +274,202 @@
       "side": "tiles/calcite_side.png"
     },
     "underlay": "silt"
-  }
+  },
+  "shallows": {
+    "name": "Tide Shallows",
+    "description": "Ankle-deep water the lifting sea left behind. Slow to wade, but drying units stay wet here. The Returning Tide wade it at full pace.",
+    "moveCost": 2,
+    "defense": 0,
+    "color": "#5f9fa6",
+    "wet": true,
+    "factionMoveCost": {
+      "returning_tide": 1
+    },
+    "tiles": {
+      "top": [
+        "tiles/shallows_top_0.png",
+        "tiles/shallows_top_1.png",
+        "tiles/shallows_top_2.png"
+      ],
+      "side": "tiles/shallows_side.png",
+      "animatedTop": true
+    },
+    "underlay": "silt"
+  },
+  "vent": {
+    "name": "Hydrothermal Vent",
+    "description": "A cracked chimney breathing scalding water. Starting a turn here burns for 2; Hadal Court units drink the heat and heal 2 instead.",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#5a3a32",
+    "onTurnStart": [
+      {
+        "type": "damage",
+        "amount": 2,
+        "damageType": "fire",
+        "filter": {
+          "notFaction": [
+            "hadal_court"
+          ]
+        }
+      },
+      {
+        "type": "heal",
+        "amount": 2,
+        "filter": {
+          "faction": [
+            "hadal_court"
+          ]
+        }
+      }
+    ],
+    "tiles": {
+      "top": [
+        "tiles/vent_top_0.png",
+        "tiles/vent_top_1.png",
+        "tiles/vent_top_2.png"
+      ],
+      "side": "tiles/vent_side.png",
+      "props": [
+        "tiles/vent_prop_0.png",
+        "tiles/vent_prop_1.png",
+        "tiles/vent_prop_2.png"
+      ],
+      "animatedTop": true
+    }
+  },
+  "tangleweed": {
+    "name": "Tangleweed",
+    "description": "Living weed that grabs at ankles. Light cover, but entering it leaves you Tangled (-1 AP next turn). Reef Ascendant pass untouched.",
+    "moveCost": 2,
+    "defense": 1,
+    "color": "#4f6b3a",
+    "onEnter": {
+      "type": "status",
+      "status": "tangled",
+      "duration": 2,
+      "filter": {
+        "notFaction": [
+          "reef_ascendant"
+        ]
+      }
+    },
+    "tiles": {
+      "top": [
+        "tiles/tangleweed_top_0.png",
+        "tiles/tangleweed_top_1.png",
+        "tiles/tangleweed_top_2.png"
+      ],
+      "side": "tiles/tangleweed_side.png",
+      "props": [
+        "tiles/tangleweed_prop_0.png",
+        "tiles/tangleweed_prop_1.png",
+        "tiles/tangleweed_prop_2.png"
+      ]
+    }
+  },
+  "scrap_field": {
+    "name": "Scrap Field",
+    "description": "Ankle-high ironwork, chain and rivets. Cover (+1 defense) that does not slow you down.",
+    "moveCost": 1,
+    "defense": 1,
+    "color": "#7a6a58",
+    "tiles": {
+      "top": [
+        "tiles/scrap_field_top_0.png",
+        "tiles/scrap_field_top_1.png",
+        "tiles/scrap_field_top_2.png"
+      ],
+      "side": "tiles/scrap_field_side.png",
+      "props": [
+        "tiles/scrap_field_prop_0.png",
+        "tiles/scrap_field_prop_1.png",
+        "tiles/scrap_field_prop_2.png"
+      ]
+    }
+  },
+  "beam_glass": {
+    "name": "Beam Glass",
+    "description": "Sand fused to green glass where a lighthouse beam once swept. Ranged attacks from here reach 1 further, but nothing hides on glass (-1 defense).",
+    "moveCost": 1,
+    "defense": -1,
+    "color": "#9cc7b4",
+    "rangeBonus": 1,
+    "tiles": {
+      "top": [
+        "tiles/beam_glass_top_0.png",
+        "tiles/beam_glass_top_1.png",
+        "tiles/beam_glass_top_2.png"
+      ],
+      "side": "tiles/beam_glass_side.png"
+    }
+  },
+  "razor_oysters": {
+    "name": "Razor Oyster Bed",
+    "description": "Wet shell beds with edges like knives. Walking in cuts for 2; standing here keeps drying units wet.",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#8d8a9a",
+    "wet": true,
+    "onEnter": {
+      "type": "damage",
+      "amount": 2,
+      "damageType": "physical"
+    },
+    "tiles": {
+      "top": [
+        "tiles/razor_oysters_top_0.png",
+        "tiles/razor_oysters_top_1.png",
+        "tiles/razor_oysters_top_2.png"
+      ],
+      "side": "tiles/razor_oysters_side.png",
+      "props": [
+        "tiles/razor_oysters_prop_0.png",
+        "tiles/razor_oysters_prop_1.png",
+        "tiles/razor_oysters_prop_2.png"
+      ]
+    }
+  },
+  "glowmoss": {
+    "name": "Glowmoss",
+    "description": "Soft lantern moss that hums with old light. A unit that starts its turn here heals 2.",
+    "moveCost": 1,
+    "defense": 0,
+    "color": "#7fb86a",
+    "onTurnStart": [
+      {
+        "type": "heal",
+        "amount": 2
+      }
+    ],
+    "tiles": {
+      "top": [
+        "tiles/glowmoss_top_0.png",
+        "tiles/glowmoss_top_1.png",
+        "tiles/glowmoss_top_2.png"
+      ],
+      "side": "tiles/glowmoss_side.png",
+      "props": [
+        "tiles/glowmoss_prop_0.png",
+        "tiles/glowmoss_prop_1.png",
+        "tiles/glowmoss_prop_2.png"
+      ]
+    }
+  },
+  "sinkmud": {
+    "name": "Sinkmud",
+    "description": "Black trench-lip mud. Costs 3 to cross and leaves you exposed (-1 defense).",
+    "moveCost": 3,
+    "defense": -1,
+    "color": "#3b3330",
+    "tiles": {
+      "top": [
+        "tiles/sinkmud_top_0.png",
+        "tiles/sinkmud_top_1.png",
+        "tiles/sinkmud_top_2.png"
+      ],
+      "side": "tiles/sinkmud_side.png"
+    }
+  },
+  "void": {"name": "Chasm", "description": "Nothing below but the long fall.", "moveCost": 99, "defense": 0, "color": "#000000", "impassable": true, "void": true}
 }

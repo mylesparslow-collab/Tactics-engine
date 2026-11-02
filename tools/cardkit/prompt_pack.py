@@ -29,7 +29,7 @@ for sec in sections:
 
 STYLE = ("STYLE: Hand-painted digital fantasy card illustration in the tradition of classic collectible card games. Painterly brushwork, "
          "semi-realistic proportions, strong value contrast, a clear light source with a rim light, atmospheric depth behind the subject. "
-         "World: EBB, a drained seabed beneath a sea held up in the sky by lighthouses. Bleak, strange, salt-stained, warm at human scale: "
+         "World: Brinewake, a drained seabed beneath a sea held up in the sky by lighthouses. Bleak, strange, salt-stained, warm at human scale: "
          "white salt flats, black trench shadow, rust, bone, bioluminescence, lighthouse beams in a subtly wrong-coloured sky.")
 FORMAT = ("FORMAT: Vertical 2:3 portrait, 1024x1536. Full-bleed painting to every edge. The card's text panel will cover the bottom 40% "
           "of the image, so keep the face, hands and key props in the top 60%; the lower part can be legs, ground and shadow. "

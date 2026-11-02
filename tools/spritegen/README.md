@@ -1,6 +1,6 @@
 # spritegen: painted unit sprites from code
 
-This tool renders EBB unit sprites as small 3D sculpts, lit and then painted down to the agreed
+This tool renders Brinewake unit sprites as small 3D sculpts, lit and then painted down to the agreed
 96×112 frame. It replaces the flat procedural vector placeholders. One sculpt drives every animation
 row, so a unit is written once and posed per frame.
 

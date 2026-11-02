@@ -41,16 +41,26 @@ export function visualTiles(game: Game, into?: Tile[][]): Tile[][] {
 export class BoardPainter {
   constructor(private game: Game, private view: View, private seeds: Uint32Array, private vt: Tile[][]) {}
   private art(id: string) { return (this.game.content.terrain[id] as TerrainExt | undefined)?.tiles; }
+  /** Chasm cells draw nothing at all; their neighbours show cliff faces down into them. */
+  isVoid(x: number, y: number) { return !!(this.game.content.terrain[this.game.tiles[y]?.[x]?.terrain] as TerrainExt | undefined)?.void; }
   private seed(x: number, y: number) { return this.seeds[y * this.game.width + x]; }
 
   /** Paint every tile. Returns the tiles that need per-frame animation. */
   paint(ctx: CanvasRenderingContext2D, minY: number, maxY: number): AnimTile[] {
+    let out: AnimTile[] = [];
+    for (const _ of this.paintSteps(ctx, minY, maxY, a => { out = a; })) void _;
+    return out;
+  }
+  /** Same as paint(), but yields every few tiles so a caller can spread the work across frames. */
+  *paintSteps(ctx: CanvasRenderingContext2D, minY: number, maxY: number, done: (anim: AnimTile[]) => void): Generator<void> {
     const g = this.game, v = this.view;
     const order: { d: number; x: number; y: number }[] = [];
-    for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) order.push({ d: v.depth(x, y), x, y });
+    for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) if (!this.isVoid(x, y)) order.push({ d: v.depth(x, y), x, y });
     order.sort((a, b) => a.d - b.d);
     const anim: AnimTile[] = [];
+    let n = 0;
     for (const o of order) {
+      if ((n++ & 7) === 7) yield;
       const t = this.vt[o.y][o.x], def = g.content.terrain[t.terrain] as TerrainExt | undefined;
       const kind = terrainKind(t.terrain, def);
       this.sides(ctx, o.x, o.y);
@@ -65,7 +75,7 @@ export class BoardPainter {
     this.tint(ctx, minY, maxY);
     ctx.restore();
     this.tintY = [minY, maxY];
-    return anim;
+    done(anim);
   }
   private tintY: [number, number] = [0, 1];
   /** Global key light + depth fog over the whole board rect (callers set composite/clip). */
@@ -283,7 +293,7 @@ export class BoardPainter {
     const myDepth = v.depth(x, y);
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
       const nx = x + dx, ny = y + dy;
-      if (!g.inBounds(nx, ny)) continue;
+      if (!g.inBounds(nx, ny) || this.isVoid(nx, ny)) continue;
       if (v.depth(nx, ny) > myDepth) continue; // neighbour in front draws this edge later
       const n = this.vt[ny][nx];
       const c = v.project(nx, ny, t.height);
@@ -311,6 +321,7 @@ export class BoardPainter {
   }
   /** Redraw one tile (sides + top + edges), used to re-occlude units behind cliffs. */
   drawTile(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    if (this.isVoid(x, y)) return;
     const t = this.vt[y][x], def = this.game.content.terrain[t.terrain] as TerrainExt | undefined;
     this.sides(ctx, x, y); this.top(ctx, x, y, t.terrain, def, terrainKind(t.terrain, def)); this.edges(ctx, x, y);
     // same lighting as the cached board, clipped to this tile's block, so redraws don't flash brighter

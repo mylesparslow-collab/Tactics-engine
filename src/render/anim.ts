@@ -144,10 +144,20 @@ export function frameFor(art: UnitArt, state: AnimState, elapsed: number, struct
   return null;
 }
 
-/** Card art resolver: "cards/<id>.svg" via the `art` field, or by id convention. */
-const cardUrls = import.meta.glob('../../content/cards/*', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+/**
+ * Card art resolver: the `art` field, or by id convention. Generated placeholders ship as rasterized
+ * "<id>.ph.webp" (tools/cardkit/raster_placeholders.cjs), not SVG: published artifacts only accept raster images.
+ */
+const cardUrls = import.meta.glob(['../../content/cards/*', '!../../content/cards/*.svg'], { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const PLACEHOLDER = new Set<string>();
 export function cardArtUrl(id: string, def: { art?: string } | undefined): string | undefined {
   const a = def?.art;
-  if (a) { if (/^(https?:|data:|\/)/.test(a)) return a; const u = cardUrls[`../../content/${a}`]; if (u) return u; }
-  return cardUrls[`../../content/cards/${id}.svg`] ?? cardUrls[`../../content/cards/${id}.png`];
+  if (a && /^(https?:|data:|\/)/.test(a)) return a;
+  const key = a && !a.endsWith('.svg') ? a : undefined;
+  if (key && cardUrls[`../../content/${key}`]) return cardUrls[`../../content/${key}`];
+  const ph = cardUrls[`../../content/cards/${id}.ph.webp`];
+  if (ph) { PLACEHOLDER.add(ph); return ph; }
+  return cardUrls[`../../content/cards/${id}.png`];
 }
+/** True when a URL from cardArtUrl is a generated placeholder (it carries its own frame, cost and name). */
+export const isPlaceholderArt = (url: string) => PLACEHOLDER.has(url);

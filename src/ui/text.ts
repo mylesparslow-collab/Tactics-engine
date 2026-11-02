@@ -1,10 +1,16 @@
-import type { Condition, Content, Effect, MissionDef } from '../engine/types';
+import type { Condition, Content, Effect, MissionDef, UnitDef } from '../engine/types';
 import { label } from '../engine/content';
+
+/** Short badge text for the movement/survival flags a unit def carries, e.g. "Flying · Skyfall (impact 6) · Dries 2". */
+export function traitLine(d: UnitDef): string {
+  return [d.flying ? 'Flying' : '', d.skyfall ? `Skyfall (impact ${d.skyfall.impact})` : '', d.dries ? `Dries ${d.dries}` : ''].filter(Boolean).join(' \u00B7 ');
+}
 
 export function effectText(c: Content, e: Effect): string {
   switch (e.type) {
-    case 'damage': return e.ignoreAttack ? `${e.amount} ${e.damageType ?? ''} damage (ignores attack)`.replace('  ', ' ')
-      : `Damage: attack ${e.amount >= 0 ? '+' : ''}${e.amount}${e.damageType ? ` (${e.damageType})` : ''}`;
+    case 'damage': return (e.ignoreAttack ? `${e.amount} ${e.damageType ?? ''} damage (ignores attack)`.replace('  ', ' ')
+      : `Damage: attack ${e.amount >= 0 ? '+' : ''}${e.amount}${e.damageType ? ` (${e.damageType})` : ''}`) +
+      (e.vsWounded ? `, +${e.vsWounded.bonus} vs targets below ${Math.round(e.vsWounded.below * 100)}% health` : '');
     case 'heal': return `Heals ${e.amount}`;
     case 'status': return `Applies ${c.statuses[e.status]?.name ?? e.status} for ${e.duration} turn${e.duration === 1 ? '' : 's'}`;
     case 'push': return `Pushes ${e.distance} tile${e.distance === 1 ? '' : 's'}${e.collisionDamage ? ` (${e.collisionDamage} collision damage)` : ''}`;

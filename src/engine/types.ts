@@ -3,11 +3,20 @@ export type Pos = { x: number; y: number };
 export type StatBlock = { hp: number; ap: number; attack: number; defense: number; jump: number };
 export type StatKey = keyof StatBlock;
 
-export type Effect =
-  | { type: 'damage'; amount: number; damageType?: string; ignoreAttack?: boolean; pierce?: boolean }
-  | { type: 'heal'; amount: number; target?: 'caster' }
+/** Only units whose flags match are affected. Currently just `flying`. */
+/** Restricts who an effect touches. All present keys must match; `faction` / `notFaction` compare UnitDef.faction. */
+export interface EffectFilter { flying?: boolean; faction?: string[]; notFaction?: string[] }
+
+/** Any effect may also carry `ifTargetStatus`: it only applies to targets that had that status when the use began. */
+export type Effect = EffectBody & { ifTargetStatus?: string };
+type EffectBody =
+  | { type: 'damage'; amount: number; damageType?: string; ignoreAttack?: boolean; pierce?: boolean;
+      /** +`bonus` to the amount (before defense/resist) when the target's current HP is below `below` x its max HP. */
+      vsWounded?: { below: number; bonus: number }; filter?: EffectFilter }
+  | { type: 'heal'; amount: number; target?: 'caster'; filter?: EffectFilter }
   | { type: 'sacrifice' }
-  | { type: 'status'; status: string; duration: number }
+  /** status target 'caster': applied to the caster once per use instead of to each unit hit. */
+  | { type: 'status'; status: string; duration: number; target?: 'caster'; filter?: EffectFilter }
   | { type: 'push'; distance: number; collisionDamage?: number }
   | { type: 'teleport' }
   | { type: 'pull'; distance: number }
@@ -17,7 +26,9 @@ export type Effect =
   | { type: 'essence'; amount: number; team?: 'self' | 'enemy' }
   | { type: 'aura'; radius: number; affects?: Affects; statMods?: Partial<Record<StatKey, number>>; resist?: Record<string, number>;
       /** Multiply statMods by the number of allies adjacent to the affected unit (swarm bonus), capped at maxStacks. */
-      perAdjacentAlly?: boolean; maxStacks?: number };
+      perAdjacentAlly?: boolean; maxStacks?: number; filter?: EffectFilter;
+      /** Units inside this aura count as wet for the `dries` rule. */
+      keepsWet?: boolean };
 
 /** Effects applied once per cast (at the target tile) rather than once per affected unit. */
 export const CAST_LEVEL_EFFECTS = ['teleport', 'summon', 'terrain', 'essence', 'swap', 'sacrifice'] as const;
@@ -82,6 +93,8 @@ export interface StatusDef {
   /** Re-applying adds a stack (up to maxStacks); statMods and onTurnStart amounts scale with stacks. */
   stacks?: boolean;
   maxStacks?: number;
+  /** A unit carrying this status counts as standing in water (it does not dry out). */
+  wet?: boolean;
 }
 
 export interface TerrainDef {
@@ -90,7 +103,20 @@ export interface TerrainDef {
   defense: number;
   color: string;
   impassable?: boolean;
+  /** Empty space: nothing is drawn, nothing can stand, land, spawn or be pushed here (flyers may cross). Implies impassable. */
+  void?: boolean;
   onEnter?: Effect;
+  /** Units standing here do not dry out (see UnitDef.dries). `brine_pool` and `living_reef` are always wet. */
+  wet?: boolean;
+  description?: string;
+  /** Applied to each unit that starts its turn standing here (damage / heal / status only; filters respected; flyers skip). */
+  onTurnStart?: Effect[];
+  /** Added to the max range of ranged abilities (range.max > 1) used by a unit standing here. */
+  rangeBonus?: number;
+  /** Per-faction move cost override for non-flyers, e.g. { "reef_ascendant": 1 }. */
+  factionMoveCost?: Record<string, number>;
+  /** Terrain drawn beneath this tile's art (renderer hint). */
+  underlay?: string;
 }
 
 export interface UnitDef {
@@ -109,6 +135,12 @@ export interface UnitDef {
   hero?: boolean;
   /** Comes back once on death with this fraction of max HP. */
   revive?: { hpFraction: number };
+  /** May also be deployed on any empty passable tile beyond 2 of the enemy keystone; lands at the start of the owner's next turn. */
+  skyfall?: { impact: number };
+  /** Loses this many HP at the start of its owner's turn unless on a wet tile or carrying a wet status. */
+  dries?: number;
+  /** Every passable tile costs 1 AP, no jump limit, may cross (not end on) impassable tiles, ignores onEnter, holds no Wells. */
+  flying?: boolean;
 }
 
 export interface MapDef {
@@ -232,7 +264,18 @@ export interface Unit {
   alive: boolean;
   revived?: boolean;
   equipment?: string;
+  /** Deployed from the hand (or landed by skyfall): goes on cooldown and returns to the hand when it dies. */
+  fromCard?: boolean;
 }
+
+/** Tide spilled where a unit died; the first unit to step on the tile collects it for its team. */
+export interface TideDrop { x: number; y: number; amount: number }
+
+/** A played spell/equipment or a fallen champion resting before it returns to the hand. */
+export interface CardCooldown { card: string; turns: number }
+
+/** A skyfall unit that has been paid for and is on its way down; it lands at the start of its owner's next turn. */
+export interface Landing { uid: number; defId: string; team: number; x: number; y: number }
 
 export interface TeamState {
   name: string;
@@ -242,6 +285,8 @@ export interface TeamState {
   hand: string[]; // cards you can play now: unit, spell or equipment ids
   /** Shuffled draw pile (rest of the Chart). One card is drawn at the start of each of your turns. */
   deck: string[];
+  /** Cards on cooldown: each ticks down at the start of the owner's turn and returns to the hand at 0. */
+  cooldown: CardCooldown[];
 }
 
 export type Phase = 'playing' | 'victory' | 'defeat';
@@ -258,9 +303,15 @@ export type GameEvent =
   | { kind: 'essence'; team: number; amount: number; at?: Pos }
   | { kind: 'terrain'; x: number; y: number; terrain: string }
   | { kind: 'deploy'; uid: number }
+  | { kind: 'skyfall'; uid: number; team: number; defId: string; x: number; y: number }
+  | { kind: 'land'; uid: number; from: Pos; to: Pos }
   | { kind: 'spell'; team: number; spell: string; target: Pos }
   | { kind: 'equip'; uid: number; equipment: string }
   | { kind: 'turn'; team: number; turn: number }
   | { kind: 'draw'; team: number; card: string }
+  | { kind: 'cooldown'; team: number; card: string; turns: number }
+  | { kind: 'ready'; team: number; card: string; toHand: boolean }
+  | { kind: 'drop'; x: number; y: number; amount: number }
+  | { kind: 'pickup'; uid: number; team: number; x: number; y: number; amount: number }
   | { kind: 'message'; text: string; speaker?: string }
   | { kind: 'end'; phase: Phase };

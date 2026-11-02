@@ -2,7 +2,7 @@ import type { Game } from '../engine/game';
 import { label } from '../engine/content';
 import type { GameEvent, Pos, Tile, Unit } from '../engine/types';
 import { GROUND, LV, TH, TW, View, key, mix, rgba } from './iso';
-import { drawUnitSprite, figureHeight } from './sprites';
+import { drawUnitShadow, drawUnitSprite, figureHeight, type SpriteOpts } from './sprites';
 import { backdropFor, diamondPath, glowSprite } from './terrain';
 import { BoardPainter, onTileArtReady, visualTiles, type AnimTile } from './board';
 import { clipDuration, clipHitTime, frameFor, unitArt, type AnimState } from './anim';
@@ -15,6 +15,8 @@ export interface Overlay {
   targets: Set<string>;
   area: Set<string>;
   deploy: Set<string>;
+  /** Skyfall-only drop tiles (the unit lands next turn). */
+  skyfall: Set<string>;
   path: Pos[];
   pathCost: number | null;
   selected: Pos | null;
@@ -22,7 +24,7 @@ export interface Overlay {
   previews: Map<number, Preview>;
 }
 export const emptyOverlay = (): Overlay => ({
-  reach: new Set(), range: new Set(), targets: new Set(), area: new Set(), deploy: new Set(), path: [], pathCost: null,
+  reach: new Set(), range: new Set(), targets: new Set(), area: new Set(), deploy: new Set(), skyfall: new Set(), path: [], pathCost: null,
   selected: null, hover: null, previews: new Map(),
 });
 
@@ -30,6 +32,8 @@ const MS_PER_TILE = 150;
 const DEATH_MS = 650;
 const POP_MS = 420;
 const HIT_MS = 280;
+/** Flyers hover this many px above the tile (plus a gentle bob). */
+const HOVER = 18;
 
 interface Seg { start: number; dur: number; path: Pos[]; arc: boolean }
 interface Float { x: number; y: number; text: string; color: string; born: number; life: number; icon?: string; size?: number }
@@ -43,6 +47,7 @@ export type Cue =
   | { kind: 'spell' | 'essence' };
 interface Ring { pos: Pos; start: number; dur: number; color: string; rune?: boolean }
 interface Bolt { from: Pos; to: Pos; start: number; dur: number; color: string }
+interface Column { pos: Pos; start: number; dur: number; color: string; width: number }
 interface Particle { x: number; y: number; vx: number; vy: number; born: number; life: number; color: string; size: number; g: number }
 interface Item { start: number; fn: () => void }
 interface Anim { state: AnimState; start: number; dur: number; impact: number; target?: Pos; ranged?: boolean }
@@ -81,9 +86,10 @@ export class Renderer {
   private floats: Float[] = [];
   private rings: Ring[] = [];
   private bolts: Bolt[] = [];
+  private columns: Column[] = [];
   private particles: Particle[] = [];
   private items: Item[] = [];
-  private cachedDraw: Drawable[] = [];
+  private cachedNow = 0; private pickList: Drawable[] | null = null;
   private lastFrame = 0;
   /** Sound hook: called on the animation timeline. */
   onCue: ((c: Cue) => void) | null = null;
@@ -102,7 +108,7 @@ export class Renderer {
     this.overlay = emptyOverlay();
     this.segs.clear(); this.anims.clear(); this.hpShown.clear(); this.flashUntil.clear(); this.shake.clear();
     this.pendingDeath.clear(); this.dying.clear(); this.pendingDeploy.clear(); this.popStart.clear(); this.facing.clear();
-    this.floats = []; this.rings = []; this.bolts = []; this.particles = []; this.items = []; this.cursor = 0; this.endAt = 0;
+    this.floats = []; this.rings = []; this.bolts = []; this.columns = []; this.particles = []; this.items = []; this.cursor = 0; this.endAt = 0;
     for (const u of game.units) this.hpShown.set(u.uid, u.hp);
     this.seeds = new Uint32Array(game.width * game.height);
     for (let y = 0; y < game.height; y++) for (let x = 0; x < game.width; x++) this.seeds[y * game.width + x] = (((x * 73856093) ^ (y * 19349663) ^ 0x5bd1e995) >>> 0);
@@ -128,23 +134,33 @@ export class Renderer {
 
   resize() {
     const r = this.canvas.parentElement!.getBoundingClientRect();
-    this.dpr = Math.min(window.devicePixelRatio || 1, 3);
-    this.cssW = Math.max(100, r.width); this.cssH = Math.max(100, r.height);
-    this.canvas.width = Math.round(this.cssW * this.dpr);
-    this.canvas.height = Math.round(this.cssH * this.dpr);
-    this.canvas.style.width = this.cssW + 'px'; this.canvas.style.height = this.cssH + 'px';
-    if (this.game) { this.boardDirty = true; this.fit(); }
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    const cssW = Math.max(100, r.width), cssH = Math.max(100, r.height);
+    if (dpr === this.dpr && cssW === this.cssW && cssH === this.cssH && this.canvas.width) return; // nothing changed: skip the realloc
+    this.dpr = dpr; this.cssW = cssW; this.cssH = cssH;
+    this.canvas.width = Math.round(cssW * dpr);
+    this.canvas.height = Math.round(cssH * dpr);
+    this.canvas.style.width = cssW + 'px'; this.canvas.style.height = cssH + 'px';
+    // The cached board is in world units, so a new viewport size never needs a repaint; applyView() asks for a
+    // sharper one in the background if the zoom now needs it.
+    if (this.game) this.fit();
   }
 
   private bounds() {
     const v = this.view;
-    let maxL = 0;
-    for (const row of this.vt) for (const t of row) maxL = Math.max(maxL, t.height);
-    const minX = -(v.rh - 1) * TW / 2 - TW / 2, maxX = (v.rw - 1) * TW / 2 + TW / 2;
-    const minY = -TH / 2 - maxL * LV - 120, maxY = (v.rw + v.rh - 2) * TH / 2 + TH / 2 + GROUND + 10;
-    return { minX, maxX, minY, maxY };
+    const g = this.game;
+    let maxL = 0, minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) {
+      if (this.isVoid(x, y)) continue; // chasm cells take no room
+      const t = this.vt[y][x]; maxL = Math.max(maxL, t.height);
+      const p = v.project(x, y, 0);
+      minX = Math.min(minX, p.sx); maxX = Math.max(maxX, p.sx); minY = Math.min(minY, p.sy); maxY = Math.max(maxY, p.sy);
+    }
+    if (minX === Infinity) { minX = maxX = minY = maxY = 0; }
+    return { minX: minX - TW / 2, maxX: maxX + TW / 2, minY: minY - TH / 2 - maxL * LV - 120, maxY: maxY + TH / 2 + GROUND + 10 };
   }
 
+  private isVoid(x: number, y: number) { return !!(this.game.content.terrain[this.game.tiles[y]?.[x]?.terrain] as { void?: boolean } | undefined)?.void; }
   private fit() {
     const { minX, maxX, minY, maxY } = this.bounds();
     const bw = maxX - minX, bh = maxY - minY;
@@ -180,7 +196,7 @@ export class Renderer {
     this.ox = this.cssW / 2 - (minX + bw / 2) * this.scale + this.panX;
     this.oy = (this.cssH - this.bottomInset) / 2 - (minY + bh / 2) * this.scale + this.panY;
     const need = Math.min(2.5, this.scale * this.dpr);
-    if (this.board && need > this.boardK * 1.3) { clearTimeout(this.zoomTimer); this.zoomTimer = setTimeout(() => { this.boardDirty = true; }, 150); }
+    if (this.board && need > this.boardK * 1.3) { clearTimeout(this.zoomTimer); this.zoomTimer = setTimeout(() => { this.lodWanted = true; }, 150); }
   }
   private zoomTimer: ReturnType<typeof setTimeout> | undefined;
   /** Pan by CSS pixels. */
@@ -198,6 +214,15 @@ export class Renderer {
     this.applyView();
   }
   resetView() { this.userMoved = false; this.defaultView(); }
+  /** Put tile `p` at the centre of the view at an absolute zoom (used by the collection's proving ground). */
+  frameTile(p: Pos, zoom = this.zoom, lift = 40) {
+    if (!this.view) return;
+    this.zoom = zoom; this.panX = 0; this.panY = 0; this.userMoved = true; this.glide = null; this.applyView();
+    const w = this.view.project(p.x, p.y, this.vt[p.y]?.[p.x]?.height ?? 0);
+    this.panX = this.cssW / 2 - (w.sx * this.scale + this.ox);
+    this.panY = (this.cssH - this.bottomInset) / 2 - ((w.sy - lift) * this.scale + this.oy);
+    this.applyView();
+  }
 
   // ---------- camera follow ----------
   private glide: { fromX: number; fromY: number; toX: number; toY: number; start: number; dur: number } | null = null;
@@ -419,17 +444,37 @@ export class Renderer {
         break;
       }
       case 'spell': {
-        const t = this.cursor;
-        this.rings.push({ pos: e.target, start: t, dur: 700, color: '#c79bff', rune: true });
+        // A shaft of light falls on the target in the spell's colour, its rune circle lights the ground,
+        // and every tile in the area flashes; damage spells land with a shake.
+        const t = this.cursor, sp = this.game.content.spells[e.spell];
+        const col = spellColor(sp?.effects ?? []);
+        const area = sp?.area?.size ?? 0;
+        this.columns.push({ pos: e.target, start: t, dur: 760, color: col, width: 26 + area * 14 });
+        this.rings.push({ pos: e.target, start: t, dur: 820, color: col, rune: true });
+        if (area) for (const p of this.game.radiusTiles(e.target, area)) if (p.x !== e.target.x || p.y !== e.target.y) this.rings.push({ pos: p, start: t + 180 + 40 * (Math.abs(p.x - e.target.x) + Math.abs(p.y - e.target.y)), dur: 520, color: col });
         this.cue(t, { kind: 'spell' });
-        this.at(t + 300, () => this.burst(e.target, 16, '#d8b8ff', { up: 70, spread: 60, life: 700, size: 3 }));
-        this.endAt = Math.max(this.endAt, t + 700);
-        this.cursor += 360; break;
+        this.at(t + 260, () => {
+          this.burst(e.target, 22 + area * 10, mix(col, '#ffffff', 0.4), { up: 90, spread: 60 + area * 30, life: 800, size: 3.2 });
+          this.burst(e.target, 10, col, { up: 30, spread: 20, life: 1100, size: 2.4, g: -30, rise: true });
+          if (sp?.effects.some(x => x.type === 'damage')) this.shakeCamera(t + 260, 3 + area * 1.5, 260);
+        });
+        this.endAt = Math.max(this.endAt, t + 820);
+        this.cursor += 420; break;
       }
       case 'equip': {
         const t = this.cursor;
         this.cue(t, { kind: 'equip', uid: e.uid });
         this.at(t, () => { const u = this.uname(e.uid); if (u) { this.floatAt(this.unitPos(u, t), 'Equipped', '#ffe27a', performance.now()); this.burst(u, 8, '#ffe9a0', { up: 50, spread: 20, life: 700, size: 2.5, g: -10, rise: true }); } });
+        break;
+      }
+      case 'land': {
+        const t = this.cursor;
+        this.at(t, () => {
+          this.rings.push({ pos: e.to, start: t, dur: 520, color: '#d9c2ff' });
+          this.burst(e.to, 20, '#e6d6ff', { up: 70, spread: 70, life: 700, size: 3 });
+          this.shakeCamera(t, 4, 220);
+        });
+        this.endAt = Math.max(this.endAt, t + 520);
         break;
       }
       case 'terrain': { this.boardDirty = true; break; }
@@ -442,32 +487,65 @@ export class Renderer {
   }
 
   // ---------- board cache ----------
-  private buildBoard() {
+  private lodWanted = false;
+  private lodJob: { gen: Generator<void>; cv: HTMLCanvasElement; k: number; x0: number; y0: number; anim: () => AnimTile[] } | null = null;
+  /** Start painting the static board layer. `sync` finishes it now; otherwise it is painted a few ms per frame
+   *  into a spare canvas and swapped in when done, so zooming in never stalls a frame. */
+  private buildBoard(sync = true) {
     visualTiles(this.game, this.vt);
     const { minX, maxX, minY, maxY } = this.bounds();
     const want = Math.min(2.5, Math.max(0.5, this.scale * this.dpr));
     const k = Math.min(want, Math.sqrt(12_000_000 / Math.max(1, (maxX - minX) * (maxY - minY)))); // stay under ~12 MP (mobile canvas limits)
     const W = Math.ceil((maxX - minX) * k), H = Math.ceil((maxY - minY) * k);
-    if (!this.board || this.board.width !== W || this.board.height !== H) { this.board = document.createElement('canvas'); this.board.width = W; this.board.height = H; }
-    const ctx = this.board.getContext('2d')!;
+    const cv = sync && this.board && this.board.width === W && this.board.height === H ? this.board : document.createElement('canvas');
+    if (cv.width !== W) cv.width = W; if (cv.height !== H) cv.height = H;
+    const ctx = cv.getContext('2d')!;
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, W, H);
     ctx.setTransform(k, 0, 0, k, -minX * k, -minY * k);
-    this.boardK = k; this.boardX0 = minX; this.boardY0 = minY;
-    this.animTiles = this.painter.paint(ctx, minY, maxY);
-    this.boardDirty = false;
+    let anim: AnimTile[] = [];
+    const gen = this.painter.paintSteps(ctx, minY, maxY, a => { anim = a; });
+    const job = { gen, cv, k, x0: minX, y0: minY, anim: () => anim };
+    this.boardDirty = false; this.lodWanted = false;
+    if (sync) { this.lodJob = null; for (;;) if (gen.next().done) break; this.swapBoard(job); }
+    else this.lodJob = job;
+  }
+  private swapBoard(j: NonNullable<Renderer['lodJob']>) {
+    this.board = j.cv; this.boardK = j.k; this.boardX0 = j.x0; this.boardY0 = j.y0; this.animTiles = j.anim();
+  }
+  /** Spend up to `ms` painting the pending sharper board. */
+  private stepLod(ms: number) {
+    const j = this.lodJob; if (!j) return;
+    const end = performance.now() + ms;
+    while (performance.now() < end) { if (j.gen.next().done) { this.lodJob = null; this.swapBoard(j); return; } }
   }
 
   // ---------- drawing ----------
-  private buildDrawables(now: number): Drawable[] {
-    const g = this.game, v = this.view, out: Drawable[] = [];
-    for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) out.push({ d: v.depth(x, y), kind: 'tile', x, y });
+  private tileList: Extract<Drawable, { kind: 'tile' }>[] = []; private tileListKey = '';
+  /** Tiles in painter order. Static for a given map size and rotation, so it is built once, not every frame. */
+  private tiles(): Extract<Drawable, { kind: 'tile' }>[] {
+    const g = this.game, v = this.view, key = `${g.width}x${g.height}r${v.rot}`;
+    if (key !== this.tileListKey) {
+      const out: Extract<Drawable, { kind: 'tile' }>[] = [];
+      for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) if (!this.isVoid(x, y)) out.push({ d: v.depth(x, y), kind: 'tile', x, y });
+      out.sort((a, b) => a.d - b.d); this.tileList = out; this.tileListKey = key;
+    }
+    return this.tileList;
+  }
+  private unitDrawables(now: number): Extract<Drawable, { kind: 'unit' }>[] {
+    const g = this.game, v = this.view, out: Extract<Drawable, { kind: 'unit' }>[] = [];
     for (const u of g.units) {
       const visible = (u.alive || this.dying.has(u.uid) || this.pendingDeath.has(u.uid)) && !this.pendingDeploy.has(u.uid);
       if (!visible) continue;
       const p = this.unitPos(u, now);
       out.push({ d: v.depth(p.x, p.y) + 0.5, kind: 'unit', u, px: p.x, py: p.y, pz: p.z, facing: p.facing, hop: p.hop });
     }
-    out.sort((a, b) => a.d - b.d);
+    return out.sort((a, b) => a.d - b.d);
+  }
+  /** Tiles and units merged in painter order (for picking). */
+  private buildDrawables(now: number): Drawable[] {
+    const t = this.tiles(), u = this.unitDrawables(now), out: Drawable[] = [];
+    let i = 0, j = 0;
+    while (i < t.length || j < u.length) out.push(j >= u.length || (i < t.length && t[i].d <= u[j].d) ? t[i++] : u[j++]);
     return out;
   }
 
@@ -487,6 +565,7 @@ export class Renderer {
     this.floats = this.floats.filter(f => now - f.born < f.life);
     this.rings = this.rings.filter(r => now < r.start + r.dur);
     this.bolts = this.bolts.filter(b => now < b.start + b.dur);
+    this.columns = this.columns.filter(c => now < c.start + c.dur);
     if (this.particles.length) {
       const s = dt / 1000;
       this.particles = this.particles.filter(p => now - p.born < p.life);
@@ -494,7 +573,9 @@ export class Renderer {
     }
     this.stepGlide(now);
     if (this.panVel.x || this.panVel.y) { const sp = Math.max(this.cssW, this.cssH) * 0.9 * dt / 1000; this.pan(this.panVel.x * sp, this.panVel.y * sp); }
-    if (this.boardDirty) this.buildBoard();
+    if (this.boardDirty) this.buildBoard(true);
+    else if (this.lodWanted && !this.lodJob) this.buildBoard(false);
+    this.stepLod(5);
 
     const ctx = this.ctx, g = this.game;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -508,16 +589,28 @@ export class Renderer {
     ctx.setTransform(this.dpr * this.scale, 0, 0, this.dpr * this.scale, this.dpr * (this.ox + jx), this.dpr * (this.oy + jy));
     // board shadow + cached static layer
     const b = this.board!;
-    ctx.drawImage(b, this.boardX0, this.boardY0, b.width / this.boardK, b.height / this.boardK);
+    { // only blit the part of the cached board that is on screen
+      const k = this.boardK, sc = this.scale;
+      const vx0 = (-this.ox - jx) / sc, vy0 = (-this.oy - jy) / sc, vx1 = vx0 + this.cssW / sc, vy1 = vy0 + this.cssH / sc;
+      const sx0 = Math.max(0, Math.floor((vx0 - this.boardX0) * k) - 2), sy0 = Math.max(0, Math.floor((vy0 - this.boardY0) * k) - 2);
+      const sx1 = Math.min(b.width, Math.ceil((vx1 - this.boardX0) * k) + 2), sy1 = Math.min(b.height, Math.ceil((vy1 - this.boardY0) * k) + 2);
+      if (sx1 > sx0 && sy1 > sy0) ctx.drawImage(b, sx0, sy0, sx1 - sx0, sy1 - sy0, this.boardX0 + sx0 / k, this.boardY0 + sy0 / k, (sx1 - sx0) / k, (sy1 - sy0) / k);
+    }
     for (const t of this.animTiles) this.animateTile(t, now);
+
+    const units = this.unitDrawables(now); this.cachedNow = now; this.pickList = null;
+    const opts = units.map(dr => this.unitOpts(dr, now));
+    // all shadows first, on the ground under the overlays, so no shadow ever darkens another unit's body
+    for (const o of opts) drawUnitShadow(ctx, o);
     this.drawOverlays(now);
 
-    this.cachedDraw = this.buildDrawables(now);
-    const units = this.cachedDraw.filter((d): d is Extract<Drawable, { kind: 'unit' }> => d.kind === 'unit');
-    for (const dr of units) {
-      this.drawUnit(dr, now);
+    const drops = g.drops.map(dp => ({ dp, d: this.view.depth(dp.x, dp.y) + 0.3 })).sort((a, b) => a.d - b.d); let di = 0;
+    units.forEach((dr, i) => {
+      while (di < drops.length && drops[di].d <= dr.d) this.drawDrop(drops[di++].dp, now);
+      this.drawUnit(dr, opts[i], now);
       this.reoccludeAround(dr);
-    }
+    });
+    while (di < drops.length) this.drawDrop(drops[di++].dp, now);
     // bolts
     for (const bt of this.bolts) {
       if (now < bt.start) continue;
@@ -570,6 +663,27 @@ export class Renderer {
       ctx.strokeStyle = pv.color; ctx.lineWidth = 1.5; ctx.stroke();
       ctx.fillStyle = pv.color; ctx.fillText(pv.text, s.sx, y + 1);
     }
+    // spell light shafts, over the units
+    for (const c of this.columns) {
+      if (now < c.start) continue;
+      const p = (now - c.start) / c.dur;
+      const s = this.view.project(c.pos.x, c.pos.y, this.tileZ(c.pos));
+      const drop = Math.min(1, p / 0.28), fade = p < 0.45 ? 1 : 1 - (p - 0.45) / 0.55;
+      const top = s.sy - 420, bot = top + (s.sy - top) * drop, w = c.width * (p < 0.3 ? 0.55 + p * 1.5 : 1 - (p - 0.3) * 0.6);
+      ctx.save(); ctx.globalAlpha = fade; ctx.shadowColor = c.color; ctx.shadowBlur = 18;
+      const g = ctx.createLinearGradient(0, top, 0, bot);
+      g.addColorStop(0, rgba(c.color, 0)); g.addColorStop(0.55, rgba(c.color, 0.6)); g.addColorStop(1, rgba(mix(c.color, '#ffffff', 0.5), 0.95));
+      ctx.fillStyle = g; ctx.fillRect(s.sx - w / 2, top, w, bot - top);
+      ctx.shadowBlur = 0; ctx.fillStyle = rgba('#ffffff', 0.7); ctx.fillRect(s.sx - w * 0.12, top + (bot - top) * 0.3, w * 0.24, (bot - top) * 0.7);
+      if (drop >= 1) {
+        const r = c.width * 1.6 * (0.6 + p);
+        const fg = ctx.createRadialGradient(s.sx, s.sy, 0, s.sx, s.sy, r);
+        fg.addColorStop(0, rgba(mix(c.color, '#ffffff', 0.5), 0.8)); fg.addColorStop(1, rgba(c.color, 0));
+        ctx.translate(s.sx, s.sy); ctx.scale(1, 0.5); ctx.translate(-s.sx, -s.sy);
+        ctx.fillStyle = fg; ctx.beginPath(); ctx.arc(s.sx, s.sy, r, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
     for (const f of this.floats) {
       const k = (now - f.born) / f.life;
       ctx.globalAlpha = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3;
@@ -588,7 +702,7 @@ export class Renderer {
     const h = this.overlay.hover, g = this.game; if (!h) return;
     const w = g.map.wells?.find(q => q.x === h.x && q.y === h.y); if (!w) return;
     const tide = label(g.content, 'essence'), holder = g.unitAt(w.x, w.y);
-    const owner = holder && !g.def(holder).structure ? g.teams[holder.team] : undefined;
+    const owner = holder && !g.def(holder).structure && !g.def(holder).flying ? g.teams[holder.team] : undefined;
     const l1 = `${tide} Well  +${w.amount ?? 10} ${tide} per turn`;
     const l2 = owner ? `Held by ${owner.name} \u00B7 deploy beside it` : 'Hold it: Tide each turn, deploy beside it';
     const wp = this.view.project(w.x, w.y, this.vt[w.y][w.x].height);
@@ -673,23 +787,48 @@ export class Renderer {
     }
   }
 
+  /** Pending skyfall landings: a pulsing ring and falling chevron on the tile, visible to both sides. */
+  private drawLandings(now: number) {
+    const g = this.game, ctx = this.ctx;
+    for (const l of g.landings) {
+      const t = this.vt[l.y]?.[l.x]; if (!t) continue;
+      const { sx, sy } = this.view.project(l.x, l.y, t.height);
+      const col = g.teams[l.team].color, ph = this.reduced ? 0 : (now / 900 + l.uid * 0.37) % 1;
+      ctx.save();
+      ctx.lineWidth = 3; ctx.setLineDash([7, 5]); ctx.lineDashOffset = this.reduced ? 0 : -now / 50;
+      ctx.strokeStyle = rgba(col, 0.95); ctx.shadowColor = col; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.ellipse(sx, sy, 30, 15, 0, 0, Math.PI * 2); ctx.stroke();
+      ctx.setLineDash([]); ctx.shadowBlur = 0; ctx.lineWidth = 1.5; ctx.strokeStyle = rgba('#ffffff', 0.5 * (1 - ph));
+      ctx.beginPath(); ctx.ellipse(sx, sy, 30 * (0.4 + ph * 0.6), 15 * (0.4 + ph * 0.6), 0, 0, Math.PI * 2); ctx.stroke();
+      const cy = sy - 34 + ph * 14;
+      ctx.globalAlpha = 0.9 - ph * 0.5; ctx.fillStyle = '#efe6ff'; ctx.strokeStyle = rgba(col, 0.9); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(sx - 9, cy - 8); ctx.lineTo(sx, cy + 4); ctx.lineTo(sx + 9, cy - 8); ctx.lineTo(sx, cy - 3); ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.globalAlpha = 1; ctx.font = 'bold 13px Cinzel, Georgia, serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(0,0,0,0.75)';
+      const gl = g.content.units[l.defId]?.sprite.glyph ?? '?'; ctx.strokeText(gl, sx, sy); ctx.fillStyle = '#fff'; ctx.fillText(gl, sx, sy);
+      ctx.restore();
+    }
+  }
+
   private drawOverlays(now: number) {
     const ov = this.overlay, ctx = this.ctx;
     const pulse = this.reduced ? 0.8 : 0.72 + 0.18 * Math.sin(now / 300);
     const glow = (k: string, color: string, strength: number) => {
       const [x, y] = k.split(',').map(Number);
-      const t = this.vt[y]?.[x]; if (!t) return;
+      const t = this.vt[y]?.[x]; if (!t || this.isVoid(x, y)) return;
       const { sx, sy } = this.view.project(x, y, t.height);
       const s = glowSprite(color, strength);
       ctx.drawImage(s, sx - s.width / 4, sy - s.height / 4, s.width / 2, s.height / 2);
     };
     for (const k of ov.deploy) glow(k, '#4cd964', pulse);
+    for (const k of ov.skyfall) glow(k, '#b48cff', pulse);
+    this.drawLandings(now);
     for (const k of ov.reach) glow(k, '#4aa3ff', 0.8);
     for (const k of ov.range) if (!ov.targets.has(k)) glow(k, '#ffd23d', 0.5);
     for (const k of ov.targets) glow(k, '#ff6a3d', pulse + 0.1);
     for (const k of ov.area) glow(k, '#ffe14d', 0.9);
     ov.path.forEach((p, pi) => {
-      const t = this.vt[p.y]?.[p.x]; if (!t) return;
+      const t = this.vt[p.y]?.[p.x]; if (!t || this.isVoid(p.x, p.y)) return;
       const { sx, sy } = this.view.project(p.x, p.y, t.height);
       if (pi > 0) {
         const q = ov.path[pi - 1], tq = this.vt[q.y][q.x], a = this.view.project(q.x, q.y, tq.height);
@@ -704,7 +843,7 @@ export class Renderer {
       }
     });
     const outline = (p: Pos, color: string, lw: number) => {
-      const t = this.vt[p.y]?.[p.x]; if (!t) return;
+      const t = this.vt[p.y]?.[p.x]; if (!t || this.isVoid(p.x, p.y)) return;
       const { sx, sy } = this.view.project(p.x, p.y, t.height);
       ctx.save(); ctx.shadowColor = color; ctx.shadowBlur = 10; ctx.strokeStyle = color; ctx.lineWidth = lw; diamondPath(ctx, sx, sy, 2); ctx.stroke(); ctx.restore();
     };
@@ -723,7 +862,7 @@ export class Renderer {
     const list: { x: number; y: number; d: number }[] = []; let occludes = false;
     for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
       const x = ux + dx, y = uy + dy;
-      if (!g.inBounds(x, y) || (dx === 0 && dy === 0)) continue;
+      if (!g.inBounds(x, y) || (dx === 0 && dy === 0) || this.isVoid(x, y)) continue;
       const t = this.vt[y][x], dd = v.depth(x, y);
       if (dd <= depth) continue;
       const ts = v.project(x, y, t.height), th = t.height * LV + GROUND;
@@ -738,7 +877,28 @@ export class Renderer {
     ctx.restore();
   }
 
-  private drawUnit(d: Extract<Drawable, { kind: 'unit' }>, now: number) {
+  /** Spilled Tide on a tile: a small crystal cluster with a soft pulse (no blur filters; one cheap shadow glow). */
+  private drawDrop(dp: { x: number; y: number; amount: number }, now: number) {
+    const ctx = this.ctx, s = this.view.project(dp.x, dp.y, this.tileZ(dp)), ph = now / 480 + dp.x * 1.7 + dp.y * 2.3, pulse = 0.5 + 0.5 * Math.sin(ph), bob = Math.sin(ph * 0.8) * 2;
+    ctx.save(); ctx.translate(s.sx, s.sy); ctx.scale(1.6, 1.6);
+    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 26); g.addColorStop(0, `rgba(143,230,255,${0.22 + pulse * 0.2})`); g.addColorStop(1, 'rgba(143,230,255,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, 0, 26, 13, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowColor = '#8fe6ff'; ctx.shadowBlur = 6 + pulse * 6;
+    const shard = (ox: number, oy: number, w: number, h: number) => {
+      ctx.beginPath(); ctx.moveTo(ox, oy - h); ctx.lineTo(ox + w, oy - h * 0.35); ctx.lineTo(ox + w * 0.6, oy); ctx.lineTo(ox - w * 0.6, oy); ctx.lineTo(ox - w, oy - h * 0.35); ctx.closePath();
+      const f = ctx.createLinearGradient(ox - w, oy - h, ox + w, oy); f.addColorStop(0, '#d9f8ff'); f.addColorStop(0.5, '#6fd6f0'); f.addColorStop(1, '#2a8fa8');
+      ctx.fillStyle = f; ctx.fill(); ctx.shadowBlur = 0; ctx.strokeStyle = '#0b3a48cc'; ctx.lineWidth = 1; ctx.stroke(); ctx.shadowBlur = 6 + pulse * 6;
+    };
+    const big = Math.min(1.5, 1 + dp.amount / 60);
+    shard(-8, 2, 4 * big, 11 * big); shard(8, 3, 3.5, 9); shard(0, 5 + bob * 0.3, 5 * big, 15 * big + bob);
+    ctx.shadowBlur = 0;
+    ctx.font = '700 11px "Barlow Semi Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = 3; ctx.strokeStyle = '#04141acc'; ctx.fillStyle = '#c8f4ff';
+    ctx.strokeText(String(dp.amount), 0, 17); ctx.fillText(String(dp.amount), 0, 17);
+    ctx.restore();
+  }
+
+  /** Everything needed to draw one unit this frame (shared by the shadow pass and the figure pass). */
+  private unitOpts(d: Extract<Drawable, { kind: 'unit' }>, now: number): SpriteOpts {
     const g = this.game, u = d.u, ov = this.overlay;
     const def = g.def(u);
     let { sx, sy } = this.view.project(d.px, d.py, d.pz);
@@ -747,6 +907,7 @@ export class Renderer {
     const state: AnimState = an?.state ?? 'idle';
     const el = an ? now - an.start : now + u.uid * 173;
     let squash = 1, tilt = 0, lift = d.hop, glow = 0, alpha = 1, scale = 1;
+    if (def.flying) lift += HOVER + (this.reduced ? 0 : Math.sin(now / 520 + u.uid * 1.7) * 3);
     // procedural layer
     if (!this.reduced && !def.structure) {
       if (state === 'idle') { squash = 1 + Math.sin(now / 700 + u.uid * 1.3) * 0.018; sx += Math.sin(now / 1100 + u.uid) * 0.8; }
@@ -790,7 +951,7 @@ export class Renderer {
     const fl = (this.flashUntil.get(u.uid) ?? 0) - now;
     const frame = frameFor(art, state, el, !!def.structure);
     const hpNow = this.hpShown.get(u.uid) ?? u.hp;
-    drawUnitSprite(this.ctx, {
+    return {
       def, hero: !!def.hero, teamColor: g.teams[u.team].color, factionColor: def.faction ? g.content.factions?.[def.faction]?.color : undefined,
       x: sx, y: sy, alpha, dim,
       flash: Math.max(0, Math.min(1, fl / 220)),
@@ -798,12 +959,16 @@ export class Renderer {
       statuses: u.statuses.map(s => ({ id: s.id, name: g.content.statuses[s.id]?.name ?? s.id })),
       selected: !!ov.selected && ov.selected.x === u.x && ov.selected.y === u.y && !this.segs.has(u.uid),
       hovered: !!ov.hover && ov.hover.x === u.x && ov.hover.y === u.y,
-      scale, time: now, frame, facing: d.facing, squash, tilt, lift, glow,
+      flying: !!def.flying, scale, time: now, frame, facing: d.facing, squash, tilt, lift, glow,
       lampGlow: def.structure ? Math.max(0.08, hpNow / def.stats.hp) : undefined,
       reduced: this.reduced,
-    });
-    const vip = u.tag ? this.vip.get(u.tag) : undefined;
-    if (vip && u.alive && alpha > 0.3) this.drawVipBadge(sx, sy - figureHeight({ frame, def }) * scale - lift - 30, vip, now);
+    };
+  }
+
+  private drawUnit(d: Extract<Drawable, { kind: 'unit' }>, o: SpriteOpts, now: number) {
+    drawUnitSprite(this.ctx, o);
+    const vip = d.u.tag ? this.vip.get(d.u.tag) : undefined;
+    if (vip && d.u.alive && o.alpha > 0.3) this.drawVipBadge(o.x, o.y - figureHeight(o) * o.scale - o.lift - 30, vip, now);
   }
 
   /** Mission-critical units wear a badge: a gold shield for "must survive", a red target for "must die". */
@@ -830,7 +995,7 @@ export class Renderer {
   pick(cx: number, cy: number): Pos | null {
     const wx = (cx - this.ox) / this.scale, wy = (cy - this.oy) / this.scale;
     const g = this.game, now = performance.now();
-    const list = this.cachedDraw.length ? this.cachedDraw : this.buildDrawables(now);
+    const list = this.pickList ??= this.buildDrawables(this.cachedNow || now);
     const topDist = (x: number, y: number) => {
       const s = this.view.project(x, y, this.vt[y][x].height);
       return Math.abs(wx - s.sx) / (TW / 2) + Math.abs(wy - s.sy) / (TH / 2);
@@ -842,7 +1007,7 @@ export class Renderer {
       const d = list[i]; if (d.kind !== 'unit' || !d.u.alive) continue;
       const s = this.view.project(d.px, d.py, d.pz);
       const fh = figureHeight({ frame: frameFor(unitArt(d.u.defId, g.def(d.u)), 'idle', 0, !!g.def(d.u).structure), def: g.def(d.u) });
-      if (Math.abs(wx - s.sx) <= 32 && wy >= s.sy - fh - 6 && wy <= s.sy + 10) return { x: d.u.x, y: d.u.y };
+      if (Math.abs(wx - s.sx) <= 32 && wy >= s.sy - fh - 6 - (g.def(d.u).flying ? HOVER : 0) && wy <= s.sy + 10) return { x: d.u.x, y: d.u.y };
     }
     // 3) rest of a top face, then cliff sides
     for (let i = list.length - 1; i >= 0; i--) {
@@ -858,4 +1023,19 @@ export class Renderer {
     return null;
   }
 }
+/** The colour a spell reads as, from its main effect. */
+function spellColor(effects: { type: string; damageType?: string }[]): string {
+  const e = effects.find(x => x.type === 'damage') ?? effects[0];
+  switch (e?.type) {
+    case 'damage': return ({ fire: '#ff9a4a', salt: '#ffd98a', cold: '#8fdcff', pressure: '#6fb6ff', light: '#ffe08a', brine: '#5fe0c8', physical: '#ffcf8a' } as Record<string, string>)[e.damageType ?? ''] ?? '#ffcf8a';
+    case 'heal': return '#8ff0a0';
+    case 'status': return '#c79bff';
+    case 'summon': return '#7fe0dc';
+    case 'terrain': return '#e3c27a';
+    case 'essence': return '#8fe6ff';
+    case 'push': case 'pull': case 'teleport': case 'swap': return '#9fc6ff';
+    default: return '#c79bff';
+  }
+}
+
 export { key };

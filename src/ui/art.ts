@@ -1,5 +1,7 @@
-// Original UI art for EBB, drawn as inline SVG: brass frames (9-slice), faction crests, title key art, and UI glyphs.
+// Original UI art for Brinewake, drawn as inline SVG: brass frames (9-slice), faction crests, title key art, and UI glyphs.
 // Everything here is static vector art; nothing uses filters on animated layers (keeps mobile fast).
+
+import { h } from './dom';
 
 let uid = 0;
 const nid = (p: string) => `${p}${++uid}`;
@@ -21,17 +23,28 @@ function chartSvg() {
 const KIT = import.meta.glob('./kit/*.png', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 /** URL of a baked UI-kit texture (tools/uikit/bake.py). */
 export const kit = (n: string) => KIT[`./kit/${n}.png`];
+const ILL = import.meta.glob('./kit/ill/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+/** URL of a baked illuminated initial (tools/uikit/illuminate.py), or undefined for non A-Z. */
+export const illum = (ch: string) => ILL[`./kit/ill/${ch.toUpperCase()}.webp`];
+
+/** A menu heading whose first letter is an illuminated initial; other text is left as is. */
+export function illuminated(text: string) {
+  const m = /^(\W*)([A-Za-z])(.*)$/.exec(text);
+  const src = m && illum(m[2]);
+  if (!m || !src) return [text];
+  return [m[1] || null, h('span', { class: 'ill', role: 'img', 'aria-label': m[2], style: `--ill:url("${src}")` }), m[3]];
+}
 
 export function installArt() {
-  if (document.getElementById('ebb-art')) return;
-  if (!document.getElementById('ebb-fonts')) {
+  if (document.getElementById('brinewake-art')) return;
+  if (!document.getElementById('brinewake-fonts')) {
     const ln = document.createElement('link');
-    ln.id = 'ebb-fonts'; ln.rel = 'stylesheet';
-    ln.href = 'https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Alegreya:ital,wght@1,400;1,500&family=Alegreya+Sans:wght@400;500;700;800;900&display=swap';
+    ln.id = 'brinewake-fonts'; ln.rel = 'stylesheet';
+    ln.href = 'https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&display=swap';
     document.head.append(ln);
   }
   const st = document.createElement('style');
-  st.id = 'ebb-art';
+  st.id = 'brinewake-art';
   const u = (n: string) => `url("${kit(n)}")`;
   st.textContent = `:root{--frame-lg:${u('frame')};--frame-sm:${u('frame_sm')};--plate:${u('plate')};--plate-gold:${u('plate_gold')};--slate:${u('slate')};--k-logo:${u('logo')};--k-endturn:${u('endturn')};--k-tide:${u('coin_tide')};--k-hp:${u('coin_hp')};--k-round:${u('coin_round')};--grain:${enc(grainSvg(false))};--grain-paper:${enc(grainSvg(true))};--chart:${enc(chartSvg())};}`;
   document.head.append(st);
@@ -49,6 +62,8 @@ const CREST: Record<string, CrestStyle> = {
   salvage_compact: { field: ['#bf6a3e', '#3a1a0c'], ink: '#efe6d6', hi: '#fff6e6' },
   reef_ascendant: { field: ['#ec8f7f', '#5a2420'], ink: '#f6efe6', hi: '#ffffff', glow: '#ffd2c6' },
   lanternkeepers: { field: ['#7d8791', '#22272c'], ink: '#f2c766', hi: '#fff3c4', glow: '#ffd86b' },
+  overcurrent: { field: ['#8cc7e8', '#14243a'], ink: '#f4f0ff', hi: '#9ff3ff', glow: '#9ff3ff' },
+  gyre: { field: ['#6f7a86', '#1f252c'], ink: '#efe9df', hi: '#e8892f' },
 };
 
 function charge(fid: string, s: CrestStyle, g: string): string {
@@ -81,6 +96,21 @@ function charge(fid: string, s: CrestStyle, g: string): string {
         return `<circle cx="${x}" cy="${y}" r="5.5" fill="${ink}"/><circle cx="${x}" cy="${y}" r="2.2" fill="#c45a4c"/><path d="M${x + Math.cos(a) * 5} ${y + Math.sin(a) * 5} l${Math.cos(a - .5) * 5} ${Math.sin(a - .5) * 5} M${x + Math.cos(a) * 5} ${y + Math.sin(a) * 5} l${Math.cos(a + .5) * 5} ${Math.sin(a + .5) * 5}" stroke="${ink}" stroke-width="1.6"/>`; }).join('');
       return `${polyps}<path d="M60 26 C66 50 70 80 72 108 H48 C50 80 54 50 60 26 Z" fill="${ink}" stroke="#7a2e26" stroke-width="1.5"/>
         <path d="M60 34 V106 M55 60 C54 78 52 92 52 106 M65 60 C66 78 68 92 68 106" stroke="#c45a4c" stroke-width="1.4" fill="none"/>`;
+    }
+    case 'overcurrent': {
+      // a gulper's maw falling from above: open jaw ringed with needle teeth, belly-eye glowing beneath
+      const teeth = Array.from({ length: 9 }, (_, i) => { const x = 36 + i * 6; return `<path d="M${x} 58 L${x + 3} ${70 + (i % 2) * 5} L${x + 6} 58 Z" fill="${ink}"/><path d="M${x} 92 L${x + 3} ${80 - (i % 2) * 5} L${x + 6} 92 Z" fill="${ink}"/>`; }).join('');
+      return `<circle cx="60" cy="104" r="16" fill="url(#${g}gl)"/>
+        <path d="M24 75 C30 44 90 44 96 75 C90 106 30 106 24 75 Z" fill="#0d1726" stroke="${ink}" stroke-width="3"/>${teeth}
+        <path d="M60 22 V40 M54 30 L60 40 L66 30" stroke="${ink}" stroke-width="2.4" fill="none"/>
+        <circle cx="60" cy="104" r="6" fill="${s.hi}"/><circle cx="60" cy="104" r="2.4" fill="#0d1726"/>`;
+    }
+    case 'gyre': {
+      // a wheel of gulls circling over carrion
+      const birds = Array.from({ length: 6 }, (_, i) => { const a = i / 6 * Math.PI * 2, x = 60 + Math.cos(a) * 32, y = 66 + Math.sin(a) * 26, r = a * 180 / Math.PI + 90;
+        return `<path d="M-10 2 Q-5 -6 0 0 Q5 -6 10 2" transform="translate(${x} ${y}) rotate(${r})" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`; }).join('');
+      return `${birds}<path d="M40 66 Q50 52 60 64 Q70 52 80 66 L60 74 Z" fill="${ink}"/><path d="M60 64 L66 70 L60 72 Z" fill="${s.hi}"/>
+        <path d="M38 108 Q48 98 60 104 Q72 98 82 108" fill="none" stroke="${ink}" stroke-width="3" opacity=".7"/><circle cx="60" cy="104" r="3" fill="${s.hi}"/>`;
     }
     case 'lanternkeepers': {
       const lenses = Array.from({ length: 7 }, (_, i) => { const a = i / 7 * Math.PI * 2 - Math.PI / 2, x = 60 + Math.cos(a) * 36, y = 70 + Math.sin(a) * 36;

@@ -5,9 +5,11 @@ import { clear, h } from './dom';
 import { describeObjectives } from './text';
 import { buildSkirmish, playableFactions } from '../engine/skirmish';
 import { artNode } from './cards';
-import { crestSvg, glyph, installArt, kit, teamFaction } from './art';
+import { crestSvg, glyph, illuminated, installArt, kit, teamFaction } from './art';
 import { Game } from '../engine/game';
 import { Renderer } from '../render/renderer';
+import { showCollection } from './collection';
+import { allRelics, ownedRelics } from '../engine/collection';
 
 export interface MissionChoice { missionId: string; campaign?: { id: string; index: number } }
 
@@ -68,7 +70,7 @@ function shell(root: HTMLElement, content: Content): HTMLElement {
 function screenHeader(title: string, kicker: string | null, onBack: () => void) {
   return h('header', { class: 'scr-head' },
     h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back')),
-    h('div', { class: 'scr-title' }, kicker ? h('div', { class: 'kicker' }, kicker) : null, h('h1', null, title)),
+    h('div', { class: 'scr-title' }, kicker ? h('div', { class: 'kicker' }, kicker) : null, h('h1', null, ...illuminated(title))),
     h('div', { class: 'scr-head-sp' }));
 }
 
@@ -87,19 +89,19 @@ export function showMenu(root: HTMLElement, content: Content, errors: string[], 
   const campTotal = camps.reduce((n, [, c]) => n + c.missions.length, 0);
   const scen = Object.keys(content.missions).filter(id => !id.startsWith('skirmish:')).length;
   const item = (title: string, sub: string, on: (() => void) | null, extra = '') =>
-    h('button', { class: 'mitem' + extra, disabled: !on, onclick: on ?? undefined }, h('span', { class: 'mi-title' }, title), h('span', { class: 'mi-sub' }, sub));
+    h('button', { class: 'mitem' + extra, disabled: !on, onclick: on ?? undefined }, h('span', { class: 'mi-title' }, ...illuminated(title)), h('span', { class: 'mi-sub' }, sub));
   const scr = h('div', { class: 'scr title-scr' },
     h('div', { class: 'logo-block' },
-      h('img', { class: 'logo-img', src: '', alt: L.title ?? 'EBB', draggable: 'false' }),
+      h('img', { class: 'logo-img', src: '', alt: L.title ?? 'Brinewake', draggable: 'false' }),
       h('div', { class: 'logo-sub' }, L.subtitle ?? 'A tactics game')),
     h('nav', { class: 'mainnav' },
       item('Campaign', campTotal ? `${campDone} / ${campTotal}` : '', camps.length ? () => showCampaign(ctx) : null, ' primary'),
       item('Skirmish', '', playableFactions(content).length >= 2 ? () => showSkirmish(ctx) : null),
       item('Scenarios', String(scen), scen ? () => showScenarios(ctx) : null),
-      item('Collection', 'Soon', null)),
+      item('Collection', `${ownedRelics(content).size} / ${allRelics(content).length}`, () => showCollection(shell(root, content), content, () => showMenu(root, content, errors, onPick)))),
     errors.length ? h('details', { class: 'errbox' }, h('summary', null, `Content check: ${errors.length} problem${errors.length === 1 ? '' : 's'}`),
       h('ul', null, ...errors.slice(0, 30).map(e => h('li', null, e)))) : null,
-    h('footer', { class: 'ver' }, 'Prototype build'));
+    h('footer', { class: 'ver' }, 'Early access'));
   (scr.querySelector('.logo-img') as HTMLImageElement).src = kit('logo');
   host.append(scr);
 }
@@ -192,6 +194,7 @@ function mapPreview(content: Content, mapId: string) {
   let s = '';
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const ch = m.tiles[y][x], terr = content.terrain[m.legend[ch]];
+    if ((terr as { void?: boolean } | undefined)?.void) continue;
     const hgt = Number(m.heights?.[y]?.[x] ?? 0) || 0;
     const cx = (x - y) * tw / 2 + H * tw / 2, cy = (x + y) * th / 2 - hgt * 2 + 8;
     const col = terr?.color ?? '#888';
@@ -292,23 +295,27 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
   const host = shell(root, content);
   const kicker = choice.campaign ? `${content.campaigns[choice.campaign.id].name} · Mission ${choice.campaign.index + 1}` : 'Skirmish';
   const teams = m.teams.map(t => ({ t, f: missionTeamFaction(content, m, t) }));
+  const story = (m.briefing ?? []).filter(t => t.trim() !== m.description?.trim());
+  const objRow = (kind: 'win' | 'lose', t: string) => h('li', { class: 'bo-row ' + kind }, h('i', { class: 'bo-mark' }), h('span', null, t));
   host.append(h('div', { class: 'scr brief-scr' },
-    screenHeader('Briefing', null, onBack),
-    h('article', { class: 'parchment' },
-      h('div', { class: 'brief-story' },
+    h('header', { class: 'brief-top' }, h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back'))),
+    h('div', { class: 'brief-grid' },
+      h('section', { class: 'brief-story' },
         h('div', { class: 'kicker' }, kicker),
-        h('h1', null, m.name),
-        ornament(),
+        h('h1', { class: 'brief-title' }, ...illuminated(m.name)),
         m.description ? h('p', { class: 'lead' }, m.description) : null,
-        ...(m.briefing ?? []).filter(t => t.trim() !== m.description?.trim()).map(t => h('p', null, t))),
-      h('div', { class: 'brief-side' },
-      h('div', { class: 'forces' }, ...teams.flatMap(({ t, f }, i) => [
-        i ? h('span', { class: 'fvs' }, 'vs') : null,
-        h('div', { class: 'force', style: `--tc:${t.color}` }, crest(f, 'crest', t.color), h('div', null, h('b', null, t.name), h('small', null, t.controller === 'human' ? 'You' : 'Enemy')))])),
-      h('div', { class: 'objs' },
-        h('div', { class: 'obj win' }, h('h3', null, obj.winAny ? 'Victory: any of' : 'Victory'), h('ul', null, ...obj.win.map(t => h('li', null, t)))),
-        h('div', { class: 'obj lose' }, h('h3', null, 'Defeat'), h('ul', null, ...obj.lose.map(t => h('li', null, t))))),
-      h('div', { class: 'brief-foot' },
-        h('span', { class: 'muted' }, `${map?.name ?? m.map} · ${m.startingEssence ?? 100} ${label(content, 'essence')} to start`),
-        h('button', { class: 'btn-gold big', onclick: onStart }, 'Deploy'))))));
+        story.length ? h('div', { class: 'brief-text' }, ...story.map(t => h('p', null, t))) : null),
+      h('aside', { class: 'brief-side framed' },
+        h('div', { class: 'bs-map' }, mapPreview(content, m.map),
+          h('div', { class: 'bs-mapname' }, h('span', { class: 'kicker' }, 'Battlefield'), h('b', null, map?.name ?? m.map),
+            h('small', null, `${m.startingEssence ?? 100} ${label(content, 'essence')} to start`))),
+        h('div', { class: 'bs-forces' }, ...teams.map(({ t, f }) =>
+          h('div', { class: 'bs-force', style: `--tc:${t.color}` }, crest(f, 'crest', t.color),
+            h('b', null, t.name), h('small', null, t.controller === 'human' ? 'You' : 'Enemy')))),
+        h('div', { class: 'bs-objs' },
+          h('div', { class: 'kicker' }, obj.winAny ? 'Victory, any of' : 'Victory'),
+          h('ul', null, ...obj.win.map(t => objRow('win', t))),
+          h('div', { class: 'kicker lose' }, 'Defeat'),
+          h('ul', null, ...obj.lose.map(t => objRow('lose', t)))),
+        h('button', { class: 'btn-gold big bs-deploy', onclick: onStart }, 'Deploy')))));
 }

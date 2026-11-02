@@ -1,4 +1,4 @@
-# Tactics Engine (prototype)
+# Brinewake (tactics engine prototype)
 
 An original, data-driven, turn-based tactics game engine for the browser: isometric grid with height,
 AP-based movement and abilities, essence-funded deployment, missions with scripted objectives, and campaigns.
@@ -37,3 +37,9 @@ The game is live at https://brinewake.pages.dev. Cloudflare Pages is connected t
 integration (project `brinewake`, build command `npm run build`, output `dist`, `NODE_VERSION=22`): every push to `main`
 deploys to production and every other branch gets its own preview URL. Build settings live in the Cloudflare dashboard
 under Workers & Pages, brinewake, Settings. `.github/workflows/ci.yml` runs the tests and build on every push and PR.
+
+## Audio
+
+Sound is built from licensed recordings only (CC0 / CC BY, nothing synthesised); see `src/audio/CREDITS.md`.
+`src/audio/engine.ts` (buses, volume settings), `scenes.ts` (music and per-map ambience), `sfx.ts` (per-unit voices and cues), `ui.ts` (clicks and hovers).
+Regenerate the assets with `python3 tools/sounds/build.py <packs-dir>` and `python3 tools/sounds/compose.py <packs-dir>` (pack sources are listed in CREDITS.md).
