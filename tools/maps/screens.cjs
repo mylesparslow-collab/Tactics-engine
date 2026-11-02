@@ -17,10 +17,10 @@ const fs = require('fs');
     // Close any briefing/hand overlays so the board shows.
     await pg.evaluate(() => { document.querySelectorAll('.toast, .briefing, .modal').forEach(e => e.remove()); });
     // Whole board, then a closer look at the middle.
-    await pg.evaluate(() => window.brinewake().renderer.frameTile({ x: 10.5, y: 10.5 }, 1, 0));
+    await pg.evaluate(() => { const g = window.brinewake().game; window.brinewake().renderer.frameTile({ x: (g.width - 1) / 2, y: (g.height - 1) / 2 }, 1, 0); });
     await pg.waitForTimeout(1500);
     await pg.screenshot({ path: `${out}/${id}.png` });
-    await pg.evaluate(() => window.brinewake().renderer.frameTile({ x: 10.5, y: 10.5 }, 2.4, 0));
+    await pg.evaluate(() => { const g = window.brinewake().game; window.brinewake().renderer.frameTile({ x: (g.width - 1) / 2, y: (g.height - 1) / 2 }, 2.4, 0); });
     await pg.waitForTimeout(2500);
     await pg.screenshot({ path: `${out}/${id}_close.png` });
     console.log('shot', id);

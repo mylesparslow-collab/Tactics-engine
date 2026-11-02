@@ -855,6 +855,7 @@ export class Game {
   }
 
   private setTerrain(x: number, y: number, terrain: string) {
+    if (this.content.terrain[this.tiles[y][x].terrain]?.void) return; // chasm stays empty
     this.tiles[y][x].terrain = terrain;
     this.emit({ kind: 'terrain', x, y, terrain });
   }
@@ -922,7 +923,7 @@ export class Game {
         for (const u of this.units) if (u.alive && u.tag === a.tag) this.applyEffect({ type: 'status', status: a.status, duration: a.duration }, u);
         break;
       case 'spawn': {
-        let p: Pos | undefined = !this.unitAt(a.x, a.y) ? { x: a.x, y: a.y } : undefined;
+        let p: Pos | undefined = !this.unitAt(a.x, a.y) && !this.terrainAt(a.x, a.y).impassable ? { x: a.x, y: a.y } : undefined;
         if (!p) p = this.nearestFree({ x: a.x, y: a.y });
         if (!p) break;
         const u = this.spawn(a.unit, a.team, p.x, p.y, a.tag);

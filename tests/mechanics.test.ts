@@ -519,3 +519,37 @@ describe('terrain mechanics', () => {
     expect(`${s.x},${s.y}`).not.toBe('2,2');
   });
 });
+
+describe('void (chasm) terrain', () => {
+  const chasm = (c: Content) => {
+    c.terrain.void = { name: 'Chasm', moveCost: 99, defense: 0, color: '#000', impassable: true, void: true };
+    c.maps.world.legend['_'] = 'void';
+    c.maps.world.tiles[2] = '...#.__.';
+    c.maps.world.tiles[5] = '._......';
+  };
+  const mk = () => world({
+    teams: [team('human', [anchor(0, 4), { unit: 'wisp', x: 4, y: 2, tag: 'w' }, { unit: 'vanguard', x: 4, y: 3, tag: 'v' }], ['vanguard']), team('ai', [anchor()])],
+    edit: chasm,
+  });
+
+  it('validates', () => {
+    expect(validateContent(normalizeContent(structuredClone(mk().content)))).toEqual([]);
+  });
+  it('walkers and flyers cannot end on void, flyers can cross it', () => {
+    const g = mk();
+    const w = g.units.find(u => u.tag === 'w')!, v = g.units.find(u => u.tag === 'v')!;
+    const fr = g.reachable(w);
+    expect(fr.has('5,2')).toBe(false);
+    expect(fr.has('6,2')).toBe(false);
+    expect(fr.has('7,2')).toBe(true); // flew over both chasm tiles
+    expect(g.move(w.uid, 5, 2)).toBe(false);
+    expect(g.reachable(v).has('5,2')).toBe(false);
+    expect(g.reachable(v).has('6,2')).toBe(false);
+  });
+  it('never offers void as a deploy or skyfall tile', () => {
+    const g = mk();
+    expect(g.deployTiles(0).some(p => p.x === 1 && p.y === 5)).toBe(false);
+    expect(g.deploy(0, 0, 1, 5)).toBe(false);
+    expect(g.skyfallTiles(0).some(p => g.terrainAt(p.x, p.y).void)).toBe(false);
+  });
+});

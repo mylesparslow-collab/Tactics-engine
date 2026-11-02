@@ -112,6 +112,8 @@ export function validateContent(c: Content): string[] {
       checkEffect(e, `terrain ${id} onTurnStart ${i}`);
       if (!['damage', 'heal', 'status'].includes(e.type)) errs.push(`terrain ${id} onTurnStart ${i}: only damage, heal and status effects are allowed`);
     });
+    if (t.void !== undefined && typeof t.void !== 'boolean') errs.push(`terrain ${id}: void must be true or false`);
+    if (t.void && !t.impassable) errs.push(`terrain ${id}: void terrain must also be impassable`);
     if (t.rangeBonus !== undefined && typeof t.rangeBonus !== 'number') errs.push(`terrain ${id}: rangeBonus must be a number`);
     if (t.factionMoveCost !== undefined) {
       if (typeof t.factionMoveCost !== 'object' || t.factionMoveCost === null) errs.push(`terrain ${id}: factionMoveCost must be an object`);

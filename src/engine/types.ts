@@ -103,6 +103,8 @@ export interface TerrainDef {
   defense: number;
   color: string;
   impassable?: boolean;
+  /** Empty space: nothing is drawn, nothing can stand, land, spawn or be pushed here (flyers may cross). Implies impassable. */
+  void?: boolean;
   onEnter?: Effect;
   /** Units standing here do not dry out (see UnitDef.dries). `brine_pool` and `living_reef` are always wet. */
   wet?: boolean;

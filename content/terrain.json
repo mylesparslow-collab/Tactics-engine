@@ -470,5 +470,6 @@
       ],
       "side": "tiles/sinkmud_side.png"
     }
-  }
+  },
+  "void": {"name": "Chasm", "description": "Nothing below but the long fall.", "moveCost": 99, "defense": 0, "color": "#000000", "impassable": true, "void": true}
 }

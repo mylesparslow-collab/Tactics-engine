@@ -80,6 +80,7 @@ stacks?: bool, maxStacks?, wet?: bool (carrier does not dry out)` — stacking s
 ## content/terrain.json — `{ [terrainId]: TerrainDef }`
 `name, moveCost, defense, color (placeholder tile colour), impassable?, onEnter?: Effect, wet?: bool` — `wet` tiles (and always `brine_pool`, `living_reef`) stop `dries` units losing HP.
 Extra optional fields:
+- `void: true` — a chasm: empty space. The renderer draws no tile at all (neighbours show their cliff faces down into it), and nothing can stand, deploy, land, spawn or be pushed there. Always also set `impassable: true`. Flyers may cross it but not end on it.
 - `description` — one line shown when hovering the tile.
 - `onTurnStart: Effect[]` — applied to each unit that starts its turn standing here (after drying, before status effects). Only `damage`, `heal` and `status` are allowed; each effect's `filter` is respected; heals cap at max HP. Flyers are skipped (like `onEnter`), as are units that landed this turn.
 - `rangeBonus: number` — added to the max range of abilities with `range.max > 1` used from this tile (stacks with the +1 high-ground bonus). Melee is unaffected.
