@@ -5,19 +5,19 @@ const { chromium } = require('playwright');
   const b = await chromium.launch({ args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
   const pg = await b.newPage({ viewport: { width: 1280, height: 720 } });
   pg.on('pageerror', e => console.log('pageerror', e.message));
-  await pg.goto(url); await pg.waitForFunction(() => window.ebbPlay);
+  await pg.goto(url); await pg.waitForFunction(() => window.brinewakePlay);
   const mission = await pg.evaluate(() => Object.keys(window.__ids ?? {})[0] ?? null);
   await pg.evaluate(() => { const c = document.querySelector('[data-m]'); });
   // start the first campaign mission via content
-  await pg.evaluate(async () => { const m = await import('/src/engine/bundled.ts'); const c = m.loadBundledContent(); window.ebbPlay(Object.values(c.campaigns)[0].missions[0].mission); });
-  await pg.waitForFunction(() => window.ebb && window.ebb());
+  await pg.evaluate(async () => { const m = await import('/src/engine/bundled.ts'); const c = m.loadBundledContent(); window.brinewakePlay(Object.values(c.campaigns)[0].missions[0].mission); });
+  await pg.waitForFunction(() => window.brinewake && window.brinewake());
   await pg.waitForTimeout(2500);
   // frame sampler
   const measure = (name, act, ms = 1500) => pg.evaluate(async ([name, act, ms]) => {
     const ts = []; let on = true;
     const tick = t => { ts.push(t); if (on) requestAnimationFrame(tick); }; requestAnimationFrame(tick);
     const fn = new Function('s', 'return (async()=>{' + act + '})()');
-    const t0 = performance.now(); await fn(window.ebb()); await new Promise(r => setTimeout(r, ms)); on = false;
+    const t0 = performance.now(); await fn(window.brinewake()); await new Promise(r => setTimeout(r, ms)); on = false;
     const d = ts.slice(1).map((t, i) => t - ts[i]).sort((a, b) => a - b);
     const sum = d.reduce((a, b) => a + b, 0);
     return { name, frames: d.length, avgMs: +(sum / d.length).toFixed(1), p95: +d[Math.floor(d.length * .95)].toFixed(1), worst: +d[d.length - 1].toFixed(1), fps: +(1000 * d.length / sum).toFixed(1) };

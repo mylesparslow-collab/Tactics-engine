@@ -1,4 +1,4 @@
-# Tactics Engine (prototype)
+# Brinewake (tactics engine prototype)
 
 An original, data-driven, turn-based tactics game engine for the browser: isometric grid with height,
 AP-based movement and abilities, essence-funded deployment, missions with scripted objectives, and campaigns.

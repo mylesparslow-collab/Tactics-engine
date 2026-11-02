@@ -1,4 +1,4 @@
-# EBB card art for ChatGPT
+# Brinewake card art for ChatGPT
 
 174 cards: 90 champions and heroes, 48 spells, 36 equipment. One folder per card, grouped by faction and numbered in the order to paint them (champions first, then heroes, spells, equipment).
 

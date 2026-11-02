@@ -1,4 +1,4 @@
-"""Bake EBB's illuminated initials: burnished gold capitals on a sea-blue painted block with gold
+"""Bake Brinewake's illuminated initials: burnished gold capitals on a sea-blue painted block with gold
 vine scrollwork and a double gold rule, in the manner of a manuscript versal.
 Run: python3 tools/uikit/illuminate.py [fontfile]  -> writes src/ui/kit/ill/A.webp .. Z.webp (deterministic).
 Default font: tools/uikit/fonts/CormorantGaramond-Bold.ttf (OFL)."""

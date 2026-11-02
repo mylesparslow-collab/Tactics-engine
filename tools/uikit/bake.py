@@ -1,4 +1,4 @@
-"""Bake EBB's UI kit: lit raster materials (cast bronze, salt crust, dark slate) from analytic height fields.
+"""Bake Brinewake's UI kit: lit raster materials (cast bronze, salt crust, dark slate) from analytic height fields.
 Run: python3 tools/uikit/bake.py  -> writes PNGs to src/ui/kit/. Deterministic (fixed seeds)."""
 import numpy as np
 from PIL import Image
@@ -194,12 +194,12 @@ def coin(name, kind, S=96, seed=21):
     rgb = np.where(inner[..., None], fill, rgb)
     save(name, rgb, mask)
 
-def logo(name, text='EBB', size=300, seed=31):
+def logo(name, text='BRINEWAKE', size=300, seed=31):
     from PIL import ImageDraw, ImageFont
-    font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), 'fonts', 'CormorantGaramond-Bold.ttf'), size * 4)
+    font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), 'fonts', 'CormorantSC-Bold.ttf'), size * 4)
     tw = int(font.getlength(text) + size * 4 * 0.6) + 200; th = int(size * 4 * 1.25)
     m = Image.new('L', (tw, th), 0); dr = ImageDraw.Draw(m)
-    spacing = size * 4 * 0.12; x = 100
+    spacing = size * 4 * 0.06; x = 100
     for ch in text:
         dr.text((x, size * 0.3), ch, font=font, fill=255); x += font.getlength(ch) + spacing
     bbox = m.getbbox(); m = m.crop((bbox[0] - 60, bbox[1] - 60, bbox[2] + 60, bbox[3] + 90))

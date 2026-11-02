@@ -92,7 +92,7 @@ export function showMenu(root: HTMLElement, content: Content, errors: string[], 
     h('button', { class: 'mitem' + extra, disabled: !on, onclick: on ?? undefined }, h('span', { class: 'mi-title' }, ...illuminated(title)), h('span', { class: 'mi-sub' }, sub));
   const scr = h('div', { class: 'scr title-scr' },
     h('div', { class: 'logo-block' },
-      h('img', { class: 'logo-img', src: '', alt: L.title ?? 'EBB', draggable: 'false' }),
+      h('img', { class: 'logo-img', src: '', alt: L.title ?? 'Brinewake', draggable: 'false' }),
       h('div', { class: 'logo-sub' }, L.subtitle ?? 'A tactics game')),
     h('nav', { class: 'mainnav' },
       item('Campaign', campTotal ? `${campDone} / ${campTotal}` : '', camps.length ? () => showCampaign(ctx) : null, ' primary'),

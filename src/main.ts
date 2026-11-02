@@ -38,6 +38,6 @@ function play(choice: MissionChoice) {
 menu();
 // Dev-only handle for automated playtests.
 if (import.meta.env.DEV) {
-  (window as unknown as { ebb: () => GameSession | null }).ebb = () => session;
+  (window as unknown as { brinewake: () => GameSession | null }).brinewake = () => session;
   (window as unknown as { ebbPlay: (id: string) => void }).ebbPlay = id => play({ missionId: id }); // perf/playtest harness
 }
