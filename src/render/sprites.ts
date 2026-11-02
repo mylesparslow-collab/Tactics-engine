@@ -1,4 +1,4 @@
-// Unit figure drawing: frame/still art or a painted placeholder figure, plus shadow, rings, crown, HP bar, status pips.
+// Unit figure drawing: frame/still art or a painted placeholder figure, plus cast shadow, rings, crown, HP bar, status pips.
 import type { UnitDef } from '../engine/types';
 import type { Frame } from './anim';
 import { mix, rgba, shade } from './iso';
@@ -20,7 +20,7 @@ export interface SpriteOpts {
   time: number;
   frame: Frame | null;
   facing: 1 | -1;                 // 1 = lower-right (native), -1 = mirrored
-  flying?: boolean;               // hovering: drawn with a tighter ground shadow
+  flying?: boolean;               // hovering: its cast shadow detaches from the feet to show height
   squash: number;                 // vertical stretch factor (breathing / landing)
   tilt: number;                   // radians, death tilt
   lift: number;                   // px raised above the feet (hops)
@@ -79,19 +79,83 @@ function placeholderFigure(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
   ctx.fillStyle = o.dim ? '#cfcfd6' : '#fff7e6'; ctx.fillText(def.sprite.glyph, 0, -52);
 }
 
+// ---------- shadows ----------
+// The sprites are lit by a warm key from the upper left, so shadows fall back and to the right. A figure-local
+// point (fx, fy) (fy < 0 is up) lands on the ground at (fx - SHEAR * fy, FLAT * fy).
+const SHEAR = 0.62, FLAT = 0.3, SHADOW_ALPHA = 0.5;
+// Flyers are drawn as if seen from below the sun: the silhouette is squashed flat onto their own tile (so the
+// shadow stays tied to the tile they hold) and slides right with their hover height, so height reads at a glance.
+const FLY_FLAT = 0.36, FLY_SLIDE = 0.9, FLY_ALPHA = 0.4;
+
+/** Black silhouettes of sprite images, built once per image (cheap: one composite, no filters). */
+const silhouettes = new WeakMap<object, HTMLCanvasElement>();
+function silhouette(src: CanvasImageSource): HTMLCanvasElement | null {
+  const hit = silhouettes.get(src as object); if (hit) return hit;
+  const w = (src as HTMLImageElement).naturalWidth || (src as HTMLCanvasElement).width;
+  const h = (src as HTMLImageElement).naturalHeight || (src as HTMLCanvasElement).height;
+  if (!w || !h) return null;
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const x = c.getContext('2d')!;
+  x.drawImage(src, 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = '#000'; x.fillRect(0, 0, w, h);
+  silhouettes.set(src as object, c);
+  return c;
+}
+/** A soft round contact blob, pre-rendered once instead of building a gradient per unit per frame. */
+let blob: HTMLCanvasElement | null = null;
+function contactBlob() {
+  if (blob) return blob;
+  const c = document.createElement('canvas'); c.width = c.height = 64;
+  const x = c.getContext('2d')!, g = x.createRadialGradient(32, 32, 2, 32, 32, 32);
+  g.addColorStop(0, 'rgba(0,0,0,0.6)'); g.addColorStop(0.55, 'rgba(0,0,0,0.3)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+  return (blob = c);
+}
+
+/** Ground shadow for a unit. Call for every unit before drawing any figures, so shadows never darken bodies. */
+export function drawUnitShadow(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
+  if (o.alpha <= 0.02) return;
+  const { x, y } = o;
+  const f = o.frame;
+  // how high the figure is off its tile (flyers hover; hops and pop-ins lift briefly)
+  const fade = o.flying ? Math.max(0.6, 1 - o.lift / 90) : Math.max(0.4, 1 - o.lift / 60);
+  ctx.save();
+  ctx.globalAlpha = o.alpha * fade;
+  if (o.flying) {
+    // centre the squashed body (not the empty space under it) on the tile
+    ctx.translate(x + o.lift * FLY_SLIDE, y + 2);
+    ctx.scale(1, FLY_FLAT);
+    ctx.translate(0, figureHeight(o) * o.scale * 0.6);
+    ctx.globalAlpha = o.alpha * fade * FLY_ALPHA;
+  } else {
+    // ambient occlusion right under the feet
+    const r = (o.def.structure ? 30 : 24) * o.scale;
+    ctx.drawImage(contactBlob(), x - r, y - r * 0.5, r * 2, r);
+    ctx.translate(x, y);
+    ctx.transform(1, 0, -SHEAR, FLAT, 0, 0);
+    ctx.translate(0, -o.lift);
+    ctx.globalAlpha = o.alpha * fade * SHADOW_ALPHA;
+  }
+  if (f) {
+    const sil = silhouette(f.img.src);
+    if (sil) {
+      ctx.rotate(o.tilt);
+      ctx.scale(o.scale * o.facing / o.squash, o.scale * o.squash);
+      const kx = f.img.src instanceof HTMLImageElement ? 1 : (f.img.src as HTMLCanvasElement).width / f.img.naturalWidth;
+      ctx.drawImage(sil, f.sx * kx, f.sy * kx, f.sw * kx, f.sh * kx, -f.ax * f.scale, -f.ay * f.scale, f.sw * f.scale, f.sh * f.scale);
+    }
+  } else { // placeholder figure: a tall soft column
+    const fh = figureHeight(o);
+    ctx.fillStyle = '#000';
+    ctx.beginPath(); ctx.ellipse(0, -fh / 2, (o.def.structure ? 16 : 15) * o.scale, fh / 2 * o.scale, 0, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
 export function drawUnitSprite(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
   const { x, y, def } = o;
   const fh = figureHeight(o);
   ctx.save();
   ctx.globalAlpha = o.alpha;
-  // contact shadow (soft ellipse)
-  const sg = ctx.createRadialGradient(x, y, 2, x, y, 34);
-  sg.addColorStop(0, 'rgba(0,0,0,0.5)'); sg.addColorStop(0.6, 'rgba(0,0,0,0.25)'); sg.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = sg; ctx.save(); ctx.translate(x, y); ctx.scale(1, 0.5); ctx.beginPath(); ctx.arc(0, 0, 34 * o.scale, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-  if (o.flying) { // crisp shadow on the ground under the hovering figure; it shrinks as the figure bobs up
-    const k = Math.max(0.6, 1 - Math.max(0, o.lift - 18) / 40);
-    ctx.fillStyle = 'rgba(0,0,0,0.38)'; ctx.beginPath(); ctx.ellipse(x, y + 1, 19 * k * o.scale, 8.5 * k * o.scale, 0, 0, Math.PI * 2); ctx.fill();
-  }
   // team base ring
   ctx.lineWidth = 3; ctx.strokeStyle = rgba(o.teamColor, 0.95);
   ctx.beginPath(); ctx.ellipse(x, y, 30 * o.scale, 15 * o.scale, 0, 0, Math.PI * 2); ctx.stroke();

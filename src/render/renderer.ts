@@ -2,7 +2,7 @@ import type { Game } from '../engine/game';
 import { label } from '../engine/content';
 import type { GameEvent, Pos, Tile, Unit } from '../engine/types';
 import { GROUND, LV, TH, TW, View, key, mix, rgba } from './iso';
-import { drawUnitSprite, figureHeight } from './sprites';
+import { drawUnitShadow, drawUnitSprite, figureHeight, type SpriteOpts } from './sprites';
 import { backdropFor, diamondPath, glowSprite } from './terrain';
 import { BoardPainter, onTileArtReady, visualTiles, type AnimTile } from './board';
 import { clipDuration, clipHitTime, frameFor, unitArt, type AnimState } from './anim';
@@ -591,15 +591,19 @@ export class Renderer {
       if (sx1 > sx0 && sy1 > sy0) ctx.drawImage(b, sx0, sy0, sx1 - sx0, sy1 - sy0, this.boardX0 + sx0 / k, this.boardY0 + sy0 / k, (sx1 - sx0) / k, (sy1 - sy0) / k);
     }
     for (const t of this.animTiles) this.animateTile(t, now);
-    this.drawOverlays(now);
 
     const units = this.unitDrawables(now); this.cachedNow = now; this.pickList = null;
+    const opts = units.map(dr => this.unitOpts(dr, now));
+    // all shadows first, on the ground under the overlays, so no shadow ever darkens another unit's body
+    for (const o of opts) drawUnitShadow(ctx, o);
+    this.drawOverlays(now);
+
     const drops = g.drops.map(dp => ({ dp, d: this.view.depth(dp.x, dp.y) + 0.3 })).sort((a, b) => a.d - b.d); let di = 0;
-    for (const dr of units) {
+    units.forEach((dr, i) => {
       while (di < drops.length && drops[di].d <= dr.d) this.drawDrop(drops[di++].dp, now);
-      this.drawUnit(dr, now);
+      this.drawUnit(dr, opts[i], now);
       this.reoccludeAround(dr);
-    }
+    });
     while (di < drops.length) this.drawDrop(drops[di++].dp, now);
     // bolts
     for (const bt of this.bolts) {
@@ -887,7 +891,8 @@ export class Renderer {
     ctx.restore();
   }
 
-  private drawUnit(d: Extract<Drawable, { kind: 'unit' }>, now: number) {
+  /** Everything needed to draw one unit this frame (shared by the shadow pass and the figure pass). */
+  private unitOpts(d: Extract<Drawable, { kind: 'unit' }>, now: number): SpriteOpts {
     const g = this.game, u = d.u, ov = this.overlay;
     const def = g.def(u);
     let { sx, sy } = this.view.project(d.px, d.py, d.pz);
@@ -940,7 +945,7 @@ export class Renderer {
     const fl = (this.flashUntil.get(u.uid) ?? 0) - now;
     const frame = frameFor(art, state, el, !!def.structure);
     const hpNow = this.hpShown.get(u.uid) ?? u.hp;
-    drawUnitSprite(this.ctx, {
+    return {
       def, hero: !!def.hero, teamColor: g.teams[u.team].color, factionColor: def.faction ? g.content.factions?.[def.faction]?.color : undefined,
       x: sx, y: sy, alpha, dim,
       flash: Math.max(0, Math.min(1, fl / 220)),
@@ -951,9 +956,13 @@ export class Renderer {
       flying: !!def.flying, scale, time: now, frame, facing: d.facing, squash, tilt, lift, glow,
       lampGlow: def.structure ? Math.max(0.08, hpNow / def.stats.hp) : undefined,
       reduced: this.reduced,
-    });
-    const vip = u.tag ? this.vip.get(u.tag) : undefined;
-    if (vip && u.alive && alpha > 0.3) this.drawVipBadge(sx, sy - figureHeight({ frame, def }) * scale - lift - 30, vip, now);
+    };
+  }
+
+  private drawUnit(d: Extract<Drawable, { kind: 'unit' }>, o: SpriteOpts, now: number) {
+    drawUnitSprite(this.ctx, o);
+    const vip = d.u.tag ? this.vip.get(d.u.tag) : undefined;
+    if (vip && d.u.alive && o.alpha > 0.3) this.drawVipBadge(o.x, o.y - figureHeight(o) * o.scale - o.lift - 30, vip, now);
   }
 
   /** Mission-critical units wear a badge: a gold shield for "must survive", a red target for "must die". */
