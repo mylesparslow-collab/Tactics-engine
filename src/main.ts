@@ -8,6 +8,7 @@ import { installAudioUnlock, playBattleStart, preloadBanks, preloadBattleBanks }
 import { enterBattle, enterMenu, seedOf } from './audio/scenes';
 import { installUiSounds } from './audio/ui';
 import { soundButton } from './ui/soundpanel';
+import { buildSkirmish } from './engine/skirmish';
 
 installAudioUnlock();
 installUiSounds();
@@ -57,4 +58,8 @@ menu();
 if (import.meta.env.DEV) {
   (window as unknown as { brinewake: () => GameSession | null }).brinewake = () => session;
   (window as unknown as { ebbPlay: (id: string) => void }).ebbPlay = id => play({ missionId: id }); // perf/playtest harness
+  // Quick battle straight onto a map (map screenshots): ebbSkirmish('kelpmire', 'salt_concord', 'overcurrent').
+  (window as unknown as { ebbSkirmish: (map: string, a: string, b: string) => void }).ebbSkirmish = (map, a, b) => {
+    const m = buildSkirmish(content, map, [a, b]); content.missions[m.id] = m; play({ missionId: m.id });
+  };
 }

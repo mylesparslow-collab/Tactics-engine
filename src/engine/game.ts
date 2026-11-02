@@ -1,5 +1,6 @@
 import { CAST_LEVEL_EFFECTS } from './types';
 import type {
+  EffectFilter,
   AbilityDef, Affects, CardKind, EquipmentDef, SpellDef, Condition, Content, Effect, GameEvent, MapDef, MissionAction, MissionDef,
   Landing, Phase, Pos, StatKey, TeamState, TideDrop, Tile, Unit, UnitDef,
 } from './types';
@@ -191,8 +192,13 @@ export class Game {
   }
 
   /** Effect filters compare unit flags; absent filter matches everyone. */
-  passesFilter(u: Unit, f?: { flying?: boolean }): boolean {
-    return !f || f.flying === undefined || !!this.def(u).flying === f.flying;
+  passesFilter(u: Unit, f?: EffectFilter): boolean {
+    if (!f) return true;
+    const d = this.def(u);
+    if (f.flying !== undefined && !!d.flying !== f.flying) return false;
+    if (f.faction && !(d.faction !== undefined && f.faction.includes(d.faction))) return false;
+    if (f.notFaction && d.faction !== undefined && f.notFaction.includes(d.faction)) return false;
+    return true;
   }
 
   hasFlag(u: Unit, flag: 'preventsMove' | 'preventsAction') {
@@ -234,6 +240,7 @@ export class Game {
     if (!anyTurn && !this.canMove(u)) return out;
     const jump = this.stat(u, 'jump');
     const flying = !!this.def(u).flying;
+    const faction = this.def(u).faction;
     const frontier: { x: number; y: number; cost: number }[] = [{ x: u.x, y: u.y, cost: 0 }];
     while (frontier.length) {
       frontier.sort((a, b) => a.cost - b.cost);
@@ -249,7 +256,7 @@ export class Game {
         const occ = this.unitAt(nx, ny);
         if (occ && occ.team !== u.team) continue;
         if (occ && this.def(occ).structure) continue;
-        const cost = cur.cost + (flying ? 1 : terr.moveCost);
+        const cost = cur.cost + (flying ? 1 : (faction !== undefined ? terr.factionMoveCost?.[faction] : undefined) ?? terr.moveCost);
         if (cost > apBudget) continue;
         const k = key(nx, ny);
         if (cost < (out.get(k)?.cost ?? Infinity)) {
@@ -289,15 +296,21 @@ export class Game {
   /** Max range including the high-ground bonus (+1 when 2+ levels above the target tile). */
   private inRange(a: AbilityDef, from: Pos, to: Pos) {
     const d = manhattan(from, to);
-    const bonus = a.range.max > 1 && this.tiles[from.y][from.x].height - this.tiles[to.y][to.x].height >= 2 ? 1 : 0;
-    return d >= a.range.min && d <= a.range.max + bonus;
+    return d >= a.range.min && d <= a.range.max + this.rangeBonusAt(a, from, to);
+  }
+
+  /** Extra reach for a ranged ability fired from `from` at `to`: +1 from 2+ levels of high ground, plus the tile's own `rangeBonus`. */
+  rangeBonusAt(a: AbilityDef, from: Pos, to?: Pos): number {
+    if (a.range.max <= 1) return 0;
+    const high = to && this.tiles[from.y][from.x].height - this.tiles[to.y][to.x].height >= 2 ? 1 : 0;
+    return high + Math.max(0, this.terrainAt(from.x, from.y).rangeBonus ?? 0);
   }
 
   /** Every tile an ability can reach from the unit (its range zone), whether or not anything is there to hit. */
   rangeTiles(u: Unit, abilityId: string): Pos[] {
     const a = this.ability(abilityId); if (!a || a.passive) return [];
     if (a.target === 'self') return [{ x: u.x, y: u.y }];
-    const out: Pos[] = [], r = a.range.max + 1;
+    const out: Pos[] = [], r = a.range.max + 1 + Math.max(0, this.terrainAt(u.x, u.y).rangeBonus ?? 0);
     for (let y = u.y - r; y <= u.y + r; y++) for (let x = u.x - r; x <= u.x + r; x++)
       if (this.inBounds(x, y) && this.inRange(a, u, { x, y })) out.push({ x, y });
     return out;
@@ -308,7 +321,7 @@ export class Game {
     const a = this.ability(abilityId);
     const out: Pos[] = [];
     if (a.target === 'self') return [{ x: from.x, y: from.y }];
-    const r = a.range.max + 1;
+    const r = a.range.max + 1 + Math.max(0, this.terrainAt(from.x, from.y).rangeBonus ?? 0);
     for (let y = from.y - r; y <= from.y + r; y++) for (let x = from.x - r; x <= from.x + r; x++) {
       if (!this.inBounds(x, y) || !this.inRange(a, from, { x, y })) continue;
       const occ = this.unitAt(x, y);
@@ -679,6 +692,10 @@ export class Game {
       // Drying: a dry unit off wet ground loses HP (not on the turn it lands). Can kill.
       const dry = landed.has(u.uid) ? 0 : this.dryingLoss(u);
       if (dry > 0) { this.damage(u, dry, 'drying'); if (!u.alive) continue; }
+      // Terrain under the unit's feet (flyers skip it, like onEnter; not on the turn a unit lands).
+      if (!landed.has(u.uid) && !this.def(u).flying)
+        for (const e of this.terrainAt(u.x, u.y).onTurnStart ?? []) if (u.alive) this.applyEffect(e, u);
+      if (!u.alive) continue;
       for (const k of Object.keys(u.cooldowns)) u.cooldowns[k] = Math.max(0, u.cooldowns[k] - 1);
       for (const s of [...u.statuses]) for (const e of this.content.statuses[s.id]?.onTurnStart ?? [])
         if (u.alive && (e.type === 'damage' || e.type === 'heal')) this.applyEffect({ ...e, amount: e.amount * (s.stacks ?? 1) }, u);
@@ -838,6 +855,7 @@ export class Game {
   }
 
   private setTerrain(x: number, y: number, terrain: string) {
+    if (this.content.terrain[this.tiles[y][x].terrain]?.void) return; // chasm stays empty
     this.tiles[y][x].terrain = terrain;
     this.emit({ kind: 'terrain', x, y, terrain });
   }
@@ -905,7 +923,7 @@ export class Game {
         for (const u of this.units) if (u.alive && u.tag === a.tag) this.applyEffect({ type: 'status', status: a.status, duration: a.duration }, u);
         break;
       case 'spawn': {
-        let p: Pos | undefined = !this.unitAt(a.x, a.y) ? { x: a.x, y: a.y } : undefined;
+        let p: Pos | undefined = !this.unitAt(a.x, a.y) && !this.terrainAt(a.x, a.y).impassable ? { x: a.x, y: a.y } : undefined;
         if (!p) p = this.nearestFree({ x: a.x, y: a.y });
         if (!p) break;
         const u = this.spawn(a.unit, a.team, p.x, p.y, a.tag);

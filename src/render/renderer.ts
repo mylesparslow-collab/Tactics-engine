@@ -148,13 +148,19 @@ export class Renderer {
 
   private bounds() {
     const v = this.view;
-    let maxL = 0;
-    for (const row of this.vt) for (const t of row) maxL = Math.max(maxL, t.height);
-    const minX = -(v.rh - 1) * TW / 2 - TW / 2, maxX = (v.rw - 1) * TW / 2 + TW / 2;
-    const minY = -TH / 2 - maxL * LV - 120, maxY = (v.rw + v.rh - 2) * TH / 2 + TH / 2 + GROUND + 10;
-    return { minX, maxX, minY, maxY };
+    const g = this.game;
+    let maxL = 0, minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) {
+      if (this.isVoid(x, y)) continue; // chasm cells take no room
+      const t = this.vt[y][x]; maxL = Math.max(maxL, t.height);
+      const p = v.project(x, y, 0);
+      minX = Math.min(minX, p.sx); maxX = Math.max(maxX, p.sx); minY = Math.min(minY, p.sy); maxY = Math.max(maxY, p.sy);
+    }
+    if (minX === Infinity) { minX = maxX = minY = maxY = 0; }
+    return { minX: minX - TW / 2, maxX: maxX + TW / 2, minY: minY - TH / 2 - maxL * LV - 120, maxY: maxY + TH / 2 + GROUND + 10 };
   }
 
+  private isVoid(x: number, y: number) { return !!(this.game.content.terrain[this.game.tiles[y]?.[x]?.terrain] as { void?: boolean } | undefined)?.void; }
   private fit() {
     const { minX, maxX, minY, maxY } = this.bounds();
     const bw = maxX - minX, bh = maxY - minY;
@@ -520,7 +526,7 @@ export class Renderer {
     const g = this.game, v = this.view, key = `${g.width}x${g.height}r${v.rot}`;
     if (key !== this.tileListKey) {
       const out: Extract<Drawable, { kind: 'tile' }>[] = [];
-      for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) out.push({ d: v.depth(x, y), kind: 'tile', x, y });
+      for (let y = 0; y < g.height; y++) for (let x = 0; x < g.width; x++) if (!this.isVoid(x, y)) out.push({ d: v.depth(x, y), kind: 'tile', x, y });
       out.sort((a, b) => a.d - b.d); this.tileList = out; this.tileListKey = key;
     }
     return this.tileList;
@@ -809,7 +815,7 @@ export class Renderer {
     const pulse = this.reduced ? 0.8 : 0.72 + 0.18 * Math.sin(now / 300);
     const glow = (k: string, color: string, strength: number) => {
       const [x, y] = k.split(',').map(Number);
-      const t = this.vt[y]?.[x]; if (!t) return;
+      const t = this.vt[y]?.[x]; if (!t || this.isVoid(x, y)) return;
       const { sx, sy } = this.view.project(x, y, t.height);
       const s = glowSprite(color, strength);
       ctx.drawImage(s, sx - s.width / 4, sy - s.height / 4, s.width / 2, s.height / 2);
@@ -822,7 +828,7 @@ export class Renderer {
     for (const k of ov.targets) glow(k, '#ff6a3d', pulse + 0.1);
     for (const k of ov.area) glow(k, '#ffe14d', 0.9);
     ov.path.forEach((p, pi) => {
-      const t = this.vt[p.y]?.[p.x]; if (!t) return;
+      const t = this.vt[p.y]?.[p.x]; if (!t || this.isVoid(p.x, p.y)) return;
       const { sx, sy } = this.view.project(p.x, p.y, t.height);
       if (pi > 0) {
         const q = ov.path[pi - 1], tq = this.vt[q.y][q.x], a = this.view.project(q.x, q.y, tq.height);
@@ -837,7 +843,7 @@ export class Renderer {
       }
     });
     const outline = (p: Pos, color: string, lw: number) => {
-      const t = this.vt[p.y]?.[p.x]; if (!t) return;
+      const t = this.vt[p.y]?.[p.x]; if (!t || this.isVoid(p.x, p.y)) return;
       const { sx, sy } = this.view.project(p.x, p.y, t.height);
       ctx.save(); ctx.shadowColor = color; ctx.shadowBlur = 10; ctx.strokeStyle = color; ctx.lineWidth = lw; diamondPath(ctx, sx, sy, 2); ctx.stroke(); ctx.restore();
     };
@@ -856,7 +862,7 @@ export class Renderer {
     const list: { x: number; y: number; d: number }[] = []; let occludes = false;
     for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) {
       const x = ux + dx, y = uy + dy;
-      if (!g.inBounds(x, y) || (dx === 0 && dy === 0)) continue;
+      if (!g.inBounds(x, y) || (dx === 0 && dy === 0) || this.isVoid(x, y)) continue;
       const t = this.vt[y][x], dd = v.depth(x, y);
       if (dd <= depth) continue;
       const ts = v.project(x, y, t.height), th = t.height * LV + GROUND;

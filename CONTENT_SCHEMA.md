@@ -42,7 +42,7 @@ Effect types:
 - `{type:"heal", amount, target?: "caster"}` — `target:"caster"` heals the caster (life drain), once per unit hit
 - `{type:"sacrifice"}` — kills the caster (no revive); put it last
 - `{type:"status", status, duration, target?: "caster"}` — `target:"caster"` applies it to the caster once per use (not per unit hit); not allowed in spells
-- Any effect may carry `filter: {flying: true|false}` (only matching units are affected; also on `aura`) and `ifTargetStatus: "<statusId>"` (only targets that had that status when the use began — a snapshot, so an earlier effect in the same use cannot enable it).
+- Any effect may carry `filter: {flying?, faction?: [ids], notFaction?: [ids]}` (only matching units are affected; also on `aura`) and `ifTargetStatus: "<statusId>"` (only targets that had that status when the use began — a snapshot, so an earlier effect in the same use cannot enable it).
 - An ability with `target:"empty"` and an `area` hits the units in that area (e.g. `line` + `affects:"enemies"`); cast-level effects such as `teleport` then run once.
 - Passive `aura` effects may carry `keepsWet: true`: allies inside count as wet for `dries`.
 - `{type:"push", distance, collisionDamage?}` — away from the caster
@@ -79,6 +79,17 @@ stacks?: bool, maxStacks?, wet?: bool (carrier does not dry out)` — stacking s
 
 ## content/terrain.json — `{ [terrainId]: TerrainDef }`
 `name, moveCost, defense, color (placeholder tile colour), impassable?, onEnter?: Effect, wet?: bool` — `wet` tiles (and always `brine_pool`, `living_reef`) stop `dries` units losing HP.
+Extra optional fields:
+- `void: true` — a chasm: empty space. The renderer draws no tile at all (neighbours show their cliff faces down into it), and nothing can stand, deploy, land, spawn or be pushed there. Always also set `impassable: true`. Flyers may cross it but not end on it.
+- `description` — one line shown when hovering the tile.
+- `onTurnStart: Effect[]` — applied to each unit that starts its turn standing here (after drying, before status effects). Only `damage`, `heal` and `status` are allowed; each effect's `filter` is respected; heals cap at max HP. Flyers are skipped (like `onEnter`), as are units that landed this turn.
+- `rangeBonus: number` — added to the max range of abilities with `range.max > 1` used from this tile (stacks with the +1 high-ground bonus). Melee is unaffected.
+- `factionMoveCost: { [factionId]: number }` — move cost (>= 1) replacing `moveCost` for non-flying units whose `UnitDef.faction` matches. Faction ids must exist in `factions` when it is defined.
+- `underlay: terrainId` — renderer hint: terrain drawn beneath this tile's art.
+- Negative `defense` is allowed (the tile makes its occupant easier to hurt).
+- `onEnter` effects honour `filter` too, e.g. `{ "filter": { "notFaction": ["reef_ascendant"] } }`.
+
+`EffectFilter` (the `filter` on damage/heal/status/aura effects): `flying?: bool`, `faction?: string[]` (only units whose faction is listed), `notFaction?: string[]` (units whose faction is not listed; units with no faction always pass). All present keys must match. Faction ids must exist in `factions` when it is defined.
 
 ## content/maps/<id>.json
 `id, name, description, legend {char: terrainId}, tiles: string[] (rows), heights: string[] (digit rows, 0-9),

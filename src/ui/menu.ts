@@ -194,6 +194,7 @@ function mapPreview(content: Content, mapId: string) {
   let s = '';
   for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
     const ch = m.tiles[y][x], terr = content.terrain[m.legend[ch]];
+    if ((terr as { void?: boolean } | undefined)?.void) continue;
     const hgt = Number(m.heights?.[y]?.[x] ?? 0) || 0;
     const cx = (x - y) * tw / 2 + H * tw / 2, cy = (x + y) * th / 2 - hgt * 2 + 8;
     const col = terr?.color ?? '#888';

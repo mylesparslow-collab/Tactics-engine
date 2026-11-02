@@ -688,7 +688,7 @@ export class GameSession {
     const drop = g.drops.find(d => d.x === hv.x && d.y === hv.y);
     if (drop) this.hoverBox.append(h('div', { class: 'tileinfo dropinfo' }, h('b', null, `${drop.amount} ${this.L('essence')}`), h('span', null, 'Step here to collect')));
     this.hoverBox.append(h('div', { class: 'tileinfo' },
-      h('b', null, terr?.name ?? t.terrain), h('span', null, `Height ${t.height}`), h('span', null, `Move ${terr?.moveCost}`), terr?.defense ? h('span', null, `DEF +${terr.defense}`) : null,
+      h('b', null, terr?.name ?? t.terrain), h('span', null, `Height ${t.height}`), h('span', null, `Move ${terr?.moveCost}`), terr?.defense ? h('span', null, `DEF ${terr.defense > 0 ? '+' : ''}${terr.defense}`) : null, terr?.description ? h('span', { class: 'terr-desc' }, terr.description) : null,
       g.map.wells?.some(w => w.x === hv.x && w.y === hv.y) ? h('span', { class: 'well' }, `${this.L('essence')} well`) : null));
   }
 }

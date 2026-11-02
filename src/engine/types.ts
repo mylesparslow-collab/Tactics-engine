@@ -4,7 +4,8 @@ export type StatBlock = { hp: number; ap: number; attack: number; defense: numbe
 export type StatKey = keyof StatBlock;
 
 /** Only units whose flags match are affected. Currently just `flying`. */
-export interface EffectFilter { flying?: boolean }
+/** Restricts who an effect touches. All present keys must match; `faction` / `notFaction` compare UnitDef.faction. */
+export interface EffectFilter { flying?: boolean; faction?: string[]; notFaction?: string[] }
 
 /** Any effect may also carry `ifTargetStatus`: it only applies to targets that had that status when the use began. */
 export type Effect = EffectBody & { ifTargetStatus?: string };
@@ -102,9 +103,20 @@ export interface TerrainDef {
   defense: number;
   color: string;
   impassable?: boolean;
+  /** Empty space: nothing is drawn, nothing can stand, land, spawn or be pushed here (flyers may cross). Implies impassable. */
+  void?: boolean;
   onEnter?: Effect;
   /** Units standing here do not dry out (see UnitDef.dries). `brine_pool` and `living_reef` are always wet. */
   wet?: boolean;
+  description?: string;
+  /** Applied to each unit that starts its turn standing here (damage / heal / status only; filters respected; flyers skip). */
+  onTurnStart?: Effect[];
+  /** Added to the max range of ranged abilities (range.max > 1) used by a unit standing here. */
+  rangeBonus?: number;
+  /** Per-faction move cost override for non-flyers, e.g. { "reef_ascendant": 1 }. */
+  factionMoveCost?: Record<string, number>;
+  /** Terrain drawn beneath this tile's art (renderer hint). */
+  underlay?: string;
 }
 
 export interface UnitDef {
