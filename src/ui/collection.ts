@@ -7,7 +7,7 @@ import { UNLOCK_ALL, allRelics, markSeen, ownedRelics, relicFaction, relicSource
 import { label } from '../engine/content';
 import { assetUrl } from '../render/anim';
 import { mix, shade } from '../render/iso';
-import { abilityLines, buildCard, cardColors } from './cards';
+import { abilityLines, buildCard, cardColors, figureImg } from './cards';
 import { crestSvg, glyph, illuminated } from './art';
 import { clear, h } from './dom';
 import { effectText, traitLine } from './text';
@@ -40,7 +40,7 @@ function sealedCard(c: Content, id: string, size: 'hand' | 'full'): HTMLElement 
   const { color, accent } = cardColors(c, id);
   const art = h('div', { class: 'rc-art painted sil', style: `--fc:${shade(color, 0.5)};--fcd:${shade(color, 0.2)};--fcl:${shade(color, 0.8)};--fa:${mix(accent, color, 0.3)}` });
   const still = c.units[id] ? assetUrl(`sprites/${id}_still.png`) : undefined;
-  if (still) art.append(h('div', { class: 'rc-ground' }), h('img', { class: 'figure', src: still, alt: '', draggable: 'false' }));
+  if (still) art.append(h('div', { class: 'rc-ground' }), figureImg(still));
   else art.append(svgSpan(crestSvg(relicFaction(c, id), shade(color, 0.35)), 'sil-crest'));
   card.querySelector('.rc-art')?.replaceWith(art);
   card.querySelectorAll('.rc-stat b, .rc-rail b, .rc-cost span').forEach(b => { b.textContent = '?'; });
