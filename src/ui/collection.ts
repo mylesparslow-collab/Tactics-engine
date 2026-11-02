@@ -3,14 +3,14 @@
 // where they are earned.
 import './collection.css';
 import type { Content } from '../engine/types';
-import { allRelics, markSeen, ownedRelics, relicFaction, relicSources, relicType, unseenRelics, type RelicType } from '../engine/collection';
+import { UNLOCK_ALL, allRelics, markSeen, ownedRelics, relicFaction, relicSources, relicType, unseenRelics, type RelicType } from '../engine/collection';
 import { label } from '../engine/content';
 import { assetUrl } from '../render/anim';
 import { mix, shade } from '../render/iso';
-import { abilityLines, buildCard, cardColors } from './cards';
+import { abilityLines, buildCard, cardColors, figureImg } from './cards';
 import { crestSvg, glyph } from './art';
 import { clear, h } from './dom';
-import { effectText } from './text';
+import { effectText, traitLine } from './text';
 import { ProvingGround } from './proving';
 
 interface TemperRank { xpRequired: number; statMods?: Record<string, number>; addAbility?: string; label: string }
@@ -40,7 +40,7 @@ function sealedCard(c: Content, id: string, size: 'hand' | 'full'): HTMLElement 
   const { color, accent } = cardColors(c, id);
   const art = h('div', { class: 'rc-art painted sil', style: `--fc:${shade(color, 0.5)};--fcd:${shade(color, 0.2)};--fcl:${shade(color, 0.8)};--fa:${mix(accent, color, 0.3)}` });
   const still = c.units[id] ? assetUrl(`sprites/${id}_still.png`) : undefined;
-  if (still) art.append(h('div', { class: 'rc-ground' }), h('img', { class: 'figure', src: still, alt: '', draggable: 'false' }));
+  if (still) art.append(h('div', { class: 'rc-ground' }), figureImg(still));
   else art.append(svgSpan(crestSvg(relicFaction(c, id), shade(color, 0.35)), 'sil-crest'));
   card.querySelector('.rc-art')?.replaceWith(art);
   card.querySelectorAll('.rc-stat b, .rc-rail b, .rc-cost span').forEach(b => { b.textContent = '?'; });
@@ -61,7 +61,7 @@ export function showCollection(host: HTMLElement, content: Content, onBack: () =
   const c = content;
   const ids = allRelics(c);
   const owned = ownedRelics(c);
-  const unseen = unseenRelics(c, owned);
+  const unseen = UNLOCK_ALL ? new Set<string>() : unseenRelics(c, owned); // no New badges while everything is open
   const fids = Object.keys(c.factions ?? {}).filter(f => ids.some(i => relicFaction(c, i) === f));
   if (memo.faction !== 'all' && !fids.includes(memo.faction)) memo.faction = 'all';
   const sorted = [...ids].sort((a, b) =>
@@ -196,6 +196,7 @@ function detailBody(c: Content, id: string, r: RelicDef | undefined): HTMLElemen
     if (ud.role && !['hero', 'champion'].includes(ud.role.toLowerCase())) extra.push(ud.role);
     if (ud.resist && Object.keys(ud.resist).length) extra.push('Resist ' + Object.entries(ud.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', '));
     if (ud.revive) extra.push(`Rises once on death at ${Math.round(ud.revive.hpFraction * 100)}% health`);
+    if (traitLine(ud)) extra.push(traitLine(ud));
     if (extra.length) out.push(h('p', { class: 'cl-tags' }, extra.join(' · ')));
     out.push(h('div', { class: 'cl-sec' }, h('h3', null, 'Abilities'), h('div', { class: 'cl-abl' }, ...abilityLines(c, ud.abilities))));
     if (ud.description) out.push(h('p', { class: 'cl-flavor' }, ud.description));

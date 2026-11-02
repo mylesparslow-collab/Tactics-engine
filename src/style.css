@@ -552,3 +552,12 @@ p { margin: 0; }
 #turnflash.hint { top: auto; bottom: 150px; }
 .tf-hint { padding: 8px 20px; border-radius: 3px; background: var(--glass); box-shadow: 0 0 0 1px var(--line), 0 6px 16px #000a; font-family: var(--font-ui); font-size: 15px; font-weight: 600; letter-spacing: .04em; color: var(--gold-hi); }
 @media (max-height: 520px) { #turnflash.hint { bottom: 70px; } }
+
+/* Resting cards (cooldown): dimmed rune tile with a turns-left badge */
+.slot.cd { cursor: default; margin-left: 0; }
+.slot.cd:first-of-type { margin-left: 0; }
+.slot.cd .rtile { filter: grayscale(1) brightness(.42) contrast(.9); outline: 1px dashed #56d2c866; outline-offset: 2px; }
+.slot.cd:hover { transform: translateY(-8px); }
+.cd-badge { position: absolute; z-index: 4; left: 50%; top: 42%; transform: translate(-50%, -50%); min-width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-ui); font-weight: 700; font-size: 17px; color: #eafffd; background: #0a2c30ee; border: 1.5px solid #56d2c8; box-shadow: 0 0 10px #56d2c855, 0 2px 6px #000c; pointer-events: none; }
+.tileinfo.dropinfo b { color: #8fe6ff; }
+@media (max-width: 760px) { .cd-badge { min-width: 24px; height: 24px; font-size: 14px; } }

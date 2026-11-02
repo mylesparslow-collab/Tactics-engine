@@ -10,8 +10,11 @@ import { clear, h } from './dom';
 import { artNode, buildCard } from './cards';
 import { abilityGlyph, crestSvg, glyph, installArt, teamFaction } from './art';
 import { stopBackdrop } from './menu';
-import { isMuted, playCard, playCue, playEnd, playTurnBell, setMuted } from '../audio/sfx';
-import { effectText } from './text';
+import { isMuted, playCard, playCardPlay, playCue, playEnd, playTurnBell, playTurnEnd, setMuted } from '../audio/sfx';
+import { onSettingsChange } from '../audio/engine';
+import { playError } from '../audio/ui';
+import { openSoundPanel } from './soundpanel';
+import { effectText, traitLine } from './text';
 
 export interface SessionOpts {
   content: Content;
@@ -64,6 +67,7 @@ export class GameSession {
     this.renderer.start();
     this.renderer.onCue = c => playCue(c, this.game);
     this.game.on(e => this.onEvent(e));
+    this.cleanup.push(onSettingsChange(() => this.renderTop()));
     let roRaf = 0; // coalesce bursts of resize events into one pass per frame
     const ro = new ResizeObserver(() => { if (roRaf) return; roRaf = requestAnimationFrame(() => { roRaf = 0; this.renderer.resize(); this.layoutHand(); }); });
     ro.observe(this.canvas.parentElement!);
@@ -209,7 +213,13 @@ export class GameSession {
       case 'spell': this.logLine(`${g.teams[e.team].name} casts ${g.content.spells[e.spell]?.name ?? e.spell}.`, 'ability'); break;
       case 'equip': this.logLine(`${this.uname(e.uid)} is equipped with ${g.content.equipment[e.equipment]?.name ?? e.equipment}.`, 'status'); break;
       case 'deploy': this.logLine(`${this.uname(e.uid)} enters the field.`, 'move'); break;
+      case 'skyfall': this.logLine(`${g.content.units[e.defId]?.name ?? e.defId} is falling toward ${e.x},${e.y}.`, 'move'); break;
+      case 'land': this.logLine(`${this.uname(e.uid)} crashes down at ${e.to.x},${e.to.y}.`, 'move'); break;
       case 'essence': this.logLine(`${g.teams[e.team].name} ${e.amount >= 0 ? 'gains' : 'loses'} ${Math.abs(e.amount)} ${this.L('essence')}.`, 'sys'); break;
+      case 'cooldown': if (g.teams[e.team].controller === 'human') this.logLine(`${g.cardName(e.card)} rests for ${e.turns} turn${e.turns === 1 ? '' : 's'}.`, 'sys'); break;
+      case 'ready': if (g.teams[e.team].controller === 'human') this.logLine(`${g.cardName(e.card)} returns to ${e.toHand ? 'your hand' : 'the top of your draw pile'}.`, 'sys'); break;
+      case 'drop': this.logLine(`${e.amount} ${this.L('essence')} spills on the seabed.`, 'sys'); break;
+      case 'pickup': this.logLine(`${this.uname(e.uid)} collects ${e.amount} ${this.L('essence')}.`, 'sys'); break;
       case 'terrain': this.logLine(`The ground at ${e.x},${e.y} becomes ${g.content.terrain[e.terrain]?.name ?? e.terrain}.`, 'sys'); break;
       case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); playTurnBell(g.teams[e.team].controller === 'human'); break;
       case 'message': this.logLine(`${e.speaker ? e.speaker + ': ' : ''}${e.text}`, 'msg'); this.bannerQueue.push({ text: e.text, speaker: e.speaker }); this.pumpBanner(); break;
@@ -317,6 +327,7 @@ export class GameSession {
     if (!this.canAct()) return;
     this.selected = null; this.mode = { kind: 'idle' };
     this.hidePreview();
+    playTurnEnd();
     this.g.endTurn();
     this.refresh();
     this.scheduleAi();
@@ -363,7 +374,7 @@ export class GameSession {
     const mine = u && u.team === g.current;
     if (p && this.mode.kind === 'card') {
       const m = this.mode;
-      if (g.cardTargets(g.current, m.index).some(t => t.x === p.x && t.y === p.y)) g.playCard(g.current, m.index, p.x, p.y);
+      if (g.cardTargets(g.current, m.index).some(t => t.x === p.x && t.y === p.y)) { if (g.playCard(g.current, m.index, p.x, p.y)) playCardPlay(); } else playError();
       this.mode = { kind: 'idle' };
       this.refresh(); return;
     }
@@ -424,7 +435,7 @@ export class GameSession {
 
   private updateOverlay() {
     const g = this.g, ov = this.renderer.overlay;
-    ov.reach.clear(); ov.range.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.path = []; ov.pathCost = null; ov.previews = new Map();
+    ov.reach.clear(); ov.range.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.skyfall.clear(); ov.path = []; ov.pathCost = null; ov.previews = new Map();
     ov.hover = this.hover;
     const u = this.sel();
     ov.selected = u ? { x: u.x, y: u.y } : null;
@@ -433,7 +444,8 @@ export class GameSession {
     if (this.mode.kind === 'card') {
       const id = g.teams[g.current].hand[this.mode.index];
       const targets = g.cardTargets(g.current, this.mode.index);
-      for (const t of targets) ov.deploy.add(key(t.x, t.y));
+      const instant = new Set(g.deployTiles(g.current).map(p => key(p.x, p.y)));
+      for (const t of targets) (g.content.units[id]?.skyfall && !instant.has(key(t.x, t.y)) ? ov.skyfall : ov.deploy).add(key(t.x, t.y));
       const sp = g.content.spells[id];
       if (sp && hv && targets.some(t => t.x === hv.x && t.y === hv.y)) {
         const size = sp.area?.size ?? 0;
@@ -499,7 +511,7 @@ export class GameSession {
         h('div', { class: 'rm-round' }, 'Round ', h('b', { class: 'num' }, String(g.round))),
         h('div', { class: 'rm-turn' }, myTurn ? 'Your turn' : this.aiRunning ? `${cur.name.replace(/^The /, '')} acting` : `${cur.name.replace(/^The /, '')}`)),
       h('div', { class: 'hud-r' }, ...others.map(i => this.teamGauge(i, 'right')), endBtn,
-        h('button', { class: 'iconbtn menubtn soundbtn', title: isMuted() ? 'Sound off (M)' : 'Sound on (M)', onclick: () => { setMuted(!isMuted()); this.renderTop(); } }, glyph(isMuted() ? 'mute' : 'sound')),
+        h('button', { class: 'iconbtn menubtn soundbtn', title: isMuted() ? 'Sound off (M)' : 'Sound settings (M mutes)', 'data-snd': 'open', onclick: (e: Event) => openSoundPanel(e.currentTarget as HTMLElement) }, glyph(isMuted() ? 'mute' : 'sound')),
         h('button', { class: 'iconbtn menubtn', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, glyph('gear'))));
   }
 
@@ -538,12 +550,21 @@ export class GameSession {
       }, card, h('button', { class: 'info', title: 'Details', onclick: (e: Event) => { e.stopPropagation(); if (this.previewId === id) this.hidePreview(); else this.showPreview(id, slot); } }, 'i'));
       row.append(slot);
     });
-    if (!team.hand.length) row.append(h('div', { class: 'empty' }, team.deck.length ? 'Your hand is empty. You draw a card each turn.' : 'Every relic is on the field.'));
+    for (const cd of team.cooldown) { // resting cards: dimmed, not playable, badge = turns left
+      const kind = g.cardKind(cd.card) ?? 'unit', tip = `Returns in ${cd.turns} turn${cd.turns === 1 ? '' : 's'}`;
+      const slot = h('div', { class: `slot cd ${kind}`, title: tip,
+        onclick: () => { if (this.touch && this.previewId !== cd.card) this.showPreview(cd.card, slot); else this.hidePreview(); },
+        onmouseenter: () => { if (!this.touch) this.showPreview(cd.card, slot); }, onmouseleave: () => { if (!this.touch) this.hidePreview(); },
+      }, this.runeTile(cd.card, g.cardCost(cd.card)), h('span', { class: 'cd-badge', title: tip }, String(cd.turns)));
+      row.append(slot);
+    }
+    if (!team.hand.length && !team.cooldown.length) row.append(h('div', { class: 'empty' }, team.deck.length ? 'Your hand is empty. You draw 2 cards each turn.' : 'Every relic is on the field.'));
+    else if (!team.hand.length) row.prepend(h('div', { class: 'empty' }, 'Hand empty. You draw 2 cards each turn; resting relics return soon.'));
     const hintFor = () => {
       if (this.mode.kind === 'ability') { const a = g.ability(this.mode.ability); return `${a?.name ?? ''}: choose a target \u00B7 Esc cancels`; }
       if (this.mode.kind !== 'card') return t === g.current && this.canActSoft() ? 'Play a relic, or select a unit on the board' : 'Waiting for the enemy';
       const k = g.cardKind(team.hand[this.mode.index] ?? '');
-      return k === 'spell' ? 'Choose a target to cast \u00B7 Esc cancels' : k === 'equipment' ? 'Choose a friendly unit to equip \u00B7 Esc cancels' : 'Choose a glowing tile to deploy \u00B7 Esc cancels';
+      return k === 'spell' ? 'Choose a target to cast \u00B7 Esc cancels' : k === 'equipment' ? 'Choose a friendly unit to equip \u00B7 Esc cancels' : g.content.units[team.hand[this.mode.index] ?? '']?.skyfall ? 'Green: deploy now \u00B7 Violet: drops in next turn \u00B7 Esc cancels' : 'Choose a glowing tile to deploy \u00B7 Esc cancels';
     };
     const tabs = h('div', { class: 'htabs' }, ...([['all', 'All'], ['unit', 'Champions'], ['spell', 'Spells'], ['equipment', 'Gear']] as const).map(([k, n]) =>
       h('button', { class: 'htab' + (this.handFilter === k ? ' on' : ''), disabled: !counts[k], onclick: (e: Event) => { e.stopPropagation(); this.handFilter = k; if (!this.handOpen) this.handOpen = true; this.renderHand(); this.renderer.resize(); } },
@@ -601,6 +622,7 @@ export class GameSession {
           const sd = g.content.statuses[s.id];
           return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
         })) : null,
+        traitLine(d) ? h('div', { class: 'line' }, traitLine(d)) : null,
         g.equipmentOf(u) ? h('div', { class: 'line equip', title: g.equipmentOf(u)!.description ?? '' }, h('b', null, g.equipmentOf(u)!.name)) : null));
     return box;
   }
@@ -663,8 +685,10 @@ export class GameSession {
       for (const [uid, p] of pv) box.append(h('div', { class: 'pv-row' }, h('span', null, this.uname(uid)), h('b', { style: `color:${p.color}` }, p.text)));
       this.hoverBox.append(box);
     }
+    const drop = g.drops.find(d => d.x === hv.x && d.y === hv.y);
+    if (drop) this.hoverBox.append(h('div', { class: 'tileinfo dropinfo' }, h('b', null, `${drop.amount} ${this.L('essence')}`), h('span', null, 'Step here to collect')));
     this.hoverBox.append(h('div', { class: 'tileinfo' },
-      h('b', null, terr?.name ?? t.terrain), h('span', null, `Height ${t.height}`), h('span', null, `Move ${terr?.moveCost}`), terr?.defense ? h('span', null, `DEF +${terr.defense}`) : null,
+      h('b', null, terr?.name ?? t.terrain), h('span', null, `Height ${t.height}`), h('span', null, `Move ${terr?.moveCost}`), terr?.defense ? h('span', null, `DEF ${terr.defense > 0 ? '+' : ''}${terr.defense}`) : null, terr?.description ? h('span', { class: 'terr-desc' }, terr.description) : null,
       g.map.wells?.some(w => w.x === hv.x && w.y === hv.y) ? h('span', { class: 'well' }, `${this.L('essence')} well`) : null));
   }
 }

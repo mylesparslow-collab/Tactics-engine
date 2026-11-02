@@ -8506,5 +8506,2785 @@
   },
   "affects": "enemies",
   "cooldown": 3
+ },
+ "oc_shoal_nip": {
+  "name": "Nip",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_shoal_swarm": {
+  "name": "Swarm",
+  "description": "Passive: +1 attack for each adjacent ally, up to +2.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 0,
+    "affects": "allies",
+    "perAdjacentAlly": true,
+    "maxStacks": 2,
+    "statMods": {
+     "attack": 1
+    }
+   }
+  ],
+  "requires": [
+   "passive",
+   "swarm"
+  ]
+ },
+ "oc_gulper_bite": {
+  "name": "Gulp",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_engulf": {
+  "name": "Engulf",
+  "description": "Deal attack+2 physical damage to an adjacent enemy and Stun it for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "stunned",
+    "duration": 1
+   }
+  ]
+ },
+ "oc_louse_rasp": {
+  "name": "Rasp",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_latch": {
+  "name": "Latch",
+  "description": "Deal attack-2 physical damage to an adjacent enemy and apply Latched for 3 turns (lose 2 HP at the start of each turn, stacks to 3).",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "oc_latched",
+    "duration": 3
+   }
+  ]
+ },
+ "oc_feed": {
+  "name": "Feed",
+  "description": "Deal attack-1 physical damage to an adjacent enemy. If the target is Latched, the Tongue-Louse heals 2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "heal",
+    "amount": 2,
+    "target": "caster",
+    "ifTargetStatus": "oc_latched"
+   }
+  ],
+  "requires": [
+   "conditional_heal"
+  ]
+ },
+ "oc_bell_sting": {
+  "name": "Trailing Sting",
+  "description": "Deal attack physical damage to an enemy within 2-3.",
+  "apCost": 2,
+  "range": {
+   "min": 2,
+   "max": 3
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_discharge": {
+  "name": "Discharge",
+  "description": "Deal attack-1 brine damage to all adjacent enemies and apply Soaked for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 2,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "soaked",
+    "duration": 2
+   }
+  ]
+ },
+ "oc_lure_snap": {
+  "name": "Snap",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_false_beacon": {
+  "name": "False Beacon",
+  "description": "Pull an enemy within 2-5 up to 3 tiles toward the Lure-Mother and apply Lured for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 5
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "pull",
+    "distance": 3
+   },
+   {
+    "type": "status",
+    "status": "hc_lured",
+    "duration": 2
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "oc_lure_flicker": {
+  "name": "Lure Flicker",
+  "description": "Deal attack-2 brine damage to an enemy within 2-4 and apply Dread for 1 turn.",
+  "apCost": 2,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "oc_dread",
+    "duration": 1
+   }
+  ]
+ },
+ "oc_hag_gnaw": {
+  "name": "Gnaw",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_slime_knot": {
+  "name": "Slime Knot",
+  "description": "Deal attack-3 brine damage to all adjacent enemies and Root them for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 2
+   }
+  ]
+ },
+ "oc_slime_skin": {
+  "name": "Slime Skin",
+  "description": "Passive: +1 defense.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 0,
+    "affects": "allies",
+    "statMods": {
+     "defense": 1
+    }
+   }
+  ],
+  "requires": [
+   "passive"
+  ]
+ },
+ "oc_chain_sting": {
+  "name": "Stinging Link",
+  "description": "Deal attack physical damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_chain_lash": {
+  "name": "Chain Lash",
+  "description": "Deal attack-1 brine damage to every enemy in a line of 4 and apply Dread for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "area": {
+   "shape": "line",
+   "size": 4
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "oc_dread",
+    "duration": 2
+   }
+  ],
+  "requires": [
+   "line_area"
+  ]
+ },
+ "oc_sunfish_nudge": {
+  "name": "Slow Nudge",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_sunfish_weep": {
+  "name": "Weep",
+  "description": "Heal all allies within 1 of a target tile (range 1-3) for 3 and make them Wet for 3 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "tile",
+  "cooldown": 2,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 3
+   },
+   {
+    "type": "status",
+    "status": "oc_wet",
+    "duration": 3
+   }
+  ]
+ },
+ "oc_sunfish_brine_tears": {
+  "name": "Brine Tears",
+  "description": "Turn the Sunfish's own tile into a brine pool for 3 turns.",
+  "apCost": 2,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "tile",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "brine_pool",
+    "duration": 3
+   }
+  ],
+  "requires": [
+   "terrain"
+  ]
+ },
+ "oc_shark_bite": {
+  "name": "Bite",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_jaw_thrust": {
+  "name": "Jaw Thrust",
+  "description": "Deal attack+1 physical damage to an enemy exactly 2 tiles away and pull it 1 tile toward the shark.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 2
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "pull",
+    "distance": 1
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "oc_frill_rend": {
+  "name": "Frill Rend",
+  "description": "Deal attack+2 physical damage to an adjacent enemy and apply Bleeding for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "bleeding",
+    "duration": 2
+   }
+  ]
+ },
+ "oc_barrel_nip": {
+  "name": "Snap",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_barrelgaze_aura": {
+  "name": "Eyes on the Light",
+  "description": "Passive: allies within 2 tiles gain +1 attack.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "allies",
+    "statMods": {
+     "attack": 1
+    }
+   }
+  ],
+  "requires": [
+   "passive"
+  ]
+ },
+ "oc_look_up": {
+  "name": "Look Up",
+  "description": "Mark all enemies within 1 of a target tile (range 1-4) for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 4
+  },
+  "target": "tile",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 2
+   }
+  ]
+ },
+ "oc_ribbon_lash": {
+  "name": "Ribbon Lash",
+  "description": "Deal attack physical damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_ribbon_pass": {
+  "name": "Ribbon Pass",
+  "description": "Teleport up to 4 tiles to an empty tile and deal attack physical damage to every enemy in the line it crosses.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "empty",
+  "cooldown": 3,
+  "area": {
+   "shape": "line",
+   "size": 4
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "teleport"
+   }
+  ],
+  "requires": [
+   "line_area",
+   "teleport_then_area"
+  ]
+ },
+ "oc_thinning_buffet": {
+  "name": "Buffet",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_underside": {
+  "name": "Underside",
+  "description": "Once per battle, on its first action: turn the tiles within 1 of the Thinning into brine pool for 3 turns and apply Soaked to enemies there for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 20,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "brine_pool",
+    "duration": 3
+   },
+   {
+    "type": "status",
+    "status": "soaked",
+    "duration": 2
+   }
+  ],
+  "requires": [
+   "terrain",
+   "once_per_battle"
+  ]
+ },
+ "oc_smother": {
+  "name": "Smother",
+  "description": "Deal attack+2 physical damage to an adjacent enemy and Root it for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   }
+  ]
+ },
+ "oc_thinning_shadow": {
+  "name": "Shadow Before the Fall",
+  "description": "Passive: allies within 2 tiles count as wet and do not dry out.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "allies",
+    "statMods": {},
+    "keepsWet": true
+   }
+  ],
+  "requires": [
+   "passive",
+   "aura_status"
+  ]
+ },
+ "oc_r3_shoal_flash": {
+  "name": "Belly Flash",
+  "description": "Deal attack-1 brine damage to an enemy within 1-3 and apply Dread for 1 turn.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "oc_dread",
+    "duration": 1
+   }
+  ]
+ },
+ "oc_r3_gulper_swallow": {
+  "name": "Swallow Whole",
+  "description": "Deal attack+4 physical damage to an adjacent enemy; +3 more if it is below half HP.",
+  "apCost": 4,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 4,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 3
+    }
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "oc_r3_louse_tongue": {
+  "name": "Eat the Tongue",
+  "description": "Deal attack+1 physical damage to an adjacent enemy, apply Latched for 3 turns and heal 3.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "oc_latched",
+    "duration": 3
+   },
+   {
+    "type": "heal",
+    "amount": 3,
+    "target": "caster"
+   }
+  ]
+ },
+ "oc_r3_bell_bloom": {
+  "name": "Bloom",
+  "description": "Deal attack-2 brine damage to all enemies within 2 and apply Soaked for 2 turns.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "soaked",
+    "duration": 2
+   }
+  ]
+ },
+ "oc_r3_lure_second_light": {
+  "name": "Second Light",
+  "description": "Deal attack-1 brine damage to an enemy within 2-5, pull it 2 tiles and apply Lured for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 5
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "brine"
+   },
+   {
+    "type": "pull",
+    "distance": 2
+   },
+   {
+    "type": "status",
+    "status": "hc_lured",
+    "duration": 2
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "oc_r3_hag_smother": {
+  "name": "Smother in Slime",
+  "description": "Apply Soaked and Rooted for 2 turns to all enemies within 2.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "soaked",
+    "duration": 2
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 2
+   }
+  ]
+ },
+ "oc_r3_siphon_whole_chain": {
+  "name": "The Whole Chain",
+  "description": "Deal attack brine damage to every enemy in a line of 6 and apply Dread for 2 turns.",
+  "apCost": 4,
+  "range": {
+   "min": 1,
+   "max": 6
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "area": {
+   "shape": "line",
+   "size": 6
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "oc_dread",
+    "duration": 2
+   }
+  ],
+  "requires": [
+   "line_area"
+  ]
+ },
+ "oc_r3_sunfish_downpour": {
+  "name": "Weeping Downpour",
+  "description": "Heal all allies within 2 for 4 and make them Wet for 3 turns.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 4
+   },
+   {
+    "type": "status",
+    "status": "oc_wet",
+    "duration": 3
+   }
+  ]
+ },
+ "oc_r3_shark_row": {
+  "name": "Every Row at Once",
+  "description": "Deal attack+4 physical damage to an adjacent enemy and apply Bleeding for 2 turns; +3 more if it is below half HP.",
+  "apCost": 4,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 3
+    }
+   },
+   {
+    "type": "status",
+    "status": "bleeding",
+    "duration": 2
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "oc_r3_gaze_all_eyes": {
+  "name": "All Eyes Look Up",
+  "description": "Deal attack-3 brine damage to all enemies within 2 and Mark them for 2 turns.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 2
+   }
+  ]
+ },
+ "oc_r3_ribbon_second_pass": {
+  "name": "Second Pass",
+  "description": "Teleport up to 5 tiles to an empty tile and deal attack+1 brine damage to every enemy in the line it crosses.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 5
+  },
+  "target": "empty",
+  "cooldown": 3,
+  "area": {
+   "shape": "line",
+   "size": 5
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "brine"
+   },
+   {
+    "type": "teleport"
+   }
+  ],
+  "requires": [
+   "line_area",
+   "teleport_then_area"
+  ]
+ },
+ "oc_r3_thinning_eclipse": {
+  "name": "Eclipse",
+  "description": "Deal attack-2 brine damage to all enemies within 3 and apply Dread and Soaked for 2 turns.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 3
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "oc_dread",
+    "duration": 2
+   },
+   {
+    "type": "status",
+    "status": "soaked",
+    "duration": 2
+   }
+  ]
+ },
+ "oc_mantle_grab": {
+  "name": "Grab",
+  "description": "Deal attack physical damage to an enemy within 2-4, pull it up to 3 tiles toward Mantle and Root it for 1 turn.",
+  "apCost": 2,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "pull",
+    "distance": 3
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "oc_mantle_ink_sea": {
+  "name": "Ink Sea",
+  "description": "Apply Inked (-2 attack, -1 defense) for 2 turns to all enemies within 2.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "oc_inked",
+    "duration": 2
+   }
+  ]
+ },
+ "oc_mantle_eight_fold": {
+  "name": "Eight-Fold",
+  "description": "Deal attack-1 physical damage to every adjacent enemy.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 1,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_mantle_slick_arms": {
+  "name": "Slick Arms",
+  "description": "Passive: adjacent allies count as wet and do not dry out.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 1,
+    "affects": "allies",
+    "statMods": {},
+    "keepsWet": true
+   }
+  ],
+  "requires": [
+   "passive",
+   "aura_status"
+  ]
+ },
+ "oc_mantle_legend_arms_remember": {
+  "name": "The Arms Remember",
+  "description": "Pull every enemy within 3 one tile toward Mantle.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 3
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "pull",
+    "distance": 1
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "oc_rictus_snap": {
+  "name": "Snap",
+  "description": "Deal attack physical damage to an adjacent enemy; +2 if it is below half HP.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 2
+    }
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "oc_rictus_sling_jaw": {
+  "name": "Sling-Jaw",
+  "description": "Fire the jaw out on its ligament: deal attack+3 physical damage to an enemy exactly 2 tiles away and pull it 2 tiles; +2 if it is below half HP.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 2
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 2
+    }
+   },
+   {
+    "type": "pull",
+    "distance": 2
+   }
+  ],
+  "requires": [
+   "pull",
+   "vsWounded"
+  ]
+ },
+ "oc_rictus_frenzy": {
+  "name": "Frenzy",
+  "description": "Passive: +1 attack. Its bites also deal +2 damage to targets below half HP.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 0,
+    "affects": "allies",
+    "statMods": {
+     "attack": 1
+    }
+   }
+  ],
+  "requires": [
+   "passive",
+   "vsWounded"
+  ]
+ },
+ "oc_rictus_blood_in_the_air": {
+  "name": "Blood in the Air",
+  "description": "Apply Dread (-1 attack, -1 AP) for 2 turns to all enemies within 2.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "oc_dread",
+    "duration": 2
+   }
+  ]
+ },
+ "oc_rictus_legend_second_mouth": {
+  "name": "Second Mouth",
+  "description": "Strike an adjacent enemy twice, each for attack+1 physical damage (+2 each if it is below half HP).",
+  "apCost": 4,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 2
+    }
+   },
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 2
+    }
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "oc_undersinging_sting": {
+  "name": "Stinging Chord",
+  "description": "Deal attack physical damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "oc_undersinging_call_shoal": {
+  "name": "Call the Shoal",
+  "description": "Summon 1 Bellyeye Shoal on an empty tile within 1-3.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "empty",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "overcurrent_bellyeye_shoal",
+    "count": 1
+   }
+  ],
+  "requires": [
+   "summon"
+  ]
+ },
+ "oc_undersinging_choir": {
+  "name": "Choir",
+  "description": "Passive: allies within 2 tiles gain +1 attack and +1 AP.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "allies",
+    "statMods": {
+     "attack": 1,
+     "ap": 1
+    }
+   }
+  ],
+  "requires": [
+   "passive"
+  ]
+ },
+ "oc_undersinging_drone": {
+  "name": "Drone of the Lamp",
+  "description": "Deal attack-2 brine damage to every enemy in a line of 5 and apply Dread for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 5
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "area": {
+   "shape": "line",
+   "size": 5
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "oc_dread",
+    "duration": 2
+   }
+  ],
+  "requires": [
+   "line_area"
+  ]
+ },
+ "oc_undersinging_legend_whole_choir": {
+  "name": "The Whole Choir",
+  "description": "Summon 3 Bellyeye Shoals on and around an empty tile within 1-3.",
+  "apCost": 5,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "empty",
+  "cooldown": 5,
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "overcurrent_bellyeye_shoal",
+    "count": 3
+   }
+  ],
+  "requires": [
+   "summon"
+  ]
+ },
+ "oc_lure_tug": {
+  "name": "Lure Tug",
+  "description": "Pull an enemy within 2-4 up to 2 tiles toward the bearer.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "pull",
+    "distance": 2
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "oc_drowned_weep": {
+  "name": "Weep",
+  "description": "Heal the bearer for 4 and make it Wet for 3 turns.",
+  "apCost": 2,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 4
+   },
+   {
+    "type": "status",
+    "status": "oc_wet",
+    "duration": 3
+   }
+  ]
+ },
+ "gy_gull_jab": {
+  "name": "Gull Jab",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_snatch": {
+  "name": "Snatch",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and apply Weakened for 1 turn.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "weakened",
+    "duration": 1
+   }
+  ]
+ },
+ "gy_crow_peck": {
+  "name": "Crow Peck",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_pick_the_bones": {
+  "name": "Pick the Bones",
+  "description": "Deal attack physical damage to an adjacent enemy (+2 if it is below half HP) and heal yourself 2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 2
+    }
+   },
+   {
+    "type": "heal",
+    "amount": 2,
+    "target": "caster"
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "gy_flock_sling": {
+  "name": "Flock Sling",
+  "description": "Deal attack physical damage to an enemy within 2-3.",
+  "apCost": 2,
+  "range": {
+   "min": 2,
+   "max": 3
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_loose_the_flock": {
+  "name": "Loose the Flock",
+  "description": "Deal attack-2 physical damage to enemies in radius 1 of a target within 2-4 and apply Harried for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "gy_harried",
+    "duration": 2
+   }
+  ]
+ },
+ "gy_nest_pike": {
+  "name": "Nest-Pike",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_hook_down": {
+  "name": "Hook Down",
+  "description": "Deal attack-2 physical damage to an enemy within 2-3, pull it 1 tile toward you and Pin it for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 3
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "pull",
+    "distance": 1
+   },
+   {
+    "type": "status",
+    "status": "gy_pinned",
+    "duration": 1
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "gy_feathered_brace": {
+  "name": "Feathered Brace",
+  "description": "Gain Shielded for 2 turns.",
+  "apCost": 2,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "effects": [
+   {
+    "type": "status",
+    "status": "shielded",
+    "duration": 2
+   }
+  ]
+ },
+ "gy_skua_lance": {
+  "name": "Skua Lance",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_stoop": {
+  "name": "Stoop",
+  "description": "Deal attack+1 physical damage to an enemy within 1-2 (+3 if it is below half HP).",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 3
+    }
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "gy_pelican_bill": {
+  "name": "Pelican Bill",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_scoop": {
+  "name": "Scoop",
+  "description": "Deal attack-2 physical damage to an enemy within 2-4, pull it 2 tiles toward you and Stun it for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 4,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "pull",
+    "distance": 2
+   },
+   {
+    "type": "status",
+    "status": "stunned",
+    "duration": 1
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "gy_ferry": {
+  "name": "Ferry",
+  "description": "Swap places with an ally within 1-4.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 4
+  },
+  "target": "ally",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "swap"
+   }
+  ],
+  "requires": [
+   "swap"
+  ]
+ },
+ "gy_kite_staff": {
+  "name": "Kite-Staff",
+  "description": "Deal attack physical damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_wind_reading": {
+  "name": "Wind-Reading",
+  "description": "Heal an ally within 1-3 for 4.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "ally",
+  "cooldown": 1,
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 4
+   }
+  ]
+ },
+ "gy_updraft_cry": {
+  "name": "Updraft",
+  "description": "Allies in radius 1 of you gain Hasted for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1
+   }
+  ]
+ },
+ "gy_shrike_beak": {
+  "name": "Shrike Beak",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_impale": {
+  "name": "Impale",
+  "description": "Deal attack+1 physical damage to an adjacent enemy and Pin it for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "gy_pinned",
+    "duration": 2
+   }
+  ]
+ },
+ "gy_captain_cutlass": {
+  "name": "Wheel Cutlass",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_the_wheel_aura": {
+  "name": "The Wheel",
+  "description": "Passive: flying allies within 2 tiles gain +1 AP.",
+  "apCost": 0,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [],
+  "requires": [
+   "passive",
+   "aura_filter"
+  ],
+  "statMods": {
+   "ap": 1
+  },
+  "filter": {
+   "flying": true
+  },
+  "passive": true
+ },
+ "gy_call_the_dive": {
+  "name": "Call the Dive",
+  "description": "Deal attack-3 physical damage to an enemy within 1-4 and apply Marked and Harried for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 2
+   },
+   {
+    "type": "status",
+    "status": "gy_harried",
+    "duration": 2
+   }
+  ]
+ },
+ "gy_thief_claw": {
+  "name": "Thief's Claw",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_rob_the_well": {
+  "name": "Rob the Well",
+  "description": "Deal attack physical damage to an adjacent enemy, drain 6 of its owner's Tide and gain 3 Tide.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "essence",
+    "amount": -6,
+    "team": "enemy"
+   },
+   {
+    "type": "essence",
+    "amount": 3,
+    "team": "self"
+   }
+  ],
+  "requires": [
+   "essence"
+  ]
+ },
+ "gy_harpoon_bolt": {
+  "name": "Harpoon Bolt",
+  "description": "Deal attack physical damage to an enemy within 3-6.",
+  "apCost": 2,
+  "range": {
+   "min": 3,
+   "max": 6
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_plunging_bolt": {
+  "name": "Plunging Bolt",
+  "description": "Deal attack+2 physical damage to an enemy within 3-6.",
+  "apCost": 3,
+  "range": {
+   "min": 3,
+   "max": 6
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_winch_line": {
+  "name": "Winch-Line",
+  "description": "Deal attack-2 physical damage to an enemy within 3-5 and Pin it for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 3,
+   "max": 5
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "gy_pinned",
+    "duration": 1
+   }
+  ]
+ },
+ "gy_albatross_beak": {
+  "name": "Albatross Beak",
+  "description": "Deal attack physical damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_stoop_of_ages": {
+  "name": "Stoop of Ages",
+  "description": "Deal attack+2 physical damage to an enemy within 1-2 (+2 if it is below half HP).",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 2
+    }
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "gy_wheel_wings_aura": {
+  "name": "Eldest of the Wheel",
+  "description": "Passive: flying allies within 3 tiles gain +1 AP and +1 attack.",
+  "apCost": 0,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 3
+  },
+  "affects": "allies",
+  "effects": [],
+  "requires": [
+   "passive",
+   "aura_filter"
+  ],
+  "statMods": {
+   "ap": 1,
+   "attack": 1
+  },
+  "filter": {
+   "flying": true
+  },
+  "passive": true
+ },
+ "gy_shadow_of_the_wheel": {
+  "name": "Shadow of the Wheel",
+  "description": "Enemies in radius 2 of you are Harried for 2 turns.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "gy_harried",
+    "duration": 2
+   }
+  ]
+ },
+ "gy_r3_runner_hoax": {
+  "name": "Hoax Dive",
+  "description": "Deal attack+1 physical damage to an enemy within 1-2 and apply Harried for 2 turns.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "gy_harried",
+    "duration": 2
+   }
+  ]
+ },
+ "gy_r3_crow_gorge": {
+  "name": "Gorge on the Fallen",
+  "description": "Deal attack+1 physical damage to an adjacent enemy (+3 if it is below half HP) and heal yourself 3.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 3
+    }
+   },
+   {
+    "type": "heal",
+    "amount": 3,
+    "target": "caster"
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "gy_r3_gullwife_whole_flock": {
+  "name": "The Whole Flock",
+  "description": "Deal attack-3 physical damage to enemies in radius 2 of a target within 2-4 and apply Harried for 2 turns.",
+  "apCost": 4,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "gy_harried",
+    "duration": 2
+   }
+  ]
+ },
+ "gy_r3_warden_nest_wall": {
+  "name": "Nest-Wall",
+  "description": "Allies in radius 1 of you, and you, gain Shielded for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "shielded",
+    "duration": 1
+   }
+  ]
+ },
+ "gy_r3_skua_long_stoop": {
+  "name": "Long Stoop",
+  "description": "Deal attack+2 physical damage to an enemy within 2-4 (+4 if it is below half HP).",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 4
+    }
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "gy_r3_pelican_pouchful": {
+  "name": "Pouchful",
+  "description": "Deal attack-2 physical damage to enemies in radius 1 of a target within 2-4 and apply Harried for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "gy_harried",
+    "duration": 2
+   }
+  ]
+ },
+ "gy_r3_windreader_wrong_sky": {
+  "name": "Reading of the Wrong Sky",
+  "description": "Heal allies in radius 2 of you for 3 and give them Hasted for 1 turn.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 3
+   },
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1
+   }
+  ]
+ },
+ "gy_r3_shrike_larder": {
+  "name": "Larder",
+  "description": "Deal attack+3 physical damage to an adjacent enemy and apply Bleeding for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "bleeding",
+    "duration": 2
+   }
+  ]
+ },
+ "gy_r3_captain_tighten": {
+  "name": "The Wheel Tightens",
+  "description": "Allies in radius 3 of you gain Emboldened for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 3
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "emboldened",
+    "duration": 2
+   }
+  ]
+ },
+ "gy_r3_thief_clean_out": {
+  "name": "Clean Out",
+  "description": "Deal attack physical damage to an adjacent enemy, drain 8 of its owner's Tide and gain 4 Tide.",
+  "apCost": 4,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 4,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "essence",
+    "amount": -8,
+    "team": "enemy"
+   },
+   {
+    "type": "essence",
+    "amount": 4,
+    "team": "self"
+   }
+  ],
+  "requires": [
+   "essence"
+  ]
+ },
+ "gy_r3_gunner_cut_the_line": {
+  "name": "Cut the Line",
+  "description": "Deal attack+3 physical damage to an enemy within 3-6 and Pin it for 1 turn.",
+  "apCost": 4,
+  "range": {
+   "min": 3,
+   "max": 6
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "gy_pinned",
+    "duration": 1
+   }
+  ]
+ },
+ "gy_r3_mother_all_the_birds": {
+  "name": "All the Birds",
+  "description": "Deal 4 flat physical damage to enemies in radius 2 of you.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "physical",
+    "ignoreAttack": true
+   }
+  ]
+ },
+ "gy_tether": {
+  "name": "Tether",
+  "description": "Pull an enemy within 2-4 two tiles toward you.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "pull",
+    "distance": 2
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "gy_wren_knife": {
+  "name": "Wren's Knife",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_wren_pickpocket": {
+  "name": "Pickpocket",
+  "description": "Deal attack-2 physical damage to an adjacent enemy, drain 4 of its owner's Tide and gain 2 Tide.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "essence",
+    "amount": -4,
+    "team": "enemy"
+   },
+   {
+    "type": "essence",
+    "amount": 2,
+    "team": "self"
+   }
+  ],
+  "requires": [
+   "essence"
+  ]
+ },
+ "gy_wren_cut_and_climb": {
+  "name": "Cut and Climb",
+  "description": "Deal attack+1 physical damage to an adjacent enemy, then gain Hasted for 1 turn.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1,
+    "target": "caster"
+   }
+  ],
+  "requires": [
+   "status_self"
+  ]
+ },
+ "gy_wren_vanishing_act": {
+  "name": "Vanishing Act",
+  "description": "Teleport to an empty tile within 1-5.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 5
+  },
+  "target": "empty",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "teleport"
+   }
+  ]
+ },
+ "gy_wren_legend_biggest_score": {
+  "name": "Biggest Score",
+  "description": "Deal attack physical damage to an adjacent enemy, drain 10 of its owner's Tide and gain 5 Tide.",
+  "apCost": 4,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 5,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "essence",
+    "amount": -10,
+    "team": "enemy"
+   },
+   {
+    "type": "essence",
+    "amount": 5,
+    "team": "self"
+   }
+  ],
+  "requires": [
+   "essence"
+  ]
+ },
+ "gy_oskeline_crook": {
+  "name": "High-Nest Crook",
+  "description": "Deal attack physical damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_oskeline_summon_crows": {
+  "name": "Summon Salt Crows",
+  "description": "Summon 2 Salt Crows on an empty tile within 1-3.",
+  "apCost": 4,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "empty",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "gyre_salt_crow",
+    "count": 2
+   }
+  ],
+  "requires": [
+   "summon"
+  ]
+ },
+ "gy_oskeline_mothers_call": {
+  "name": "Mother's Call",
+  "description": "Heal flying allies in radius 3 of you for 3.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 2,
+  "area": {
+   "shape": "radius",
+   "size": 3
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 3
+   }
+  ],
+  "requires": [
+   "aura_filter"
+  ],
+  "filter": {
+   "flying": true
+  }
+ },
+ "gy_oskeline_high_nests": {
+  "name": "The High Nests",
+  "description": "Passive: flying allies within 2 tiles gain +1 defense.",
+  "apCost": 0,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [],
+  "requires": [
+   "passive",
+   "aura_filter"
+  ],
+  "statMods": {
+   "defense": 1
+  },
+  "filter": {
+   "flying": true
+  },
+  "passive": true
+ },
+ "gy_oskeline_legend_every_bird": {
+  "name": "Every Bird Comes Home",
+  "description": "Summon 3 Salt Crows on an empty tile within 1-3.",
+  "apCost": 5,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "empty",
+  "cooldown": 5,
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "gyre_salt_crow",
+    "count": 3
+   }
+  ],
+  "requires": [
+   "summon"
+  ]
+ },
+ "gy_torr_talon": {
+  "name": "Hooked Talon",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "gy_torr_carrion_dive": {
+  "name": "Carrion Dive",
+  "description": "Deal attack+2 physical damage to an enemy within 1-2 (+4 if it is below half HP).",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 4
+    }
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "gy_torr_gorge": {
+  "name": "Gorge",
+  "description": "Deal attack physical damage to an adjacent enemy and heal yourself 4.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "heal",
+    "amount": 4,
+    "target": "caster"
+   }
+  ]
+ },
+ "gy_torr_black_wheel": {
+  "name": "The Black Wheel",
+  "description": "Passive: enemies within 2 tiles have -1 defense.",
+  "apCost": 0,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [],
+  "requires": [
+   "passive"
+  ],
+  "statMods": {
+   "defense": -1
+  },
+  "passive": true
+ },
+ "gy_torr_legend_never_lands": {
+  "name": "The Wheel Never Lands",
+  "description": "Allies in radius 3 of you gain Hasted for 1 turn.",
+  "apCost": 5,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 5,
+  "area": {
+   "shape": "radius",
+   "size": 3
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1
+   }
+  ]
  }
 }

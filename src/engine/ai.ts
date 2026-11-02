@@ -99,9 +99,9 @@ function threatMap(g: Game, team: number): Threat {
       if (!dmg) continue;
       const power = dmg.ignoreAttack ? dmg.amount : g.stat(e, 'attack') + dmg.amount;
       const reach = g.moveRange(e, ap - a.apCost);
-      const r = a.range.max + (a.area?.size ?? 0);
       for (const k of reach.keys()) {
         const [cx, cy] = k.split(',').map(Number);
+        const r = a.range.max + (a.area?.size ?? 0) + (a.range.max > 1 ? Math.max(0, g.terrainAt(cx, cy).rangeBonus ?? 0) : 0);
         for (let y = cy - r; y <= cy + r; y++) for (let x = cx - r; x <= cx + r; x++) {
           const d = Math.abs(x - cx) + Math.abs(y - cy);
           if (d > r || d < Math.min(a.range.min, 1) || !g.inBounds(x, y)) continue;
@@ -128,13 +128,60 @@ function danger(g: Game, th: Threat, u: Unit, p: Pos, vip: boolean): number {
   return vip ? pen * 3 + (expected > 0 ? 4 : 0) : pen;
 }
 
+/** True when a status would hurt its carrier (blocks moving/acting, saps stats, or burns). */
+function harmfulStatus(g: Game, id: string): boolean {
+  const s = g.content.statuses[id];
+  if (!s) return false;
+  const mods = Object.values(s.statMods ?? {}).reduce((a: number, b) => a + (b ?? 0), 0);
+  return !!s.preventsMove || !!s.preventsAction || mods < 0 || !!s.onTurnStart?.some(e => e.type === 'damage');
+}
+
+/** Score cost of walking onto `p` now: only onEnter effects that would really hurt this unit count, scaled by damage. */
+function enterPenalty(g: Game, u: Unit, p: Pos): number {
+  if (g.def(u).flying) return 0;
+  const e = g.terrainAt(p.x, p.y).onEnter;
+  if (!e || !g.passesFilter(u, 'filter' in e ? e.filter : undefined)) return 0;
+  if (e.type === 'damage') return 1 + e.amount * 0.8;
+  if (e.type === 'status' && harmfulStatus(g, e.status)) return 2.5;
+  return 0;
+}
+
+/** Score value (positive good, negative bad) of ending a move on `p` given its start-of-turn terrain effects. */
+function turnStartValue(g: Game, u: Unit, p: Pos): number {
+  if (g.def(u).flying) return 0;
+  let v = 0;
+  const hp = u.hp, max = g.def(u).stats.hp;
+  for (const e of g.terrainAt(p.x, p.y).onTurnStart ?? []) {
+    if (!g.passesFilter(u, 'filter' in e ? e.filter : undefined)) continue;
+    if (e.type === 'heal') v += 0.1 + Math.min(e.amount, Math.max(0, max - hp)) * 0.7;
+    else if (e.type === 'damage') {
+      const amt = Math.max(1, e.amount - (e.damageType ? g.resistOf(u, e.damageType) : 0));
+      v -= amt * 1.2;
+      if (hp <= amt) v -= 20 + g.def(u).cost / 6; // it would die
+    } else if (e.type === 'status' && harmfulStatus(g, e.status)) v -= 2.5;
+  }
+  return v;
+}
+
+/** Ranged units like ground that extends their reach. */
+function rangeTileBonus(g: Game, u: Unit, p: Pos): number {
+  return desiredRange(g, u) > 1 ? Math.max(0, g.terrainAt(p.x, p.y).rangeBonus ?? 0) : 0;
+}
+
 /** Standing on a Tide Well: Tide every turn plus a forward deploy point. Worth a detour. */
 function wellBonus(g: Game, u: Unit, p: Pos): number {
+  if (g.def(u).flying) return 0; // flyers hold no Wells
   const w = (g.map.wells ?? []).find(w => w.x === p.x && w.y === p.y);
   if (!w) return 0;
   const occ = g.unitAt(w.x, w.y);
   if (occ && occ.uid !== u.uid) return 0;
   return occ?.uid === u.uid ? 2 : 6; // holding is good, taking is better
+}
+
+/** Spilled Tide on the tile: collected by walking onto it. */
+function dropBonus(g: Game, p: Pos): number {
+  const d = g.drops.find(d => d.x === p.x && d.y === p.y);
+  return d ? d.amount / 3 : 0;
 }
 
 // ---------- scoring ----------
@@ -164,6 +211,7 @@ function scoreEffects(g: Game, team: number, effects: Effect[], hit: Unit[],
   let score = 0;
   for (const o of hit) {
     const enemy = o.team !== team;
+    effects = effects.filter(e => !('filter' in e) || g.passesFilter(o, e.filter));
     const vip = enemy && !!it && isVip(o, it.hunt);
     const objective = g.def(o).structure ? 1.6 : vip ? 2.5 : 1;
     let hp = o.hp;
@@ -205,15 +253,16 @@ function bestPlan(g: Game, u: Unit, th: Threat, it: Intel): Plan | undefined {
     const [x, y] = k.split(',').map(Number);
     const from = { x, y };
     const left = u.ap - node.cost;
-    const hazard = g.terrainAt(x, y).onEnter ? 3 : 0;
-    const risk = danger(g, th, u, from, vip);
+    const hazard = enterPenalty(g, u, from) - turnStartValue(g, u, from) * 0.6 - rangeTileBonus(g, u, from) * 0.4;
+    // A drying unit left off wet ground loses HP next turn.
+    const risk = danger(g, th, u, from, vip) + g.dryingLoss(u, from) * 1.3;
     for (const ab of g.abilitiesOf(u)) {
       const a = g.ability(ab);
       if (!a || a.apCost > left || (u.cooldowns[ab] ?? 0) > 0 || g.usedThisTurn(u, ab) || g.hasFlag(u, 'preventsAction') || u.summonedThisTurn) continue;
       if (a.passive || a.effects.some(e => e.type === 'teleport' || e.type === 'swap' || e.type === 'sacrifice')) continue;
       for (const t of g.targetsFrom(u, ab, from)) {
         // Risk is discounted when the action is a kill: trading into danger for a kill is often right.
-        const s = scoreAbility(g, u, ab, t, from, it) - node.cost * 0.05 - hazard - a.apCost * 0.1 - risk * 0.6 + wellBonus(g, u, from) * 0.5 + jitter(g);
+        const s = scoreAbility(g, u, ab, t, from, it) - node.cost * 0.05 - hazard - a.apCost * 0.1 - risk * 0.6 + wellBonus(g, u, from) * 0.5 + dropBonus(g, from) * 0.5 + jitter(g);
         if (!best || s > best.score) best = { score: s, to: from, ability: ab, target: t };
       }
     }
@@ -244,9 +293,9 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
     return Math.min(...enemies.map(o => Math.abs(manhattan(p, o) - want) - (isVip(o, it.hunt) ? 4 : 0) + (g.def(o).structure ? 1 : 0)));
   };
   const cost = (p: Pos, steps: number) => {
-    let c = value(p) + steps * 0.01 + (g.terrainAt(p.x, p.y).onEnter ? 4 : 0) - (vip ? 0 : wellBonus(g, u, p));
+    let c = value(p) + steps * 0.01 + (enterPenalty(g, u, p) * 1.3 - turnStartValue(g, u, p) - rangeTileBonus(g, u, p) * 0.6) - (vip ? 0 : wellBonus(g, u, p) + dropBonus(g, p)) + g.dryingLoss(u, p) * 3;
     // An open well within a turn's walk pulls a unit off its march.
-    if (!vip && !goal) {
+    if (!vip && !goal && !g.def(u).flying) {
       const open = (g.map.wells ?? []).filter(w => { const o = g.unitAt(w.x, w.y); return !o || o.uid === u.uid; });
       const near = open.length ? Math.min(...open.map(w => manhattan(p, w))) : 99;
       if (near <= 6) c += near * 0.3 - 1.8;
@@ -273,16 +322,40 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
 
 function tryDeploy(g: Game): boolean {
   const team = g.teams[g.current];
-  const tiles = g.deployTiles(g.current);
-  if (!tiles.length) return false;
   // Most expensive affordable unit first.
   const order = team.hand.map((id, i) => ({ i, id, cost: g.cardCost(id) }))
     .filter(h => g.cardKind(h.id) === 'unit' && h.cost <= team.essence).sort((a, b) => b.cost - a.cost);
   if (!order.length) return false;
+  const pick = order[0];
+  const tiles = g.unitDeployTiles(g.current, pick.id);
+  if (!tiles.length) return false;
   const enemies = g.aliveUnits().filter(o => o.team !== g.current);
-  const score = (p: Pos) => enemies.length ? Math.min(...enemies.map(o => manhattan(p, o))) : 0;
+  const instant = new Set(g.deployTiles(g.current).map(p => key(p.x, p.y)));
+  const impact = g.content.units[pick.id].skyfall?.impact ?? 0;
+  const ghost = { uid: -1, defId: pick.id, team: g.current, x: 0, y: 0, hp: g.content.units[pick.id].stats.hp, ap: 0, statuses: [], cooldowns: {}, summonedThisTurn: true, alive: true } as Unit;
+  const keystones = enemies.filter(o => o.tag?.startsWith('keystone_'));
+  // Lower is better. Normal deploys go as close to the enemy as the zone allows; a skyfall drop (only taken when worth something) is scored on the
+  // damage its landing would do (kills count extra), with a pull toward the enemy keystone. Tiles are never occupied.
+  const score = (p: Pos) => {
+    const near = enemies.length ? Math.min(...enemies.map(o => manhattan(p, o))) : 0;
+    // Don't land on a damaging vent (unless it heals this unit there); a healing tile is a mild plus.
+    const terr = enterPenalty(g, ghost, p) - turnStartValue(g, ghost, p) * 0.5;
+    if (instant.has(key(p.x, p.y))) return near + 4 + terr;
+    let v = 0, adj = 0;
+    for (const o of enemies) {
+      if (manhattan(p, o) !== 1) continue;
+      adj++;
+      const d = Math.max(0, impact - g.resistOf(o, 'physical'));
+      v += Math.min(d, o.hp) * (g.def(o).structure ? 1.6 : 1) + (d >= o.hp ? 6 + g.def(o).cost / 10 : 0);
+    }
+    const ks = keystones.length ? Math.min(...keystones.map(o => manhattan(p, o))) : 99;
+    v += Math.max(0, 8 - ks) * 0.6;
+    if (adj > 2) v -= (adj - 2) * 2; // do not land in the middle of a crowd
+    if (g.content.units[pick.id].dries && g.isWetTile(p.x, p.y)) v += 2; // a drying unit likes to land in water
+    return v > 0 ? 4 - v + terr : 100; // a drop that hits nothing and threatens nothing is not worth it
+  };
   const tile = tiles.map(p => ({ p, s: score(p) + Math.abs(jitter(g)) })).sort((a, b) => a.s - b.s)[0].p;
-  return g.deploy(g.current, order[0].i, tile.x, tile.y);
+  return g.deploy(g.current, pick.i, tile.x, tile.y);
 }
 
 function tryCards(g: Game, it: Intel): boolean {

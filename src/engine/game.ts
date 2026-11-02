@@ -1,12 +1,22 @@
 import { CAST_LEVEL_EFFECTS } from './types';
 import type {
+  EffectFilter,
   AbilityDef, Affects, CardKind, EquipmentDef, SpellDef, Condition, Content, Effect, GameEvent, MapDef, MissionAction, MissionDef,
-  Phase, Pos, StatKey, TeamState, Tile, Unit, UnitDef,
+  Landing, Phase, Pos, StatKey, TeamState, TideDrop, Tile, Unit, UnitDef,
 } from './types';
 
 export const DEFAULTS = { startingEssence: 100, essencePerTurn: 25, maxEssence: 200 };
 /** Card draw: opening hand size, cards drawn per turn, hand limit (a full hand skips the draw; the card stays on top). */
-export const DRAW = { opening: 5, perTurn: 1, maxHand: 8, minOpeningUnits: 2 };
+export const DRAW = { opening: 5, perTurn: 2, maxHand: 8, minOpeningUnits: 2 };
+/**
+ * Card cooldowns (PoxNora-style rune rest): a cast spell, an attached equipment, or a champion that dies rests for
+ * max(min, ceil(cost / tidePerTurn)) of its owner's turns, then returns to the hand (or the top of the draw pile if the hand is full).
+ */
+export const COOLDOWN = { tidePerTurn: 15, min: 2 };
+export const cooldownFor = (cost: number) => Math.max(COOLDOWN.min, Math.ceil(cost / COOLDOWN.tidePerTurn));
+/** Tide a dying champion spills on its tile: max(min, cost × fraction) rounded to 5. Free summons and structures drop nothing. */
+export const TIDE_DROP = { fraction: 0.25, min: 5 };
+export const tideDropFor = (cost: number) => cost > 0 ? Math.max(TIDE_DROP.min, Math.round(cost * TIDE_DROP.fraction / 5) * 5) : 0;
 
 /** Small seeded PRNG (mulberry32) so a game can be replayed from its seed. */
 export function rng(seed: number) {
@@ -32,6 +42,10 @@ export class Game {
   readonly height: number;
   readonly tiles: Tile[][];
   units: Unit[] = [];
+  /** Skyfall units in flight: paid for, shown as a marker, landing at the start of their owner's next turn. */
+  landings: Landing[] = [];
+  /** Tide lying on the board where units fell. */
+  drops: TideDrop[] = [];
   teams: TeamState[];
   current = 0;
   round = 1;
@@ -65,7 +79,7 @@ export class Game {
     const start = mission.startingEssence ?? DEFAULTS.startingEssence;
     this.teams = mission.teams.map(t => ({
       name: t.name, color: t.color, controller: t.controller, essence: t.startingEssence ?? start,
-      hand: [...((t.useCampaignRoster && opts.roster) ? opts.roster : (t.warband ?? []))], deck: [],
+      hand: [...((t.useCampaignRoster && opts.roster) ? opts.roster : (t.warband ?? []))], deck: [], cooldown: [],
     }));
     this.seed = opts.seed ?? Math.floor(Math.random() * 2 ** 31);
     this.random = rng(this.seed);
@@ -139,7 +153,7 @@ export class Game {
         const a = this.ability(abId);
         if (!a?.passive) continue;
         for (const e of a.effects) {
-          if (e.type !== 'aura' || manhattan(src, u) > e.radius) continue;
+          if (e.type !== 'aura' || manhattan(src, u) > e.radius || !this.passesFilter(u, e.filter)) continue;
           const affects = e.affects ?? 'allies';
           const ok = e.radius === 0 ? src.uid === u.uid
             : src.uid !== u.uid && (affects === 'all' || (affects === 'enemies' ? src.team !== u.team : src.team === u.team));
@@ -161,6 +175,32 @@ export class Game {
     return this.aurasOn(u).reduce((v, { e, mult }) => v + (e.statMods?.[k] ?? 0) * mult, 0);
   }
 
+  /** Terrain ids that always count as wet, plus any TerrainDef with `wet: true`. */
+  isWetTile(x: number, y: number): boolean {
+    const id = this.tiles[y]?.[x]?.terrain;
+    return !!id && (id === 'brine_pool' || id === 'living_reef' || !!this.content.terrain[id]?.wet);
+  }
+  /** True if `u` would not dry out standing at `at` (default: where it is): wet tile or a wet status. */
+  isWetFor(u: Unit, at: Pos = u): boolean {
+    return this.isWetTile(at.x, at.y) || u.statuses.some(s => this.content.statuses[s.id]?.wet) ||
+      this.aurasOn(u).some(({ e }) => e.keepsWet);
+  }
+  /** HP `u` would lose to drying at the start of its next turn if it stood at `at`. */
+  dryingLoss(u: Unit, at: Pos = u): number {
+    const n = this.def(u).dries ?? 0;
+    return n > 0 && !this.isWetFor(u, at) ? n : 0;
+  }
+
+  /** Effect filters compare unit flags; absent filter matches everyone. */
+  passesFilter(u: Unit, f?: EffectFilter): boolean {
+    if (!f) return true;
+    const d = this.def(u);
+    if (f.flying !== undefined && !!d.flying !== f.flying) return false;
+    if (f.faction && !(d.faction !== undefined && f.faction.includes(d.faction))) return false;
+    if (f.notFaction && d.faction !== undefined && f.notFaction.includes(d.faction)) return false;
+    return true;
+  }
+
   hasFlag(u: Unit, flag: 'preventsMove' | 'preventsAction') {
     return u.statuses.some(s => this.content.statuses[s.id]?.[flag]);
   }
@@ -170,14 +210,14 @@ export class Game {
     return this.isActive(u) && !this.def(u).structure && !u.summonedThisTurn && !this.hasFlag(u, 'preventsMove');
   }
 
-  /** Dijkstra over AP. Units may pass through allies but not stop on them; enemies block. */
+  /** Dijkstra over AP. Units may pass through allies but not stop on them; enemies block. Flyers pay 1 AP per tile, ignore height, and may cross (not end on) impassable tiles. */
   reachable(u: Unit, apBudget = u.ap): Map<string, ReachNode> {
     const out = this.reachRaw(u, apBudget);
     // Allies can be walked through but not stopped on.
     for (const k of [...out.keys()]) {
       const [x, y] = k.split(',').map(Number);
       const occ = this.unitAt(x, y);
-      if (occ && occ.uid !== u.uid) out.delete(k);
+      if ((occ && occ.uid !== u.uid) || this.terrainAt(x, y).impassable) out.delete(k);
     }
     return out;
   }
@@ -189,7 +229,7 @@ export class Game {
     for (const k of [...out.keys()]) {
       const [x, y] = k.split(',').map(Number);
       const occ = this.unitAt(x, y);
-      if (occ && occ.uid !== u.uid) out.delete(k);
+      if ((occ && occ.uid !== u.uid) || this.terrainAt(x, y).impassable) out.delete(k);
     }
     return out;
   }
@@ -199,6 +239,8 @@ export class Game {
     out.set(key(u.x, u.y), { cost: 0, prev: null });
     if (!anyTurn && !this.canMove(u)) return out;
     const jump = this.stat(u, 'jump');
+    const flying = !!this.def(u).flying;
+    const faction = this.def(u).faction;
     const frontier: { x: number; y: number; cost: number }[] = [{ x: u.x, y: u.y, cost: 0 }];
     while (frontier.length) {
       frontier.sort((a, b) => a.cost - b.cost);
@@ -209,12 +251,12 @@ export class Game {
         const t = this.tile(nx, ny);
         if (!t) continue;
         const terr = this.content.terrain[t.terrain];
-        if (terr.impassable) continue;
-        if (Math.abs(t.height - this.tiles[cur.y][cur.x].height) > jump) continue;
+        if (terr.impassable && !flying) continue;
+        if (!flying && Math.abs(t.height - this.tiles[cur.y][cur.x].height) > jump) continue;
         const occ = this.unitAt(nx, ny);
         if (occ && occ.team !== u.team) continue;
         if (occ && this.def(occ).structure) continue;
-        const cost = cur.cost + terr.moveCost;
+        const cost = cur.cost + (flying ? 1 : (faction !== undefined ? terr.factionMoveCost?.[faction] : undefined) ?? terr.moveCost);
         if (cost > apBudget) continue;
         const k = key(nx, ny);
         if (cost < (out.get(k)?.cost ?? Infinity)) {
@@ -254,15 +296,21 @@ export class Game {
   /** Max range including the high-ground bonus (+1 when 2+ levels above the target tile). */
   private inRange(a: AbilityDef, from: Pos, to: Pos) {
     const d = manhattan(from, to);
-    const bonus = a.range.max > 1 && this.tiles[from.y][from.x].height - this.tiles[to.y][to.x].height >= 2 ? 1 : 0;
-    return d >= a.range.min && d <= a.range.max + bonus;
+    return d >= a.range.min && d <= a.range.max + this.rangeBonusAt(a, from, to);
+  }
+
+  /** Extra reach for a ranged ability fired from `from` at `to`: +1 from 2+ levels of high ground, plus the tile's own `rangeBonus`. */
+  rangeBonusAt(a: AbilityDef, from: Pos, to?: Pos): number {
+    if (a.range.max <= 1) return 0;
+    const high = to && this.tiles[from.y][from.x].height - this.tiles[to.y][to.x].height >= 2 ? 1 : 0;
+    return high + Math.max(0, this.terrainAt(from.x, from.y).rangeBonus ?? 0);
   }
 
   /** Every tile an ability can reach from the unit (its range zone), whether or not anything is there to hit. */
   rangeTiles(u: Unit, abilityId: string): Pos[] {
     const a = this.ability(abilityId); if (!a || a.passive) return [];
     if (a.target === 'self') return [{ x: u.x, y: u.y }];
-    const out: Pos[] = [], r = a.range.max + 1;
+    const out: Pos[] = [], r = a.range.max + 1 + Math.max(0, this.terrainAt(u.x, u.y).rangeBonus ?? 0);
     for (let y = u.y - r; y <= u.y + r; y++) for (let x = u.x - r; x <= u.x + r; x++)
       if (this.inBounds(x, y) && this.inRange(a, u, { x, y })) out.push({ x, y });
     return out;
@@ -273,7 +321,7 @@ export class Game {
     const a = this.ability(abilityId);
     const out: Pos[] = [];
     if (a.target === 'self') return [{ x: from.x, y: from.y }];
-    const r = a.range.max + 1;
+    const r = a.range.max + 1 + Math.max(0, this.terrainAt(from.x, from.y).rangeBonus ?? 0);
     for (let y = from.y - r; y <= from.y + r; y++) for (let x = from.x - r; x <= from.x + r; x++) {
       if (!this.inBounds(x, y) || !this.inRange(a, from, { x, y })) continue;
       const occ = this.unitAt(x, y);
@@ -298,7 +346,7 @@ export class Game {
   /** Units hit by an ability aimed at `target` from `from`. */
   affected(u: Unit, abilityId: string, target: Pos, from: Pos = u): Unit[] {
     const a = this.ability(abilityId);
-    if (a.target === 'empty') return [];
+    if (a.target === 'empty' && !a.area) return [];
     const affects: Affects = a.affects ?? (a.target === 'enemy' ? 'enemies' : a.target === 'ally' || a.target === 'self' ? 'allies' : 'all');
     const match = (o: Unit) => affects === 'all' || (affects === 'enemies' ? o.team !== u.team : o.team === u.team);
     // Position-aware lookup so the AI can evaluate hypothetical caster positions.
@@ -354,17 +402,22 @@ export class Game {
 
   /** Damage a single damage effect would deal. `from` is the attacker's (possibly hypothetical) position. */
   previewDamage(attacker: Unit, target: Unit, e: Extract<Effect, { type: 'damage' }>, from: Pos = attacker): number {
-    const base = e.ignoreAttack ? e.amount : this.stat(attacker, 'attack') + e.amount;
+    const base = (e.ignoreAttack ? e.amount : this.stat(attacker, 'attack') + e.amount) + this.woundedBonus(target, e);
     const def = e.pierce ? 0 : this.stat(target, 'defense') + (this.def(target).structure ? 0 : this.terrainAt(target.x, target.y).defense);
     const resist = e.damageType ? this.resistOf(target, e.damageType) : 0;
     return Math.max(0, Math.max(1, base - def + this.heightBonus(from, target)) - resist);
+  }
+
+  /** vsWounded: extra damage when the target's current HP is below the given fraction of its max HP. */
+  woundedBonus(target: Unit, e: Extract<Effect, { type: 'damage' }>): number {
+    return e.vsWounded && target.hp < e.vsWounded.below * this.def(target).stats.hp ? e.vsWounded.bonus : 0;
   }
 
   /** Spell damage: flat amount, reduced by defense/terrain unless pierce, then resist. */
   previewSpellDamage(target: Unit, e: Extract<Effect, { type: 'damage' }>): number {
     const def = e.pierce ? 0 : this.stat(target, 'defense') + (this.def(target).structure ? 0 : this.terrainAt(target.x, target.y).defense);
     const resist = e.damageType ? this.resistOf(target, e.damageType) : 0;
-    return Math.max(0, Math.max(1, e.amount - def) - resist);
+    return Math.max(0, Math.max(1, e.amount + this.woundedBonus(target, e) - def) - resist);
   }
 
   // ---------- cards (warband hand) ----------
@@ -386,7 +439,7 @@ export class Game {
     const id = this.teams[team]?.hand[handIndex];
     if (!id || this.phase !== 'playing' || team !== this.current || this.cardCost(id) > this.teams[team].essence) return [];
     switch (this.cardKind(id)) {
-      case 'unit': return this.deployTiles(team);
+      case 'unit': return this.unitDeployTiles(team, id);
       case 'spell': return this.spellTargets(team, this.content.spells[id]);
       case 'equipment': {
         const eq = this.content.equipment[id];
@@ -405,6 +458,7 @@ export class Game {
     if (kind === 'unit') return this.deploy(team, handIndex, x, y);
     this.teams[team].essence -= this.cardCost(id);
     this.teams[team].hand.splice(handIndex, 1);
+    this.startCooldown(team, id);
     if (kind === 'equipment') {
       const u = this.unitAt(x, y)!;
       u.equipment = id;
@@ -416,13 +470,28 @@ export class Game {
       const sp = this.content.spells[id];
       this.emit({ kind: 'spell', team, spell: id, target: { x, y } });
       const targets = this.spellAffected(team, sp, { x, y });
+      const had = this.statusSnapshot(sp.effects, targets);
       for (const e of sp.effects) {
-        if ((CAST_LEVEL_EFFECTS as readonly string[]).includes(e.type)) this.applyCastEffect(e, team, undefined, this.radiusTiles({ x, y }, sp.area?.size ?? 0), { x, y });
-        else for (const t of targets) if (t.alive) this.applyEffect(e, t, undefined, { x, y });
+        if ((CAST_LEVEL_EFFECTS as readonly string[]).includes(e.type)) { if (this.snapOk(e, had)) this.applyCastEffect(e, team, undefined, this.radiusTiles({ x, y }, sp.area?.size ?? 0), { x, y }); }
+        else for (const t of targets) if (t.alive && this.snapOk(e, had, t)) this.applyEffect(e, t, undefined, { x, y });
       }
     }
     this.afterAction();
     return true;
+  }
+
+  /** For ifTargetStatus: which units had each conditional status when the use began. */
+  private statusSnapshot(effects: Effect[], units: Unit[]): Map<string, Set<number>> {
+    const out = new Map<string, Set<number>>();
+    for (const e of effects) if (e.ifTargetStatus && !out.has(e.ifTargetStatus))
+      out.set(e.ifTargetStatus, new Set(units.filter(t => t.statuses.some(s => s.id === e.ifTargetStatus)).map(t => t.uid)));
+    return out;
+  }
+  /** Per-target check against the snapshot; without a target (cast-level effects) any snapshot hit passes. */
+  private snapOk(e: Effect, had: Map<string, Set<number>>, t?: Unit): boolean {
+    if (!e.ifTargetStatus) return true;
+    const s = had.get(e.ifTargetStatus);
+    return !!s && (t ? s.has(t.uid) : s.size > 0);
   }
 
   spellTargets(team: number, sp: SpellDef): Pos[] {
@@ -466,16 +535,38 @@ export class Game {
     });
   }
 
-  /** Wells with one of the team's (non-structure) units standing on them. */
+  /** Wells with one of the team's (non-structure, non-flying) units standing on them. */
   heldWells(team: number): Pos[] {
     if (this.mission.wellDeploy === false) return [];
-    return (this.map.wells ?? []).filter(w => { const o = this.unitAt(w.x, w.y); return !!o && o.team === team && !this.def(o).structure; });
+    return (this.map.wells ?? []).filter(w => { const o = this.unitAt(w.x, w.y); return !!o && o.team === team && this.holdsWell(o); });
+  }
+  /** Flyers hover over a Well without holding it. */
+  private holdsWell(o: Unit) { return !this.def(o).structure && !this.def(o).flying; }
+
+  /** Extra deploy tiles for a skyfall card: any empty passable tile not within 2 of an enemy keystone (and not already claimed by a landing). */
+  skyfallTiles(team: number): Pos[] {
+    const keystones = this.units.filter(u => u.alive && u.team !== team && u.tag?.startsWith('keystone_'));
+    const out: Pos[] = [];
+    for (let y = 0; y < this.height; y++) for (let x = 0; x < this.width; x++) {
+      if (this.unitAt(x, y) || this.terrainAt(x, y).impassable || this.landings.some(l => l.x === x && l.y === y)) continue;
+      if (keystones.some(k => manhattan(k, { x, y }) <= 2)) continue;
+      out.push({ x, y });
+    }
+    return out;
+  }
+
+  /** Where the unit card `id` can be deployed: the normal deploy zone (instant), plus skyfall tiles (pending landing) for skyfall units. */
+  unitDeployTiles(team: number, id: string): Pos[] {
+    const zone = this.deployTiles(team);
+    if (!this.content.units[id]?.skyfall) return zone;
+    const seen = new Set(zone.map(p => key(p.x, p.y)));
+    return zone.concat(this.skyfallTiles(team).filter(p => !seen.has(key(p.x, p.y))));
   }
 
   canDeploy(team: number, handIndex: number) {
     const id = this.teams[team].hand[handIndex];
     return this.phase === 'playing' && team === this.current && !!id && this.cardKind(id) === 'unit' &&
-      this.content.units[id].cost <= this.teams[team].essence && this.deployTiles(team).length > 0;
+      this.content.units[id].cost <= this.teams[team].essence && this.unitDeployTiles(team, id).length > 0;
   }
 
   // ---------- actions ----------
@@ -491,6 +582,7 @@ export class Game {
       u.x = step.x; u.y = step.y;
       this.enterTile(u);
       if (!u.alive) break;
+      this.collectAt(u);
     }
     this.afterAction();
     return true;
@@ -506,10 +598,12 @@ export class Game {
     (u.usedAbilities ??= []).push(abilityId);
     this.emit({ kind: 'ability', uid, ability: abilityId, target: { x, y } });
     const targets = this.affected(u, abilityId, { x, y });
+    const had = this.statusSnapshot(a.effects, [...targets, u]);
     for (const e of a.effects) {
       if (!u.alive) break;
-      if ((CAST_LEVEL_EFFECTS as readonly string[]).includes(e.type)) this.applyCastEffect(e, u.team, u, this.areaTiles(u, abilityId, { x, y }), { x, y });
-      else for (const t of targets) if (t.alive) this.applyEffect(e, t, u);
+      if ((CAST_LEVEL_EFFECTS as readonly string[]).includes(e.type)) { if (this.snapOk(e, had)) this.applyCastEffect(e, u.team, u, this.areaTiles(u, abilityId, { x, y }), { x, y }); }
+      else if (e.type === 'status' && e.target === 'caster') { if (this.snapOk(e, had, u)) this.applyEffect(e, u, u); } // once per use
+      else for (const t of targets) if (t.alive && this.snapOk(e, had, t)) this.applyEffect(e, t, u);
     }
     this.afterAction();
     return true;
@@ -517,11 +611,21 @@ export class Game {
 
   deploy(team: number, handIndex: number, x: number, y: number): boolean {
     if (!this.canDeploy(team, handIndex)) return false;
-    if (!this.deployTiles(team).some(p => p.x === x && p.y === y)) return false;
     const id = this.teams[team].hand[handIndex];
+    const instant = this.deployTiles(team).some(p => p.x === x && p.y === y);
+    if (!instant && !this.unitDeployTiles(team, id).some(p => p.x === x && p.y === y)) return false;
     this.teams[team].essence -= this.content.units[id].cost;
     this.teams[team].hand.splice(handIndex, 1);
+    if (!instant) {
+      // Skyfall: the cost is paid now; a marker holds the tile until the unit lands next turn.
+      const uid = this.nextUid++;
+      this.landings.push({ uid, defId: id, team, x, y });
+      this.emit({ kind: 'skyfall', uid, team, defId: id, x, y });
+      this.afterAction();
+      return true;
+    }
     const u = this.spawn(id, team, x, y);
+    u.fromCard = true;
     this.emit({ kind: 'deploy', uid: u.uid });
     this.afterAction();
     return true;
@@ -546,10 +650,10 @@ export class Game {
   }
 
   // ---------- internals ----------
-  private spawn(defId: string, team: number, x: number, y: number, tag?: string): Unit {
+  private spawn(defId: string, team: number, x: number, y: number, tag?: string, uid?: number): Unit {
     const d = this.content.units[defId];
     const u: Unit = {
-      uid: this.nextUid++, defId, team, x, y, hp: d.stats.hp, ap: 0, statuses: [], cooldowns: {},
+      uid: uid ?? this.nextUid++, defId, team, x, y, hp: d.stats.hp, ap: 0, statuses: [], cooldowns: {},
       summonedThisTurn: true, tag, alive: true,
     };
     this.units.push(u);
@@ -561,6 +665,14 @@ export class Game {
     if (this.round > 1)
       team.essence = Math.min(this.mission.maxEssence ?? DEFAULTS.maxEssence, team.essence + (this.mission.teams[this.current]?.essencePerTurn ?? this.mission.essencePerTurn ?? DEFAULTS.essencePerTurn));
     this.emit({ kind: 'turn', team: this.current, turn: this.round });
+    // Rested cards come back first: into the hand, or onto the top of the draw pile when the hand is full.
+    for (const c of team.cooldown) c.turns--;
+    for (const c of team.cooldown.filter(c => c.turns <= 0)) {
+      const toHand = team.hand.length < DRAW.maxHand;
+      if (toHand) team.hand.push(c.card); else team.deck.unshift(c.card);
+      this.emit({ kind: 'ready', team: this.current, card: c.card, toHand });
+    }
+    team.cooldown = team.cooldown.filter(c => c.turns > 0);
     // Draw (not on the very first turn of the game: going first is already an edge).
     if (this.round > 1 || this.current > 0) for (let i = 0; i < DRAW.perTurn; i++) {
       if (!team.deck.length || team.hand.length >= DRAW.maxHand) break;
@@ -570,11 +682,20 @@ export class Game {
     }
     for (const w of this.map.wells ?? []) {
       const holder = this.unitAt(w.x, w.y);
-      if (holder && holder.team === this.current && !this.def(holder).structure) this.gainEssence(this.current, w.amount, { x: w.x, y: w.y });
+      if (holder && holder.team === this.current && this.holdsWell(holder)) this.gainEssence(this.current, w.amount, { x: w.x, y: w.y });
     }
+    const landed = this.resolveLandings();
+    this.collectDrops();
     for (const u of this.aliveUnits(this.current)) {
       u.summonedThisTurn = false;
       u.usedAbilities = [];
+      // Drying: a dry unit off wet ground loses HP (not on the turn it lands). Can kill.
+      const dry = landed.has(u.uid) ? 0 : this.dryingLoss(u);
+      if (dry > 0) { this.damage(u, dry, 'drying'); if (!u.alive) continue; }
+      // Terrain under the unit's feet (flyers skip it, like onEnter; not on the turn a unit lands).
+      if (!landed.has(u.uid) && !this.def(u).flying)
+        for (const e of this.terrainAt(u.x, u.y).onTurnStart ?? []) if (u.alive) this.applyEffect(e, u);
+      if (!u.alive) continue;
       for (const k of Object.keys(u.cooldowns)) u.cooldowns[k] = Math.max(0, u.cooldowns[k] - 1);
       for (const s of [...u.statuses]) for (const e of this.content.statuses[s.id]?.onTurnStart ?? [])
         if (u.alive && (e.type === 'damage' || e.type === 'heal')) this.applyEffect({ ...e, amount: e.amount * (s.stacks ?? 1) }, u);
@@ -584,7 +705,33 @@ export class Game {
     this.checkConditions();
   }
 
+  /** Land this team's pending skyfall units. Returns the uids that landed. */
+  private resolveLandings(): Set<number> {
+    const landed = new Set<number>();
+    const mine = this.landings.filter(l => l.team === this.current);
+    this.landings = this.landings.filter(l => l.team !== this.current);
+    for (const l of mine) {
+      const impact = this.content.units[l.defId].skyfall?.impact ?? 0;
+      const hit = (o: Unit, amount: number) => { const n = Math.max(0, amount - this.resistOf(o, 'physical')); if (n > 0) this.damage(o, n, 'physical'); };
+      let at: Pos | undefined = { x: l.x, y: l.y };
+      const occ = this.unitAt(l.x, l.y);
+      if (occ) {
+        hit(occ, impact + 3);
+        at = this.nearestFree({ x: l.x, y: l.y }, Math.max(this.width, this.height));
+      }
+      if (!at) continue; // nowhere to land: the unit is lost
+      const u = this.spawn(l.defId, l.team, at.x, at.y, undefined, l.uid);
+      u.fromCard = true;
+      landed.add(u.uid);
+      this.emit({ kind: 'deploy', uid: u.uid });
+      this.emit({ kind: 'land', uid: u.uid, from: { x: l.x, y: l.y }, to: at });
+      for (const o of this.units) if (o.alive && o.team !== l.team && manhattan(o, at) === 1) hit(o, impact);
+    }
+    return landed;
+  }
+
   private enterTile(u: Unit) {
+    if (this.def(u).flying) return; // flyers skip terrain onEnter effects
     const e = this.terrainAt(u.x, u.y).onEnter;
     if (e) this.applyEffect(e, u);
   }
@@ -592,6 +739,7 @@ export class Game {
   /** `source` = casting unit (ability); `origin` = spell target tile used for push/pull direction. */
   private applyEffect(e: Effect, target: Unit, source?: Unit, origin?: Pos) {
     const center: Pos | undefined = source ?? origin;
+    if ('filter' in e && !this.passesFilter(target, e.filter)) return;
     switch (e.type) {
       case 'damage': {
         const amt = source ? this.previewDamage(source, target, e) : origin ? this.previewSpellDamage(target, e) : Math.max(1, e.amount);
@@ -606,6 +754,7 @@ export class Game {
         break;
       }
       case 'status': {
+        if (e.target === 'caster') { if (!source) break; target = source; }
         if (this.def(target).structure) break;
         const existing = target.statuses.find(s => s.id === e.status);
         const sd = this.content.statuses[e.status];
@@ -706,6 +855,7 @@ export class Game {
   }
 
   private setTerrain(x: number, y: number, terrain: string) {
+    if (this.content.terrain[this.tiles[y][x].terrain]?.void) return; // chasm stays empty
     this.tiles[y][x].terrain = terrain;
     this.emit({ kind: 'terrain', x, y, terrain });
   }
@@ -732,6 +882,16 @@ export class Game {
       }
       u.hp = 0; u.alive = false;
       this.emit({ kind: 'death', uid: u.uid });
+      const d = this.def(u);
+      if (!d.structure) {
+        const amount = tideDropFor(d.cost ?? 0);
+        if (amount > 0) {
+          const at = this.drops.find(p => p.x === u.x && p.y === u.y);
+          if (at) at.amount += amount; else this.drops.push({ x: u.x, y: u.y, amount });
+          this.emit({ kind: 'drop', x: u.x, y: u.y, amount });
+        }
+        if (u.fromCard) this.startCooldown(u.team, u.defId);
+      }
       if (u.tag) this.runEvents(ev => 'unitDefeated' in ev.when && ev.when.unitDefeated === u.tag);
     }
   }
@@ -763,7 +923,7 @@ export class Game {
         for (const u of this.units) if (u.alive && u.tag === a.tag) this.applyEffect({ type: 'status', status: a.status, duration: a.duration }, u);
         break;
       case 'spawn': {
-        let p: Pos | undefined = !this.unitAt(a.x, a.y) ? { x: a.x, y: a.y } : undefined;
+        let p: Pos | undefined = !this.unitAt(a.x, a.y) && !this.terrainAt(a.x, a.y).impassable ? { x: a.x, y: a.y } : undefined;
         if (!p) p = this.nearestFree({ x: a.x, y: a.y });
         if (!p) break;
         const u = this.spawn(a.unit, a.team, p.x, p.y, a.tag);
@@ -774,13 +934,33 @@ export class Game {
     }
   }
 
-  private nearestFree(c: Pos): Pos | undefined {
-    for (let r = 1; r < 4; r++) for (let y = c.y - r; y <= c.y + r; y++) for (let x = c.x - r; x <= c.x + r; x++)
+  private nearestFree(c: Pos, maxR = 4): Pos | undefined {
+    for (let r = 1; r < maxR; r++) for (let y = c.y - r; y <= c.y + r; y++) for (let x = c.x - r; x <= c.x + r; x++)
       if (this.inBounds(x, y) && manhattan({ x, y }, c) === r && !this.unitAt(x, y) && !this.terrainAt(x, y).impassable) return { x, y };
     return undefined;
   }
 
-  private afterAction() { this.checkConditions(); }
+  private afterAction() { this.collectDrops(); this.checkConditions(); }
+
+  private startCooldown(team: number, card: string) {
+    const turns = cooldownFor(this.cardCost(card));
+    this.teams[team].cooldown.push({ card, turns });
+    this.emit({ kind: 'cooldown', team, card, turns });
+  }
+
+  /** Any non-structure unit standing on spilled Tide picks it up (pushes, teleports and deploys included). */
+  private collectDrops() {
+    if (!this.drops.length) return;
+    for (const u of this.aliveUnits()) this.collectAt(u);
+  }
+  private collectAt(u: Unit) {
+    if (this.def(u).structure) return;
+    const i = this.drops.findIndex(d => d.x === u.x && d.y === u.y);
+    if (i < 0) return;
+    const [d] = this.drops.splice(i, 1);
+    this.emit({ kind: 'pickup', uid: u.uid, team: u.team, x: d.x, y: d.y, amount: d.amount });
+    this.gainEssence(u.team, d.amount, { x: d.x, y: d.y });
+  }
 
   private defaultConditions(enemyOf: number): Condition[] {
     const other = enemyOf === 0 ? 1 : 0;
@@ -806,6 +986,7 @@ export class Game {
     switch (c.type) {
       case 'destroy_keystone': return this.units.some(u => u.tag === `keystone_${c.team}` && !u.alive);
       case 'eliminate': return ![...this.teams[c.team].hand, ...this.teams[c.team].deck].some(id => this.cardKind(id) === 'unit') &&
+        !this.landings.some(l => l.team === c.team) &&
         !this.aliveUnits(c.team).some(u => !this.def(u).structure);
       case 'defeat_unit': { const tagged = this.units.filter(u => u.tag === c.tag); return tagged.length > 0 && tagged.every(u => !u.alive); }
       case 'unit_lost': return this.units.some(u => u.tag === c.tag && !u.alive);

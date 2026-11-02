@@ -30,3 +30,9 @@ npm run build      # static build in dist/ (works offline / any static host)
 Click a unit to select it (blue = where it can walk), pick an ability, click a target. Click a card in your
 warband, then a green tile to deploy. `E`/`Enter` ends the turn, `Esc` or right-click cancels, `1-9` pick abilities, `Q`/`R` rotate the camera.
 In the browser console, `__tactics.game` is the live game state (handy for debugging content).
+
+## Audio
+
+Sound is built from licensed recordings only (CC0 / CC BY, nothing synthesised); see `src/audio/CREDITS.md`.
+`src/audio/engine.ts` (buses, volume settings), `scenes.ts` (music and per-map ambience), `sfx.ts` (per-unit voices and cues), `ui.ts` (clicks and hovers).
+Regenerate the assets with `python3 tools/sounds/build.py <packs-dir>` and `python3 tools/sounds/compose.py <packs-dir>` (pack sources are listed in CREDITS.md).

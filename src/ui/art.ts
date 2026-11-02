@@ -64,6 +64,8 @@ const CREST: Record<string, CrestStyle> = {
   salvage_compact: { field: ['#bf6a3e', '#3a1a0c'], ink: '#efe6d6', hi: '#fff6e6' },
   reef_ascendant: { field: ['#ec8f7f', '#5a2420'], ink: '#f6efe6', hi: '#ffffff', glow: '#ffd2c6' },
   lanternkeepers: { field: ['#7d8791', '#22272c'], ink: '#f2c766', hi: '#fff3c4', glow: '#ffd86b' },
+  overcurrent: { field: ['#8cc7e8', '#14243a'], ink: '#f4f0ff', hi: '#9ff3ff', glow: '#9ff3ff' },
+  gyre: { field: ['#6f7a86', '#1f252c'], ink: '#efe9df', hi: '#e8892f' },
 };
 
 function charge(fid: string, s: CrestStyle, g: string): string {
@@ -96,6 +98,21 @@ function charge(fid: string, s: CrestStyle, g: string): string {
         return `<circle cx="${x}" cy="${y}" r="5.5" fill="${ink}"/><circle cx="${x}" cy="${y}" r="2.2" fill="#c45a4c"/><path d="M${x + Math.cos(a) * 5} ${y + Math.sin(a) * 5} l${Math.cos(a - .5) * 5} ${Math.sin(a - .5) * 5} M${x + Math.cos(a) * 5} ${y + Math.sin(a) * 5} l${Math.cos(a + .5) * 5} ${Math.sin(a + .5) * 5}" stroke="${ink}" stroke-width="1.6"/>`; }).join('');
       return `${polyps}<path d="M60 26 C66 50 70 80 72 108 H48 C50 80 54 50 60 26 Z" fill="${ink}" stroke="#7a2e26" stroke-width="1.5"/>
         <path d="M60 34 V106 M55 60 C54 78 52 92 52 106 M65 60 C66 78 68 92 68 106" stroke="#c45a4c" stroke-width="1.4" fill="none"/>`;
+    }
+    case 'overcurrent': {
+      // a gulper's maw falling from above: open jaw ringed with needle teeth, belly-eye glowing beneath
+      const teeth = Array.from({ length: 9 }, (_, i) => { const x = 36 + i * 6; return `<path d="M${x} 58 L${x + 3} ${70 + (i % 2) * 5} L${x + 6} 58 Z" fill="${ink}"/><path d="M${x} 92 L${x + 3} ${80 - (i % 2) * 5} L${x + 6} 92 Z" fill="${ink}"/>`; }).join('');
+      return `<circle cx="60" cy="104" r="16" fill="url(#${g}gl)"/>
+        <path d="M24 75 C30 44 90 44 96 75 C90 106 30 106 24 75 Z" fill="#0d1726" stroke="${ink}" stroke-width="3"/>${teeth}
+        <path d="M60 22 V40 M54 30 L60 40 L66 30" stroke="${ink}" stroke-width="2.4" fill="none"/>
+        <circle cx="60" cy="104" r="6" fill="${s.hi}"/><circle cx="60" cy="104" r="2.4" fill="#0d1726"/>`;
+    }
+    case 'gyre': {
+      // a wheel of gulls circling over carrion
+      const birds = Array.from({ length: 6 }, (_, i) => { const a = i / 6 * Math.PI * 2, x = 60 + Math.cos(a) * 32, y = 66 + Math.sin(a) * 26, r = a * 180 / Math.PI + 90;
+        return `<path d="M-10 2 Q-5 -6 0 0 Q5 -6 10 2" transform="translate(${x} ${y}) rotate(${r})" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`; }).join('');
+      return `${birds}<path d="M40 66 Q50 52 60 64 Q70 52 80 66 L60 74 Z" fill="${ink}"/><path d="M60 64 L66 70 L60 72 Z" fill="${s.hi}"/>
+        <path d="M38 108 Q48 98 60 104 Q72 98 82 108" fill="none" stroke="${ink}" stroke-width="3" opacity=".7"/><circle cx="60" cy="104" r="3" fill="${s.hi}"/>`;
     }
     case 'lanternkeepers': {
       const lenses = Array.from({ length: 7 }, (_, i) => { const a = i / 7 * Math.PI * 2 - Math.PI / 2, x = 60 + Math.cos(a) * 36, y = 70 + Math.sin(a) * 36;

@@ -1,0 +1,280 @@
+{
+  "id": "saltpan_bastions",
+  "name": "Saltpan Bastions",
+  "description": "A Concord salt works walled into a star fort on a flooded pan. Gates, bastion points and killing lanes for anyone who can hold a formation.",
+  "legend": {
+    ".": "salt_flat",
+    "=": "bone_road",
+    "B": "brine_lake",
+    "L": "lighthouse_stone",
+    "M": "glowmoss",
+    "X": "salt_wall",
+    "a": "calcite",
+    "c": "dead_coral",
+    "g": "tangleweed",
+    "m": "scrap_field",
+    "p": "brine_pool",
+    "s": "shallows",
+    "w": "wreck"
+  },
+  "tiles": [
+    "BBBBBBBBBBBBBB=.BBBBBBBBBBBBBB",
+    "BBBBBBBBBBBBBLLL.BBBBBBBBBBBBB",
+    "BBBBBBBBBBBBBLLL.BBBBBBBBBBBBB",
+    "BBBBBBBBBBBB..=...BBBBBBBBBBBB",
+    "BBBBB...BBBB..=.aaBBBB...BBBBB",
+    "BBBB....mmBB..=.aaBBm..cccBBBB",
+    "BBBB.....mcccc=.a...m.m.ccBBBB",
+    "BBBB......ccss=....mmmmmccBBBB",
+    "BBBBBm...pp.Xs=..X.pp.mmmBBBBB",
+    "BBBBBmm.ppppXs=..Xppppmm.BBBBB",
+    "BBBBBBssppppa.=w.gppppmmBBBBBB",
+    "BBBBBBss.ppaa.=.gg.pp..wBBBBBB",
+    "BBB....sXX.aLL=LLL..XX.....BBB",
+    "B...........Lp=ppL...........B",
+    "===============MpL............",
+    "............LpM===============",
+    "B...........Lpp=pL...........B",
+    "BBB.....XX..LLL=LLa.XXs....BBB",
+    "BBBBBBw..pp.gg.=.aapp.ssBBBBBB",
+    "BBBBBBmmppppg.w=.appppssBBBBBB",
+    "BBBBB.mmppppX..=sXpppp.mmBBBBB",
+    "BBBBBmmm.pp.X..=sX.pp...mBBBBB",
+    "BBBBccmmmmm....=sscc......BBBB",
+    "BBBBcc.m.m...a.=ccccm.....BBBB",
+    "BBBBccc..mBBaa.=..BBmm....BBBB",
+    "BBBBB...BBBBaa.=..BBBB...BBBBB",
+    "BBBBBBBBBBBB...=..BBBBBBBBBBBB",
+    "BBBBBBBBBBBBB.LLLBBBBBBBBBBBBB",
+    "BBBBBBBBBBBBB.LLLBBBBBBBBBBBBB",
+    "BBBBBBBBBBBBBB.=BBBBBBBBBBBBBB"
+  ],
+  "heights": [
+    "111111111111112211111111111111",
+    "111111111111122221111111111111",
+    "111111111111122221111111111111",
+    "111111111111222222111111111111",
+    "111112221111222222111122211111",
+    "111122222211222222112222221111",
+    "111122222222222222222222221111",
+    "111122222222222222222222221111",
+    "111112222112111111211222211111",
+    "111112221111111111111122211111",
+    "111111221111111111111122111111",
+    "111111222111111111111222111111",
+    "111222221111111111111122222111",
+    "122222221111111111111122222221",
+    "222222221111111111111122222222",
+    "222222221111111111111122222222",
+    "122222221111111111111122222221",
+    "111222221111111111111122222111",
+    "111111222111111111111222111111",
+    "111111221111111111111122111111",
+    "111112221111111111111122211111",
+    "111112222112111111211222211111",
+    "111122222222222222222222221111",
+    "111122222222222222222222221111",
+    "111122222211222222112222221111",
+    "111112221111222222111122211111",
+    "111111111111222222111111111111",
+    "111111111111122221111111111111",
+    "111111111111122221111111111111",
+    "111111111111112211111111111111"
+  ],
+  "keystones": [
+    {
+      "team": 0,
+      "x": 15,
+      "y": 27
+    },
+    {
+      "team": 1,
+      "x": 14,
+      "y": 2
+    }
+  ],
+  "deployZones": {
+    "0": [
+      [
+        15,
+        26
+      ],
+      [
+        14,
+        27
+      ],
+      [
+        16,
+        27
+      ],
+      [
+        15,
+        28
+      ],
+      [
+        15,
+        25
+      ],
+      [
+        14,
+        26
+      ],
+      [
+        16,
+        26
+      ],
+      [
+        13,
+        27
+      ],
+      [
+        14,
+        28
+      ],
+      [
+        16,
+        28
+      ],
+      [
+        15,
+        29
+      ],
+      [
+        15,
+        24
+      ],
+      [
+        14,
+        25
+      ],
+      [
+        16,
+        25
+      ],
+      [
+        13,
+        26
+      ],
+      [
+        17,
+        26
+      ],
+      [
+        13,
+        28
+      ],
+      [
+        14,
+        29
+      ],
+      [
+        15,
+        23
+      ],
+      [
+        14,
+        24
+      ]
+    ],
+    "1": [
+      [
+        14,
+        1
+      ],
+      [
+        13,
+        2
+      ],
+      [
+        15,
+        2
+      ],
+      [
+        14,
+        3
+      ],
+      [
+        14,
+        0
+      ],
+      [
+        13,
+        1
+      ],
+      [
+        15,
+        1
+      ],
+      [
+        16,
+        2
+      ],
+      [
+        13,
+        3
+      ],
+      [
+        15,
+        3
+      ],
+      [
+        14,
+        4
+      ],
+      [
+        15,
+        0
+      ],
+      [
+        16,
+        1
+      ],
+      [
+        12,
+        3
+      ],
+      [
+        16,
+        3
+      ],
+      [
+        13,
+        4
+      ],
+      [
+        15,
+        4
+      ],
+      [
+        14,
+        5
+      ],
+      [
+        17,
+        3
+      ],
+      [
+        12,
+        4
+      ]
+    ]
+  },
+  "wells": [
+    {
+      "x": 9,
+      "y": 8
+    },
+    {
+      "x": 20,
+      "y": 21
+    },
+    {
+      "x": 22,
+      "y": 6
+    },
+    {
+      "x": 7,
+      "y": 23
+    }
+  ]
+}

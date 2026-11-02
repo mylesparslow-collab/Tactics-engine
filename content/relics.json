@@ -3224,5 +3224,1071 @@
   "rarity": "rare",
   "pearlCost": 120,
   "card": "lk_equip_first_lens"
+ },
+ "overcurrent_bellyeye_shoal": {
+  "faction": "overcurrent",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Eyes"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thicker Shoal"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_shoal_flash",
+    "label": "Belly Flash"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_bellyeye_shoal",
+  "unit": "overcurrent_bellyeye_shoal"
+ },
+ "overcurrent_gulper": {
+  "faction": "overcurrent",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Wider Throat"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Longer Teeth"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_gulper_swallow",
+    "label": "Swallow Whole"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_gulper",
+  "unit": "overcurrent_gulper"
+ },
+ "overcurrent_tongue_louse": {
+  "faction": "overcurrent",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Fat on Blood"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Hooked Legs"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_louse_tongue",
+    "label": "Eat the Tongue"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_tongue_louse",
+  "unit": "overcurrent_tongue_louse"
+ },
+ "overcurrent_driftbell": {
+  "faction": "overcurrent",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thick Jelly"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Long Threads"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_bell_bloom",
+    "label": "Bloom"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_driftbell",
+  "unit": "overcurrent_driftbell"
+ },
+ "overcurrent_lure_mother": {
+  "faction": "overcurrent",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Heavy Bait"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Brighter Lure"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_lure_second_light",
+    "label": "Second Light"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_lure_mother",
+  "unit": "overcurrent_lure_mother"
+ },
+ "overcurrent_hagwyrm": {
+  "faction": "overcurrent",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Knotted Tighter"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Gnashing Pores"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_hag_smother",
+    "label": "Smother in Slime"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_hagwyrm",
+  "unit": "overcurrent_hagwyrm"
+ },
+ "overcurrent_siphon_chain": {
+  "faction": "overcurrent",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Added Links"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Hotter Bells"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_siphon_whole_chain",
+    "label": "The Whole Chain"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_siphon_chain",
+  "unit": "overcurrent_siphon_chain"
+ },
+ "overcurrent_weeping_sunfish": {
+  "faction": "overcurrent",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Heavier Tears"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Slow Tide"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_sunfish_downpour",
+    "label": "Weeping Downpour"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_weeping_sunfish",
+  "unit": "overcurrent_weeping_sunfish"
+ },
+ "overcurrent_downward_shark": {
+  "faction": "overcurrent",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharper Fall"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Heavy Skull"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_shark_row",
+    "label": "Every Row at Once"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_downward_shark",
+  "unit": "overcurrent_downward_shark"
+ },
+ "overcurrent_barrelgaze": {
+  "faction": "overcurrent",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thicker Dome"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sleepless Eyes"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_gaze_all_eyes",
+    "label": "All Eyes Look Up"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_barrelgaze",
+  "unit": "overcurrent_barrelgaze"
+ },
+ "overcurrent_ribbon_king": {
+  "faction": "overcurrent",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Longer Ribbon"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Red Crest Flares"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_ribbon_second_pass",
+    "label": "Second Pass"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_ribbon_king",
+  "unit": "overcurrent_ribbon_king"
+ },
+ "overcurrent_the_thinning": {
+  "faction": "overcurrent",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Wider Shadow"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Falling Weight"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "oc_r3_thinning_eclipse",
+    "label": "Eclipse"
+   }
+  ],
+  "type": "champion",
+  "card": "overcurrent_the_thinning",
+  "unit": "overcurrent_the_thinning"
+ },
+ "overcurrent_mother_mantle": {
+  "faction": "overcurrent",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Hooks Set Deeper"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Thick Mantle"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "oc_mantle_legend_arms_remember",
+    "label": "The Arms Remember"
+   }
+  ],
+  "card": "overcurrent_mother_mantle",
+  "unit": "overcurrent_mother_mantle"
+ },
+ "overcurrent_saint_rictus": {
+  "faction": "overcurrent",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Longer Ligament"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Fed Well"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "oc_rictus_legend_second_mouth",
+    "label": "Second Mouth"
+   }
+  ],
+  "card": "overcurrent_saint_rictus",
+  "unit": "overcurrent_saint_rictus"
+ },
+ "overcurrent_the_undersinging": {
+  "faction": "overcurrent",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "More Bodies"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Lamp-Pitch"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "oc_undersinging_legend_whole_choir",
+    "label": "The Whole Choir"
+   }
+  ],
+  "card": "overcurrent_the_undersinging",
+  "unit": "overcurrent_the_undersinging"
+ },
+ "oc_spell_rain_of_fish": {
+  "faction": "overcurrent",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "oc_spell_rain_of_fish"
+ },
+ "oc_spell_brine_squall": {
+  "faction": "overcurrent",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "oc_spell_brine_squall"
+ },
+ "oc_spell_something_heavy": {
+  "faction": "overcurrent",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "oc_spell_something_heavy"
+ },
+ "oc_spell_ink_bloom": {
+  "faction": "overcurrent",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "oc_spell_ink_bloom"
+ },
+ "oc_spell_undertow_from_above": {
+  "faction": "overcurrent",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "oc_spell_undertow_from_above"
+ },
+ "oc_spell_spawning_water": {
+  "faction": "overcurrent",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "oc_spell_spawning_water"
+ },
+ "oc_spell_the_sky_opens": {
+  "faction": "overcurrent",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "oc_spell_the_sky_opens"
+ },
+ "oc_spell_hunger": {
+  "faction": "overcurrent",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "oc_spell_hunger"
+ },
+ "oc_equip_gill_bladder": {
+  "faction": "overcurrent",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "oc_equip_gill_bladder"
+ },
+ "oc_equip_lure_stalk": {
+  "faction": "overcurrent",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "oc_equip_lure_stalk"
+ },
+ "oc_equip_hookskin": {
+  "faction": "overcurrent",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "oc_equip_hookskin"
+ },
+ "oc_equip_parasite_crown": {
+  "faction": "overcurrent",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "oc_equip_parasite_crown"
+ },
+ "oc_equip_belly_lantern": {
+  "faction": "overcurrent",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "oc_equip_belly_lantern"
+ },
+ "oc_equip_drowned_heart": {
+  "faction": "overcurrent",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "oc_equip_drowned_heart"
+ },
+ "gyre_roost_runner": {
+  "faction": "gyre",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Salt-Greased Wings"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thick Skin"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_runner_hoax",
+    "label": "Gone Before You Look"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_roost_runner",
+  "unit": "gyre_roost_runner"
+ },
+ "gyre_salt_crow": {
+  "faction": "gyre",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Well-Fed"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharper Beak"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_crow_gorge",
+    "label": "Gorge on the Fallen"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_salt_crow",
+  "unit": "gyre_salt_crow"
+ },
+ "gyre_gullwife": {
+  "faction": "gyre",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Apron Pockets"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Louder Flock"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_gullwife_whole_flock",
+    "label": "The Whole Flock"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_gullwife",
+  "unit": "gyre_gullwife"
+ },
+ "gyre_roostwarden": {
+  "faction": "gyre",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Oilskin Layers"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Hardened Pike"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_warden_nest_wall",
+    "label": "Nest-Wall"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_roostwarden",
+  "unit": "gyre_roostwarden"
+ },
+ "gyre_skua_lancer": {
+  "faction": "gyre",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Long Glide"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Hooked Tip"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_skua_long_stoop",
+    "label": "Long Stoop"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_skua_lancer",
+  "unit": "gyre_skua_lancer"
+ },
+ "gyre_pelican_hauler": {
+  "faction": "gyre",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Deep Pouch"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Thick Bill"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_pelican_pouchful",
+    "label": "Pouchful"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_pelican_hauler",
+  "unit": "gyre_pelican_hauler"
+ },
+ "gyre_windreader": {
+  "faction": "gyre",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Old Bones"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Reading"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_windreader_wrong_sky",
+    "label": "Reading of the Wrong Sky"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_windreader",
+  "unit": "gyre_windreader"
+ },
+ "gyre_shrike_harrier": {
+  "faction": "gyre",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharper Spikes"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Fed Bird"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_shrike_larder",
+    "label": "Larder"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_shrike_harrier",
+  "unit": "gyre_shrike_harrier"
+ },
+ "gyre_wheel_captain": {
+  "faction": "gyre",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Veteran Wheel"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Black-Backed"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_captain_tighten",
+    "label": "The Wheel Tightens"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_wheel_captain",
+  "unit": "gyre_wheel_captain"
+ },
+ "gyre_frigate_thief": {
+  "faction": "gyre",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Lighter Fingers"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Red Throat"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_thief_clean_out",
+    "label": "Clean Out"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_frigate_thief",
+  "unit": "gyre_frigate_thief"
+ },
+ "gyre_stormkite_gunner": {
+  "faction": "gyre",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Better Bolts"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Stout Tether"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_gunner_cut_the_line",
+    "label": "Cut the Line"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_stormkite_gunner",
+  "unit": "gyre_stormkite_gunner"
+ },
+ "gyre_mother_of_the_wheel": {
+  "faction": "gyre",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Older Still"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Wider Wings"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "gy_r3_mother_all_the_birds",
+    "label": "All the Birds"
+   }
+  ],
+  "type": "champion",
+  "card": "gyre_mother_of_the_wheel",
+  "unit": "gyre_mother_of_the_wheel"
+ },
+ "gyre_wren_halloway": {
+  "faction": "gyre",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Longer Reach"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Better Coat"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "gy_wren_legend_biggest_score",
+    "label": "Biggest Score"
+   }
+  ],
+  "card": "gyre_wren_halloway",
+  "unit": "gyre_wren_halloway"
+ },
+ "gyre_roost_mother_oskeline": {
+  "faction": "gyre",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Old Roots"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Many Hands"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "gy_oskeline_legend_every_bird",
+    "label": "Every Bird Comes Home"
+   }
+  ],
+  "card": "gyre_roost_mother_oskeline",
+  "unit": "gyre_roost_mother_oskeline"
+ },
+ "gyre_captain_torr_ashby": {
+  "faction": "gyre",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Gorged"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Black Wheel Veteran"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "gy_torr_legend_never_lands",
+    "label": "The Wheel Never Lands"
+   }
+  ],
+  "card": "gyre_captain_torr_ashby",
+  "unit": "gyre_captain_torr_ashby"
+ },
+ "gy_spell_carrion_call": {
+  "faction": "gyre",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "gy_spell_carrion_call"
+ },
+ "gy_spell_updraft": {
+  "faction": "gyre",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "gy_spell_updraft"
+ },
+ "gy_spell_dive_signal": {
+  "faction": "gyre",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "gy_spell_dive_signal"
+ },
+ "gy_spell_feather_squall": {
+  "faction": "gyre",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "gy_spell_feather_squall"
+ },
+ "gy_spell_wrong_sky_gale": {
+  "faction": "gyre",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "gy_spell_wrong_sky_gale"
+ },
+ "gy_spell_black_sky": {
+  "faction": "gyre",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "gy_spell_black_sky"
+ },
+ "gy_spell_the_wheel_turns": {
+  "faction": "gyre",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "gy_spell_the_wheel_turns"
+ },
+ "gy_spell_picked_clean": {
+  "faction": "gyre",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "gy_spell_picked_clean"
+ },
+ "gy_equip_beak_mask": {
+  "faction": "gyre",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "gy_equip_beak_mask"
+ },
+ "gy_equip_oilskin_flight_coat": {
+  "faction": "gyre",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "gy_equip_oilskin_flight_coat"
+ },
+ "gy_equip_bone_harness": {
+  "faction": "gyre",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "gy_equip_bone_harness"
+ },
+ "gy_equip_hooded_lure": {
+  "faction": "gyre",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "gy_equip_hooded_lure"
+ },
+ "gy_equip_gull_bell": {
+  "faction": "gyre",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "gy_equip_gull_bell"
+ },
+ "gy_equip_wing_knives": {
+  "faction": "gyre",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "gy_equip_wing_knives"
  }
 }
