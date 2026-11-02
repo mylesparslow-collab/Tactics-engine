@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Game, manhattan } from '../src/engine/game';
+import { Game, cooldownFor, manhattan, tideDropFor } from '../src/engine/game';
 import { playAiTurn } from '../src/engine/ai';
 import { loadFixtureContent } from './fixtures/load';
 import { normalizeContent, validateContent } from '../src/engine/content';
@@ -344,5 +344,54 @@ describe('effect extensions', () => {
       expect(g.log.filter(e => e.kind === 'move' && e.uid === s.uid)).toHaveLength(1);
       foes.forEach((f, i) => expect(tag(g, `f${i}`).hp).toBe(f.y === 2 ? 26 - (4 + 2 - 3) : 26)); // row 2 line only
     }
+  });
+});
+
+describe('tide drops and card cooldowns', () => {
+  it('a cast spell rests for its cooldown, then returns to the hand', () => {
+    const g = world({ teams: [team('human', [anchor(0, 4)], ['hunger']), team('ai', [anchor(), { unit: 'vanguard', x: 4, y: 4 }])] });
+    expect(g.playCard(0, 0, 4, 4)).toBe(true);
+    expect(g.teams[0].hand).toEqual([]);
+    expect(g.teams[0].cooldown).toEqual([{ card: 'hunger', turns: cooldownFor(10) }]);
+    cycle(g);
+    expect(g.teams[0].cooldown).toEqual([{ card: 'hunger', turns: cooldownFor(10) - 1 }]);
+    for (let i = 1; i < cooldownFor(10); i++) cycle(g);
+    expect(g.teams[0].cooldown).toEqual([]);
+    expect(g.teams[0].hand).toEqual(['hunger']);
+  });
+
+  it('a champion deployed from the hand drops Tide and goes on cooldown when it dies; walking onto the drop collects it', () => {
+    const g = world({ teams: [team('human', [{ unit: 'render', x: 0, y: 3 }], ['dryer']), team('ai', [anchor()], ['hunger'])] });
+    expect(g.deploy(0, 0, 1, 5)).toBe(true);
+    const mine = g.unitAt(1, 5)!;
+    g.endTurn();
+    mine.hp = 1;
+    expect(g.playCard(1, 0, 1, 5)).toBe(true);
+    expect(mine.alive).toBe(false);
+    expect(g.drops).toEqual([{ x: 1, y: 5, amount: tideDropFor(30) }]);
+    expect(g.teams[0].cooldown).toEqual([{ card: 'dryer', turns: cooldownFor(30) }]);
+    g.endTurn();
+    const before = g.teams[0].essence;
+    const walker = g.unitAt(0, 3)!;
+    expect(g.move(walker.uid, 1, 5)).toBe(true);
+    expect(g.teams[0].essence).toBe(before + tideDropFor(30));
+    expect(g.drops).toEqual([]);
+  });
+
+  it('pre-placed units drop Tide but are not cards, so they never come back', () => {
+    const g = world({ teams: [team('human', [anchor(0, 4), { unit: 'render', x: 4, y: 4 }]), team('ai', [anchor()], ['hunger'])] });
+    const r = g.unitAt(4, 4)!;
+    g.endTurn();
+    r.hp = 1;
+    g.playCard(1, 0, 4, 4);
+    expect(r.alive).toBe(false);
+    expect(g.drops).toHaveLength(1);
+    expect(g.teams[0].cooldown).toEqual([]);
+    expect(g.teams[1].cooldown.map(c => c.card)).toEqual(['hunger']);
+  });
+
+  it('formulas: cooldown is ceil(cost/15) with a floor of 2; drops are a quarter of cost, rounded to 5', () => {
+    expect([15, 30, 45, 60, 90].map(cooldownFor)).toEqual([2, 2, 3, 4, 6]);
+    expect([0, 15, 30, 45, 90].map(tideDropFor)).toEqual([0, 5, 10, 10, 25]);
   });
 });

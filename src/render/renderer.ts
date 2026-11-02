@@ -594,10 +594,13 @@ export class Renderer {
     this.drawOverlays(now);
 
     const units = this.unitDrawables(now); this.cachedNow = now; this.pickList = null;
+    const drops = g.drops.map(dp => ({ dp, d: this.view.depth(dp.x, dp.y) + 0.3 })).sort((a, b) => a.d - b.d); let di = 0;
     for (const dr of units) {
+      while (di < drops.length && drops[di].d <= dr.d) this.drawDrop(drops[di++].dp, now);
       this.drawUnit(dr, now);
       this.reoccludeAround(dr);
     }
+    while (di < drops.length) this.drawDrop(drops[di++].dp, now);
     // bolts
     for (const bt of this.bolts) {
       if (now < bt.start) continue;
@@ -861,6 +864,26 @@ export class Renderer {
     list.sort((a, b) => a.d - b.d);
     ctx.save(); ctx.beginPath(); ctx.rect(left, top, right - left, s.sy + 10 - top); ctx.clip();
     for (const t of list) this.painter.drawTile(ctx, t.x, t.y);
+    ctx.restore();
+  }
+
+  /** Spilled Tide on a tile: a small crystal cluster with a soft pulse (no blur filters; one cheap shadow glow). */
+  private drawDrop(dp: { x: number; y: number; amount: number }, now: number) {
+    const ctx = this.ctx, s = this.view.project(dp.x, dp.y, this.tileZ(dp)), ph = now / 480 + dp.x * 1.7 + dp.y * 2.3, pulse = 0.5 + 0.5 * Math.sin(ph), bob = Math.sin(ph * 0.8) * 2;
+    ctx.save(); ctx.translate(s.sx, s.sy); ctx.scale(1.6, 1.6);
+    const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 26); g.addColorStop(0, `rgba(143,230,255,${0.22 + pulse * 0.2})`); g.addColorStop(1, 'rgba(143,230,255,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(0, 0, 26, 13, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowColor = '#8fe6ff'; ctx.shadowBlur = 6 + pulse * 6;
+    const shard = (ox: number, oy: number, w: number, h: number) => {
+      ctx.beginPath(); ctx.moveTo(ox, oy - h); ctx.lineTo(ox + w, oy - h * 0.35); ctx.lineTo(ox + w * 0.6, oy); ctx.lineTo(ox - w * 0.6, oy); ctx.lineTo(ox - w, oy - h * 0.35); ctx.closePath();
+      const f = ctx.createLinearGradient(ox - w, oy - h, ox + w, oy); f.addColorStop(0, '#d9f8ff'); f.addColorStop(0.5, '#6fd6f0'); f.addColorStop(1, '#2a8fa8');
+      ctx.fillStyle = f; ctx.fill(); ctx.shadowBlur = 0; ctx.strokeStyle = '#0b3a48cc'; ctx.lineWidth = 1; ctx.stroke(); ctx.shadowBlur = 6 + pulse * 6;
+    };
+    const big = Math.min(1.5, 1 + dp.amount / 60);
+    shard(-8, 2, 4 * big, 11 * big); shard(8, 3, 3.5, 9); shard(0, 5 + bob * 0.3, 5 * big, 15 * big + bob);
+    ctx.shadowBlur = 0;
+    ctx.font = '700 11px "Barlow Semi Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.lineWidth = 3; ctx.strokeStyle = '#04141acc'; ctx.fillStyle = '#c8f4ff';
+    ctx.strokeText(String(dp.amount), 0, 17); ctx.fillText(String(dp.amount), 0, 17);
     ctx.restore();
   }
 
