@@ -130,6 +130,7 @@ function danger(g: Game, th: Threat, u: Unit, p: Pos, vip: boolean): number {
 
 /** Standing on a Tide Well: Tide every turn plus a forward deploy point. Worth a detour. */
 function wellBonus(g: Game, u: Unit, p: Pos): number {
+  if (g.def(u).flying) return 0; // flyers hold no Wells
   const w = (g.map.wells ?? []).find(w => w.x === p.x && w.y === p.y);
   if (!w) return 0;
   const occ = g.unitAt(w.x, w.y);
@@ -164,6 +165,7 @@ function scoreEffects(g: Game, team: number, effects: Effect[], hit: Unit[],
   let score = 0;
   for (const o of hit) {
     const enemy = o.team !== team;
+    effects = effects.filter(e => !('filter' in e) || g.passesFilter(o, e.filter));
     const vip = enemy && !!it && isVip(o, it.hunt);
     const objective = g.def(o).structure ? 1.6 : vip ? 2.5 : 1;
     let hp = o.hp;
@@ -205,8 +207,9 @@ function bestPlan(g: Game, u: Unit, th: Threat, it: Intel): Plan | undefined {
     const [x, y] = k.split(',').map(Number);
     const from = { x, y };
     const left = u.ap - node.cost;
-    const hazard = g.terrainAt(x, y).onEnter ? 3 : 0;
-    const risk = danger(g, th, u, from, vip);
+    const hazard = g.terrainAt(x, y).onEnter && !g.def(u).flying ? 3 : 0;
+    // A drying unit left off wet ground loses HP next turn.
+    const risk = danger(g, th, u, from, vip) + g.dryingLoss(u, from) * 1.3;
     for (const ab of g.abilitiesOf(u)) {
       const a = g.ability(ab);
       if (!a || a.apCost > left || (u.cooldowns[ab] ?? 0) > 0 || g.usedThisTurn(u, ab) || g.hasFlag(u, 'preventsAction') || u.summonedThisTurn) continue;
@@ -244,9 +247,9 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
     return Math.min(...enemies.map(o => Math.abs(manhattan(p, o) - want) - (isVip(o, it.hunt) ? 4 : 0) + (g.def(o).structure ? 1 : 0)));
   };
   const cost = (p: Pos, steps: number) => {
-    let c = value(p) + steps * 0.01 + (g.terrainAt(p.x, p.y).onEnter ? 4 : 0) - (vip ? 0 : wellBonus(g, u, p));
+    let c = value(p) + steps * 0.01 + (g.terrainAt(p.x, p.y).onEnter && !g.def(u).flying ? 4 : 0) - (vip ? 0 : wellBonus(g, u, p)) + g.dryingLoss(u, p) * 3;
     // An open well within a turn's walk pulls a unit off its march.
-    if (!vip && !goal) {
+    if (!vip && !goal && !g.def(u).flying) {
       const open = (g.map.wells ?? []).filter(w => { const o = g.unitAt(w.x, w.y); return !o || o.uid === u.uid; });
       const near = open.length ? Math.min(...open.map(w => manhattan(p, w))) : 99;
       if (near <= 6) c += near * 0.3 - 1.8;
@@ -273,16 +276,37 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
 
 function tryDeploy(g: Game): boolean {
   const team = g.teams[g.current];
-  const tiles = g.deployTiles(g.current);
-  if (!tiles.length) return false;
   // Most expensive affordable unit first.
   const order = team.hand.map((id, i) => ({ i, id, cost: g.cardCost(id) }))
     .filter(h => g.cardKind(h.id) === 'unit' && h.cost <= team.essence).sort((a, b) => b.cost - a.cost);
   if (!order.length) return false;
+  const pick = order[0];
+  const tiles = g.unitDeployTiles(g.current, pick.id);
+  if (!tiles.length) return false;
   const enemies = g.aliveUnits().filter(o => o.team !== g.current);
-  const score = (p: Pos) => enemies.length ? Math.min(...enemies.map(o => manhattan(p, o))) : 0;
+  const instant = new Set(g.deployTiles(g.current).map(p => key(p.x, p.y)));
+  const impact = g.content.units[pick.id].skyfall?.impact ?? 0;
+  const keystones = enemies.filter(o => o.tag?.startsWith('keystone_'));
+  // Lower is better. Normal deploys go as close to the enemy as the zone allows; a skyfall drop (only taken when worth something) is scored on the
+  // damage its landing would do (kills count extra), with a pull toward the enemy keystone. Tiles are never occupied.
+  const score = (p: Pos) => {
+    const near = enemies.length ? Math.min(...enemies.map(o => manhattan(p, o))) : 0;
+    if (instant.has(key(p.x, p.y))) return near + 4;
+    let v = 0, adj = 0;
+    for (const o of enemies) {
+      if (manhattan(p, o) !== 1) continue;
+      adj++;
+      const d = Math.max(0, impact - g.resistOf(o, 'physical'));
+      v += Math.min(d, o.hp) * (g.def(o).structure ? 1.6 : 1) + (d >= o.hp ? 6 + g.def(o).cost / 10 : 0);
+    }
+    const ks = keystones.length ? Math.min(...keystones.map(o => manhattan(p, o))) : 99;
+    v += Math.max(0, 8 - ks) * 0.6;
+    if (adj > 2) v -= (adj - 2) * 2; // do not land in the middle of a crowd
+    if (g.content.units[pick.id].dries && g.isWetTile(p.x, p.y)) v += 2; // a drying unit likes to land in water
+    return v > 0 ? 4 - v : 100; // a drop that hits nothing and threatens nothing is not worth it
+  };
   const tile = tiles.map(p => ({ p, s: score(p) + Math.abs(jitter(g)) })).sort((a, b) => a.s - b.s)[0].p;
-  return g.deploy(g.current, order[0].i, tile.x, tile.y);
+  return g.deploy(g.current, pick.i, tile.x, tile.y);
 }
 
 function tryCards(g: Game, it: Intel): boolean {

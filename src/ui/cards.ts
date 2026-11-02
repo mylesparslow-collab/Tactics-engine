@@ -7,7 +7,8 @@ import { assetUrl, cardArtUrl, isPlaceholderArt } from '../render/anim';
 import { hashStr, mix, rgba, shade } from '../render/iso';
 import { crestSvg, kit } from './art';
 import { h } from './dom';
-import { effectText } from './text';
+import { label } from '../engine/content';
+import { effectText, traitLine } from './text';
 
 const FRAMES = import.meta.glob('./kit/card/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 const frameUrl = (fid: string | undefined, hero: boolean) =>
@@ -122,10 +123,14 @@ function rulesFor(c: Content, id: string, full: boolean): HTMLElement[] {
       ud.abilities.forEach(abl);
       if (ud.resist && Object.keys(ud.resist).length) rule(null, 'Resist ' + Object.entries(ud.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', '));
       if (ud.revive) rule(null, `Rises once on death (${Math.round(ud.revive.hpFraction * 100)}% HP).`);
+      if (ud.flying) rule('Flying', 'Every tile costs 1 AP; ignores height and crosses impassable ground. Holds no Wells.');
+      if (ud.skyfall) rule('Skyfall', `May drop onto any open tile beyond 2 of the enemy ${label(c, 'keystone')}; lands next turn for ${ud.skyfall.impact} damage to adjacent enemies.`);
+      if (ud.dries) rule('Dries', `Loses ${ud.dries} HP each turn unless on wet ground or Wet.`);
       if (ud.description) out.push(h('p', { class: 'r fl' }, ud.description));
     } else {
       const names = ud.abilities.map(a => c.abilities[a]?.name).filter(Boolean);
       out.push(h('p', { class: 'r' }, h('b', null, names.join(' · '))));
+      if (traitLine(ud)) out.push(h('p', { class: 'r' }, traitLine(ud)));
     }
   } else if (sd) {
     rule(null, sd.description ?? sd.effects.map(e => effectText(c, e)).join('. '));
