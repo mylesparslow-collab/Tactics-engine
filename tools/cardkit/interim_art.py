@@ -1,11 +1,10 @@
 """Interim card art: each unit's 3D model render, hero-framed on a painted faction backdrop.
 Stands in until the ChatGPT paintings land at the same path (content/cards/<id>.webp, 2:3, 512x768).
-Run: python3 tools/cardkit/interim_art.py <ref_render_dir>   (dir holds <unitId>_rgba.png from spritegen refrender.py)"""
+Run: python3 tools/cardkit/interim_art.py <ref_render_dir> [unitId|factionId ...]   (dir holds <unitId>_rgba.png from spritegen refrender.py)"""
 import os, sys, json, math
 import numpy as np
 from PIL import Image, ImageFilter
 ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
-REF = sys.argv[1]
 OUT = os.path.join(ROOT, 'content', 'cards')
 W, H = 512, 768
 yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
@@ -18,6 +17,10 @@ MOODS = {
     'salvage_compact': [(34, 20, 16), (196, 112, 60), (72, 46, 32), (120, 78, 52), (255, 190, 120), (230, 120, 60)],
     'reef_ascendant':  [(36, 16, 40), (222, 128, 118), (88, 46, 58), (140, 84, 92), (255, 200, 180), (240, 130, 160)],
     'lanternkeepers':  [(10, 12, 22), (70, 66, 86), (30, 30, 36), (50, 48, 58), (255, 200, 110), (227, 176, 75)],
+    # the sea hanging overhead: abyss-blue sky, cerulean horizon, belly-light cyan from below
+    'overcurrent':     [(11, 23, 48), (112, 178, 214), (24, 44, 66), (52, 86, 110), (150, 236, 240), (95, 224, 230)],
+    # cold low wind-light under a wrong-coloured (sulphur-green) sky over slate cliffs
+    'gyre':            [(46, 52, 62), (172, 168, 128), (70, 76, 84), (112, 116, 118), (240, 214, 160), (232, 137, 47)],
 }
 
 def fbm(h, w, octaves, base, seed):
@@ -105,13 +108,15 @@ def compose(uid, fid, fig, seed, hero):
     gr = np.random.default_rng(seed).normal(0, 3, out.shape)
     Image.fromarray(np.clip(out + gr, 0, 255).astype(np.uint8)).save(os.path.join(OUT, f'{uid}.webp'), quality=86, method=6)
 
-units = json.load(open(os.path.join(ROOT, 'content', 'units.json')))
-only = sys.argv[2:]
-n = 0
-for i, (uid, u) in enumerate(units.items()):
-    if only and uid not in only: continue
-    p = os.path.join(REF, f'{uid}_rgba.png')
-    if not os.path.exists(p): continue
-    compose(uid, u.get('faction', ''), Image.open(p).convert('RGBA'), i * 7 + 3, u.get('hero'))
-    n += 1
-print('wrote', n)
+if __name__ == '__main__':
+    REF = sys.argv[1]
+    units = json.load(open(os.path.join(ROOT, 'content', 'units.json')))
+    only = sys.argv[2:]
+    n = 0
+    for i, (uid, u) in enumerate(units.items()):
+        if only and uid not in only and u.get('faction') not in only: continue
+        p = os.path.join(REF, f'{uid}_rgba.png')
+        if not os.path.exists(p): continue
+        compose(uid, u.get('faction', ''), Image.open(p).convert('RGBA'), i * 7 + 3, u.get('hero'))
+        n += 1
+    print('wrote', n)
