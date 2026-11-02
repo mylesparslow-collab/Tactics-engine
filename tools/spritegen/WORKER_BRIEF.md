@@ -1,6 +1,6 @@
 # Brief: sculpt one faction's unit sprites with spritegen
 
-You are building painted, semi-realistic isometric unit sprites for EBB, an original tactics game
+You are building painted, semi-realistic isometric unit sprites for Brinewake, an original tactics game
 (PoxNora-like quality bar, but all designs original). The pipeline is code: each unit is a numpy
 signed-distance-field sculpt, posed per frame, lit and painted down to 96x112.
 

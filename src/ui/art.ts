@@ -1,4 +1,4 @@
-// Original UI art for EBB, drawn as inline SVG: brass frames (9-slice), faction crests, title key art, and UI glyphs.
+// Original UI art for Brinewake, drawn as inline SVG: brass frames (9-slice), faction crests, title key art, and UI glyphs.
 // Everything here is static vector art; nothing uses filters on animated layers (keeps mobile fast).
 
 import { h } from './dom';
@@ -36,15 +36,15 @@ export function illuminated(text: string) {
 }
 
 export function installArt() {
-  if (document.getElementById('ebb-art')) return;
-  if (!document.getElementById('ebb-fonts')) {
+  if (document.getElementById('brinewake-art')) return;
+  if (!document.getElementById('brinewake-fonts')) {
     const ln = document.createElement('link');
-    ln.id = 'ebb-fonts'; ln.rel = 'stylesheet';
+    ln.id = 'brinewake-fonts'; ln.rel = 'stylesheet';
     ln.href = 'https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Barlow:wght@400;500;600&display=swap';
     document.head.append(ln);
   }
   const st = document.createElement('style');
-  st.id = 'ebb-art';
+  st.id = 'brinewake-art';
   const u = (n: string) => `url("${kit(n)}")`;
   st.textContent = `:root{--frame-lg:${u('frame')};--frame-sm:${u('frame_sm')};--plate:${u('plate')};--plate-gold:${u('plate_gold')};--slate:${u('slate')};--k-logo:${u('logo')};--k-endturn:${u('endturn')};--k-tide:${u('coin_tide')};--k-hp:${u('coin_hp')};--k-round:${u('coin_round')};--grain:${enc(grainSvg(false))};--grain-paper:${enc(grainSvg(true))};--chart:${enc(chartSvg())};}`;
   document.head.append(st);

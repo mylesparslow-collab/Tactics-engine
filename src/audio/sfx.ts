@@ -12,7 +12,7 @@ for (const [path, url] of Object.entries(files)) {
   if (m) (banks[m[1]] ??= []).push(url);
 }
 
-const MUTE_KEY = 'ebb.muted';
+const MUTE_KEY = 'brinewake.muted';
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 const buffers = new Map<string, AudioBuffer>();
