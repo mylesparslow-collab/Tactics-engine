@@ -79,6 +79,35 @@ export function cardColors(c: Content, id: string) {
   return { color, accent, kind, factionName: f?.name };
 }
 
+/** Card-portrait crops, by source: sprites that sit small or low in their 96x112 frame (flyers, low beasts) get
+ *  cropped to their opaque bounds so the card shows them centered and full-size like the standing units. */
+const figureCrop = new Map<string, string>();
+export function figureImg(src: string): HTMLImageElement {
+  const img = h('img', { class: 'figure', src: figureCrop.get(src) ?? src, alt: '', draggable: 'false' }) as HTMLImageElement;
+  if (figureCrop.has(src)) return img;
+  const probe = new Image();
+  probe.onload = () => {
+    const w = probe.naturalWidth, ht = probe.naturalHeight; if (!w || !ht) return;
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = ht;
+    const g = cv.getContext('2d'); if (!g) return;
+    g.drawImage(probe, 0, 0);
+    let a: Uint8ClampedArray; try { a = g.getImageData(0, 0, w, ht).data; } catch { return; }
+    let x0 = w, y0 = ht, x1 = -1, y1 = -1;
+    for (let y = 0; y < ht; y++) for (let x = 0; x < w; x++) if (a[(y * w + x) * 4 + 3] > 24) {
+      if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+    }
+    if (x1 < 0 || (y1 - y0 + 1) >= ht * 0.8) { figureCrop.set(src, src); return; }
+    const bw = x1 - x0 + 1, bh = y1 - y0 + 1, pad = Math.round(Math.max(bw, bh) * 0.06);
+    // keep the portrait no wider than the frame's aspect, so a wide flyer still fills the window sensibly
+    const cw = bw + pad * 2, ch = Math.max(bh + pad * 2, Math.round(cw * 0.8));
+    const out = document.createElement('canvas'); out.width = cw; out.height = ch;
+    out.getContext('2d')?.drawImage(probe, x0, y0, bw, bh, pad, Math.round((ch - bh) / 2), bw, bh);
+    const url = out.toDataURL('image/png'); figureCrop.set(src, url); img.src = url; img.classList.add('cropped');
+  };
+  probe.src = src;
+  return img;
+}
+
 /** The art window for a relic: painted card art, else the unit's sprite still on a faction wash, else a heraldic emblem. */
 export function artNode(id: string, c: Content): HTMLElement {
   const { color, accent, kind } = cardColors(c, id);
@@ -95,12 +124,12 @@ export function artNode(id: string, c: Content): HTMLElement {
   if (artUrl && !ph) art.append(h('img', { src: artUrl, alt: '', draggable: 'false' }));
   else if (painted) {
     art.classList.add('painted');
-    art.append(h('div', { class: 'rc-ground' }), h('img', { class: 'figure', src: painted, alt: '', draggable: 'false' }));
+    art.append(h('div', { class: 'rc-ground' }), figureImg(painted));
   } else if (artUrl) {
     art.append(h('img', { class: 'cardart', src: artUrl, alt: '', draggable: 'false' }));
   } else if (still) {
     art.classList.add('painted');
-    art.append(h('div', { class: 'rc-ground' }), h('img', { class: 'figure', src: still, alt: '', draggable: 'false' }));
+    art.append(h('div', { class: 'rc-ground' }), figureImg(still));
   } else {
     art.classList.add('painted', 'emblem');
     const em = h('div', { class: 'rc-emblem' }); em.innerHTML = emblemSvg(id, kind, color, accent); art.append(em);
