@@ -10,7 +10,10 @@ import { clear, h } from './dom';
 import { artNode, buildCard } from './cards';
 import { abilityGlyph, crestSvg, glyph, installArt, teamFaction } from './art';
 import { stopBackdrop } from './menu';
-import { isMuted, playCard, playCue, playEnd, playTurnBell, setMuted } from '../audio/sfx';
+import { isMuted, playCard, playCardPlay, playCue, playEnd, playTurnBell, playTurnEnd, setMuted } from '../audio/sfx';
+import { onSettingsChange } from '../audio/engine';
+import { playError } from '../audio/ui';
+import { openSoundPanel } from './soundpanel';
 import { effectText } from './text';
 
 export interface SessionOpts {
@@ -64,6 +67,7 @@ export class GameSession {
     this.renderer.start();
     this.renderer.onCue = c => playCue(c, this.game);
     this.game.on(e => this.onEvent(e));
+    this.cleanup.push(onSettingsChange(() => this.renderTop()));
     let roRaf = 0; // coalesce bursts of resize events into one pass per frame
     const ro = new ResizeObserver(() => { if (roRaf) return; roRaf = requestAnimationFrame(() => { roRaf = 0; this.renderer.resize(); this.layoutHand(); }); });
     ro.observe(this.canvas.parentElement!);
@@ -317,6 +321,7 @@ export class GameSession {
     if (!this.canAct()) return;
     this.selected = null; this.mode = { kind: 'idle' };
     this.hidePreview();
+    playTurnEnd();
     this.g.endTurn();
     this.refresh();
     this.scheduleAi();
@@ -363,7 +368,7 @@ export class GameSession {
     const mine = u && u.team === g.current;
     if (p && this.mode.kind === 'card') {
       const m = this.mode;
-      if (g.cardTargets(g.current, m.index).some(t => t.x === p.x && t.y === p.y)) g.playCard(g.current, m.index, p.x, p.y);
+      if (g.cardTargets(g.current, m.index).some(t => t.x === p.x && t.y === p.y)) { if (g.playCard(g.current, m.index, p.x, p.y)) playCardPlay(); } else playError();
       this.mode = { kind: 'idle' };
       this.refresh(); return;
     }
@@ -499,7 +504,7 @@ export class GameSession {
         h('div', { class: 'rm-round' }, 'Round ', h('b', { class: 'num' }, String(g.round))),
         h('div', { class: 'rm-turn' }, myTurn ? 'Your turn' : this.aiRunning ? `${cur.name.replace(/^The /, '')} acting` : `${cur.name.replace(/^The /, '')}`)),
       h('div', { class: 'hud-r' }, ...others.map(i => this.teamGauge(i, 'right')), endBtn,
-        h('button', { class: 'iconbtn menubtn soundbtn', title: isMuted() ? 'Sound off (M)' : 'Sound on (M)', onclick: () => { setMuted(!isMuted()); this.renderTop(); } }, glyph(isMuted() ? 'mute' : 'sound')),
+        h('button', { class: 'iconbtn menubtn soundbtn', title: isMuted() ? 'Sound off (M)' : 'Sound settings (M mutes)', 'data-snd': 'open', onclick: (e: Event) => openSoundPanel(e.currentTarget as HTMLElement) }, glyph(isMuted() ? 'mute' : 'sound')),
         h('button', { class: 'iconbtn menubtn', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, glyph('gear'))));
   }
 
