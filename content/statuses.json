@@ -297,5 +297,12 @@
   },
   "stacks": true,
   "maxStacks": 2
+ },
+ "tangled": {
+  "name": "Tangled",
+  "description": "Weed wrapped round the legs: -1 AP.",
+  "statMods": {
+   "ap": -1
+  }
  }
 }

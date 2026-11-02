@@ -48,7 +48,16 @@ export function validateContent(c: Content): string[] {
     if (e.ifTargetStatus !== undefined && !has(c.statuses, e.ifTargetStatus)) errs.push(`${where}: ifTargetStatus names unknown status "${e.ifTargetStatus}"`);
     if (e.type === 'aura' && e.keepsWet !== undefined && typeof e.keepsWet !== 'boolean') errs.push(`${where}: keepsWet must be true or false`);
     const f = (e as { filter?: Record<string, unknown> }).filter;
-    if (f && (typeof f !== 'object' || Object.entries(f).some(([k, v]) => k !== 'flying' || typeof v !== 'boolean'))) errs.push(`${where}: filter only supports { flying: boolean }`);
+    if (f) {
+      if (typeof f !== 'object') errs.push(`${where}: filter must be an object`);
+      else for (const [k, v] of Object.entries(f)) {
+        if (k === 'flying') { if (typeof v !== 'boolean') errs.push(`${where}: filter.flying must be true or false`); }
+        else if (k === 'faction' || k === 'notFaction') {
+          if (!Array.isArray(v) || v.some(x => typeof x !== 'string')) errs.push(`${where}: filter.${k} must be a list of faction ids`);
+          else if (c.factions) for (const x of v as string[]) if (!has(c.factions, x)) errs.push(`${where}: filter.${k} names unknown faction "${x}"`);
+        } else errs.push(`${where}: filter only supports flying, faction and notFaction`);
+      }
+    }
     if (e.type === 'status' && e.target !== undefined && e.target !== 'caster') errs.push(`${where}: status target must be "caster"`);
     if (e.type === 'aura' && typeof e.radius !== 'number') errs.push(`${where}: aura needs a numeric radius`);
   };
@@ -99,6 +108,18 @@ export function validateContent(c: Content): string[] {
 
   for (const [id, t] of Object.entries(c.terrain)) {
     if (t.onEnter) checkEffect(t.onEnter, `terrain ${id} onEnter`);
+    t.onTurnStart?.forEach((e, i) => {
+      checkEffect(e, `terrain ${id} onTurnStart ${i}`);
+      if (!['damage', 'heal', 'status'].includes(e.type)) errs.push(`terrain ${id} onTurnStart ${i}: only damage, heal and status effects are allowed`);
+    });
+    if (t.rangeBonus !== undefined && typeof t.rangeBonus !== 'number') errs.push(`terrain ${id}: rangeBonus must be a number`);
+    if (t.factionMoveCost !== undefined) {
+      if (typeof t.factionMoveCost !== 'object' || t.factionMoveCost === null) errs.push(`terrain ${id}: factionMoveCost must be an object`);
+      else for (const [f, v] of Object.entries(t.factionMoveCost)) {
+        if (typeof v !== 'number' || !(v >= 1)) errs.push(`terrain ${id}: factionMoveCost.${f} must be a number >= 1`);
+        if (c.factions && !has(c.factions, f)) errs.push(`terrain ${id}: factionMoveCost names unknown faction "${f}"`);
+      }
+    }
     if (t.wet !== undefined && typeof t.wet !== 'boolean') errs.push(`terrain ${id}: wet must be true or false`);
   }
 

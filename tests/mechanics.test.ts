@@ -395,3 +395,127 @@ describe('tide drops and card cooldowns', () => {
     expect([0, 15, 30, 45, 90].map(tideDropFor)).toEqual([0, 5, 10, 10, 25]);
   });
 });
+
+describe('terrain mechanics', () => {
+  const FLAT = '00000000';
+  const tiles = ['........', '........', 'll......', '.....b..', 'vvgww...', '........'];
+  const terrainWorld = (teams: MissionDef['teams'], edit?: (c: Content) => void) => world({
+    teams,
+    map: {
+      legend: { '.': 'grass', l: 'living_reef', v: 'vent', g: 'glowmoss', w: 'tangleweed', b: 'beam_glass' },
+      tiles, heights: Array(6).fill(FLAT),
+    },
+    edit: c => {
+      c.factions = { reef_ascendant: { name: 'Reef', color: '#f00' }, hadal_court: { name: 'Hadal', color: '#00f' } };
+      c.terrain.living_reef = { name: 'Living Reef', moveCost: 2, defense: 1, color: '#e07', factionMoveCost: { reef_ascendant: 1 } };
+      c.terrain.vent = { name: 'Vent', moveCost: 1, defense: 0, color: '#533', onTurnStart: [
+        { type: 'damage', amount: 2, damageType: 'fire', filter: { notFaction: ['hadal_court'] } },
+        { type: 'heal', amount: 2, filter: { faction: ['hadal_court'] } }] };
+      c.terrain.glowmoss = { name: 'Glowmoss', moveCost: 1, defense: 0, color: '#7b6', onTurnStart: [{ type: 'heal', amount: 2 }] };
+      c.terrain.tangleweed = { name: 'Tangleweed', moveCost: 2, defense: 1, color: '#4a3',
+        onEnter: { type: 'status', status: 'tangled', duration: 2, filter: { notFaction: ['reef_ascendant'] } } };
+      c.terrain.beam_glass = { name: 'Beam Glass', moveCost: 1, defense: -1, color: '#9cb', rangeBonus: 1 };
+      c.statuses.tangled = { name: 'Tangled', statMods: { ap: -1 } };
+      c.abilities.jab = { name: 'Jab', apCost: 1, range: { min: 1, max: 1 }, target: 'enemy', effects: [{ type: 'damage', amount: 1 }] };
+      c.abilities.bow = { name: 'Bow', apCost: 1, range: { min: 2, max: 3 }, target: 'enemy', effects: [{ type: 'damage', amount: 1 }] };
+      c.abilities.snipe = { name: 'Snipe', apCost: 1, range: { min: 2, max: 2 }, target: 'enemy', effects: [{ type: 'damage', amount: 3 }] };
+      const mk = (name: string, abilities: string[], extra: object = {}) => ({ name, cost: 30, stats: stats(20), abilities, sprite, ...extra });
+      Object.assign(c.units, {
+        walker: mk('Walker', ['jab']), reefer: mk('Reefer', ['jab'], { faction: 'reef_ascendant' }),
+        hadal: mk('Hadal', ['jab'], { faction: 'hadal_court' }), archer: mk('Archer', ['bow']), sniper: mk('Sniper', ['snipe']),
+      });
+      edit?.(c);
+    },
+  });
+  const tag = (g: Game, t: string) => g.units.find(u => u.tag === t)!;
+  const far = team('human', [{ unit: 'walker', x: 7, y: 0 }]);
+
+  it('factionMoveCost lowers the move cost for that faction only', () => {
+    const g = terrainWorld([team('human', [{ unit: 'reefer', x: 0, y: 3, tag: 'r' }, { unit: 'walker', x: 1, y: 3, tag: 'w' }]), team('ai', [anchor()])]);
+    expect(g.reachable(tag(g, 'r')).get('0,2')?.cost).toBe(1);
+    expect(g.reachable(tag(g, 'w')).get('1,2')?.cost).toBe(2);
+    expect(g.pathTo(tag(g, 'w'), 1, 2)).toHaveLength(2);
+  });
+
+  it('vents burn non-Hadal units and heal Hadal units at turn start', () => {
+    const g = terrainWorld([far, team('ai', [{ unit: 'walker', x: 0, y: 4, tag: 'w' }, { unit: 'hadal', x: 1, y: 4, tag: 'h' }])]);
+    tag(g, 'h').hp = 10;
+    g.endTurn();
+    expect(tag(g, 'w').hp).toBe(18);
+    expect(tag(g, 'h').hp).toBe(12);
+    expect(g.log.some(e => e.kind === 'damage' && e.uid === tag(g, 'w').uid && e.amount === 2)).toBe(true);
+    expect(g.log.some(e => e.kind === 'heal' && e.uid === tag(g, 'h').uid && e.amount === 2)).toBe(true);
+  });
+
+  it('glowmoss heals but never above max HP', () => {
+    const g = terrainWorld([far, team('ai', [{ unit: 'walker', x: 2, y: 4, tag: 'a' }, { unit: 'walker', x: 2, y: 4, tag: 'b' }])]);
+    // Two units cannot share a tile in play; move the second by editing coordinates before the turn starts.
+    tag(g, 'b').x = 7; tag(g, 'b').y = 5;
+    tag(g, 'a').hp = 19;
+    g.endTurn();
+    expect(tag(g, 'a').hp).toBe(20);
+    expect(g.log.filter(e => e.kind === 'heal' && e.uid === tag(g, 'a').uid).map(e => (e as { amount: number }).amount)).toEqual([1]);
+    const h = terrainWorld([far, team('ai', [{ unit: 'walker', x: 2, y: 4, tag: 'a' }])]);
+    tag(h, 'a').hp = 10; h.endTurn();
+    expect(tag(h, 'a').hp).toBe(12);
+    h.endTurn(); h.endTurn();
+    expect(tag(h, 'a').hp).toBe(14);
+  });
+
+  it('flyers ignore onTurnStart terrain', () => {
+    const g = terrainWorld([far, team('ai', [{ unit: 'wisp', x: 0, y: 4, tag: 'v' }, { unit: 'wisp', x: 2, y: 4, tag: 'm' }])]);
+    tag(g, 'm').hp = 5;
+    g.endTurn();
+    expect(tag(g, 'v').hp).toBe(10);
+    expect(tag(g, 'm').hp).toBe(5);
+  });
+
+  it('beam glass adds 1 range to ranged abilities only', () => {
+    const g = terrainWorld([team('human', [{ unit: 'archer', x: 5, y: 3, tag: 'on' }, { unit: 'archer', x: 5, y: 2, tag: 'off' }]), team('ai', [anchor(7, 5)])]);
+    const has = (u: string, ab: string, x: number, y: number) => g.rangeTiles(tag(g, u), ab).some(p => p.x === x && p.y === y);
+    expect(has('on', 'bow', 1, 3)).toBe(true);  // distance 4
+    expect(has('off', 'bow', 1, 2)).toBe(false);
+    expect(has('off', 'bow', 2, 2)).toBe(true); // distance 3 still fine
+    expect(has('on', 'jab', 4, 3)).toBe(true);
+    expect(has('on', 'jab', 3, 3)).toBe(false); // melee gets no bonus
+    // Targeting agrees with the preview.
+    const t = terrainWorld([team('human', [{ unit: 'archer', x: 5, y: 3, tag: 'a' }]), team('ai', [{ unit: 'walker', x: 1, y: 3 }, anchor(7, 5)])]);
+    expect(t.targetsFrom(tag(t, 'a'), 'bow').some(p => p.x === 1 && p.y === 3)).toBe(true);
+  });
+
+  it('tangleweed tangles everyone except Reef Ascendant', () => {
+    const g = terrainWorld([team('human', [{ unit: 'walker', x: 3, y: 5, tag: 'w' }, { unit: 'reefer', x: 4, y: 5, tag: 'r' }]), team('ai', [anchor()])]);
+    expect(g.move(tag(g, 'w').uid, 3, 4)).toBe(true);
+    expect(g.move(tag(g, 'r').uid, 4, 4)).toBe(true);
+    expect(tag(g, 'w').statuses.some(s => s.id === 'tangled')).toBe(true);
+    expect(tag(g, 'r').statuses.some(s => s.id === 'tangled')).toBe(false);
+  });
+
+  it('validation rejects a bad factionMoveCost, rangeBonus, onTurnStart and unknown filter factions', () => {
+    const ok = terrainWorld([far, team('ai', [anchor()])]);
+    expect(validateContent(ok.content)).toEqual([]);
+    const bad = structuredClone(ok.content);
+    bad.terrain.living_reef.factionMoveCost = { reef_ascendant: 0, nowhere: 1 };
+    (bad.terrain.beam_glass as unknown as { rangeBonus: unknown }).rangeBonus = 'far';
+    bad.terrain.glowmoss.onTurnStart = [{ type: 'push', distance: 1 }];
+    bad.terrain.vent.onTurnStart = [{ type: 'heal', amount: 1, filter: { faction: ['ghosts'] } }];
+    const errs = validateContent(bad);
+    expect(errs.filter(e => /factionMoveCost/.test(e))).toHaveLength(2);
+    expect(errs.some(e => /rangeBonus/.test(e))).toBe(true);
+    expect(errs.some(e => /glowmoss onTurnStart 0: only damage, heal and status/.test(e))).toBe(true);
+    expect(errs.some(e => /unknown faction "ghosts"/.test(e))).toBe(true);
+  });
+
+  it('the AI avoids ending on a harmful vent when an equivalent safe tile exists', () => {
+    // Sniper needs distance exactly 2 from the enemy at (0,2). (2,2) is a vent; (1,1) and (1,3) are plain grass.
+    const g = terrainWorld([team('human', [{ unit: 'walker', x: 0, y: 2 }]), team('ai', [{ unit: 'sniper', x: 4, y: 2, tag: 's' }])], c => {
+      c.maps.world.tiles[2] = '..v.....';
+    });
+    g.endTurn();
+    expect(g.current).toBe(1);
+    playAiTurn(g);
+    const s = tag(g, 's');
+    expect(manhattan(s, { x: 0, y: 2 })).toBe(2);
+    expect(`${s.x},${s.y}`).not.toBe('2,2');
+  });
+});
