@@ -33,7 +33,7 @@ In the browser console, `__tactics.game` is the live game state (handy for debug
 
 ## Hosting (Cloudflare Pages)
 
-`.github/workflows/deploy.yml` tests, builds, and deploys `dist/` to the Cloudflare Pages project `ebb` on every push to
+`.github/workflows/deploy.yml` tests, builds, and deploys `dist/` to the Cloudflare Pages project `brinewake` (brinewake.pages.dev) on every push to
 `main` (production) and on every pull request (a preview URL). It needs two repository secrets, set under
 Settings, Secrets and variables, Actions: `CLOUDFLARE_API_TOKEN` (a token with the "Cloudflare Pages: Edit" permission)
 and `CLOUDFLARE_ACCOUNT_ID`. Without them the workflow still builds and tests, and skips the deploy.
