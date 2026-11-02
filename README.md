@@ -33,7 +33,7 @@ In the browser console, `__tactics.game` is the live game state (handy for debug
 
 ## Hosting (Cloudflare Pages)
 
-`.github/workflows/deploy.yml` tests, builds, and deploys `dist/` to the Cloudflare Pages project `brinewake` (brinewake.pages.dev) on every push to
-`main` (production) and on every pull request (a preview URL). It needs two repository secrets, set under
-Settings, Secrets and variables, Actions: `CLOUDFLARE_API_TOKEN` (a token with the "Cloudflare Pages: Edit" permission)
-and `CLOUDFLARE_ACCOUNT_ID`. Without them the workflow still builds and tests, and skips the deploy.
+The game is live at https://brinewake.pages.dev. Cloudflare Pages is connected to this repo through its GitHub
+integration (project `brinewake`, build command `npm run build`, output `dist`, `NODE_VERSION=22`): every push to `main`
+deploys to production and every other branch gets its own preview URL. Build settings live in the Cloudflare dashboard
+under Workers & Pages, brinewake, Settings. `.github/workflows/ci.yml` runs the tests and build on every push and PR.
