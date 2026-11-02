@@ -8,7 +8,7 @@ import { label } from '../engine/content';
 import { assetUrl } from '../render/anim';
 import { mix, shade } from '../render/iso';
 import { abilityLines, buildCard, cardColors } from './cards';
-import { crestSvg, glyph, illuminated } from './art';
+import { crestSvg, glyph } from './art';
 import { clear, h } from './dom';
 import { effectText } from './text';
 import { ProvingGround } from './proving';
@@ -176,7 +176,7 @@ export function showCollection(host: HTMLElement, content: Content, onBack: () =
   host.append(h('div', { class: 'scr coll-scr' },
     h('header', { class: 'scr-head' },
       h('button', { class: 'iconbtn back', title: 'Back', onclick: () => { closeDetail(); onBack(); } }, glyph('back')),
-      h('div', { class: 'scr-title' }, h('div', { class: 'kicker' }, 'Collection'), h('h1', null, ...illuminated('Relics'))),
+      h('div', { class: 'scr-title' }, h('div', { class: 'kicker' }, 'Collection'), h('h1', null, 'Relics')),
       h('div', { class: 'scr-head-sp' })),
     h('div', { class: 'cl-bar' }, factionRail, h('div', { class: 'cl-row' }, typeSeg, ownSeg, count)),
     grid));
