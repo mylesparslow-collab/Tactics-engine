@@ -1,0 +1,217 @@
+{
+  "id": "oc_the_slime_knot",
+  "name": "The Slime Knot",
+  "description": "A hagwyrm is being cut apart alive in the Kelpmire, and the Overcurrent come down the channel to eat the hunters.",
+  "map": "kelpmire",
+  "briefing": [
+    "Entry the sixth. One of the big ones did not make it to the Banks. It came down in the Kelpmire instead, a hagfish the length of a wagon, and the Compact found it before it had finished dying.",
+    "They are cutting it while it lives. Harpoons through the gill slits, a winch on a wreck, men with saws walking on its back. I am told the meat does not rot, and sells by the pound to a fat man in the Kettle who asks no questions.",
+    "The others have heard it. I did not know they could hear each other. They are coming down the channel now, and the Compact has not noticed, because the Compact is counting."
+  ],
+  "victoryText": "The Harpoon Engine goes over in the mud with its crew still on the winch. The hagwyrm pulls the last harpoon out of itself by knotting around it, and floods the channel with slime so thick the sleds will not come back for a season. Somewhere in the Kettle, a fat man in three coats raises the price of carcass.",
+  "defeatText": "The sleds take the hagwyrm in pieces and the long one in a net. Wenna sees it a week later, dried and coiled in a Kettle stall, labelled \"sky eel, does not rot, ask inside\".",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "overcurrent_the_undersinging",
+          "x": 10,
+          "y": 22,
+          "tag": "undersinging"
+        },
+        {
+          "unit": "overcurrent_hagwyrm",
+          "x": 8,
+          "y": 12,
+          "tag": "hagwyrm_kin"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 9,
+          "y": 23,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 11,
+          "y": 23,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 10,
+          "y": 24,
+          "tag": "swarm"
+        }
+      ]
+    },
+    {
+      "name": "The Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_wrecker",
+        "salvage_compact_wrecker",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_tallow_mender",
+        "salvage_compact_scrapper",
+        "salvage_compact_powder_monk",
+        "salvage_compact_lamplighter"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_harpoon_engine",
+          "x": 3,
+          "y": 6,
+          "tag": "harpoon_crew"
+        },
+        {
+          "unit": "salvage_compact_breach_gunner",
+          "x": 12,
+          "y": 9,
+          "tag": "harpoon_crew"
+        },
+        {
+          "unit": "salvage_compact_breach_gunner",
+          "x": 15,
+          "y": 8,
+          "tag": "harpoon_crew"
+        },
+        {
+          "unit": "salvage_compact_quartermaster",
+          "x": 8,
+          "y": 3,
+          "tag": "harpoon_crew"
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 9,
+          "y": 12,
+          "tag": "carcass_cutters"
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 7,
+          "y": 13,
+          "tag": "carcass_cutters"
+        },
+        {
+          "unit": "salvage_compact_snare_tinker",
+          "x": 10,
+          "y": 11,
+          "tag": "carcass_cutters"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 15
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "harpoon_crew",
+        "label": "Kill the harpoon crew"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "undersinging",
+        "label": "The Undersinging must not die"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Kill the hunters before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "hagwyrm_kin",
+          "status": "sv_harpooned",
+          "duration": 3
+        },
+        {
+          "type": "message",
+          "speaker": "Hunger",
+          "text": "kin. pinned. it bleeds the good smell."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 13,
+          "y": 18,
+          "tag": "sled_riders"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 15,
+          "y": 18,
+          "tag": "sled_riders"
+        },
+        {
+          "type": "message",
+          "speaker": "Cutter Mags Ollery",
+          "text": "Keep sawing! Brask pays by the pound, and he don't pay for what crawls off."
+        }
+      ]
+    },
+    {
+      "when": {
+        "unitDefeated": "hagwyrm_kin"
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Hunger",
+          "text": "kin is meat now. good. good."
+        },
+        {
+          "type": "message",
+          "speaker": "The Choir",
+          "text": "mmm. mmmmm."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 40,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "hagwyrm_kin",
+          "not": true,
+          "label": "The hagwyrm survives"
+        },
+        "pearls": 25,
+        "label": "The hagwyrm survives"
+      }
+    ]
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "id": "lk_the_lamp_will_not_go_out",
+  "name": "The Lamp Will Not Go Out",
+  "map": "lantern_shoal",
+  "description": "Hold the Shoal lamp through the night while the sky falls, until Venn can tell the Rim why.",
+  "briefing": [
+    "Oriel Venn, written on the back of the count, for whoever is left to read it. Deeplight is dark. I was standing at the glass when the Tide came down the causeway with their prophet, and I watched a light that had burned for three hundred years go out under a wet hand. I came up the Brinks with my palms burned through, and the rain has followed me all the way to the Shoal.",
+    "Commander Orrel's company holds the summit against Dunnock. We hold the lamp below it, against his people and against what is falling out of the thin sky behind them. The sea is coming down on the Shoal now. Keeper Auster says that when it rains on the Shoal itself, there is nothing left to check.",
+    "We kept the vow for three hundred and eleven years, and the Rim keeps a lamp in every window and does not know why. Tonight I am going to tell them why. The Captain has agreed to hold the lens steady while I do it, and has asked me to spell carefully."
+  ],
+  "victoryText": "On the summit Dunnock dies with the tower's light on his face, and below him the last of the fallen things dries on the salt. Herald Vhaal stands at the foot of the tower and asks her question, and Auster answers it. Then Auster puts her hand on the glass. The rain slows, and stops. A red-throated frigatebird circles the lamp-room once and drops a folded page on the gallery rail, lock and all. Across the Ebb, in window after window, the Rim's little lamps stay lit until dawn, and this time everyone knows why.",
+  "defeatText": "The beam stutters out mid-word. The last thing anyone on the Rim reads in the sky is half a sentence. Then the sky itself comes down to finish it.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "lanternkeepers_captain_hollis_drenn",
+          "x": 10,
+          "y": 17,
+          "tag": "captain_drenn"
+        },
+        {
+          "unit": "lanternkeepers_keeper_pell_auster",
+          "x": 11,
+          "y": 18,
+          "tag": "keeper_auster"
+        },
+        {
+          "unit": "lanternkeepers_lensmaster_oriel_venn",
+          "x": 9,
+          "y": 18,
+          "tag": "lensmaster_venn"
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_bloat_drowned",
+        "returning_tide_undertow_singer",
+        "returning_tide_shroud_mender",
+        "returning_tide_tideskulker",
+        "returning_tide_tideskulker"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_wringer",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 12,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 11,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_choirmaster",
+          "x": 12,
+          "y": 2
+        },
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 8,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 7,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 14,
+          "y": 5
+        }
+      ],
+      "startingEssence": 20,
+      "essencePerTurn": 20
+    },
+    {
+      "name": "Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "ai",
+      "keystone": false,
+      "units": [
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 19,
+          "y": 4,
+          "tag": "fallen"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 20,
+          "y": 5,
+          "tag": "fallen"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 0
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 12,
+        "label": "Hold the lamp for 12 turns"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The Shoal lamp must not fall"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "keeper_auster",
+        "label": "Keeper Auster must not fall"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "lensmaster_venn",
+        "label": "Lensmaster Venn must not fall"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Commander Tamsin Orrel",
+          "text": "Captain Drenn? Orrel. Dunnock is on my wall. Whatever comes out of the sky, keep it off my back."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_downward_shark",
+          "x": 10,
+          "y": 10,
+          "tag": "fallen"
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_barrelgaze",
+          "x": 4,
+          "y": 10,
+          "tag": "fallen"
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_ribbon_king",
+          "x": 16,
+          "y": 10,
+          "tag": "fallen"
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_gulper",
+          "x": 9,
+          "y": 11,
+          "tag": "fallen"
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_gulper",
+          "x": 11,
+          "y": 11,
+          "tag": "fallen"
+        },
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 6
+        },
+        {
+          "type": "terrain",
+          "x": 4,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 6
+        },
+        {
+          "type": "terrain",
+          "x": 16,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 6
+        },
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "There it is. Lens up, Venn."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 9
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Lensmaster Oriel Venn",
+          "text": "THE SEA IS ABOVE YOU. THE LAMPS HOLD IT UP. KEEP YOURS LIT."
+        },
+        {
+          "type": "status",
+          "tag": "fallen",
+          "status": "marked",
+          "duration": 3
+        },
+        {
+          "type": "grant_essence",
+          "team": 0,
+          "amount": 40
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 90,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "keeper_auster",
+          "fraction": 0.5,
+          "label": "Keep Keeper Auster above half health"
+        },
+        "pearls": 30,
+        "label": "Keep Keeper Auster above half health"
+      }
+    ]
+  }
+}

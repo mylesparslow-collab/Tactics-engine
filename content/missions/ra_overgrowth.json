@@ -1,0 +1,325 @@
+{
+  "id": "ra_overgrowth",
+  "name": "Overgrowth",
+  "description": "Grow a wall round the lighthouse and keep Keeper Auster alive until the rain stops.",
+  "map": "lantern_shoal",
+  "briefing": [
+    "We have decided. It took us four days, which is fast for us. If the sea comes back it will feed us, and it will also drown everything that walks on the floor: the road-builders, the hulk people, the wet ones who are praying for it, and the small dry cutter on the north bank who still owes us a sled. We would like to be fed, but we would not like that.",
+    "The lighthouse on the Shoal is the brightest of the ones still burning. Glasswake says it is holding up the most. The Tide are marching on it in the rain, and something is falling out of the thin dark over it, pale and wet and hungry for light. The road-builders are inside the old wall. They will not be enough.",
+    "So we will be the wall. We grow round the tower and the old keeper on its stones, and we hold until the rain stops or we do. We will starve slowly, out here in the dry, for as long as it lasts. We have been starving since the first morning, and we only just noticed."
+  ],
+  "victoryText": "Near dawn the old keeper climbs to the glass and puts her hand on it, and the rain slows, and stops. The falling things lie on our branches, drying. Inside the wall the young commander looks up, and so do we, and for the first time we see the sea: dark, huge, hanging, made of the same thing we are. Marrowbloom asks if it is food. Glasswake says nothing, and stops aching. We stay. The wall does not drink. It will last a long time, and then it will be sand, and that is the price of a dry morning for everyone else. We have decided it is worth it. It took us four days.",
+  "defeatText": "The keeper falls on the stones and the lamp gutters. The rain comes down like a dropped roof. For one moment we are fed, more than we have ever been fed, and we grow faster than we have ever grown, into a reef that will stand on the bottom of the sea for ten thousand years. There is nobody left to see it.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Reef Ascendant",
+      "color": "#e07a6a",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "reef_ascendant_coralspire",
+          "x": 10,
+          "y": 17,
+          "tag": "coralspire"
+        },
+        {
+          "unit": "lanternkeepers_keeper_pell_auster",
+          "x": 10,
+          "y": 9,
+          "tag": "keeper_auster"
+        },
+        {
+          "unit": "reef_ascendant_marrowbloom",
+          "x": 8,
+          "y": 16,
+          "tag": "marrowbloom"
+        },
+        {
+          "unit": "reef_ascendant_glasswake",
+          "x": 12,
+          "y": 16,
+          "tag": "glasswake"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 9,
+          "y": 17
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 11,
+          "y": 17
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_tear_slinger",
+        "returning_tide_tideskulker",
+        "returning_tide_shroud_mender",
+        "returning_tide_anchor_bearer",
+        "returning_tide_wringer"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_choirmaster",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 9,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_wringer",
+          "x": 8,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 12,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 11,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 5
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    },
+    {
+      "name": "Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "ai",
+      "keystone": false,
+      "units": [],
+      "startingEssence": 0,
+      "essencePerTurn": 0
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 14,
+        "label": "Hold the wall for 14 turns"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "keeper_auster",
+        "label": "Keeper Auster must live"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "coralspire",
+        "label": "Coralspire must live"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "Our Beacon must not fall"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 6,
+          "y": 10,
+          "terrain": "living_reef",
+          "radius": 1
+        },
+        {
+          "type": "terrain",
+          "x": 15,
+          "y": 10,
+          "terrain": "living_reef",
+          "radius": 1
+        },
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 6,
+          "terrain": "living_reef",
+          "radius": 1
+        },
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 15,
+          "terrain": "living_reef",
+          "radius": 1
+        },
+        {
+          "type": "message",
+          "speaker": "Commander Tamsin Orrel",
+          "text": "There is coral climbing my wall. Is that ours? Nobody fire on it until I know whose it is."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 19,
+          "y": 4
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 20,
+          "y": 5
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_gulper",
+          "x": 18,
+          "y": 3
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_downward_shark",
+          "x": 20,
+          "y": 4
+        },
+        {
+          "type": "terrain",
+          "x": 19,
+          "y": 4,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 3
+        },
+        {
+          "type": "message",
+          "speaker": "Glasswake",
+          "text": "They are from up there. They have never seen the floor. They think the lamp is the sun."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 10
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 4,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 16,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 4,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 16,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "coralspire",
+          "status": "soaked",
+          "duration": 2
+        },
+        {
+          "type": "status",
+          "tag": "marrowbloom",
+          "status": "soaked",
+          "duration": 2
+        },
+        {
+          "type": "status",
+          "tag": "glasswake",
+          "status": "soaked",
+          "duration": 2
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_hagwyrm",
+          "x": 1,
+          "y": 16
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "overcurrent_lure_mother",
+          "x": 2,
+          "y": 17
+        },
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "Good wall. Wet wall. They'll drink from it. Hold anyway."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 90,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "keeper_auster",
+          "fraction": 0.5,
+          "label": "Keeper Auster ends above half health"
+        },
+        "pearls": 30,
+        "label": "Keeper Auster ends above half health"
+      }
+    ]
+  }
+}

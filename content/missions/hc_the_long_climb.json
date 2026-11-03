@@ -1,0 +1,245 @@
+{
+  "id": "hc_the_long_climb",
+  "name": "The Long Climb",
+  "description": "Carry Maelis's flame across the rift and break the Compact powder works.",
+  "map": "boiling_floor",
+  "briefing": [
+    "Register of the Third Bell, first entry above the dark. We have climbed for nineteen days, and the trench wall has finally ended in something the surface calls a floor. Maelis Quell carries the flame that has kept us warm since the cradle-pools, and it does not like the dry. I carry one question, and I have not yet met anyone worth asking.",
+    "The vents of the Boiling Floor are ours. They were warm when the sea sat on them and they are warm now. Salvagers have built a powder works on the north plateau and are blasting our vents open to render the grease that gathers in them, which is like mining a hearth for its soot.",
+    "We will cross the rift by the bone causeways and break the powder works. Maelis's flame must not go out; it is older than any lamp on the surface. I have asked the Bell-Knights to walk in front of her, and they have asked me to stop asking."
+  ],
+  "victoryText": "The powder works go up in one long cough of grease-smoke, and the salvagers scatter north on their sleds, still shouting about law. Maelis kneels at a vent on the island and holds the flame to it until it burns blue. \"There,\" she says. \"Now it remembers where it came from.\" Vhaal enters the salvagers' claim in the register, and marks it false.",
+  "defeatText": "The flame gutters in the dry wind and goes out. Maelis stands over the cold bowl for a long time, then starts back down the trench wall to relight it at the cradle-pools. It will take the Court a year. The surface does not notice.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "hadal_court_herald_vhaal",
+          "x": 13,
+          "y": 20,
+          "tag": "herald_vhaal"
+        },
+        {
+          "unit": "hadal_court_maelis_quell",
+          "x": 14,
+          "y": 20,
+          "tag": "maelis_quell"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 12,
+          "y": 20
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 14,
+          "y": 22
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 12,
+          "y": 21
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 15,
+          "y": 21
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 13,
+          "y": 22
+        }
+      ]
+    },
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_wrecker",
+        "salvage_compact_wrecker",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_powder_monk",
+        "salvage_compact_bone_sled_rider"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 13,
+          "y": 3
+        },
+        {
+          "unit": "salvage_compact_powder_monk",
+          "x": 12,
+          "y": 4
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 14,
+          "y": 4
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 0
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Break the powder works on the north plateau"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "maelis_quell",
+        "label": "Keep Maelis's flame alive"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "herald_vhaal",
+        "label": "Herald Vhaal must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 20,
+        "label": "Break the powder works before turn 20"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Maelis Quell",
+          "text": "Cold up here, Herald. Walk slowly. The flame and I are both old."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 14,
+          "y": 11,
+          "terrain": "scrap_field",
+          "radius": 1,
+          "duration": 99
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_powder_monk",
+          "x": 9,
+          "y": 13
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_wrecker",
+          "x": 10,
+          "y": 13
+        },
+        {
+          "type": "message",
+          "speaker": "Brother Ashmaw",
+          "text": "Nobody owns a hole in the ground, Herald! Salvage law. We were here first."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 3,
+          "y": 18
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 4,
+          "y": 18
+        },
+        {
+          "type": "message",
+          "speaker": "Herald Vhaal",
+          "text": "Riders on the left. Bells, close on the priest. Thralls, be the floor."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 30,
+    "bonus": [
+      {
+        "condition": {
+          "type": "reach_tile",
+          "team": 0,
+          "tag": "maelis_quell",
+          "tiles": [
+            [
+              10,
+              10
+            ],
+            [
+              11,
+              10
+            ],
+            [
+              11,
+              11
+            ],
+            [
+              10,
+              12
+            ],
+            [
+              11,
+              12
+            ]
+          ],
+          "label": "Relight the flame at a living vent"
+        },
+        "pearls": 20,
+        "label": "Relight the flame at a living vent"
+      }
+    ]
+  }
+}

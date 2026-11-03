@@ -1,0 +1,229 @@
+{
+  "id": "hc_the_unsigned_treaty",
+  "name": "The Unsigned Treaty",
+  "description": "Storm the star fort at the Saltpan Verge and bring its commander to Orrun Tessk.",
+  "map": "saltpan_bastions",
+  "briefing": [
+    "Register of the Third Bell, entered at the Saltpan Verge. This is where the Concord's roads stop and their cairns say the surveyed world ends. Orrun Tessk asked to come here. It is the first thing he has asked for since the night the weight went away.",
+    "Orrun stood the watch on the trench floor that night, and the officer who posted him did not survive the morning. He has never been relieved. He wants an officer of the surface to stand before him and sign for what was taken, and the nearest officer of the surface commands this fort.",
+    "We take the fort through the south gate and bring the commander to Orrun. I would prefer the commander alive, and so would Orrun. The commander may hold a different view, and the Court has always respected a different view, briefly."
+  ],
+  "victoryText": "Saddler, pinned against his own wall, offers to sign anything at all. Orrun hands him the paper and waits. Saddler signs it with a name that is not his, and dies before he can be asked for the right one. Orrun folds the paper into his cracked bell, where the brine eats the ink by morning. The watch goes on.",
+  "defeatText": "Orrun Tessk falls in the south gate with his bell still tolling. The Concord's dispatch says a Court monster was slain at the Verge. Vhaal's register says a watchman died at his post, unrelieved.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "hadal_court_herald_vhaal",
+          "x": 15,
+          "y": 25,
+          "tag": "herald_vhaal"
+        },
+        {
+          "unit": "hadal_court_orrun_tessk",
+          "x": 14,
+          "y": 25,
+          "tag": "orrun_tessk"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 15,
+          "y": 26
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 16,
+          "y": 26
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 14,
+          "y": 26
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 16,
+          "y": 25
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 15,
+          "y": 24
+        }
+      ]
+    },
+    {
+      "name": "Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_brine_slinger",
+        "salt_concord_brine_slinger",
+        "salt_concord_saltwright",
+        "salt_concord_caustic_lantern"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_rim_marshal",
+          "x": 14,
+          "y": 13,
+          "tag": "verge_commander"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 13,
+          "y": 14
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 15,
+          "y": 14
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 14,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_saltwright",
+          "x": 12,
+          "y": 13
+        },
+        {
+          "unit": "salt_concord_brine_slinger",
+          "x": 16,
+          "y": 13
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 10
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "verge_commander",
+        "label": "Bring down the Verge-Captain"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "herald_vhaal",
+        "label": "Herald Vhaal must live"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "orrun_tessk",
+        "label": "Orrun Tessk must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 16,
+        "label": "Take the fort before turn 16"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Orrun Tessk",
+          "text": "I have stood the watch three hundred and eleven years. I would like it signed for."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 15,
+          "y": 17,
+          "terrain": "salt_wall",
+          "radius": 0,
+          "duration": 6
+        },
+        {
+          "type": "message",
+          "speaker": "Verge-Captain Rook Saddler",
+          "text": "Lay down your bells and the Concord will hear your claim at Harrowgate. You have my word."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brineguard",
+          "x": 0,
+          "y": 14
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brineguard",
+          "x": 1,
+          "y": 14
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_stair_warden",
+          "x": 29,
+          "y": 15
+        },
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "hadal_court_trench_crab",
+          "x": 14,
+          "y": 24
+        },
+        {
+          "type": "message",
+          "speaker": "Herald Vhaal",
+          "text": "The crab has caught up. It is late. So is the Concord. Take the gate."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 45,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "orrun_tessk",
+          "fraction": 0.5,
+          "label": "Keep Orrun Tessk above half health"
+        },
+        "pearls": 20,
+        "label": "Keep Orrun Tessk above half health"
+      }
+    ]
+  }
+}

@@ -1,0 +1,255 @@
+{
+  "id": "rt_the_broken_toll",
+  "name": "The Broken Toll",
+  "description": "Ambush the salt convoy at the Greywater Stair before any wagon tops the last landing.",
+  "map": "greywater_stair",
+  "briefing": [
+    "Tally, second leaf. Wrung since the shrine: four, all Concord, all at night. I broke the toll on this Stair once before, in my novice year, and the Concord made some girl a commander for cleaning up after us. I have wondered since what became of her.",
+    "Three salt wagons climb at dawn from the toll-house at the foot. The faithful came down the cliff on ropes in the dark and hold the top landing, which the Concord road manual does not cover, because nobody who wrote it ever wanted to come down a cliff. No wagon reaches the top: if they cannot get salt up, they cannot pay for spears to come down.",
+    "Odo Brask sold us the convoy schedule for a barrel of kelp wine. I would not trust him with the barrel."
+  ],
+  "victoryText": "The last wagon tips at the third switchback and pours a year of salt down the cliff in a long white fan. The Concord will call this the second Broken Toll, and promote someone. Maren counts the drivers and stops at seven, because the eighth is still moving and she has not decided.",
+  "defeatText": "A wagon crests the top landing and the toll-bell rings the whole length of the Stair. The faithful climb back up their ropes in the dark. One rope is cut halfway, and nobody sees by whom.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "returning_tide_maren_ketch",
+          "x": 11,
+          "y": 3,
+          "tag": "maren_ketch"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 10,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 12,
+          "y": 3
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 13,
+          "y": 3
+        }
+      ]
+    },
+    {
+      "name": "Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brine_slinger",
+        "salt_concord_brine_slinger",
+        "salt_concord_stair_warden"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 8,
+          "y": 16,
+          "tag": "salt_wagon"
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 10,
+          "y": 16,
+          "tag": "salt_wagon"
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 12,
+          "y": 16,
+          "tag": "salt_wagon"
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 10,
+          "y": 15
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 8,
+          "y": 15
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 12,
+          "y": 15
+        },
+        {
+          "unit": "salt_concord_tollkeeper",
+          "x": 10,
+          "y": 17,
+          "tag": "toll_sergeant"
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 11,
+          "y": 18
+        }
+      ],
+      "startingEssence": 40
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "salt_wagon",
+        "label": "Destroy all three salt wagons"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "reach_tile",
+        "team": 1,
+        "tag": "salt_wagon",
+        "tiles": [
+          [
+            4,
+            4
+          ],
+          [
+            5,
+            4
+          ],
+          [
+            6,
+            4
+          ],
+          [
+            15,
+            4
+          ],
+          [
+            16,
+            4
+          ],
+          [
+            17,
+            4
+          ]
+        ],
+        "label": "No wagon may top the last stair"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "maren_ketch",
+        "label": "Sister Maren must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Stop the convoy before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Three wagons, upper road, dawn. You never heard it from me. If anyone asks, you got it from the Gyre. Everyone believes the Gyre."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 1,
+          "y": 11
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 20,
+          "y": 11
+        },
+        {
+          "type": "message",
+          "speaker": "Convoy Sergeant",
+          "text": "Outriders up the side gaps! Keep the wagons off the middle stair!"
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 0
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 11,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "returning_tide_drowned",
+          "x": 9,
+          "y": 8
+        },
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "returning_tide_drowned",
+          "x": 12,
+          "y": 8
+        },
+        {
+          "type": "message",
+          "speaker": "Maren Ketch",
+          "text": "The cliff is weeping again. No engineer ever found where it comes from. I have a guess who's crying."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 40,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "toll_sergeant",
+          "label": "Kill the toll sergeant"
+        },
+        "pearls": 20,
+        "label": "Kill the toll sergeant"
+      }
+    ]
+  }
+}

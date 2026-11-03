@@ -1,0 +1,232 @@
+{
+  "id": "gy_first_on_the_carcass",
+  "name": "First on the Carcass",
+  "description": "Race the Compact cutters to the leviathan's ribs before they strip it to the bone.",
+  "map": "breakers_yard",
+  "briefing": [
+    "A handbill, nailed to the roost-post, signed with a vulture's foot. \"The Black Wheel offers terms. One leviathan, two days dead, lying on the ribs in the Breakers' Yard. Whoever stands on it first eats it. Captain Torr Ashby will provide the vulture, the appetite and the reputation; the Stacks will provide wings and a thief, and take a third.\"",
+    "Wren's note under it: a third of a leviathan is more meat than the Stacks have seen in a year. The Compact's cutters got there at dawn and they are already flensing. Torr says that is fine, because a cut carcass is a carcass someone else has done the work on.",
+    "The yard is torn in half by a trench, and the ribs are the only road over. Birds will get there first. Birds cannot keep it. Someone has to walk."
+  ],
+  "victoryText": "Wren's Roostwarden plants a nest-pike in the leviathan's jaw and the Compact cutters back off, swearing in three languages. Torr lands on the ribcage like a man sitting down to dinner. \"A third,\" he says. \"Of what's left after I've eaten. That's how thirds work.\"",
+  "defeatText": "The Compact sleds the last of the carcass out at dusk. Torr shrugs and goes to look for a battle. The Stacks eat lichen for another month.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Gyre",
+      "color": "#5a6470",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "gyre_wren_halloway",
+          "x": 22,
+          "y": 14,
+          "tag": "wren_halloway"
+        },
+        {
+          "unit": "gyre_captain_torr_ashby",
+          "x": 21,
+          "y": 13,
+          "tag": "torr_ashby"
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 20,
+          "y": 14,
+          "tag": "carcass_walker"
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 23,
+          "y": 14
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 21,
+          "y": 15
+        },
+        {
+          "unit": "gyre_gullwife",
+          "x": 23,
+          "y": 15
+        }
+      ]
+    },
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_wrecker",
+        "salvage_compact_wrecker",
+        "salvage_compact_wrecker",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_bone_sled_rider",
+        "salvage_compact_snare_tinker"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_hullbreaker",
+          "x": 6,
+          "y": 10,
+          "tag": "flense_master"
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 4,
+          "y": 10
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 7,
+          "y": 11
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 5,
+          "y": 11
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 8,
+          "y": 9
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 6,
+          "y": 8
+        }
+      ],
+      "startingEssence": 50,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "carcass_walker",
+        "tiles": [
+          [
+            5,
+            9
+          ],
+          [
+            6,
+            9
+          ],
+          [
+            7,
+            9
+          ],
+          [
+            5,
+            10
+          ],
+          [
+            6,
+            10
+          ],
+          [
+            7,
+            10
+          ],
+          [
+            8,
+            10
+          ]
+        ],
+        "label": "Stand on the carcass (the Roostwarden must walk it)"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "wren_halloway",
+        "label": "Wren must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 10,
+        "label": "Claim the carcass before turn 10"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Captain Torr Ashby",
+          "text": "Lovely. Nobody's dead yet. That's the best time to arrive. Plenty of choice later."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 13,
+          "y": 8
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 17,
+          "y": 9
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Ketta Vane",
+          "text": "Torr Ashby. I told you last time. Find your own dead."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_ketta_vane",
+          "x": 13,
+          "y": 8,
+          "tag": "ketta_vane"
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 40,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "flense_master",
+          "label": "Kill the flense-master"
+        },
+        "pearls": 30,
+        "label": "Kill the flense-master"
+      }
+    ]
+  }
+}

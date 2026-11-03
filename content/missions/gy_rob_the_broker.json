@@ -1,0 +1,229 @@
+{
+  "id": "gy_rob_the_broker",
+  "name": "Rob the Broker",
+  "description": "Drop Wren on Odo Brask's strongbox in the middle of market day, without killing the broker.",
+  "map": "the_kettle",
+  "briefing": [
+    "Tally, page nine. Everyone on the Ebb knows Odo Brask keeps a strongbox in the hull by the north gate of the Kettle, and everyone knows nobody has ever got near it. So everyone will know who did.",
+    "It has to be my hands on the box. Not a crow, not Bucket, not one of the runners: me. A theft nobody saw you make is just something that went missing. I go in over the stalls, Pocket drops me on the hull, and the rest of you make enough noise that the militia looks the wrong way.",
+    "One rule. Brask lives. A dead broker cannot be robbed again, and the Compact would close every market on the Ebb to the Stacks for a hundred years, which is longer than even Oskeline plans to hold a grudge."
+  ],
+  "victoryText": "The box is mostly promissory notes. Under them is the ledger: sixty years of the Compact buying Lanternkeeper secrets, page after page. One line is underlined twice. \"Locked page. Master copy carried by the road-keeper of the Glasswork Reach. Not for sale. Asked forty-one times.\" Wren reads it in the air, and Pocket has to correct for her.",
+  "defeatText": "The militia net Pocket over the north gate. Brask sells Wren back to the Stacks for a price Oskeline will never stop mentioning.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Gyre",
+      "color": "#5a6470",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "gyre_wren_halloway",
+          "x": 10,
+          "y": 19,
+          "tag": "wren_halloway"
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 9,
+          "y": 19
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 11,
+          "y": 19
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 9,
+          "y": 18
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 11,
+          "y": 18
+        },
+        {
+          "unit": "gyre_gullwife",
+          "x": 8,
+          "y": 19
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 12,
+          "y": 19
+        }
+      ]
+    },
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_wrecker",
+        "salvage_compact_wrecker",
+        "salvage_compact_wrecker",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_bone_sled_rider",
+        "salvage_compact_quartermaster",
+        "salvage_compact_snare_tinker"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_odo_brask",
+          "x": 12,
+          "y": 3,
+          "tag": "odo_brask"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 9,
+          "y": 3
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 14,
+          "y": 3
+        },
+        {
+          "unit": "salvage_compact_quartermaster",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 13,
+          "y": 5
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 10,
+          "y": 5
+        }
+      ],
+      "startingEssence": 40,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "wren_halloway",
+        "tiles": [
+          [
+            12,
+            4
+          ]
+        ],
+        "label": "Wren's hands on the strongbox"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "wren_halloway",
+        "label": "Wren must not fall"
+      },
+      {
+        "type": "defeat_unit",
+        "tag": "odo_brask",
+        "label": "Brask must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 12,
+        "label": "Take the box before turn 12"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Lovely morning for it. Whoever's on the frigatebird, I can see you, and I'd like to discuss a commission."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "The market bell rings, and the gates open on militia."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_wrecker",
+          "x": 3,
+          "y": 9
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_wrecker",
+          "x": 19,
+          "y": 9
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Take the money! Take it! Leave the ledger, the ledger is sentimental!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 0,
+          "y": 10
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 21,
+          "y": 10
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 45,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "wren_halloway",
+          "fraction": 0.5,
+          "label": "Wren above half strength"
+        },
+        "pearls": 30,
+        "label": "Wren above half strength"
+      }
+    ]
+  }
+}

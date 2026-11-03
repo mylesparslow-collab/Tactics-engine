@@ -1,0 +1,209 @@
+{
+  "id": "sv_breakers_yard",
+  "name": "Breakers' Yard",
+  "description": "A fresh leviathan carcass on the wreck line: cut down the Black Wheel's carrion-pole before the birds strip it.",
+  "map": "breakers_yard",
+  "briefing": [
+    "Sled-log, Ketta Vane. A fresh one came down in the yard three nights ago: a leviathan calf, still oily, ribs like a chapel. Fresh means the fat is good and the bone is soft enough to cut. Fresh also means every bird on the Rim smelled it before we did.",
+    "Torr Ashby's Black Wheel is on it. Vultures on the ribs, roost-folk with hooks on the flats, and a carrion-pole planted on the old lamp-stone like he bought the place. He did not buy the place. Nobody buys the yard. That is the whole point of the yard.",
+    "Lamp oil in every low place, so the kids go first and light it. Wreckers on the carcass, slingers on the hulks. Cut the pole down and the birds lose interest. Birds always lose interest."
+  ],
+  "victoryText": "The pole comes down and the Black Wheel lifts off the ribs in one slow, offended spiral. Ashby circles once, low, and calls down that he will see her at the next one. Ketta waves him off. The calf's fat renders down clear as lamp-oil, and smells, for some reason, of rain.",
+  "defeatText": "The birds strip the calf to the bone by dusk. Ketta's crew drags home one jawbone, which Brask had already sold, and an invoice for the dent.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salvage_compact_ketta_vane",
+          "x": 22,
+          "y": 15,
+          "tag": "ketta_vane"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 21,
+          "y": 16
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 23,
+          "y": 16
+        },
+        {
+          "unit": "salvage_compact_lamplighter",
+          "x": 22,
+          "y": 17
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 21,
+          "y": 15
+        }
+      ]
+    },
+    {
+      "name": "The Gyre",
+      "color": "#5a6470",
+      "controller": "ai",
+      "warband": [
+        "gyre_roost_runner",
+        "gyre_salt_crow",
+        "gyre_salt_crow",
+        "gyre_gullwife",
+        "gyre_roostwarden",
+        "gyre_skua_lancer"
+      ],
+      "units": [
+        {
+          "unit": "gyre_captain_torr_ashby",
+          "x": 9,
+          "y": 5,
+          "tag": "torr_ashby"
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 8,
+          "y": 6
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 10,
+          "y": 6
+        },
+        {
+          "unit": "gyre_gullwife",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 12,
+          "y": 4
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 6,
+          "y": 7
+        }
+      ],
+      "startingEssence": 40,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Cut down the carrion-pole"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "Hold the sled-camp lamp"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "ketta_vane",
+        "label": "Ketta Vane must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Take the yard before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Torr Ashby",
+          "text": "Compact! You're late. We left you the smell."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Two Skua Lancers drop out of the sun onto the east shelf, behind the sled-camp."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "gyre_skua_lancer",
+          "x": 27,
+          "y": 7
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "gyre_skua_lancer",
+          "x": 28,
+          "y": 8
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Ketta, I've already sold the jaw. Try not to dent it."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 30,
+    "bonus": [
+      {
+        "condition": {
+          "type": "reach_tile",
+          "team": 0,
+          "tiles": [
+            [
+              7,
+              6
+            ],
+            [
+              8,
+              6
+            ],
+            [
+              9,
+              6
+            ],
+            [
+              10,
+              6
+            ]
+          ],
+          "label": "Stand a Compact unit on the carcass"
+        },
+        "pearls": 20,
+        "label": "Stand a Compact unit on the carcass"
+      }
+    ]
+  }
+}

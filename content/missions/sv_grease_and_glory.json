@@ -1,0 +1,227 @@
+{
+  "id": "sv_grease_and_glory",
+  "name": "Grease and Glory",
+  "description": "Escort Brother Ashmaw and his blessed charge across the Boiling Floor to the mud-throat.",
+  "map": "boiling_floor",
+  "briefing": [
+    "Sled-log. Ashmaw wants the mud-throat. That is the big vent at the middle of the Boiling Floor, the one that never stops coughing. He says one charge down its neck will open a grease seam that will keep the kilns running for ten years, and he says it the way other people say grace.",
+    "He goes himself. Powder-Monks do not let anyone else carry a blessed charge, and this one has a name. I asked what the name was. He said it was \"Patience\", which I think was a joke, but with Ashmaw you cannot tell.",
+    "The scouts say something is walking up the far side of the rift, slow and bronze, carrying a light. Ashmaw says it is a pilgrim. I say a pilgrim does not need a ridge of Bell-Knights. Get him to the throat. Get him back if we can."
+  ],
+  "victoryText": "Ashmaw kneels in the boiling mud, says the charge's name, and drops it down the throat. The floor heaves. Grease wells up black and sweet, and a column of fire stands over the rift for an hour. Across it, the bronze priest stops and watches, and lifts her small flame toward the column, as if greeting a relative. Then she walks on, up toward the sky.",
+  "defeatText": "The Court closes over the throat like water over a dropped stone. Ashmaw is carried home on a sled, scalded and humming. \"Next year,\" he says. Nobody argues. Nobody wants to go back.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salvage_compact_ketta_vane",
+          "x": 13,
+          "y": 19,
+          "tag": "ketta_vane"
+        },
+        {
+          "unit": "salvage_compact_brother_ashmaw",
+          "x": 12,
+          "y": 20,
+          "tag": "brother_ashmaw"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 12,
+          "y": 19
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 14,
+          "y": 20
+        },
+        {
+          "unit": "salvage_compact_lamplighter",
+          "x": 14,
+          "y": 19
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 13,
+          "y": 20
+        }
+      ]
+    },
+    {
+      "name": "The Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "ai",
+      "warband": [
+        "hadal_court_pit_thrall",
+        "hadal_court_pit_thrall",
+        "hadal_court_pit_thrall",
+        "hadal_court_bell_knight",
+        "hadal_court_lurecaller",
+        "hadal_court_lantern_spitter",
+        "hadal_court_vent_priest"
+      ],
+      "units": [
+        {
+          "unit": "hadal_court_maelis_quell",
+          "x": 12,
+          "y": 4,
+          "tag": "maelis_quell"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 13,
+          "y": 3
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 10,
+          "y": 4
+        }
+      ],
+      "startingEssence": 50,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "brother_ashmaw",
+        "tiles": [
+          [
+            12,
+            11
+          ],
+          [
+            13,
+            11
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            13,
+            12
+          ]
+        ],
+        "label": "Get Brother Ashmaw to the mud-throat"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "brother_ashmaw",
+        "label": "Brother Ashmaw must live"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "ketta_vane",
+        "label": "Ketta Vane must live"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "Hold the powder works kiln"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Reach the throat before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Brother Ashmaw",
+          "text": "Mind the vents. They boil anyone not born under a mile of water. That is most of us. Ah. All of us."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "The Court comes up through the floor, on the vents."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_pit_thrall",
+          "x": 11,
+          "y": 11
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_pit_thrall",
+          "x": 14,
+          "y": 12
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_murk_diver",
+          "x": 14,
+          "y": 10
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Maelis Quell",
+          "text": "We carry a flame to the open sky, small one. You are standing on its chimney."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_crushing_maw",
+          "x": 16,
+          "y": 8
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 45,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "maelis_quell",
+          "not": true,
+          "label": "Let the flame pass: Maelis Quell survives"
+        },
+        "pearls": 25,
+        "label": "Let the flame pass: Maelis Quell survives"
+      }
+    ]
+  }
+}

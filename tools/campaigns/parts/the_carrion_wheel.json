@@ -1,0 +1,75 @@
+{
+  "id": "the_carrion_wheel",
+  "name": "The Carrion Wheel",
+  "description": "Wren Halloway, a roost-born thief of the Gyre, steals the one page on the Ebb nobody could buy and learns what the sky is.",
+  "faction": "gyre",
+  "startingRoster": [
+    "gyre_wren_halloway",
+    "gyre_roost_runner",
+    "gyre_roost_runner",
+    "gyre_salt_crow",
+    "gyre_salt_crow",
+    "gyre_gullwife",
+    "gyre_roostwarden",
+    "gy_spell_dive_signal",
+    "gy_equip_beak_mask"
+  ],
+  "missions": [
+    {
+      "mission": "gy_the_cliff_shoot",
+      "unlocks": [
+        "gyre_skua_lancer",
+        "gyre_windreader"
+      ]
+    },
+    {
+      "mission": "gy_maps_for_sale",
+      "unlocks": [
+        "gyre_pelican_hauler",
+        "gy_spell_updraft"
+      ]
+    },
+    {
+      "mission": "gy_first_on_the_carcass",
+      "unlocks": [
+        "gyre_shrike_harrier",
+        "gy_spell_carrion_call"
+      ]
+    },
+    {
+      "mission": "gy_rob_the_broker",
+      "unlocks": [
+        "gyre_frigate_thief",
+        "gy_equip_hooded_lure"
+      ]
+    },
+    {
+      "mission": "gy_a_lanterns_pocket",
+      "unlocks": [
+        "gyre_stormkite_gunner",
+        "gy_spell_black_sky"
+      ]
+    },
+    {
+      "mission": "gy_every_bird_comes_home",
+      "unlocks": [
+        "gyre_wheel_captain",
+        "gy_equip_oilskin_flight_coat"
+      ]
+    },
+    {
+      "mission": "gy_the_wrong_sky",
+      "unlocks": [
+        "gyre_captain_torr_ashby",
+        "gy_spell_wrong_sky_gale"
+      ]
+    },
+    {
+      "mission": "gy_the_wheel_comes_down",
+      "unlocks": [
+        "gyre_roost_mother_oskeline",
+        "gyre_mother_of_the_wheel"
+      ]
+    }
+  ]
+}

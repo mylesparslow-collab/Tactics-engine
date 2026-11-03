@@ -1,0 +1,211 @@
+{
+  "id": "ra_the_mass_grave",
+  "name": "The Mass Grave",
+  "description": "Cross the yard and break the Compact camp before the young colony Marrowbloom is burned out.",
+  "map": "breakers_yard",
+  "briefing": [
+    "There is another of us. It woke under the hulks in the yard where the dry ones break the drowned ships, in a pit of old sailors nobody buried. It is very young and very hungry and it sings to us across the salt in a voice made of teeth.",
+    "The dry ones have found it. They are bringing powder and oil, because they have learned that we do not like fire, and they are right. It has made itself a hide in the long hulk below their Beacon, and it is eating as fast as it can.",
+    "The yard is torn by a long dark cut with a bone road down both sides. We go round its southern end and up the far side. We have decided to call the young one Marrowbloom, because it will not stop telling us what it is eating."
+  ],
+  "victoryText": "The yard boss's lamp goes out and Marrowbloom climbs out of the hulk, fat and pink and humming. It has overgrown the keel and half the crew's boots. \"Everything here is already ours,\" it says. \"It just didn't know yet.\" We let it come home with us. We are not sure we had a choice.",
+  "defeatText": "The pit takes the oil and then the flame. Marrowbloom sings for a long time, and then for a short time. We go back to the banks, and for a season none of us is hungry, which has never happened before and which we do not like.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Reef Ascendant",
+      "color": "#e07a6a",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "reef_ascendant_coralspire",
+          "x": 22,
+          "y": 15,
+          "tag": "coralspire"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 21,
+          "y": 15
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 23,
+          "y": 15
+        },
+        {
+          "unit": "reef_ascendant_spitter_polyp",
+          "x": 22,
+          "y": 14
+        },
+        {
+          "unit": "reef_ascendant_sting_anemone",
+          "x": 21,
+          "y": 16
+        },
+        {
+          "unit": "reef_ascendant_marrowbloom",
+          "x": 9,
+          "y": 6,
+          "tag": "marrowbloom"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 10,
+          "y": 6
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 8,
+          "y": 6
+        }
+      ]
+    },
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_wrecker",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_powder_monk",
+        "salvage_compact_tallow_mender",
+        "salvage_compact_snare_tinker",
+        "salvage_compact_scrapper",
+        "salvage_compact_bone_sled_rider"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 7,
+          "y": 5
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 10,
+          "y": 5
+        },
+        {
+          "unit": "salvage_compact_tallow_mender",
+          "x": 9,
+          "y": 5
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 10
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Break the yard boss's Beacon on the north lighthouse stone"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "marrowbloom",
+        "label": "Marrowbloom must live"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "coralspire",
+        "label": "Coralspire must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 16,
+        "label": "Break the camp before turn 16"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 8,
+          "y": 8,
+          "terrain": "calcite",
+          "radius": 1
+        },
+        {
+          "type": "message",
+          "speaker": "Marrowbloom",
+          "text": "Found a whole crew. Under the keel. Still in their boots. Saved you some."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_powder_monk",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_powder_monk",
+          "x": 13,
+          "y": 3
+        },
+        {
+          "type": "message",
+          "speaker": "Yard-boss Henna Coyle",
+          "text": "Oil the pit and light it. If the Compact wanted gardens, it'd have bought seeds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_hullbreaker",
+          "x": 28,
+          "y": 8
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 29,
+          "y": 8
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 38,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "marrowbloom",
+          "fraction": 0.5,
+          "label": "Marrowbloom ends above half health"
+        },
+        "pearls": 20,
+        "label": "Marrowbloom ends above half health"
+      }
+    ]
+  }
+}

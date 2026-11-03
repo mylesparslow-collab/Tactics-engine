@@ -217,6 +217,8 @@ export interface MissionDef {
 export interface CampaignDef {
   name: string;
   description?: string;
+  /** The faction whose story this is; names the campaign's tab and colours it. */
+  faction?: string;
   startingRoster: string[];
   missions: { mission: string; unlocks?: string[] }[];
 }

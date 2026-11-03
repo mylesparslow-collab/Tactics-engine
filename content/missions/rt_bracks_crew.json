@@ -1,0 +1,263 @@
+{
+  "id": "rt_bracks_crew",
+  "name": "Brack's Crew",
+  "description": "Wake the hulk Patience's crew in the Kelpmire and walk Captain Brack to his ship.",
+  "map": "kelpmire",
+  "briefing": [
+    "Tally, third leaf. The Prophet has given me a captain. Oswin Brack went down with the hulk Patience on the night of the Long Ebb and has refused to stay down since, and he has been asking for his crew for a hundred and ninety years with the patience of a man who named his ship after it.",
+    "The Patience lies in the Kelpmire, where the mud keeps her dead wet enough to wake. Twenty-two hands, Brack says, and he will say every name if you let him. This year the Reef has grown into the mire, and the Reef eats whatever lies still.",
+    "We go in, we wake the crew, and Brack walks to his ship to call the rest. I have promised him all twenty-two. I know how many I can wring awake in a day, and it is not twenty-two."
+  ],
+  "victoryText": "Brack reaches the Patience and stands at her rail, which is now at ankle height, and calls the roll. Four answer. He calls it again, all twenty-two names, slower, and waits a long time after each. \"The sea will bring the rest,\" he says. \"The Prophet promised.\" Maren writes four in the tally and, underneath, small: eighteen.",
+  "defeatText": "The Reef closes over the wreck like a hand. Six Penitents drag Brack out of the mire, still calling names. The coral holds the rest of his crew very gently, and does not let go.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "returning_tide_maren_ketch",
+          "x": 10,
+          "y": 21,
+          "tag": "maren_ketch"
+        },
+        {
+          "unit": "returning_tide_oswin_brack",
+          "x": 12,
+          "y": 22,
+          "tag": "captain_brack"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 21
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 11,
+          "y": 21
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 13,
+          "y": 22
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 10,
+          "y": 20
+        }
+      ]
+    },
+    {
+      "name": "Reef Ascendant",
+      "color": "#e07a6a",
+      "controller": "ai",
+      "warband": [
+        "reef_ascendant_polyp_drone",
+        "reef_ascendant_polyp_drone",
+        "reef_ascendant_polyp_drone",
+        "reef_ascendant_polyp_drone",
+        "reef_ascendant_fanblade",
+        "reef_ascendant_fanblade",
+        "reef_ascendant_spitter_polyp",
+        "reef_ascendant_spitter_polyp",
+        "reef_ascendant_reef_tender",
+        "reef_ascendant_broodspire"
+      ],
+      "units": [
+        {
+          "unit": "reef_ascendant_spireguard",
+          "x": 4,
+          "y": 4
+        },
+        {
+          "unit": "reef_ascendant_brainstalk",
+          "x": 9,
+          "y": 5
+        },
+        {
+          "unit": "reef_ascendant_sting_anemone",
+          "x": 5,
+          "y": 7
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 7,
+          "y": 8
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 8,
+          "y": 8
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 12,
+          "y": 10
+        }
+      ],
+      "startingEssence": 40
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "captain_brack",
+        "tiles": [
+          [
+            2,
+            5
+          ],
+          [
+            3,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            4,
+            6
+          ]
+        ],
+        "label": "Captain Brack must stand on the Patience"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "captain_brack",
+        "label": "Captain Brack must live"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "maren_ketch",
+        "label": "Sister Maren must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Reach the Patience before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2,
+        "team": 0
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "returning_tide_drowned",
+          "x": 1,
+          "y": 10,
+          "tag": "brack_crew"
+        },
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "returning_tide_drowned",
+          "x": 2,
+          "y": 11,
+          "tag": "brack_crew"
+        },
+        {
+          "type": "message",
+          "speaker": "Captain Oswin Brack",
+          "text": "Haddow! Jory Fenn! Up, you idle sods. Three hundred years is not shore leave."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "reef_ascendant_fanblade",
+          "x": 14,
+          "y": 12
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "reef_ascendant_fanblade",
+          "x": 16,
+          "y": 11
+        },
+        {
+          "type": "message",
+          "speaker": "The Reef",
+          "text": "still things are ours. still things become us. why do yours not stay still."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 0
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "returning_tide_drowned",
+          "x": 15,
+          "y": 13,
+          "tag": "brack_crew"
+        },
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "returning_tide_drowned",
+          "x": 16,
+          "y": 14,
+          "tag": "brack_crew"
+        },
+        {
+          "type": "message",
+          "speaker": "Maren Ketch",
+          "text": "Four, Captain. That's four. Count them with me."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 45,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "brack_crew",
+          "not": true,
+          "label": "Lose none of Brack's crew"
+        },
+        "pearls": 25,
+        "label": "Lose none of Brack's crew"
+      }
+    ]
+  }
+}

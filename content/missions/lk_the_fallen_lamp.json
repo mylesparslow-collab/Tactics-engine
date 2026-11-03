@@ -1,0 +1,258 @@
+{
+  "id": "lk_the_fallen_lamp",
+  "name": "The Fallen Lamp",
+  "map": "trench_deeplight",
+  "description": "Escort Lensmaster Venn down the trench to the crazed lens of Deeplight without breaking the Court's lamp.",
+  "briefing": [
+    "Oriel Venn to Keeper Auster, from the Brinks, by the Gyre post. The letter says the glass at Deeplight is crazed. Fifty years ago this lamp fell into the trench and kept burning, and the Court built a city around it as if it were a hearth. Nobody has trimmed that lens since. I am going down to trim it.",
+    "The Court will not let me. They think the lamp is theirs, and by every law I know they are right: they found it, they built on it, they kept it lit with nothing but their regard. Their Beacon is the lamp. If we break it to reach it, we have done the Tide's work for them.",
+    "Captain Drenn walks the beam as far as it will let him and says he will come as far as that. A thief on a red-throated bird took the locked page off our Wick Tobin Sallow on the glass road last week, so I go down without it. I would not have read it anyway. I know what it says."
+  ],
+  "victoryText": "Venn puts her scarred hands on the fallen glass and it rings like a struck bell. The crazing runs right through the lens, deeper than any grinding can reach. The lamp flickers under her palms, once, and far above the trench the sky goes the wrong colour. Venn stays to tend it. Drenn goes home alone up the beam, counting.",
+  "defeatText": "The Bell-Knights close around the lamp like a fist. Venn is carried back up the Brinks on a stretcher, and the crazed glass at Deeplight goes on burning untrimmed, for now.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "lanternkeepers_captain_hollis_drenn",
+          "x": 10,
+          "y": 16,
+          "tag": "captain_drenn"
+        },
+        {
+          "unit": "lanternkeepers_lensmaster_oriel_venn",
+          "x": 11,
+          "y": 17,
+          "tag": "lensmaster_venn"
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 9,
+          "y": 17
+        },
+        {
+          "unit": "lanternkeepers_lantern_warden",
+          "x": 12,
+          "y": 17
+        },
+        {
+          "unit": "lanternkeepers_beaconrunner",
+          "x": 10,
+          "y": 19
+        }
+      ]
+    },
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "ai",
+      "warband": [
+        "hadal_court_pit_thrall",
+        "hadal_court_pit_thrall",
+        "hadal_court_pit_thrall",
+        "hadal_court_bell_knight",
+        "hadal_court_pressure_lancer",
+        "hadal_court_pressure_lancer",
+        "hadal_court_murk_diver",
+        "hadal_court_vent_priest",
+        "hadal_court_trench_crab"
+      ],
+      "units": [
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 10,
+          "y": 5
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 11,
+          "y": 5
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 10,
+          "y": 9
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "unit": "hadal_court_lurecaller",
+          "x": 8,
+          "y": 9
+        },
+        {
+          "unit": "hadal_court_lurecaller",
+          "x": 13,
+          "y": 10
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 7,
+          "y": 3
+        },
+        {
+          "unit": "hadal_court_vent_priest",
+          "x": 12,
+          "y": 2
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "lensmaster_venn",
+        "tiles": [
+          [
+            11,
+            3
+          ],
+          [
+            10,
+            2
+          ],
+          [
+            11,
+            2
+          ],
+          [
+            12,
+            3
+          ],
+          [
+            10,
+            4
+          ],
+          [
+            11,
+            4
+          ]
+        ],
+        "label": "Bring Lensmaster Venn to the fallen lamp"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "lensmaster_venn",
+        "label": "Lensmaster Venn must not fall"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Do not break the fallen lamp (the Court's Beacon)"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "captain_drenn",
+        "label": "Captain Drenn must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 15,
+        "label": "Finish before turn 15"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Herald Vhaal",
+          "text": "Keepers. You tend the hands that hold the weight. Answer me one question and walk to our light in peace: who lifted the sea?"
+        },
+        {
+          "type": "message",
+          "speaker": "Lensmaster Venn",
+          "text": "..."
+        },
+        {
+          "type": "message",
+          "speaker": "Herald Vhaal",
+          "text": "Silence is also an answer, Lensmaster. It is only a rude one."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_crushing_maw",
+          "x": 10,
+          "y": 13
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 9,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_deep_herald",
+          "x": 10,
+          "y": 6
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_bell_knight",
+          "x": 3,
+          "y": 3
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_bell_knight",
+          "x": 4,
+          "y": 3
+        },
+        {
+          "type": "message",
+          "speaker": "Captain Drenn",
+          "text": "Lensmaster. Mind their lamp. It's the only one down here."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 70,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "lensmaster_venn",
+          "fraction": 0.5,
+          "label": "Keep Venn above half health"
+        },
+        "pearls": 25,
+        "label": "Keep Venn above half health"
+      }
+    ]
+  }
+}

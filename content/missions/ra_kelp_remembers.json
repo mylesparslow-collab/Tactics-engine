@@ -1,0 +1,215 @@
+{
+  "id": "ra_kelp_remembers",
+  "name": "Kelp Remembers",
+  "description": "Hunt the three Wringers before the Kelpmire is wrung dry.",
+  "map": "kelpmire",
+  "briefing": [
+    "The kelp forest in the mire is dead, but the water under it is not. It is the last wet place on this part of the Shelf that is not someone's well, and we have been growing toward it for eleven years. Marrowbloom says there are drowned sailors in the stalks, and that they are nearly soft enough.",
+    "The wet ones have come. They walk in the shallows like it is a road, and their wringers kneel and pull the water out of the mire into their own bodies. Where they kneel, the ground goes pale and cracks. They say the water belongs to the sky, and we say the sky is a long way off and we are right here.",
+    "There are three wringers. We find them and we stop them, and then the mire stays wet. If the drowned in the kelp stand up and start walking, Marrowbloom would like us to remember who saw them first."
+  ],
+  "victoryText": "The last wringer falls face down in the channel and the water she took runs back out of her, slowly, into the mire. We drink it. It tastes like the kelp and like the wringer and like something older than both. Maren Ketch watches from the far bank and does not try to stop us. \"You'll see,\" she says, and walks north with whatever she saved.",
+  "defeatText": "By evening the mire is a field of cracked mud and the Tide sing as they walk away, heavier than they came. We put our branches into the ground and find nothing. For the first time, we feel a kind of thirst. We do not have a word for it, and we do not want one.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Reef Ascendant",
+      "color": "#e07a6a",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "reef_ascendant_coralspire",
+          "x": 11,
+          "y": 21,
+          "tag": "coralspire"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 10,
+          "y": 21
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 12,
+          "y": 21
+        },
+        {
+          "unit": "reef_ascendant_spitter_polyp",
+          "x": 11,
+          "y": 22
+        },
+        {
+          "unit": "reef_ascendant_sting_anemone",
+          "x": 10,
+          "y": 22
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_tear_slinger",
+        "returning_tide_tideskulker",
+        "returning_tide_shroud_mender",
+        "returning_tide_anchor_bearer",
+        "returning_tide_wringer"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_wringer",
+          "x": 12,
+          "y": 10,
+          "tag": "wringer"
+        },
+        {
+          "unit": "returning_tide_wringer",
+          "x": 7,
+          "y": 13,
+          "tag": "wringer"
+        },
+        {
+          "unit": "returning_tide_wringer",
+          "x": 6,
+          "y": 5,
+          "tag": "wringer"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 11,
+          "y": 10
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 8,
+          "y": 12
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 7,
+          "y": 5
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "wringer",
+        "label": "Find and stop all three Wringers"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "coralspire",
+        "label": "Coralspire must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 12,
+        "label": "Stop them before the mire is wrung dry (turn 12)"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Sister Maren Ketch",
+          "text": "Little forest. You're standing in the sea's own water and calling it yours. Go home. Pray, if you can find a mouth for it."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 6,
+          "y": 15,
+          "tag": "bracks_crew"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 5,
+          "y": 16,
+          "tag": "bracks_crew"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 4,
+          "y": 17,
+          "tag": "bracks_crew"
+        },
+        {
+          "type": "message",
+          "speaker": "Captain Oswin Brack",
+          "text": "That's my bosun you've got your roots in. Let go of him. Gently."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 9,
+          "y": 7,
+          "terrain": "silt",
+          "radius": 2
+        },
+        {
+          "type": "terrain",
+          "x": 8,
+          "y": 12,
+          "terrain": "silt",
+          "radius": 2
+        },
+        {
+          "type": "message",
+          "speaker": "Coralspire",
+          "text": "The water went into them. Into them. Where do they put it?"
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 46,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "bracks_crew",
+          "label": "All three of Brack's risen crew eaten"
+        },
+        "pearls": 20,
+        "label": "All three of Brack's risen crew eaten"
+      }
+    ]
+  }
+}

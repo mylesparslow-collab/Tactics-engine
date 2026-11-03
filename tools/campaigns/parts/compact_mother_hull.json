@@ -1,0 +1,76 @@
+{
+  "id": "compact_mother_hull",
+  "name": "Mother Hull",
+  "description": "Ketta Vane's Salvage Compact runs, burns and sells its way across 311 AE until it learns Mother Hull has been holding a lamp the whole time.",
+  "faction": "salvage_compact",
+  "startingRoster": [
+    "salvage_compact_ketta_vane",
+    "salvage_compact_lamplighter",
+    "salvage_compact_lamplighter",
+    "salvage_compact_scrapper",
+    "salvage_compact_scrapper",
+    "salvage_compact_wrecker",
+    "salvage_compact_wrecker",
+    "salvage_compact_rivet_slinger",
+    "sv_spell_cut_and_run_tonic",
+    "sv_equip_scrap_vest"
+  ],
+  "missions": [
+    {
+      "mission": "sv_breakers_yard",
+      "unlocks": [
+        "salvage_compact_bone_sled_rider",
+        "salvage_compact_snare_tinker"
+      ]
+    },
+    {
+      "mission": "sv_cut_and_run",
+      "unlocks": [
+        "salvage_compact_tallow_mender",
+        "sv_spell_grease_the_deck"
+      ]
+    },
+    {
+      "mission": "sv_grease_and_glory",
+      "unlocks": [
+        "salvage_compact_powder_monk",
+        "sv_spell_flash_fire"
+      ]
+    },
+    {
+      "mission": "sv_the_roost_debt",
+      "unlocks": [
+        "salvage_compact_quartermaster",
+        "sv_spell_tripwire_alley"
+      ]
+    },
+    {
+      "mission": "sv_embargo",
+      "unlocks": [
+        "salvage_compact_hullbreaker",
+        "salvage_compact_breach_gunner"
+      ]
+    },
+    {
+      "mission": "sv_kelp_and_carcass",
+      "unlocks": [
+        "sv_equip_harpoon_gauntlet",
+        "sv_spell_black_market_cut"
+      ]
+    },
+    {
+      "mission": "sv_the_archive",
+      "unlocks": [
+        "salvage_compact_odo_brask",
+        "sv_spell_compact_embargo"
+      ]
+    },
+    {
+      "mission": "sv_the_warm_heart",
+      "unlocks": [
+        "salvage_compact_brother_ashmaw",
+        "salvage_compact_harpoon_engine"
+      ]
+    }
+  ]
+}

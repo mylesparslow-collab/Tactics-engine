@@ -1,0 +1,293 @@
+{
+  "id": "gy_the_wrong_sky",
+  "name": "The Wrong Sky",
+  "description": "Hold the dry steps of the Tide Steps until what fell out of the sky drowns in the air.",
+  "map": "tide_steps",
+  "briefing": [
+    "Oskeline's words, written down by Wren because the old woman said someone had better. Three nights ago a lamp went out somewhere down in the trenches. The next morning it rained salt water out of a clear sky, and not one bird on the Stacks would leave the roost. They sit with their heads all turned the same way, looking up.",
+    "Torr Ashby took the Black Wheel to the Tide Steps anyway, because a Concord patrol died there and nobody had cleaned it up. His riders came back without him. They say there was nothing on the bones to clean, and that the birds would not lift, and then something came down out of the sky onto the basin.",
+    "He is a vulture and a liar and he owes us a third of a leviathan. Go and get him. Stay on the dry steps. Whatever is falling out of that sky drowns in the air, so make it come to you."
+  ],
+  "victoryText": "By dusk the things in the basin have stopped moving, pale and split on the dry steps. Torr walks among them and does not pick anything up. \"First battle I've seen with nothing left after,\" he says. \"They eat everything. Even the cleanup.\" He flies home with the Stacks, and does not mention money once.",
+  "defeatText": "The Ribbon King passes over the terrace and Torr's vulture is simply not there any more. The Black Wheel scatters across the Rim, and for a year the cliff-towns have no one to sell their dead to.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Gyre",
+      "color": "#5a6470",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "gyre_captain_torr_ashby",
+          "x": 12,
+          "y": 19,
+          "tag": "torr_ashby"
+        },
+        {
+          "unit": "gyre_skua_lancer",
+          "x": 11,
+          "y": 19,
+          "tag": "black_wheel"
+        },
+        {
+          "unit": "gyre_skua_lancer",
+          "x": 13,
+          "y": 19,
+          "tag": "black_wheel"
+        },
+        {
+          "unit": "gyre_wren_halloway",
+          "x": 11,
+          "y": 23,
+          "tag": "wren_halloway"
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 13,
+          "y": 23
+        },
+        {
+          "unit": "gyre_gullwife",
+          "x": 14,
+          "y": 23
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 12,
+          "y": 24
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 10,
+          "y": 24
+        }
+      ]
+    },
+    {
+      "name": "Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "ai",
+      "warband": [
+        "overcurrent_gulper",
+        "overcurrent_gulper",
+        "overcurrent_gulper",
+        "overcurrent_tongue_louse",
+        "overcurrent_tongue_louse",
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_driftbell",
+        "overcurrent_siphon_chain",
+        "overcurrent_hagwyrm"
+      ],
+      "units": [
+        {
+          "unit": "overcurrent_gulper",
+          "x": 8,
+          "y": 12,
+          "tag": "overcurrent_host"
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 15,
+          "y": 12,
+          "tag": "overcurrent_host"
+        },
+        {
+          "unit": "overcurrent_hagwyrm",
+          "x": 9,
+          "y": 13,
+          "tag": "overcurrent_host"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 17,
+          "y": 14,
+          "tag": "overcurrent_host"
+        },
+        {
+          "unit": "overcurrent_driftbell",
+          "x": 6,
+          "y": 14,
+          "tag": "overcurrent_host"
+        },
+        {
+          "unit": "overcurrent_siphon_chain",
+          "x": 16,
+          "y": 11,
+          "tag": "overcurrent_host"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 20,
+      "keystone": false
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 9,
+        "label": "Survive 9 turns"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "torr_ashby",
+        "label": "Torr must not fall"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "wren_halloway",
+        "label": "Wren must not fall"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Captain Torr Ashby",
+          "text": "Wren! Don't land. The birds won't fly, which means they know something, which means I'd like to be somewhere else."
+        },
+        {
+          "type": "status",
+          "tag": "black_wheel",
+          "status": "rooted",
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "torr_ashby",
+          "status": "rooted",
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 2,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Two things drop out of the sky onto the south rim, behind the company, drawn by the Beacon."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_downward_shark",
+          "x": 6,
+          "y": 23,
+          "tag": "overcurrent_host"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_downward_shark",
+          "x": 17,
+          "y": 23,
+          "tag": "overcurrent_host"
+        },
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "The rain comes. Something long and silver unrolls out of the basin."
+        },
+        {
+          "type": "terrain",
+          "x": 12,
+          "y": 22,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 3
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_ribbon_king",
+          "x": 12,
+          "y": 16,
+          "tag": "overcurrent_host"
+        },
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 3
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 60,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "torr_ashby",
+          "fraction": 0.5,
+          "label": "Keep Torr above half strength"
+        },
+        "pearls": 40,
+        "label": "Keep Torr above half strength"
+      }
+    ]
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "id": "lk_book_in_the_kettle",
+  "name": "The Book in the Kettle",
+  "map": "the_kettle",
+  "description": "Run down the sled carrying a Vigil Book copy before it escapes the Kettle.",
+  "briefing": [
+    "Captain's log. The broker Hesk Varrow is dead, put down in his own stall by a Concord knife, and the Compact is auctioning his stock by the lot. Lot fourteen is a keeper's book in oilcloth binding: a Vigil Book copy, taken off a drowned keeper's body forty years ago and sold four times since. Odo Brask is the auctioneer, and he has agreed to sell it to us before the bidding opens, for forty casks of lamp oil.",
+    "We do not need lamp oil. Our lamps burn nothing. Brask does not know this, and so for sixty years we have bought our secrets back from him with a fuel we never use.",
+    "We walk into the Kettle under the market code: no weapons drawn in the aisles. I expect Brask to keep the code. I expect it the way one expects the weather."
+  ],
+  "victoryText": "The sled overturns in the salt and lot fourteen skids out of the wreck, binding split. Drenn picks it up: the fourth recension, complete except for the locked page, which no copy has ever carried. That page exists once, and it travels by hand. Brask sends the forty casks back the next morning with a note: \"Partial refund. Partial book.\"",
+  "defeatText": "The sled clears the hulk gap and is gone over the flats toward the Rim. Somewhere in Harrowgate, a man with a seal reads about the hand held up and does not sleep that night, or for some nights after.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "lanternkeepers_captain_hollis_drenn",
+          "x": 10,
+          "y": 17,
+          "tag": "captain_drenn"
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 9,
+          "y": 18
+        },
+        {
+          "unit": "lanternkeepers_beaconrunner",
+          "x": 11,
+          "y": 18
+        },
+        {
+          "unit": "lanternkeepers_wick",
+          "x": 8,
+          "y": 19
+        },
+        {
+          "unit": "lanternkeepers_oilbearer",
+          "x": 12,
+          "y": 19
+        }
+      ]
+    },
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_wrecker",
+        "salvage_compact_wrecker",
+        "salvage_compact_lamplighter",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_powder_monk",
+        "salvage_compact_tallow_mender",
+        "salvage_compact_bone_sled_rider"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_quartermaster",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 8,
+          "y": 8
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 13,
+          "y": 8
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 5,
+          "y": 10
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 17,
+          "y": 11
+        },
+        {
+          "unit": "salvage_compact_snare_tinker",
+          "x": 14,
+          "y": 12
+        }
+      ],
+      "startingEssence": 50,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "book_rider",
+        "label": "Bring down the book-rider"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "reach_tile",
+        "team": 1,
+        "tag": "book_rider",
+        "tiles": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ],
+        "label": "The rider must not reach the north-west hulk gap"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "captain_drenn",
+        "label": "Captain Drenn must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 12,
+        "label": "Finish before turn 12"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Captain! Forty casks, one book, and we never met. My clerk is counting the casks now. Slowly."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 11,
+          "y": 9,
+          "tag": "book_rider"
+        },
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Ah. Captain. The Quartermaster has had a better offer from a gentleman with a Rim seal. Nothing personal. Everything financial."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_wrecker",
+          "x": 5,
+          "y": 6
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_wrecker",
+          "x": 6,
+          "y": 6
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 60,
+    "bonus": [
+      {
+        "condition": {
+          "type": "turn_limit",
+          "turns": 7,
+          "not": true,
+          "label": "Bring down the rider before turn 7"
+        },
+        "pearls": 25,
+        "label": "Bring down the rider before turn 7"
+      }
+    ]
+  }
+}

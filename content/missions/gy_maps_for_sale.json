@@ -1,0 +1,239 @@
+{
+  "id": "gy_maps_for_sale",
+  "name": "Maps for Sale",
+  "description": "Fly Bucket the pelican and her satchel of survey maps down the Greywater Stair to the Shelf landing.",
+  "map": "greywater_stair",
+  "briefing": [
+    "Tally, page four. A Concord surveyor named Edda Pilling paid us in salt to fly a satchel of survey maps down the Stair to a company at the bottom. She called us vermin while she counted it out. It was good salt.",
+    "The satchel rides in Bucket's pouch, because Bucket is the only bird on the Stacks who will carry paper without eating it. The Tide are sitting on the lower landings waiting for Concord wagons. They have slingers. Slingers do not care whether you are a wagon.",
+    "I read the maps on the roost last night, all of them, slowly. Every lighthouse on the Shelf is marked in red ink. Next to one of them someone has written \"Lantern Shoal: do not touch the lamp\", and I would very much like to know why a map needs to be told that."
+  ],
+  "victoryText": "Bucket lands on the Shelf, opens her beak, and produces the satchel only slightly damp. The Concord quartermaster signs for it without looking up. The address on the flap says \"Commander T. Orrel, Shoal expedition\". Wren reads it upside down and remembers it.",
+  "defeatText": "Bucket goes down on the fifth landing in a cloud of loose paper. The maps blow out over the Shelf, and for a week the Tide wrap their dead in them.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Gyre",
+      "color": "#5a6470",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "gyre_wren_halloway",
+          "x": 11,
+          "y": 3,
+          "tag": "wren_halloway"
+        },
+        {
+          "unit": "gyre_pelican_hauler",
+          "x": 12,
+          "y": 2,
+          "tag": "map_pouch"
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 10,
+          "y": 3
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 13,
+          "y": 3
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 9,
+          "y": 2
+        },
+        {
+          "unit": "gyre_gullwife",
+          "x": 13,
+          "y": 1
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 10,
+          "y": 2
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_tear_slinger",
+        "returning_tide_tear_slinger",
+        "returning_tide_tideskulker",
+        "returning_tide_rainsayer",
+        "returning_tide_wringer"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 7,
+          "y": 8
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 14,
+          "y": 9
+        },
+        {
+          "unit": "returning_tide_tideskulker",
+          "x": 10,
+          "y": 12
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 5,
+          "y": 16
+        },
+        {
+          "unit": "returning_tide_wringer",
+          "x": 16,
+          "y": 16
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 12,
+          "y": 18
+        }
+      ],
+      "startingEssence": 40,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "map_pouch",
+        "tiles": [
+          [
+            19,
+            20
+          ],
+          [
+            20,
+            20
+          ],
+          [
+            21,
+            20
+          ],
+          [
+            19,
+            21
+          ],
+          [
+            20,
+            21
+          ],
+          [
+            21,
+            21
+          ]
+        ],
+        "label": "Land Bucket on the Shelf"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "map_pouch",
+        "label": "Bucket must not fall"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "wren_halloway",
+        "label": "Wren must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Land the maps before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_tear_slinger",
+          "x": 3,
+          "y": 11
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_tear_slinger",
+          "x": 18,
+          "y": 11
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Cartographer Edda Pilling",
+          "text": "Those maps are signed and sealed! If one sheet arrives wet I am docking you by the sheet!"
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_rainsayer",
+          "x": 15,
+          "y": 17
+        },
+        {
+          "type": "terrain",
+          "x": 17,
+          "y": 19,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 35,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "map_pouch",
+          "fraction": 0.5,
+          "label": "Keep Bucket above half health"
+        },
+        "pearls": 25,
+        "label": "Keep Bucket above half health"
+      }
+    ]
+  }
+}

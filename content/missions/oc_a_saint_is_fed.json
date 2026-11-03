@@ -1,0 +1,234 @@
+{
+  "id": "oc_a_saint_is_fed",
+  "name": "A Saint Is Fed",
+  "description": "A Tide splinter feeds a goblin-jawed shark in the shrine pool, and Dunnock's choir comes over the causeway to put the Saint down.",
+  "map": "weeping_shelf",
+  "briefing": [
+    "Entry the ninth. There is a Tide splinter on the Weeping Shelf that has stopped waiting for the sea and started serving what comes out of it. They keep a goblin-jawed shark in the pool below the shrine. They call it Saint Rictus, and they feed it.",
+    "I watched a man walk into the pool with his arms open. He was singing. I am writing this down because the page says to, and because I would rather nobody ever believed me.",
+    "The main Tide does not approve. Dunnock's choir is coming over the causeway to put the Saint down, and the Undersinging has gone to the Shelf as if it had been called by name."
+  ],
+  "victoryText": "The Choirmaster falls into the chasm still singing Dunnock's hymn, and the choir behind her breaks and goes home in the rain. Brother Tey kneels at the pool's edge and the Saint takes the offering from his hands, gently, which is worse. Wenna writes: \"Dunnock was right. I did not expect to agree with him about anything.\"",
+  "defeatText": "The choir sings the Saint down into the pool and holds it under the shallow brine until it stops moving. Brother Tey sits beside the water all night. In the morning he walks into the rain toward the Shoal, alone, and nobody follows him.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "overcurrent_the_undersinging",
+          "x": 4,
+          "y": 17,
+          "tag": "undersinging"
+        },
+        {
+          "unit": "overcurrent_saint_rictus",
+          "x": 8,
+          "y": 18,
+          "tag": "saint_rictus"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 7,
+          "y": 17,
+          "tag": "splinter"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 17,
+          "tag": "splinter"
+        },
+        {
+          "unit": "returning_tide_shroud_mender",
+          "x": 8,
+          "y": 19,
+          "tag": "splinter"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 3,
+          "y": 18,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 5,
+          "y": 18,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 4,
+          "y": 19,
+          "tag": "swarm"
+        }
+      ]
+    },
+    {
+      "name": "The Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_tear_slinger",
+        "returning_tide_tear_slinger",
+        "returning_tide_wringer",
+        "returning_tide_undertow_singer"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_choirmaster",
+          "x": 4,
+          "y": 5,
+          "tag": "tide_censor"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 6,
+          "y": 6,
+          "tag": "tide_host"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 2,
+          "y": 6,
+          "tag": "tide_host"
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 7,
+          "y": 8,
+          "tag": "tide_host"
+        }
+      ],
+      "startingEssence": 70,
+      "essencePerTurn": 30
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "tide_censor",
+        "label": "Kill Choirmaster Oda Vell"
+      },
+      {
+        "type": "survive",
+        "turns": 10,
+        "label": "Hold out for 10 turns"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "saint_rictus",
+        "label": "Saint Rictus must not die"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "undersinging",
+        "label": "The Undersinging must not die"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Brother Ansel Tey",
+          "text": "Eat, Saint. Eat, and remember us to the sea when it comes home."
+        },
+        {
+          "type": "message",
+          "speaker": "Hunger",
+          "text": "they come to us. they come to us singing."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Imre Dunnock",
+          "text": "That is not the sea's mercy, children. That is its appetite. Come home."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 3,
+          "y": 14,
+          "tag": "tide_host"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 13,
+          "y": 15,
+          "tag": "tide_host"
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 8,
+          "y": 13,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 6,
+          "y": 15,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "The Choir",
+          "text": "mmmm. the sky leans down to listen."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 45,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "splinter",
+          "not": true,
+          "label": "Keep the splinter alive"
+        },
+        "pearls": 20,
+        "label": "Keep the splinter alive"
+      }
+    ]
+  }
+}

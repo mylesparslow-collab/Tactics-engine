@@ -1,0 +1,224 @@
+{
+  "id": "sv_embargo",
+  "name": "Embargo",
+  "description": "Break through the Concord star fort on the saltpan and destroy the Verge Gate that closes the salt roads.",
+  "map": "saltpan_bastions",
+  "briefing": [
+    "Sled-log. The Concord has closed the salt roads. Every one. A notice nailed to every cairn on the Verge says the Compact is \"a party to the Tide's insurrection\" and may not trade on Concord ground until further notice. Further notice is Concord for never.",
+    "Everything we eat comes up those roads or goes down them. The roads all run through one fort on the pan: a star of salt walls around a salt works, with a gate at the north end and a clerk in the middle who writes down every sled that passes. The clerk has the ledger. The ledger has the embargo. I have powder.",
+    "Ashmaw has sent a cart of his best with a note: \"Be generous.\" Brask has sent nothing, which means he has already sold the fort's water rights to somebody. Through the walls, through the court, break the gate. The salt roads were ribs before they were roads."
+  ],
+  "victoryText": "The Verge Gate goes up in a sheet of white salt and orange fire. Ketta rides through before the dust settles, and for a quarter-mile there is nothing ahead of her but flat. She stops anyway. On the horizon to the north, very small, the Shoal's lamp is burning in broad daylight, and it is leaning, just slightly, toward the sky.",
+  "defeatText": "The crew falls back across the pan with the salt wall at their heels. The embargo holds. By winter, Mother Hull is boiling leather.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salvage_compact_ketta_vane",
+          "x": 15,
+          "y": 25,
+          "tag": "ketta_vane"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 14,
+          "y": 25
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 16,
+          "y": 25
+        },
+        {
+          "unit": "salvage_compact_lamplighter",
+          "x": 15,
+          "y": 24
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 14,
+          "y": 26
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 16,
+          "y": 26
+        }
+      ]
+    },
+    {
+      "name": "The Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_saltwright",
+        "salt_concord_caustic_lantern",
+        "salt_concord_surveyor"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_rim_marshal",
+          "x": 14,
+          "y": 4,
+          "tag": "verge_marshal"
+        },
+        {
+          "unit": "salt_concord_tollkeeper",
+          "x": 14,
+          "y": 13,
+          "tag": "toll_clerk"
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 15,
+          "y": 17
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 13,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 16,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_brine_slinger",
+          "x": 10,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_brine_slinger",
+          "x": 19,
+          "y": 17
+        },
+        {
+          "unit": "salt_concord_saltwright",
+          "x": 14,
+          "y": 9
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Destroy the Verge Gate"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "ketta_vane",
+        "label": "Ketta Vane must live"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "Hold the sled-camp lamp"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 18,
+        "label": "Break the gate before turn 18"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Verge-Marshal",
+          "text": "Close the south gate."
+        },
+        {
+          "type": "terrain",
+          "x": 15,
+          "y": 19,
+          "terrain": "salt_wall",
+          "radius": 1,
+          "duration": 4
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "West salt road's unwatched. I know because I'm the one who isn't watching it. That one's free. Don't get used to it."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 8
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "A relief column comes up the east road."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_stair_warden",
+          "x": 29,
+          "y": 15
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brineguard",
+          "x": 28,
+          "y": 15
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brineguard",
+          "x": 27,
+          "y": 15
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 55,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "toll_clerk",
+          "label": "Take the ledger: defeat the toll clerk"
+        },
+        "pearls": 25,
+        "label": "Take the ledger: defeat the toll clerk"
+      }
+    ]
+  }
+}

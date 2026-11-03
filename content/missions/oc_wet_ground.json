@@ -1,0 +1,235 @@
+{
+  "id": "oc_wet_ground",
+  "name": "Wet Ground",
+  "description": "The Overcurrent follow the water west to the Oyster Banks, where three waking Brainstalks keep the wet to themselves.",
+  "map": "oyster_banks",
+  "briefing": [
+    "Entry the third. They are dying. Half of what fell at the Steps lay on the terraces by noon the next day, gone grey and stiff, with the salt drawing a white line around each one like a coroner's chalk.",
+    "The rest went west in a long pale string toward the Oyster Banks, where the ground is wet. I followed with two water skins and a borrowed sled. The birds that used to sit on the Steps lamp have gone, and they have not come back.",
+    "The Banks are not empty. The coral there is awake, it has noticed them, and it does not share. The long one, which I have started calling the Undersinging because of the sound, went straight for the shallows as if it remembered them."
+  ],
+  "victoryText": "The minds go dark one by one, and the drones around them stop, mid-step, like toys run down. The Overcurrent lie in the shallows and do not dry. Wenna watches the Undersinging drift over the dead reef, humming, and writes: \"It is not cruel. It is thirsty. I keep wanting those to be different things.\"",
+  "defeatText": "The coral closes over the shallows and the fallen dry on its edge, one by one, facing the water they cannot reach. The reef grows over them by morning. Coralspire does not gloat. It simply goes on growing.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "overcurrent_the_undersinging",
+          "x": 14,
+          "y": 20,
+          "tag": "undersinging"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 13,
+          "y": 21,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 15,
+          "y": 21,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 14,
+          "y": 22,
+          "tag": "swarm"
+        }
+      ]
+    },
+    {
+      "name": "The Reef Ascendant",
+      "color": "#e07a6a",
+      "controller": "ai",
+      "warband": [
+        "reef_ascendant_sting_anemone",
+        "reef_ascendant_spitter_polyp",
+        "reef_ascendant_spitter_polyp",
+        "reef_ascendant_fanblade",
+        "reef_ascendant_reef_tender",
+        "reef_ascendant_shard_urchin",
+        "reef_ascendant_polyp_drone"
+      ],
+      "units": [
+        {
+          "unit": "reef_ascendant_brainstalk",
+          "x": 3,
+          "y": 7,
+          "tag": "reef_mind"
+        },
+        {
+          "unit": "reef_ascendant_brainstalk",
+          "x": 24,
+          "y": 5,
+          "tag": "reef_mind"
+        },
+        {
+          "unit": "reef_ascendant_brainstalk",
+          "x": 24,
+          "y": 16,
+          "tag": "reef_mind"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 2,
+          "y": 7,
+          "tag": "reef_body"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 4,
+          "y": 7,
+          "tag": "reef_body"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 23,
+          "y": 5,
+          "tag": "reef_body"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 25,
+          "y": 5,
+          "tag": "reef_body"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 23,
+          "y": 16,
+          "tag": "reef_body"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 25,
+          "y": 16,
+          "tag": "reef_body"
+        },
+        {
+          "unit": "reef_ascendant_spireguard",
+          "x": 13,
+          "y": 9,
+          "tag": "reef_body"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 15
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "reef_mind",
+        "label": "Kill all three Brainstalks"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "undersinging",
+        "label": "The Undersinging must not die"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Kill the minds before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Dry",
+          "text": "the air is eating us. find the wet. find the wet."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 13,
+          "y": 11,
+          "terrain": "calcite",
+          "radius": 1,
+          "duration": 5
+        },
+        {
+          "type": "message",
+          "speaker": "Coralspire",
+          "text": "We close our wet. You are the sea. You are what we grew to keep out."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "reef_ascendant_fanblade",
+          "x": 3,
+          "y": 17,
+          "tag": "reef_body"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "reef_ascendant_fanblade",
+          "x": 4,
+          "y": 17,
+          "tag": "reef_body"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "reef_ascendant_spireguard",
+          "x": 2,
+          "y": 18,
+          "tag": "reef_body"
+        },
+        {
+          "type": "message",
+          "speaker": "Hunger",
+          "text": "more. sweet. bone that grows. more."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 35,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "undersinging",
+          "fraction": 0.5,
+          "label": "The Undersinging ends above half strength"
+        },
+        "pearls": 15,
+        "label": "The Undersinging ends above half strength"
+      }
+    ]
+  }
+}

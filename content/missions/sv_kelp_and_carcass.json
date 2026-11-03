@@ -1,0 +1,253 @@
+{
+  "id": "sv_kelp_and_carcass",
+  "name": "Kelp and Carcass",
+  "description": "Kill the thing that fell into the Kelpmire channel and bring the harvest crew home.",
+  "map": "kelpmire",
+  "briefing": [
+    "Sled-log. Something fell out of the sky over the Kelpmire four nights ago. Not a bird. A knot of grey rope the length of a wagon, all mouth at one end, lying in the channel. Brask sold the first cut before anyone had looked at it properly, because the meat does not rot, and meat that does not rot is worth more than powder.",
+    "The cutters went in yesterday. Today the cutters sent a runner to say the carcass is not a carcass. It is breathing through the slime. It ate a ladder. Things keep landing around it in the fog, pale and wet and wrong, and they all face the same way: toward the lamps.",
+    "Brask says it is a fish. Ashmaw says it is a sign. Last week Brask sold a bronze Court herald an answer to a question, and he has been strange ever since, so I am not taking his word for fish. Kill it, cut it, get the crew home. In that order."
+  ],
+  "victoryText": "The knot stops moving at last. The cutters work by lamplight, and nobody speaks. Inside it they find a lighthouse lens-shard, grown over with slime like a pearl, still faintly warm. Brask buys it from the crew at four times its weight and does not sell it on. That night Ketta looks up, and for a moment she is sure the sky is looking back.",
+  "defeatText": "The fog closes. The cutters do not come back, and neither do their sleds. In the spring, the Kelpmire is full of pale things lying in the channel, waiting, and none of them rot.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salvage_compact_ketta_vane",
+          "x": 10,
+          "y": 21,
+          "tag": "ketta_vane"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 9,
+          "y": 21
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 11,
+          "y": 21
+        },
+        {
+          "unit": "salvage_compact_lamplighter",
+          "x": 10,
+          "y": 20
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 9,
+          "y": 22
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 8,
+          "y": 14,
+          "tag": "harvest_crew"
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 12,
+          "y": 14,
+          "tag": "harvest_crew"
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 13,
+          "y": 12,
+          "tag": "harvest_crew"
+        }
+      ]
+    },
+    {
+      "name": "The Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "ai",
+      "warband": [
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_gulper",
+        "overcurrent_gulper",
+        "overcurrent_tongue_louse",
+        "overcurrent_driftbell"
+      ],
+      "units": [
+        {
+          "unit": "overcurrent_hagwyrm",
+          "x": 10,
+          "y": 11,
+          "tag": "slime_knot"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 8,
+          "y": 11
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 12,
+          "y": 12
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 7,
+          "y": 12
+        }
+      ],
+      "startingEssence": 40,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "slime_knot",
+        "label": "Kill the slime knot"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "defeat_unit",
+        "tag": "harvest_crew",
+        "label": "Keep at least one cutter alive"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "ketta_vane",
+        "label": "Ketta Vane must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Kill it before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 7,
+          "y": 4,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 12
+        },
+        {
+          "type": "terrain",
+          "x": 9,
+          "y": 2,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 12
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "The sky thins. Two Gulpers fall into the shallows, and a Tongue Louse lands beside the cutters."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_gulper",
+          "x": 5,
+          "y": 5
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_gulper",
+          "x": 12,
+          "y": 6
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_tongue_louse",
+          "x": 6,
+          "y": 15
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Brother Ashmaw",
+          "text": "It needs the wet. Take the wet away."
+        },
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 11,
+          "terrain": "silt",
+          "radius": 1,
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 8
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Hull cutter",
+          "text": "It's raining. Ketta, it's raining up here. Where's it coming from?"
+        },
+        {
+          "type": "terrain",
+          "x": 9,
+          "y": 16,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 6
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_downward_shark",
+          "x": 9,
+          "y": 16
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 55,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "harvest_crew",
+          "not": true,
+          "label": "Bring every cutter home"
+        },
+        "pearls": 25,
+        "label": "Bring every cutter home"
+      }
+    ]
+  }
+}

@@ -2,6 +2,7 @@
   "light_at_lantern_shoal": {
     "name": "The Light at Lantern Shoal",
     "description": "Salt Concord survey company under Commander Tamsin Orrel uncovers what the lighthouses of the Ebb really hold up.",
+    "faction": "salt_concord",
     "startingRoster": [
       "salt_concord_tamsin_orrel",
       "salt_concord_salt_levy",
@@ -71,6 +72,525 @@
         "unlocks": [
           "salt_concord_hesper_vael",
           "salt_concord_ione_karst"
+        ]
+      }
+    ]
+  },
+  "the_weeping_shelf": {
+    "name": "The Weeping Shelf",
+    "description": "Sister Maren Ketch keeps a tally of everything she wrings, from the shrine on the Shelf to the fallen lamp at Deeplight.",
+    "faction": "returning_tide",
+    "startingRoster": [
+      "returning_tide_maren_ketch",
+      "returning_tide_penitent",
+      "returning_tide_penitent",
+      "returning_tide_penitent",
+      "returning_tide_drowned",
+      "returning_tide_drowned",
+      "rt_spell_brine_lash",
+      "rt_equip_oilskin_cloak"
+    ],
+    "missions": [
+      {
+        "mission": "rt_rain_on_the_faithful",
+        "unlocks": [
+          "returning_tide_wringer",
+          "returning_tide_tear_slinger"
+        ]
+      },
+      {
+        "mission": "rt_the_broken_toll",
+        "unlocks": [
+          "returning_tide_tideskulker",
+          "returning_tide_rainsayer"
+        ]
+      },
+      {
+        "mission": "rt_bracks_crew",
+        "unlocks": [
+          "returning_tide_shroud_mender",
+          "rt_spell_drowned_rise"
+        ]
+      },
+      {
+        "mission": "rt_paper_swords",
+        "unlocks": [
+          "returning_tide_anchor_bearer",
+          "rt_equip_drowners_gaff"
+        ]
+      },
+      {
+        "mission": "rt_wringing_the_wells",
+        "unlocks": [
+          "returning_tide_undertow_singer",
+          "rt_spell_wringing_rite"
+        ]
+      },
+      {
+        "mission": "rt_lamp_and_wall_other_side",
+        "unlocks": [
+          "returning_tide_choirmaster",
+          "rt_equip_second_tide_shroud"
+        ]
+      },
+      {
+        "mission": "rt_the_glass_road",
+        "unlocks": [
+          "returning_tide_bloat_drowned",
+          "rt_spell_the_sea_remembers"
+        ]
+      },
+      {
+        "mission": "rt_the_light_goes_out_at_deeplight",
+        "unlocks": [
+          "returning_tide_imre_dunnock",
+          "returning_tide_oswin_brack"
+        ]
+      }
+    ]
+  },
+  "the_weight_returns": {
+    "name": "The Weight Returns",
+    "description": "Herald Vhaal of the Hadal Court climbs out of the trench to ask who lifted the sea, and learns what answers cost.",
+    "faction": "hadal_court",
+    "startingRoster": [
+      "hadal_court_herald_vhaal",
+      "hadal_court_pit_thrall",
+      "hadal_court_pit_thrall",
+      "hadal_court_pit_thrall",
+      "hadal_court_pit_thrall",
+      "hadal_court_lantern_spitter",
+      "hadal_court_lantern_spitter",
+      "hc_spell_pressure_spike",
+      "hc_equip_brine_greaves"
+    ],
+    "missions": [
+      {
+        "mission": "hc_the_long_climb",
+        "unlocks": [
+          "hadal_court_bell_knight",
+          "hadal_court_vent_priest"
+        ]
+      },
+      {
+        "mission": "hc_deeplight_rising",
+        "unlocks": [
+          "hadal_court_lurecaller",
+          "hadal_court_murk_diver"
+        ]
+      },
+      {
+        "mission": "hc_the_unsigned_treaty",
+        "unlocks": [
+          "hadal_court_pressure_lancer",
+          "hadal_court_trench_crab"
+        ]
+      },
+      {
+        "mission": "hc_the_upper_kin",
+        "unlocks": [
+          "hc_spell_vent_surge",
+          "hc_equip_vent_flask"
+        ]
+      },
+      {
+        "mission": "hc_the_market_of_liars",
+        "unlocks": [
+          "hc_spell_undertow",
+          "hc_equip_stalklamp"
+        ]
+      },
+      {
+        "mission": "hc_the_rain_that_faces_upward",
+        "unlocks": [
+          "hadal_court_crushing_maw",
+          "hc_spell_bellward"
+        ]
+      },
+      {
+        "mission": "hc_what_the_glass_remembers",
+        "unlocks": [
+          "hadal_court_deep_herald",
+          "hc_spell_the_weight_returns"
+        ]
+      },
+      {
+        "mission": "hc_the_third_bell",
+        "unlocks": [
+          "hadal_court_orrun_tessk",
+          "hadal_court_maelis_quell"
+        ]
+      }
+    ]
+  },
+  "compact_mother_hull": {
+    "name": "Mother Hull",
+    "description": "Ketta Vane's Salvage Compact runs, burns and sells its way across 311 AE until it learns Mother Hull has been holding a lamp the whole time.",
+    "faction": "salvage_compact",
+    "startingRoster": [
+      "salvage_compact_ketta_vane",
+      "salvage_compact_lamplighter",
+      "salvage_compact_lamplighter",
+      "salvage_compact_scrapper",
+      "salvage_compact_scrapper",
+      "salvage_compact_wrecker",
+      "salvage_compact_wrecker",
+      "salvage_compact_rivet_slinger",
+      "sv_spell_cut_and_run_tonic",
+      "sv_equip_scrap_vest"
+    ],
+    "missions": [
+      {
+        "mission": "sv_breakers_yard",
+        "unlocks": [
+          "salvage_compact_bone_sled_rider",
+          "salvage_compact_snare_tinker"
+        ]
+      },
+      {
+        "mission": "sv_cut_and_run",
+        "unlocks": [
+          "salvage_compact_tallow_mender",
+          "sv_spell_grease_the_deck"
+        ]
+      },
+      {
+        "mission": "sv_grease_and_glory",
+        "unlocks": [
+          "salvage_compact_powder_monk",
+          "sv_spell_flash_fire"
+        ]
+      },
+      {
+        "mission": "sv_the_roost_debt",
+        "unlocks": [
+          "salvage_compact_quartermaster",
+          "sv_spell_tripwire_alley"
+        ]
+      },
+      {
+        "mission": "sv_embargo",
+        "unlocks": [
+          "salvage_compact_hullbreaker",
+          "salvage_compact_breach_gunner"
+        ]
+      },
+      {
+        "mission": "sv_kelp_and_carcass",
+        "unlocks": [
+          "sv_equip_harpoon_gauntlet",
+          "sv_spell_black_market_cut"
+        ]
+      },
+      {
+        "mission": "sv_the_archive",
+        "unlocks": [
+          "salvage_compact_odo_brask",
+          "sv_spell_compact_embargo"
+        ]
+      },
+      {
+        "mission": "sv_the_warm_heart",
+        "unlocks": [
+          "salvage_compact_brother_ashmaw",
+          "salvage_compact_harpoon_engine"
+        ]
+      }
+    ]
+  },
+  "the_long_watch": {
+    "name": "The Long Watch",
+    "description": "Captain Drenn and the Lanternkeepers keep their vow of silence through the crisis of 311 AE and learn what the silence cost.",
+    "faction": "lanternkeepers",
+    "startingRoster": [
+      "lanternkeepers_captain_hollis_drenn",
+      "lanternkeepers_wick",
+      "lanternkeepers_wick",
+      "lanternkeepers_lamplit_sailor",
+      "lanternkeepers_lamplit_sailor",
+      "lanternkeepers_oilbearer",
+      "lanternkeepers_oilbearer",
+      "lanternkeepers_signalman",
+      "lk_spell_lamp_flash",
+      "lk_equip_wick_trimmers"
+    ],
+    "missions": [
+      {
+        "mission": "lk_counting_the_lamps",
+        "unlocks": [
+          "lanternkeepers_lantern_warden",
+          "lanternkeepers_glassgrinder"
+        ]
+      },
+      {
+        "mission": "lk_signal_fire",
+        "unlocks": [
+          "lanternkeepers_beaconrunner",
+          "lk_equip_signal_horn"
+        ]
+      },
+      {
+        "mission": "lk_the_ledger",
+        "unlocks": [
+          "lanternkeepers_stairkeeper",
+          "lk_equip_stairwell_greaves"
+        ]
+      },
+      {
+        "mission": "lk_book_in_the_kettle",
+        "unlocks": [
+          "lanternkeepers_bellringer",
+          "lk_spell_tithe_of_oil"
+        ]
+      },
+      {
+        "mission": "lk_the_fallen_lamp",
+        "unlocks": [
+          "lanternkeepers_beamwright",
+          "lk_equip_first_lens"
+        ]
+      },
+      {
+        "mission": "lk_what_feeds_below_the_beam",
+        "unlocks": [
+          "lanternkeepers_keeper_of_the_long_watch",
+          "lk_spell_beam_of_the_long_watch"
+        ]
+      },
+      {
+        "mission": "lk_the_wet_saint",
+        "unlocks": [
+          "lanternkeepers_keeper_pell_auster",
+          "lk_equip_lamplit_mantle"
+        ]
+      },
+      {
+        "mission": "lk_the_lamp_will_not_go_out",
+        "unlocks": [
+          "lanternkeepers_lensmaster_oriel_venn",
+          "lanternkeepers_first_flame"
+        ]
+      }
+    ]
+  },
+  "coralspire": {
+    "name": "Coralspire",
+    "description": "The eldest colony of the Shelf wakes, fights the dry world, and learns it is made of the sea it is trying to keep out.",
+    "faction": "reef_ascendant",
+    "startingRoster": [
+      "reef_ascendant_coralspire",
+      "reef_ascendant_polyp_drone",
+      "reef_ascendant_polyp_drone",
+      "reef_ascendant_polyp_drone",
+      "reef_ascendant_spitter_polyp",
+      "reef_ascendant_sting_anemone",
+      "ra_spell_creeping_reef",
+      "ra_equip_brine_sponge"
+    ],
+    "missions": [
+      {
+        "mission": "ra_first_light",
+        "unlocks": [
+          "reef_ascendant_fanblade",
+          "reef_ascendant_shard_urchin"
+        ]
+      },
+      {
+        "mission": "ra_the_mass_grave",
+        "unlocks": [
+          "reef_ascendant_reef_tender",
+          "ra_spell_consume_calcite"
+        ]
+      },
+      {
+        "mission": "ra_kelp_remembers",
+        "unlocks": [
+          "reef_ascendant_brainstalk",
+          "ra_equip_calcite_plate"
+        ]
+      },
+      {
+        "mission": "ra_salt_kills",
+        "unlocks": [
+          "reef_ascendant_broodspire",
+          "ra_spell_calcite_shard"
+        ]
+      },
+      {
+        "mission": "ra_the_lens",
+        "unlocks": [
+          "reef_ascendant_lensbearer",
+          "ra_equip_synapse_nodule"
+        ]
+      },
+      {
+        "mission": "ra_crumbling_branches",
+        "unlocks": [
+          "reef_ascendant_spireguard",
+          "ra_spell_choking_overgrowth"
+        ]
+      },
+      {
+        "mission": "ra_taste_of_rain",
+        "unlocks": [
+          "reef_ascendant_calcite_bloom",
+          "ra_equip_heartstone_geode"
+        ]
+      },
+      {
+        "mission": "ra_overgrowth",
+        "unlocks": [
+          "reef_ascendant_marrowbloom",
+          "reef_ascendant_glasswake"
+        ]
+      }
+    ]
+  },
+  "the_carrion_wheel": {
+    "name": "The Carrion Wheel",
+    "description": "Wren Halloway, a roost-born thief of the Gyre, steals the one page on the Ebb nobody could buy and learns what the sky is.",
+    "faction": "gyre",
+    "startingRoster": [
+      "gyre_wren_halloway",
+      "gyre_roost_runner",
+      "gyre_roost_runner",
+      "gyre_salt_crow",
+      "gyre_salt_crow",
+      "gyre_gullwife",
+      "gyre_roostwarden",
+      "gy_spell_dive_signal",
+      "gy_equip_beak_mask"
+    ],
+    "missions": [
+      {
+        "mission": "gy_the_cliff_shoot",
+        "unlocks": [
+          "gyre_skua_lancer",
+          "gyre_windreader"
+        ]
+      },
+      {
+        "mission": "gy_maps_for_sale",
+        "unlocks": [
+          "gyre_pelican_hauler",
+          "gy_spell_updraft"
+        ]
+      },
+      {
+        "mission": "gy_first_on_the_carcass",
+        "unlocks": [
+          "gyre_shrike_harrier",
+          "gy_spell_carrion_call"
+        ]
+      },
+      {
+        "mission": "gy_rob_the_broker",
+        "unlocks": [
+          "gyre_frigate_thief",
+          "gy_equip_hooded_lure"
+        ]
+      },
+      {
+        "mission": "gy_a_lanterns_pocket",
+        "unlocks": [
+          "gyre_stormkite_gunner",
+          "gy_spell_black_sky"
+        ]
+      },
+      {
+        "mission": "gy_every_bird_comes_home",
+        "unlocks": [
+          "gyre_wheel_captain",
+          "gy_equip_oilskin_flight_coat"
+        ]
+      },
+      {
+        "mission": "gy_the_wrong_sky",
+        "unlocks": [
+          "gyre_captain_torr_ashby",
+          "gy_spell_wrong_sky_gale"
+        ]
+      },
+      {
+        "mission": "gy_the_wheel_comes_down",
+        "unlocks": [
+          "gyre_roost_mother_oskeline",
+          "gyre_mother_of_the_wheel"
+        ]
+      }
+    ]
+  },
+  "what_feeds_below": {
+    "name": "What Feeds Below the Beam",
+    "description": "The fallen Overcurrent dry, hunt and climb toward the one light in the world that was ever theirs, as the keeper who follows them writes it down.",
+    "faction": "overcurrent",
+    "startingRoster": [
+      "overcurrent_the_undersinging",
+      "overcurrent_bellyeye_shoal",
+      "overcurrent_bellyeye_shoal",
+      "overcurrent_gulper",
+      "overcurrent_gulper",
+      "overcurrent_tongue_louse",
+      "overcurrent_tongue_louse",
+      "oc_spell_brine_squall",
+      "oc_equip_gill_bladder"
+    ],
+    "missions": [
+      {
+        "mission": "oc_the_floor_thins",
+        "unlocks": [
+          "overcurrent_driftbell",
+          "oc_spell_something_heavy"
+        ]
+      },
+      {
+        "mission": "oc_wet_ground",
+        "unlocks": [
+          "overcurrent_weeping_sunfish",
+          "oc_spell_spawning_water"
+        ]
+      },
+      {
+        "mission": "oc_the_slime_knot",
+        "unlocks": [
+          "overcurrent_hagwyrm",
+          "oc_equip_hookskin"
+        ]
+      },
+      {
+        "mission": "oc_a_saint_is_fed",
+        "unlocks": [
+          "overcurrent_siphon_chain",
+          "oc_equip_parasite_crown"
+        ]
+      },
+      {
+        "mission": "oc_the_upper_kin",
+        "unlocks": [
+          "overcurrent_barrelgaze",
+          "overcurrent_downward_shark"
+        ]
+      },
+      {
+        "mission": "oc_brightest_prey",
+        "unlocks": [
+          "overcurrent_lure_mother",
+          "oc_equip_belly_lantern"
+        ]
+      },
+      {
+        "mission": "oc_the_hooked_arms",
+        "unlocks": [
+          "overcurrent_ribbon_king",
+          "oc_spell_hunger"
+        ]
+      },
+      {
+        "mission": "oc_below_the_beam",
+        "unlocks": [
+          "overcurrent_mother_mantle",
+          "overcurrent_saint_rictus",
+          "overcurrent_the_thinning"
         ]
       }
     ]

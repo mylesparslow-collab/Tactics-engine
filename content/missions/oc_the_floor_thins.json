@@ -1,0 +1,223 @@
+{
+  "id": "oc_the_floor_thins",
+  "name": "The Floor Thins",
+  "description": "The sky sags over the Steps and the first of the Overcurrent fall onto dry stone, in sight of a Concord patrol standing in the shallows.",
+  "map": "tide_steps",
+  "briefing": [
+    "Locked page, the first new entry in ninety years. Keeper Wenna Cray, the Steps lamp. Our lamp flickered three times at dusk, the evening the word came that Deeplight had gone dark. The page says that whoever sees what comes next must write it down, and nobody else saw it, so this is me.",
+    "The sky over the basin went the colour of the inside of a shell. Then it sagged, the way canvas sags under rain, and things came through it. They were pale and wet and lit from underneath, and they hit the terraces like dropped fish, and they did not die.",
+    "There is a Concord patrol in the basin, six of them, standing in the shallows to fill their skins. The things have smelled them. I am on the lamp gallery with the shutters closed, and I can hear them humming."
+  ],
+  "victoryText": "The basin goes quiet. Six water skins float in the shallows, still full. On the terraces, two of the fallen have already gone grey and stiff in the air, and the rest have learned something: down, toward the wet. Wenna writes \"they learn fast\" and then crosses out \"fast\".",
+  "defeatText": "The long one dries on the terrace in a ring of white salt, still humming, then not. The sky closes over the basin like a healed cut. Wenna writes the date, and nothing else, and does not sleep.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "overcurrent_the_undersinging",
+          "x": 12,
+          "y": 24,
+          "tag": "undersinging"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 11,
+          "y": 25,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 13,
+          "y": 25,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 12,
+          "y": 26,
+          "tag": "swarm"
+        }
+      ]
+    },
+    {
+      "name": "The Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brine_slinger",
+        "salt_concord_brineguard",
+        "salt_concord_saltwright",
+        "salt_concord_surveyor",
+        "salt_concord_causeway_outrider"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 12,
+          "y": 16,
+          "tag": "concord_patrol"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 8,
+          "y": 16,
+          "tag": "concord_patrol"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 15,
+          "y": 16,
+          "tag": "concord_patrol"
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 5,
+          "y": 15,
+          "tag": "concord_patrol"
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 18,
+          "y": 15,
+          "tag": "concord_patrol"
+        },
+        {
+          "unit": "salt_concord_brine_slinger",
+          "x": 12,
+          "y": 11,
+          "tag": "concord_patrol"
+        }
+      ],
+      "startingEssence": 20,
+      "essencePerTurn": 15
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "concord_patrol",
+        "label": "Defeat the whole Concord patrol"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "undersinging",
+        "label": "The Undersinging must not die"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 12,
+        "label": "Feed before turn 12"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 12,
+          "y": 21,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Dry",
+          "text": "air. too much air. it bites."
+        },
+        {
+          "type": "message",
+          "speaker": "Hunger",
+          "text": "warm ones. standing in our water. down."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 12,
+          "y": 22,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 3
+        },
+        {
+          "type": "message",
+          "speaker": "The Choir",
+          "text": "mmmmm. the floor above is open. it weeps for us."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brineguard",
+          "x": 11,
+          "y": 8,
+          "tag": "concord_relief"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brineguard",
+          "x": 12,
+          "y": 8,
+          "tag": "concord_relief"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 5,
+          "y": 8,
+          "tag": "concord_relief"
+        },
+        {
+          "type": "message",
+          "speaker": "Sergeant Abel Corrie, Rainwatch",
+          "text": "Form on the road! Shields up. And nobody look up, do you hear me? Nobody look up."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 30,
+    "bonus": [
+      {
+        "condition": {
+          "type": "turn_limit",
+          "turns": 6,
+          "not": true,
+          "label": "Feed before the relief reaches the basin (win before turn 6)"
+        },
+        "pearls": 20,
+        "label": "Feed before the relief reaches the basin"
+      }
+    ]
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "id": "oc_the_hooked_arms",
+  "name": "The Hooked Arms",
+  "description": "Mother Mantle comes for the harpoon engines on the ribs of Mother Hull, where there is no water at all.",
+  "map": "mother_hull",
+  "briefing": [
+    "Entry the nineteenth. Something came down on the flats beside Mother Hull last night that was larger than the hulks. A squid, I think, with hooks turning in its suckers and an eye like a door left open. The hull-folk are already calling her Mother Mantle, the way you name a storm so you can curse it.",
+    "The Compact keep two harpoon engines on the ribs, and they have been shooting the fallen all week for the price of the meat. She has come for the engines. She does not seem angry. She seems patient, the way the tide was patient, when there was a tide.",
+    "I am inside the hull with three thousand people and a fat man in three coats who keeps trying to sell me a better seat. There is no water in a dead leviathan. Whatever comes in here will be dying the whole time it eats."
+  ],
+  "victoryText": "Mother Mantle takes the second engine in four arms and pulls, and two hulks that have leaned on each other for a century come apart with a sound like a held breath let go. She does not go further in. Three thousand people listen to her drag herself back out onto the flats, toward the Shoal. Brask, in the skull, asks Wenna if she is selling the page.",
+  "defeatText": "The harpoons hold. Mother Mantle dries on the flats beside the hull that named her, hooks still turning, and the Compact cut her for a month. The meat does not rot. Nobody in the Hulks will eat it.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "overcurrent_the_undersinging",
+          "x": 3,
+          "y": 9,
+          "tag": "undersinging"
+        },
+        {
+          "unit": "overcurrent_mother_mantle",
+          "x": 2,
+          "y": 11,
+          "tag": "mother_mantle"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 1,
+          "y": 10,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 1,
+          "y": 11,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 2,
+          "y": 10,
+          "tag": "swarm"
+        }
+      ]
+    },
+    {
+      "name": "The Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_wrecker",
+        "salvage_compact_wrecker",
+        "salvage_compact_tallow_mender",
+        "salvage_compact_lamplighter"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_harpoon_engine",
+          "x": 16,
+          "y": 5,
+          "tag": "harpoon_battery"
+        },
+        {
+          "unit": "salvage_compact_harpoon_engine",
+          "x": 16,
+          "y": 16,
+          "tag": "harpoon_battery"
+        },
+        {
+          "unit": "salvage_compact_quartermaster",
+          "x": 17,
+          "y": 10,
+          "tag": "hull_militia"
+        },
+        {
+          "unit": "salvage_compact_hullbreaker",
+          "x": 14,
+          "y": 10,
+          "tag": "hull_militia"
+        },
+        {
+          "unit": "salvage_compact_powder_monk",
+          "x": 13,
+          "y": 9,
+          "tag": "hull_militia"
+        },
+        {
+          "unit": "salvage_compact_powder_monk",
+          "x": 13,
+          "y": 12,
+          "tag": "hull_militia"
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 10,
+          "y": 5,
+          "tag": "hull_militia"
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 10,
+          "y": 16,
+          "tag": "hull_militia"
+        },
+        {
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 12,
+          "y": 3,
+          "tag": "hull_militia"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 15
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "harpoon_battery",
+        "label": "Destroy both harpoon engines"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "mother_mantle",
+        "label": "Mother Mantle must not die"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "undersinging",
+        "label": "The Undersinging must not die"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Tear down the engines before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 6,
+          "y": 7,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 6,
+          "y": 15,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Dry",
+          "text": "no water in the bone. none. stay by the big one. stay."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Madam, whatever you are, I want it known that the Compact has always been neutral. I can also offer you a very good price on the Concord."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 10,
+          "terrain": "lamp_oil",
+          "radius": 1,
+          "duration": 3
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_powder_monk",
+          "x": 19,
+          "y": 6,
+          "tag": "hull_militia"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_powder_monk",
+          "x": 19,
+          "y": 14,
+          "tag": "hull_militia"
+        },
+        {
+          "type": "message",
+          "speaker": "Brother Ashmaw",
+          "text": "Burn it! They're all water and no skin. Burn it bright enough the Rim can see!"
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 60,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "mother_mantle",
+          "fraction": 0.5,
+          "label": "Mother Mantle ends above half strength"
+        },
+        "pearls": 25,
+        "label": "Mother Mantle ends above half strength"
+      }
+    ]
+  }
+}

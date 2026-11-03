@@ -1,0 +1,216 @@
+{
+  "id": "ra_salt_kills",
+  "name": "Salt Kills",
+  "description": "Go through the south gate and break the Concord salt works at the north end of the star fort.",
+  "map": "saltpan_bastions",
+  "briefing": [
+    "The road-builders have decided we are a weed. They have a word for what they do to weeds, and the word is salt. Carts come from the star fort on the flooded pan, and where the carts tip, the ground turns white and our branches turn grey and come away in our grip.",
+    "They are not angry with us, which is the strange part. They measure, and they write, and then they salt, as if we were an error in a ledger. We have read the ledger, because it was on a cart, and we are a line that says \"growth, unlicensed, to be cleared\".",
+    "The salt comes from the works at the north end of the fort. We go through the south gate, past the killing lanes, and we break the works. Then we will see how long a ledger lasts in the wet."
+  ],
+  "victoryText": "The salt works crack open and the pan beneath them shows through, grey and wet. We grow into the cracks. By morning the north bastion is pink at the seams. The Saltmaster's ledger is still on its desk, and we leave it there, open at our line, so the next road-builder can read that it was cleared.",
+  "defeatText": "The carts keep coming. The ground around the spire goes white for a mile. We pull our nearest branches back from the salt, and some of them do not come. The ledger, we assume, is updated.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Reef Ascendant",
+      "color": "#e07a6a",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "reef_ascendant_coralspire",
+          "x": 15,
+          "y": 25,
+          "tag": "coralspire"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 14,
+          "y": 25,
+          "tag": "spire_bodies"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 16,
+          "y": 25,
+          "tag": "spire_bodies"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 14,
+          "y": 26,
+          "tag": "spire_bodies"
+        },
+        {
+          "unit": "reef_ascendant_spitter_polyp",
+          "x": 16,
+          "y": 26
+        }
+      ]
+    },
+    {
+      "name": "Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_surveyor",
+        "salt_concord_brine_slinger",
+        "salt_concord_stair_warden",
+        "salt_concord_brine_chirurgeon",
+        "salt_concord_causeway_outrider"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_saltwright",
+          "x": 12,
+          "y": 22,
+          "tag": "salt_sowers"
+        },
+        {
+          "unit": "salt_concord_saltwright",
+          "x": 21,
+          "y": 22,
+          "tag": "salt_sowers"
+        },
+        {
+          "unit": "salt_concord_saltwright",
+          "x": 14,
+          "y": 20,
+          "tag": "salt_sowers"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 14,
+          "y": 4
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 16,
+          "y": 4
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 15,
+          "y": 5
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Break the salt works at the north lighthouse stone"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "coralspire",
+        "label": "Coralspire must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 16,
+        "label": "Break the works before turn 16"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 13,
+          "y": 24,
+          "terrain": "living_reef",
+          "radius": 1
+        },
+        {
+          "type": "message",
+          "speaker": "Coralspire",
+          "text": "Wet underneath. A whole lake underneath. They have built a fort on top of a drink."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 13,
+          "y": 24,
+          "terrain": "salt_flat",
+          "radius": 2
+        },
+        {
+          "type": "status",
+          "tag": "spire_bodies",
+          "status": "sc_parched",
+          "duration": 2
+        },
+        {
+          "type": "message",
+          "speaker": "Saltmaster Corwen Ashe",
+          "text": "Two cartloads per spire, to the root. The Marshals' Office does not want a forest on the survey."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brineguard",
+          "x": 0,
+          "y": 14
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brineguard",
+          "x": 1,
+          "y": 14
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_stair_warden",
+          "x": 2,
+          "y": 14
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 54,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "salt_sowers",
+          "label": "All three Saltwrights dead"
+        },
+        "pearls": 25,
+        "label": "All three Saltwrights dead"
+      }
+    ]
+  }
+}

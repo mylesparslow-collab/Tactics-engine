@@ -1,0 +1,74 @@
+{
+  "id": "coralspire",
+  "name": "Coralspire",
+  "description": "The eldest colony of the Shelf wakes, fights the dry world, and learns it is made of the sea it is trying to keep out.",
+  "faction": "reef_ascendant",
+  "startingRoster": [
+    "reef_ascendant_coralspire",
+    "reef_ascendant_polyp_drone",
+    "reef_ascendant_polyp_drone",
+    "reef_ascendant_polyp_drone",
+    "reef_ascendant_spitter_polyp",
+    "reef_ascendant_sting_anemone",
+    "ra_spell_creeping_reef",
+    "ra_equip_brine_sponge"
+  ],
+  "missions": [
+    {
+      "mission": "ra_first_light",
+      "unlocks": [
+        "reef_ascendant_fanblade",
+        "reef_ascendant_shard_urchin"
+      ]
+    },
+    {
+      "mission": "ra_the_mass_grave",
+      "unlocks": [
+        "reef_ascendant_reef_tender",
+        "ra_spell_consume_calcite"
+      ]
+    },
+    {
+      "mission": "ra_kelp_remembers",
+      "unlocks": [
+        "reef_ascendant_brainstalk",
+        "ra_equip_calcite_plate"
+      ]
+    },
+    {
+      "mission": "ra_salt_kills",
+      "unlocks": [
+        "reef_ascendant_broodspire",
+        "ra_spell_calcite_shard"
+      ]
+    },
+    {
+      "mission": "ra_the_lens",
+      "unlocks": [
+        "reef_ascendant_lensbearer",
+        "ra_equip_synapse_nodule"
+      ]
+    },
+    {
+      "mission": "ra_crumbling_branches",
+      "unlocks": [
+        "reef_ascendant_spireguard",
+        "ra_spell_choking_overgrowth"
+      ]
+    },
+    {
+      "mission": "ra_taste_of_rain",
+      "unlocks": [
+        "reef_ascendant_calcite_bloom",
+        "ra_equip_heartstone_geode"
+      ]
+    },
+    {
+      "mission": "ra_overgrowth",
+      "unlocks": [
+        "reef_ascendant_marrowbloom",
+        "reef_ascendant_glasswake"
+      ]
+    }
+  ]
+}

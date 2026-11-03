@@ -1,0 +1,272 @@
+{
+  "id": "sv_the_warm_heart",
+  "name": "The Warm Heart",
+  "description": "Hold the unsealed heart-chamber of Mother Hull against the Hadal Court and the Returning Tide until morning.",
+  "map": "mother_hull",
+  "briefing": [
+    "Sled-log, last page of the board. Deeplight is dark. Nobody here saw it, but everybody felt it: the sky over the Hulks went the colour of a bruise, and then it started to rain salt water out of nothing. Brask says the Court built their city around a fallen lamp, and somebody put the lamp out, and now they have come up the Brinks to find another.",
+    "They have found ours. The heart-chamber has been sealed since the Charter. Brask opened it last night with Ashmaw and me holding the lamps, and the heart is not a heart. It is a lighthouse lamp, under the forward ribs, the size of a sled, burning. Mother Hull came ashore on a lighthouse on the night of the Ebb and died around it. Our grandparents signed the Charter inside her because it was the only warm room on the Hulks. Nobody told us why it was warm. Maybe nobody knew.",
+    "The Court want to carry it down to Deeplight. The Tide want to put it out. A keeper called Ruddle walked in this morning with a pen and asked us to sign a second page to the Charter, under the first one. It says: \"The Compact will keep the lamp.\" That is all it says. I signed it. Hold the heart until morning."
+  ],
+  "victoryText": "At dawn the Court lifts its bells and goes back down the Brinks without a word; the Tide melt into the rain, singing. Mother Hull stands lit from inside, every rib a black bar across a white fire, and Ashmaw sits on the spine and weeps, because they can see it from the Rim. Brask checks the Charter's new page for spelling. Ketta rides out alone to the edge of the flat and looks back. For the first time in her life she does not want the flat to be empty. Someone ought to be awake on it.",
+  "defeatText": "The heart goes out. For a long breath nothing happens. Then the rain stops being rain, and the sky over the Hulks comes down all at once, green and black and full of mouths.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salvage_compact_ketta_vane",
+          "x": 4,
+          "y": 10,
+          "tag": "ketta_vane"
+        },
+        {
+          "unit": "lanternkeepers_keeper_of_the_long_watch",
+          "x": 2,
+          "y": 11,
+          "tag": "keeper_envoy"
+        },
+        {
+          "unit": "salvage_compact_brother_ashmaw",
+          "x": 4,
+          "y": 11,
+          "tag": "brother_ashmaw"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 3,
+          "y": 9
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 3,
+          "y": 12
+        },
+        {
+          "unit": "salvage_compact_lamplighter",
+          "x": 4,
+          "y": 9
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 4,
+          "y": 12
+        }
+      ]
+    },
+    {
+      "name": "The Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "ai",
+      "warband": [
+        "hadal_court_pit_thrall",
+        "hadal_court_pit_thrall",
+        "hadal_court_pit_thrall",
+        "hadal_court_bell_knight",
+        "hadal_court_pressure_lancer",
+        "hadal_court_deep_herald",
+        "hadal_court_trench_crab"
+      ],
+      "units": [
+        {
+          "unit": "hadal_court_tollwarden",
+          "x": 17,
+          "y": 10,
+          "tag": "court_vanguard"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 16,
+          "y": 10,
+          "tag": "court_vanguard"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 16,
+          "y": 11,
+          "tag": "court_vanguard"
+        },
+        {
+          "unit": "hadal_court_vent_priest",
+          "x": 18,
+          "y": 12,
+          "tag": "court_vanguard"
+        },
+        {
+          "unit": "hadal_court_lurecaller",
+          "x": 17,
+          "y": 9,
+          "tag": "court_vanguard"
+        }
+      ],
+      "startingEssence": 40,
+      "essencePerTurn": 20
+    },
+    {
+      "name": "The Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "units": [],
+      "startingEssence": 0,
+      "essencePerTurn": 0
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 12,
+        "label": "Hold the heart until morning"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The heart must not go out"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "keeper_envoy",
+        "label": "Keeper Ruddle must live"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "ketta_vane",
+        "label": "Ketta Vane must live"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Keeper Absalom Ruddle",
+          "text": "Nobody here has to understand it. You only have to stand in front of it. We have been doing the first part badly for three hundred years."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Captain Oswin Brack",
+          "text": "I sailed the Hulks before your Charter had a first line, girl. Let the light go. My crew is up there."
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "returning_tide_oswin_brack",
+          "x": 10,
+          "y": 1,
+          "tag": "captain_brack"
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "returning_tide_drowned",
+          "x": 8,
+          "y": 1
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "returning_tide_drowned",
+          "x": 12,
+          "y": 1
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "returning_tide_drowned",
+          "x": 9,
+          "y": 20
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "returning_tide_drowned",
+          "x": 11,
+          "y": 20
+        },
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "returning_tide_rainsayer",
+          "x": 10,
+          "y": 21
+        },
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 5,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 8
+        },
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 16,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 8
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 8
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Brother Ashmaw",
+          "text": "Now, I think. Yes. Now."
+        },
+        {
+          "type": "status",
+          "tag": "court_vanguard",
+          "status": "burning",
+          "duration": 2
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 80,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "brother_ashmaw",
+          "fraction": 0.5,
+          "label": "Brother Ashmaw sees the morning"
+        },
+        "pearls": 30,
+        "label": "Brother Ashmaw sees the morning"
+      },
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "court_vanguard",
+          "label": "The Fifth Bell is driven off"
+        },
+        "pearls": 30,
+        "label": "The Fifth Bell is driven off"
+      }
+    ]
+  }
+}

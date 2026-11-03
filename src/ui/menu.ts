@@ -174,7 +174,14 @@ function showCampaign(ctx: Ctx) {
   });
   drawDetail();
 
-  const tabs = ids.length > 1 ? h('div', { class: 'tabs' }, ...ids.map(id => h('button', { class: 'tab' + (id === cid ? ' on' : ''), onclick: () => { memo.campaign = id; memo.node = -1; showCampaign(ctx); } }, content.campaigns[id].name))) : null;
+  const tabs = ids.length > 1 ? h('div', { class: 'tabs camp-tabs' }, ...ids.map(id => {
+    const c = content.campaigns[id], f = c.faction ? content.factions?.[c.faction] : undefined;
+    const won = Math.min(loadProgress(id).completed, c.missions.length);
+    return h('button', {
+      class: 'tab' + (id === cid ? ' on' : ''), title: c.name, style: f?.color ? `--tab-c:${f.color}` : undefined,
+      onclick: () => { memo.campaign = id; memo.node = -1; showCampaign(ctx); },
+    }, (f?.name ?? c.name).replace(/^The /, ''), h('span', { class: 'tab-prog' }, `${won}/${c.missions.length}`));
+  })) : null;
   host.append(h('div', { class: 'scr camp-scr' },
     screenHeader(camp.name, 'Campaign', () => showMenu(ctx.root, content, ctx.errors, ctx.onPick)),
     tabs,

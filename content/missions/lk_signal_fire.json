@@ -1,0 +1,238 @@
+{
+  "id": "lk_signal_fire",
+  "name": "Signal Fire",
+  "map": "gull_stacks",
+  "description": "Bring the wounded messenger Linnet Garr home from the Gull Stacks with the keepers' seal unbroken.",
+  "briefing": [
+    "Captain's log. We pay the Gyre to carry our letters between lamps, and in return we say nothing else to them. It is the oldest bargain on the Rim and the only one the Gyre have never broken. Three days ago a rider named Linnet Garr left the Brinks with the keepers' count sealed in oilcloth, and did not arrive.",
+    "She came down on the Gull Stacks with a shrike-spike through her bird's wing. The Wheel there has guessed that a letter worth sealing twice is a letter worth reading. They are circling her stack now and making up their minds.",
+    "We bring her home with the seal unbroken. The Wheel will ask what is in it. The answer is nothing, and we will keep giving it until they stop asking."
+  ],
+  "victoryText": "Linnet lands by the Beacon and hands over the oilcloth without a word, which is the most professional thing anyone has done all year. Drenn breaks the seal in the lamp-room and reads it alone. Forty-one, it says, and Deeplight's glass is crazed. He folds it into his coat, where nothing ever dries.",
+  "defeatText": "The Wheel-Captain holds the letter up to the light, reads it twice, and laughs, because it is only numbers. By spring every roost on the Rim knows the numbers.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "lanternkeepers_captain_hollis_drenn",
+          "x": 14,
+          "y": 23,
+          "tag": "captain_drenn"
+        },
+        {
+          "unit": "lanternkeepers_wick",
+          "x": 13,
+          "y": 24
+        },
+        {
+          "unit": "lanternkeepers_wick",
+          "x": 15,
+          "y": 24
+        },
+        {
+          "unit": "lanternkeepers_signalman",
+          "x": 14,
+          "y": 22
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 24,
+          "y": 15,
+          "tag": "messenger"
+        }
+      ]
+    },
+    {
+      "name": "The Gyre",
+      "color": "#5a6470",
+      "controller": "ai",
+      "warband": [
+        "gyre_salt_crow",
+        "gyre_salt_crow",
+        "gyre_salt_crow",
+        "gyre_roost_runner",
+        "gyre_roost_runner",
+        "gyre_skua_lancer",
+        "gyre_skua_lancer",
+        "gyre_gullwife",
+        "gyre_shrike_harrier",
+        "gyre_shrike_harrier",
+        "gyre_windreader"
+      ],
+      "units": [
+        {
+          "unit": "gyre_wheel_captain",
+          "x": 13,
+          "y": 3
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 12,
+          "y": 4
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 15,
+          "y": 4
+        },
+        {
+          "unit": "gyre_skua_lancer",
+          "x": 6,
+          "y": 5
+        },
+        {
+          "unit": "gyre_frigate_thief",
+          "x": 7,
+          "y": 6
+        },
+        {
+          "unit": "gyre_gullwife",
+          "x": 11,
+          "y": 2
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 14,
+          "y": 5
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 15
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "messenger",
+        "tiles": [
+          [
+            14,
+            23
+          ],
+          [
+            13,
+            24
+          ],
+          [
+            14,
+            24
+          ],
+          [
+            15,
+            24
+          ]
+        ],
+        "label": "Bring Linnet Garr home to the Beacon"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "messenger",
+        "label": "Linnet Garr must not fall"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "captain_drenn",
+        "label": "Captain Drenn must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Finish before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "messenger",
+          "status": "gy_pinned",
+          "duration": 2
+        },
+        {
+          "type": "message",
+          "speaker": "Linnet Garr",
+          "text": "Bird's down, I'm not. Whoever's coming, come quicker."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "The Wheel-Captain",
+          "text": "Lamp-ghost! Tell us what's in the letter and you can have the girl. Fair trade."
+        },
+        {
+          "type": "message",
+          "speaker": "Captain Drenn",
+          "text": "Weather."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "gyre_shrike_harrier",
+          "x": 4,
+          "y": 6
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "gyre_shrike_harrier",
+          "x": 5,
+          "y": 7
+        },
+        {
+          "type": "message",
+          "speaker": "Linnet Garr",
+          "text": "I flew it four hundred miles. I'd like to know what I nearly died for."
+        },
+        {
+          "type": "message",
+          "speaker": "Captain Drenn",
+          "text": "So would I, mostly."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 40,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "messenger",
+          "fraction": 0.5,
+          "label": "Bring Linnet Garr home above half health"
+        },
+        "pearls": 20,
+        "label": "Bring Linnet Garr home above half health"
+      }
+    ]
+  }
+}

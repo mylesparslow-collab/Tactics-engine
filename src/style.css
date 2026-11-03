@@ -116,6 +116,10 @@ p { margin: 0; }
 .tabs { display: flex; justify-content: center; gap: 22px; margin: -6px 0 16px; }
 .tab { padding: 6px 2px; font-family: var(--font-ui); font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid transparent; transition: color .15s; }
 .tab:hover { color: var(--text); } .tab.on { color: var(--gold-hi); border-color: var(--gold); }
+.camp-tabs { flex-wrap: wrap; gap: 6px 16px; max-width: 1280px; margin-left: auto; margin-right: auto; }
+.camp-tabs .tab { display: inline-flex; align-items: baseline; gap: 6px; font-size: 12px; letter-spacing: .1em; }
+.camp-tabs .tab::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--tab-c, var(--gold)); align-self: center; }
+.camp-tabs .tab-prog { font-weight: 400; font-size: 11px; letter-spacing: .04em; color: var(--muted); }
 .camp-body { max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 1fr 340px; gap: 18px; align-items: stretch; }
 .chartwrap { padding: 8px; background: #0b1016; }
 .chartmap { position: relative; aspect-ratio: 16 / 9; min-height: 280px; overflow: hidden; color: var(--paper-ink);

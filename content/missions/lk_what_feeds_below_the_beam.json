@@ -1,0 +1,223 @@
+{
+  "id": "lk_what_feeds_below_the_beam",
+  "name": "What Feeds Below the Beam",
+  "map": "tide_steps",
+  "description": "Hold the dry high steps of the basin while what fell through the thin sky dies in the shallows.",
+  "briefing": [
+    "Spoken by Keeper Auster over the shutter-lamp, one word per flash, and taken down by Captain Drenn, since the page itself is stolen. \"Where a lamp flickers the floor of the sky goes thin, and what lives at the underside of the beam comes down through the thin place toward the light. It takes the keeper first.\"",
+    "Deeplight flickered under Venn's hands, and the sky over the Tide Steps went thin the same night. Something came down into the basin before dawn. It glistens, it has too many teeth, and it dies slowly in the dry.",
+    "Stay on the high steps where the stone is dry and let the basin do the work. Keep Warden Corra at the lamp and alive. The page is very clear about the order in which things are eaten."
+  ],
+  "victoryText": "The last of them crawls back into the basin and dries there, gasping, in a ring of shallows that steams in the sun. Corra sits down on the Beacon step and is sick. Drenn writes the page's words into the count in his own hand, under the lamps, which is the first time any keeper has put them on paper since the Vigil Oaths.",
+  "defeatText": "The lure on the pool brightens, and Warden Ilse Corra walks down the steps toward it with her lamp held out in front of her. The page was right. It is always right. That is why it has a lock.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "lanternkeepers_captain_hollis_drenn",
+          "x": 11,
+          "y": 23,
+          "tag": "captain_drenn"
+        },
+        {
+          "unit": "lanternkeepers_lantern_warden",
+          "x": 12,
+          "y": 24,
+          "tag": "warden_corra"
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 13,
+          "y": 23
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 12,
+          "y": 23
+        },
+        {
+          "unit": "lanternkeepers_glassgrinder",
+          "x": 10,
+          "y": 23
+        }
+      ]
+    },
+    {
+      "name": "Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "ai",
+      "warband": [
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_gulper",
+        "overcurrent_gulper",
+        "overcurrent_tongue_louse",
+        "overcurrent_tongue_louse",
+        "overcurrent_weeping_sunfish",
+        "overcurrent_hagwyrm",
+        "overcurrent_siphon_chain"
+      ],
+      "units": [
+        {
+          "unit": "overcurrent_barrelgaze",
+          "x": 11,
+          "y": 12,
+          "tag": "barrelgaze"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 8,
+          "y": 12
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 15,
+          "y": 12
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 6,
+          "y": 11
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 17,
+          "y": 11
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 18,
+          "y": 15
+        },
+        {
+          "unit": "overcurrent_driftbell",
+          "x": 12,
+          "y": 10
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 10
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 10,
+        "label": "Survive 10 turns on the dry steps"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Or destroy the Downfall"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "warden_corra",
+        "label": "Warden Corra must not fall"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The Beacon must not fall"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "captain_drenn",
+        "label": "Captain Drenn must not fall"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "They come where it's thin. They go to the light. Hold the dry stone. Don't follow them into the water."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_downward_shark",
+          "x": 12,
+          "y": 19
+        },
+        {
+          "type": "terrain",
+          "x": 12,
+          "y": 19,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 3
+        },
+        {
+          "type": "message",
+          "speaker": "Warden Ilse Corra",
+          "text": "It fell upward. No. It fell from up. Captain, it's looking at me."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_lure_mother",
+          "x": 5,
+          "y": 22
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_lure_mother",
+          "x": 17,
+          "y": 22
+        },
+        {
+          "type": "message",
+          "speaker": "Captain Drenn",
+          "text": "That light on the pool isn't ours. Nobody walk toward it."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 75,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "barrelgaze",
+          "label": "Kill the Barrelgaze"
+        },
+        "pearls": 25,
+        "label": "Kill the Barrelgaze"
+      }
+    ]
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "id": "hc_the_rain_that_faces_upward",
+  "name": "The Rain That Faces Upward",
+  "description": "Cross the chasm of the Weeping Shelf and break the Tide shrine.",
+  "map": "weeping_shelf",
+  "briefing": [
+    "Register of the Third Bell, entered under the rain at the Weeping Shelf. The Tide sent word ahead that the Court would be welcome here, as fellow mourners. They have heard that Deeplight went dark. They say it proudly, because it was their column on our bridges.",
+    "Their prophet speaks to us across the chasm through a choir of the drowned. He says we grieve the same sea, that the lamps keep it from both of us, and that if we help put out the lights it will come home to the Court and be merciful to everyone. He is the second voice to tell me the lamps are the thieves, and the first to say the thief should be killed for the sea's own good.",
+    "We are not mourners. We are claimants, and a claimant does not drown the house to get it back. We will cross the chasm and break their shrine, and when the rain falls on us we will not open our mouths."
+  ],
+  "victoryText": "The shrine breaks, and the rain does not stop. The faithful stand in it with their mouths open and sing the Court out of the Shelf. One wringer stands apart and does not sing; she tastes the rain the way the old ones did in the galleries at Deeplight, and her face says she has understood something she would rather not have. Vhaal enters the prophet's offer in the register and marks it false. Under it, in smaller script, she adds: \"He knows.\"",
+  "defeatText": "The Court is driven back to the chasm's lip and stands there, soaked, while the choir sings it out of the rain. Dunnock's voice follows them all the way down the Shelf: \"You will come back. Grief always comes back to the water.\"",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "hadal_court_herald_vhaal",
+          "x": 4,
+          "y": 17,
+          "tag": "herald_vhaal"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 3,
+          "y": 17
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 5,
+          "y": 17
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 3,
+          "y": 19
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 5,
+          "y": 19
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 4,
+          "y": 19
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_tear_slinger",
+        "returning_tide_tear_slinger",
+        "returning_tide_wringer",
+        "returning_tide_shroud_mender"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_choirmaster",
+          "x": 4,
+          "y": 4,
+          "tag": "choirmaster"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 3,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 5,
+          "y": 4
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 2,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 6,
+          "y": 5
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Break the Tide shrine"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "herald_vhaal",
+        "label": "Herald Vhaal must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 15,
+        "label": "Break the shrine before turn 15"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Imre Dunnock",
+          "text": "Welcome, cousins. We are all orphans of the same water."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 7,
+          "y": 11,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 3
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_rainsayer",
+          "x": 7,
+          "y": 8
+        },
+        {
+          "type": "message",
+          "speaker": "Maelis Quell",
+          "text": "The rain is warm. It should not be warm. Somewhere a lamp is straining."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 18,
+          "y": 12
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 20,
+          "y": 12
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_anchor_bearer",
+          "x": 19,
+          "y": 13
+        },
+        {
+          "type": "message",
+          "speaker": "Orrun Tessk",
+          "text": "The dead are behind us, Herald. They walk as if they have been told where to go."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 70,
+    "bonus": [
+      {
+        "condition": {
+          "type": "turn_limit",
+          "turns": 11,
+          "not": true,
+          "label": "Break the shrine before turn 11"
+        },
+        "pearls": 25,
+        "label": "Break the shrine before turn 11"
+      }
+    ]
+  }
+}

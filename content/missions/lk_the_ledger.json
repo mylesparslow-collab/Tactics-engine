@@ -1,0 +1,248 @@
+{
+  "id": "lk_the_ledger",
+  "name": "The Ledger",
+  "map": "greywater_stair",
+  "description": "Stop the Concord survey party's ledger before it reaches the Rim.",
+  "briefing": [
+    "Captain's log. The Concord's new survey company reached the Shoal, and Keeper Auster let them build their fires but not climb the stair. One of their cartographers, a careful woman named Edda Lusk, climbed it anyway while we were at the Reach. She measured the lamp, the lens and the oil tanks, and wrote in her ledger that the tanks have been dry for three hundred years.",
+    "The ledger is going up the Greywater Stair to the Marshals' Office in Harrowgate. Clerks who read that a lamp burns nothing will ask what it burns instead, and clerks who ask questions send soldiers to find out. The Stair has two ways onto the top landing, the west and east flights, and we hold both.",
+    "The ledger must not reach the Rim. Venn asks why we cannot simply tell the woman. I have no answer for her that I would put in a log."
+  ],
+  "victoryText": "Edda Lusk falls on the ninth landing with the ledger under her arm. Drenn burns it page by page in a brazier, because the lamp will not take it. Venn watches until the last page and then goes back up the stair without a word. In the count that night Drenn writes a second number under the lamps: one.",
+  "defeatText": "The ledger reaches the Rim gate at dusk. Within the month a Marshal's clerk writes to the Shoal asking, very politely, what the lamp burns. Within the season, he sends men to ask in person.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "lanternkeepers_captain_hollis_drenn",
+          "x": 11,
+          "y": 3,
+          "tag": "captain_drenn"
+        },
+        {
+          "unit": "lanternkeepers_oilbearer",
+          "x": 5,
+          "y": 4,
+          "tag": "keeper"
+        },
+        {
+          "unit": "lanternkeepers_oilbearer",
+          "x": 16,
+          "y": 4,
+          "tag": "keeper"
+        },
+        {
+          "unit": "lanternkeepers_signalman",
+          "x": 10,
+          "y": 3,
+          "tag": "keeper"
+        },
+        {
+          "unit": "lanternkeepers_lantern_warden",
+          "x": 12,
+          "y": 3,
+          "tag": "keeper"
+        }
+      ]
+    },
+    {
+      "name": "Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_brine_slinger",
+        "salt_concord_brine_slinger",
+        "salt_concord_surveyor",
+        "salt_concord_causeway_outrider",
+        "salt_concord_brine_chirurgeon"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 10,
+          "y": 17,
+          "tag": "ledger_bearer"
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 9,
+          "y": 16
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 11,
+          "y": 16
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 8,
+          "y": 15
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 12,
+          "y": 15
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 6,
+          "y": 17
+        },
+        {
+          "unit": "salt_concord_saltwright",
+          "x": 13,
+          "y": 17
+        },
+        {
+          "unit": "salt_concord_tollkeeper",
+          "x": 10,
+          "y": 15
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "ledger_bearer",
+        "label": "Stop the ledger-bearer, Edda Lusk"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "reach_tile",
+        "team": 1,
+        "tag": "ledger_bearer",
+        "tiles": [
+          [
+            4,
+            4
+          ],
+          [
+            5,
+            4
+          ],
+          [
+            6,
+            4
+          ],
+          [
+            15,
+            4
+          ],
+          [
+            16,
+            4
+          ],
+          [
+            17,
+            4
+          ]
+        ],
+        "label": "The ledger must not reach the stair heads"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "captain_drenn",
+        "label": "Captain Drenn must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Finish before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Edda Lusk",
+          "text": "Keepers! I've no quarrel with you. I only wrote down what I saw."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brine_slinger",
+          "x": 8,
+          "y": 19
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brine_slinger",
+          "x": 12,
+          "y": 19
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_saltwright",
+          "x": 11,
+          "y": 12
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 5,
+          "y": 7,
+          "terrain": "lamp_oil",
+          "radius": 1,
+          "duration": 3
+        },
+        {
+          "type": "message",
+          "speaker": "Lensmaster Venn",
+          "text": "There. Now the west stair burns. We could have just told her, Captain."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 50,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "keeper",
+          "label": "Lose no units",
+          "not": true
+        },
+        "pearls": 25,
+        "label": "Lose no units"
+      }
+    ]
+  }
+}

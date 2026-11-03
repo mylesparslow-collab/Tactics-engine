@@ -1,0 +1,311 @@
+{
+  "id": "hc_the_third_bell",
+  "name": "The Third Bell",
+  "description": "Reach the last lamp and ask your question, while neither the keeper nor the lamp falls.",
+  "map": "lantern_shoal",
+  "briefing": [
+    "Register of the Third Bell, last entry before the question. The sky over the Shoal is raining. Deeplight is dark, the floor of the air is thin, and the Tide are marching on the last lamp on the Shelf to finish what they began in our city.",
+    "I have asked the question of salvagers, soldiers, a prophet, a broker and a drowned captain. I have marked every answer false, or short. One keeper is left who has not been asked, and every voice on the climb has said her name the way one says the name of a cliff.",
+    "We go to the lamp. We do not break it, we do not let the Tide break it, and we do not lay a hand on the keeper, because if she falls the question falls with her. Orrun has polished his bell and Maelis has banked her flame. I have written the question out fair, so there can be no mistake about what was asked."
+  ],
+  "victoryText": "Vhaal reaches the lamp and reads her question out, fair, as written. Auster puts her hand on the glass before she answers. \"I don't know who lifted it. Nobody alive does. I know who holds it: me, and the ones before me, and whoever comes next. Put this out and the weight goes home to you, and everyone up here drowns under it. That's the truth. It's all I've got.\" Below, the Commander's company brings Dunnock down, and the rain slows, and stops. The Court does not go home. Orrun Tessk plants his cracked bell at the foot of the tower and turns to face outward, and Vhaal opens the register at its first page, finds the Commander's name, and strikes out the word \"lie\".",
+  "defeatText": "The lamp goes dark with the question still unanswered. The sky opens, and the weight the Court has wanted back for three hundred years comes down on the Shoal all at once. Vhaal stands in it and finds that it is not mercy, and not justice, and not home.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "hadal_court_herald_vhaal",
+          "x": 10,
+          "y": 17,
+          "tag": "herald_vhaal"
+        },
+        {
+          "unit": "hadal_court_orrun_tessk",
+          "x": 9,
+          "y": 18,
+          "tag": "orrun_tessk"
+        },
+        {
+          "unit": "hadal_court_maelis_quell",
+          "x": 12,
+          "y": 18,
+          "tag": "maelis_quell"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 11,
+          "y": 17
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 9,
+          "y": 17
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 10,
+          "y": 16
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 11,
+          "y": 16
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 10,
+          "y": 18
+        }
+      ]
+    },
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "ai",
+      "warband": [
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_signalman",
+        "lanternkeepers_glassgrinder",
+        "lanternkeepers_lantern_warden"
+      ],
+      "units": [
+        {
+          "unit": "lanternkeepers_keeper_pell_auster",
+          "x": 11,
+          "y": 3,
+          "tag": "keeper_auster"
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 12,
+          "y": 4,
+          "tag": "keeper_line"
+        },
+        {
+          "unit": "lanternkeepers_oilbearer",
+          "x": 9,
+          "y": 4,
+          "tag": "keeper_line"
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 10,
+          "y": 8,
+          "tag": "keeper_line"
+        },
+        {
+          "unit": "lanternkeepers_signalman",
+          "x": 13,
+          "y": 9,
+          "tag": "keeper_line"
+        },
+        {
+          "unit": "lanternkeepers_lantern_warden",
+          "x": 11,
+          "y": 10,
+          "tag": "keeper_line"
+        }
+      ],
+      "startingEssence": 20,
+      "essencePerTurn": 15
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "keystone": false,
+      "units": [
+        {
+          "unit": "returning_tide_imre_dunnock",
+          "x": 19,
+          "y": 4,
+          "tag": "prophet_dunnock"
+        },
+        {
+          "unit": "returning_tide_choirmaster",
+          "x": 20,
+          "y": 6,
+          "tag": "tide_host"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 20,
+          "y": 8,
+          "tag": "tide_host"
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 19,
+          "y": 9,
+          "tag": "tide_host"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 0
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "herald_vhaal",
+        "tiles": [
+          [
+            9,
+            1
+          ],
+          [
+            9,
+            2
+          ],
+          [
+            12,
+            1
+          ],
+          [
+            12,
+            2
+          ],
+          [
+            10,
+            3
+          ],
+          [
+            12,
+            3
+          ]
+        ],
+        "label": "Walk Vhaal to the lamp"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "herald_vhaal",
+        "label": "Herald Vhaal must live"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "keeper_auster",
+        "label": "Keeper Auster must live"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "The lamp must not go out"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 16,
+        "label": "Reach the lamp before turn 16"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2,
+        "team": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Imre Dunnock",
+          "text": "Look up, Herald. That is your sea, coming home. Stand aside and let it."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Commander Tamsin Orrel",
+          "text": "Herald. I told you at Deeplight I didn't know. I still don't. I wasn't lying."
+        },
+        {
+          "type": "message",
+          "speaker": "Herald Vhaal",
+          "text": "We shall see, Commander. I am asking someone else."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 10,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 4,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 6
+        },
+        {
+          "type": "terrain",
+          "x": 16,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 6
+        },
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 16,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 6
+        },
+        {
+          "type": "status",
+          "tag": "keeper_line",
+          "status": "soaked",
+          "duration": 2
+        },
+        {
+          "type": "status",
+          "tag": "tide_host",
+          "status": "soaked",
+          "duration": 2
+        },
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "Hurry up, bell. If you want to ask me something, it had better be now."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 90,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "keeper_auster",
+          "fraction": 0.5,
+          "label": "Keep Keeper Auster above half health"
+        },
+        "pearls": 30,
+        "label": "Keep Keeper Auster above half health"
+      }
+    ]
+  }
+}
