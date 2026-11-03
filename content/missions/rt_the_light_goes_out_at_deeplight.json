@@ -1,0 +1,267 @@
+{
+  "id": "rt_the_light_goes_out_at_deeplight",
+  "name": "The Light Goes Out at Deeplight",
+  "description": "Cross the causeways to the fallen lamp at Deeplight and put it out.",
+  "map": "trench_deeplight",
+  "briefing": [
+    "Tally, last leaf. Three days ago the old keeper from the Shoal came down to Deeplight with Concord soldiers, put her hand on the fallen lamp and went home, and since then a column of grey brine has been falling out of a clear sky over the trench. The Prophet says that is the sea leaning on the door. He says one more push.",
+    "The lamp hangs in the Court's city at the far end of the causeways. The keepers she left behind are tending it, and the Court stand round it in their bells, watching, and will thank nobody. Dunnock walks with us, and Captain Brack, who has been promised his eighteen.",
+    "Reach the lamp and put it out. I have done every terrible thing I was asked to do and counted every one, and the numbers have stopped adding up, the way the Prophet's did once. This is the last line on the list, and after it the sea will tell me whether I was right."
+  ],
+  "victoryText": "The lamp goes out the way a held breath goes out, and for a moment nothing happens at all, and the Court in their bells turn their great heads upward together. Then the rain starts: not the drizzle of the Shelf but the sea, coming down in ropes. Maren opens her mouth to it as she has every day of her life, and it tastes of salt and cold and enormous distance, and she understands that it is not mercy and not judgement, only weight, and that it will not stop for anyone. Beside her, Dunnock is weeping. He knew.",
+  "defeatText": "The keepers hold the glass and the lamp burns on, a cold white sun below the world. The faithful retreat over the causeways under a rain that thins, and thins, and stops. Dunnock says nothing on the long walk home, and Maren is almost grateful.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "returning_tide_maren_ketch",
+          "x": 10,
+          "y": 16,
+          "tag": "maren_ketch"
+        },
+        {
+          "unit": "returning_tide_imre_dunnock",
+          "x": 11,
+          "y": 17,
+          "tag": "prophet_dunnock"
+        },
+        {
+          "unit": "returning_tide_oswin_brack",
+          "x": 9,
+          "y": 17,
+          "tag": "captain_brack"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 11,
+          "y": 16
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 16
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 10,
+          "y": 17
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 12,
+          "y": 17
+        }
+      ]
+    },
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "ai",
+      "warband": [
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_beamwright",
+        "lanternkeepers_lantern_warden",
+        "lanternkeepers_glassgrinder"
+      ],
+      "units": [
+        {
+          "unit": "lanternkeepers_keeper_of_the_long_watch",
+          "x": 11,
+          "y": 2,
+          "tag": "deeplight_tender"
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 10,
+          "y": 5
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 11,
+          "y": 5
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 8,
+          "y": 4
+        },
+        {
+          "unit": "lanternkeepers_lantern_warden",
+          "x": 12,
+          "y": 3
+        },
+        {
+          "unit": "lanternkeepers_signalman",
+          "x": 14,
+          "y": 2
+        }
+      ],
+      "startingEssence": 40
+    },
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "ai",
+      "keystone": false,
+      "units": [
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 3,
+          "y": 10
+        },
+        {
+          "unit": "hadal_court_lurecaller",
+          "x": 2,
+          "y": 11
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 18,
+          "y": 10
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 19,
+          "y": 11
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 0
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Put out the fallen lamp"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "maren_ketch",
+        "label": "Sister Maren must live"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "prophet_dunnock",
+        "label": "The Prophet must live"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The Beacon must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 18,
+        "label": "Reach the lamp before turn 18"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2,
+        "team": 2
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 2,
+          "unit": "hadal_court_crushing_maw",
+          "x": 10,
+          "y": 10
+        },
+        {
+          "type": "message",
+          "speaker": "Herald Vhaal",
+          "text": "Small wet ones. You walk into my city to put out its sun. First, answer me one question. Who lifted the sea?"
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 10,
+          "y": 7
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "type": "message",
+          "speaker": "Keeper Ilse Tarrow",
+          "text": "Don't. You don't know what it's holding. Sister, you of all of them have tasted the rain. Think."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 10,
+        "team": 0
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 6
+        },
+        {
+          "type": "message",
+          "speaker": "Captain Oswin Brack",
+          "text": "Hear that, Sister? That's the sea on the roof. My lads are up there. Open the door."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 60,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "captain_brack",
+          "not": true,
+          "label": "Brack lives"
+        },
+        "pearls": 25,
+        "label": "Brack lives"
+      },
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "maren_ketch",
+          "fraction": 0.5,
+          "label": "Maren above half strength"
+        },
+        "pearls": 15,
+        "label": "Maren above half strength"
+      }
+    ]
+  }
+}

@@ -28,7 +28,8 @@ describe('relic collection', () => {
     const sources = relicSources(c);
     const free = allRelics(c).filter(id => !sources.has(id));
     expect(free.length).toBeGreaterThan(0);
-    expect([...ownedRelics(c, false)].sort()).toEqual([...new Set([...camp.startingRoster, ...free])].sort());
+    const starts = Object.values(c.campaigns).flatMap(k => k.startingRoster);
+    expect([...ownedRelics(c, false)].sort()).toEqual([...new Set([...starts, ...free])].sort());
     for (const id of camp.missions[0].unlocks ?? []) expect(ownedRelics(c, false).has(id)).toBe(false);
     saveProgress(cid, { completed: 2 });
     const owned = ownedRelics(c, false);

@@ -1,0 +1,75 @@
+{
+  "id": "the_weight_returns",
+  "name": "The Weight Returns",
+  "description": "Herald Vhaal of the Hadal Court climbs out of the trench to ask who lifted the sea, and learns what answers cost.",
+  "faction": "hadal_court",
+  "startingRoster": [
+    "hadal_court_herald_vhaal",
+    "hadal_court_pit_thrall",
+    "hadal_court_pit_thrall",
+    "hadal_court_pit_thrall",
+    "hadal_court_pit_thrall",
+    "hadal_court_lantern_spitter",
+    "hadal_court_lantern_spitter",
+    "hc_spell_pressure_spike",
+    "hc_equip_brine_greaves"
+  ],
+  "missions": [
+    {
+      "mission": "hc_the_long_climb",
+      "unlocks": [
+        "hadal_court_bell_knight",
+        "hadal_court_vent_priest"
+      ]
+    },
+    {
+      "mission": "hc_deeplight_rising",
+      "unlocks": [
+        "hadal_court_lurecaller",
+        "hadal_court_murk_diver"
+      ]
+    },
+    {
+      "mission": "hc_the_unsigned_treaty",
+      "unlocks": [
+        "hadal_court_pressure_lancer",
+        "hadal_court_trench_crab"
+      ]
+    },
+    {
+      "mission": "hc_the_upper_kin",
+      "unlocks": [
+        "hc_spell_vent_surge",
+        "hc_equip_vent_flask"
+      ]
+    },
+    {
+      "mission": "hc_the_market_of_liars",
+      "unlocks": [
+        "hc_spell_undertow",
+        "hc_equip_stalklamp"
+      ]
+    },
+    {
+      "mission": "hc_the_rain_that_faces_upward",
+      "unlocks": [
+        "hadal_court_crushing_maw",
+        "hc_spell_bellward"
+      ]
+    },
+    {
+      "mission": "hc_what_the_glass_remembers",
+      "unlocks": [
+        "hadal_court_deep_herald",
+        "hc_spell_the_weight_returns"
+      ]
+    },
+    {
+      "mission": "hc_the_third_bell",
+      "unlocks": [
+        "hadal_court_orrun_tessk",
+        "hadal_court_maelis_quell"
+      ]
+    }
+  ]
+}

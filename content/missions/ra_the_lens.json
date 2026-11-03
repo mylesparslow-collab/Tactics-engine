@@ -1,0 +1,210 @@
+{
+  "id": "ra_the_lens",
+  "name": "The Lens",
+  "description": "Keep the waking lens-colony Glasswake alive while the Lanternkeepers try to grind it out of the glass.",
+  "map": "glasswork_reach",
+  "briefing": [
+    "Far out on the glass road there is another of us, waking inside the fused sand where the lamp has swept for three hundred years. It is not like us: it is clear, and it sees through itself. It has sent us one thought, over and over, and the thought is a picture of everything that has ever walked across it.",
+    "The lamp-tenders have seen it too. They are coming down the north arm with grinding wheels, and they mean to grind it out of the glass before it finishes waking. We do not understand why they hate it. It has not eaten anyone. It has only looked.",
+    "We go up the western arm to where it lies. We stand between it and the wheels. It will not be able to move for a while, because it is still deciding which of its shapes is itself."
+  ],
+  "victoryText": "The last wheel stops. Glasswake lifts itself out of the glass in a hundred clear plates and turns them, all at once, toward the lighthouse. \"It aches,\" it says. \"When the light goes over. It aches like holding something up.\" We do not know what it means. It shows us a picture of Venn's face, and we keep it.",
+  "defeatText": "The wheels go on until the glass is white dust. Glasswake's last thought reaches us as a picture of the lamp, very bright, with something enormous and dark on the far side of it. We do not understand the picture. We keep it anyway.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Reef Ascendant",
+      "color": "#e07a6a",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "reef_ascendant_coralspire",
+          "x": 15,
+          "y": 25,
+          "tag": "coralspire"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 14,
+          "y": 25,
+          "tag": "spire_bodies"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 16,
+          "y": 25,
+          "tag": "spire_bodies"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 14,
+          "y": 26,
+          "tag": "spire_bodies"
+        },
+        {
+          "unit": "reef_ascendant_glasswake",
+          "x": 4,
+          "y": 14,
+          "tag": "glasswake"
+        }
+      ]
+    },
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "ai",
+      "warband": [
+        "lanternkeepers_wick",
+        "lanternkeepers_wick",
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_signalman",
+        "lanternkeepers_lantern_warden",
+        "lanternkeepers_stairkeeper",
+        "lanternkeepers_beaconrunner"
+      ],
+      "units": [
+        {
+          "unit": "lanternkeepers_glassgrinder",
+          "x": 5,
+          "y": 5,
+          "tag": "glassgrinder"
+        },
+        {
+          "unit": "lanternkeepers_glassgrinder",
+          "x": 6,
+          "y": 6,
+          "tag": "glassgrinder"
+        },
+        {
+          "unit": "lanternkeepers_glassgrinder",
+          "x": 7,
+          "y": 7,
+          "tag": "glassgrinder"
+        },
+        {
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 6,
+          "y": 5
+        },
+        {
+          "unit": "lanternkeepers_oilbearer",
+          "x": 5,
+          "y": 6
+        }
+      ],
+      "startingEssence": 40,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "glassgrinder",
+        "label": "Kill all three Glassgrinders"
+      },
+      {
+        "type": "survive",
+        "turns": 12,
+        "label": "Or keep Glasswake alive for 12 turns"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "glasswake",
+        "label": "Glasswake must live"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "coralspire",
+        "label": "Coralspire must live"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "glasswake",
+          "status": "stunned",
+          "duration": 2
+        },
+        {
+          "type": "message",
+          "speaker": "Glasswake",
+          "text": "Shape. Shape. Shape. Light. Too much light. Which one is me?"
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Lensmaster Oriel Venn",
+          "text": "It's looking at me. Glass is not supposed to look back. Grind it to the bed and salt the dust."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_beamwright",
+          "x": 22,
+          "y": 14
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 23,
+          "y": 14
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 24,
+          "y": 13
+        },
+        {
+          "type": "status",
+          "tag": "spire_bodies",
+          "status": "lk_dazzled",
+          "duration": 2
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 62,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "glasswake",
+          "fraction": 0.5,
+          "label": "Glasswake ends above half health"
+        },
+        "pearls": 25,
+        "label": "Glasswake ends above half health"
+      }
+    ]
+  }
+}

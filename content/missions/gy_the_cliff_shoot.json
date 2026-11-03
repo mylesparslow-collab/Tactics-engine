@@ -1,0 +1,222 @@
+{
+  "id": "gy_the_cliff_shoot",
+  "name": "The Cliff Shoot",
+  "description": "Drive the Concord bounty-shooters off the north stack before they pick off the nestlings.",
+  "map": "gull_stacks",
+  "briefing": [
+    "Wren Halloway's tally, Concord ledger, page one. The Concord has put a bounty on birds again: a shilling a beak, two for the big ones. Their shooters came down the north stack in the night with long guns and a tent. Oskeline says they have shot eleven gulls and a crow that was not even ours.",
+    "Three of the chicks are still up on the high perches, the ones with no bridge to them. The Concord can't reach them on foot. They don't need to: they have guns that reach further than a bridge.",
+    "We go up, we put the shooters off the stack, and we knock their camp into the sinkhole. Nobody on the Stair will hear about it. That is the problem with the Stacks. Nobody ever hears about anything that happens here."
+  ],
+  "victoryText": "The camp goes over the edge, tent and all, and the last shooter runs up the north road holding his hat on. Oskeline counts the chicks with her finger, twice. \"Three,\" she says. \"Good. Now go and steal something useful.\"",
+  "defeatText": "Wren comes down hard on the shallows with a ball through Pocket's wing. The shooters sit on the north stack for a week and send the beaks up the Stair in a sack.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Gyre",
+      "color": "#5a6470",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "gyre_wren_halloway",
+          "x": 14,
+          "y": 22,
+          "tag": "wren_halloway"
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 13,
+          "y": 22
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 15,
+          "y": 22
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 12,
+          "y": 23
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 14,
+          "y": 23
+        },
+        {
+          "unit": "gyre_gullwife",
+          "x": 16,
+          "y": 23
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 3,
+          "y": 7,
+          "tag": "nestling"
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 23,
+          "y": 12,
+          "tag": "nestling"
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 4,
+          "y": 13,
+          "tag": "nestling"
+        }
+      ]
+    },
+    {
+      "name": "Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brine_slinger",
+        "salt_concord_brine_slinger",
+        "salt_concord_surveyor",
+        "salt_concord_surveyor",
+        "salt_concord_saltwright"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 12,
+          "y": 4
+        },
+        {
+          "unit": "salt_concord_brine_slinger",
+          "x": 14,
+          "y": 4
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 15,
+          "y": 3
+        },
+        {
+          "unit": "salt_concord_brine_slinger",
+          "x": 10,
+          "y": 4
+        }
+      ],
+      "startingEssence": 40,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Knock the shooters' camp into the sinkhole"
+      },
+      {
+        "type": "eliminate",
+        "team": 1,
+        "label": "Or break every shooter"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "wren_halloway",
+        "label": "Wren must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Break the camp before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Roost-Mother Oskeline",
+          "text": "Three chicks on the high perches. They don't know what a gun is. Go and teach the Concord what a beak is."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_surveyor",
+          "x": 19,
+          "y": 10
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_surveyor",
+          "x": 20,
+          "y": 10
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Concord bounty sergeant",
+          "text": "Shilling a beak, lads! Two for the ones with riders!"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_saltwright",
+          "x": 13,
+          "y": 8
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brine_slinger",
+          "x": 13,
+          "y": 9
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 30,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "nestling",
+          "not": true,
+          "label": "Lose no nestlings"
+        },
+        "pearls": 20,
+        "label": "Lose no nestlings"
+      }
+    ]
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "id": "oc_the_upper_kin",
+  "name": "The Upper Kin",
+  "description": "The Court will not strike first, and the Kin cook on the vents while they climb to break the bell on the north rim.",
+  "map": "boiling_floor",
+  "briefing": [
+    "Entry the twelfth. At the Steps the bell-people from the trench stood among the fallen and would not strike them. They waited for them to dry out, the way you wait out a fever, and they called them the Upper Kin.",
+    "The Kin have followed the Court's road down to the Boiling Floor. The vents scald them and heal the Court in the same steam. There is a bell on the north rim with a vent-flame burning inside it, and to anything raised under the beams it must look like a lamp.",
+    "The Court will not strike first. I have watched them stand with their hands open for a whole turn of the glass. The Kin do not know what an open hand is."
+  ],
+  "victoryText": "The bell cracks and the flame inside it goes out, and the Overcurrent lose interest in it at once. The Court does not pursue. The Tollwarden stands on the rim and watches them go, and Wenna, who is close enough to hear, swears the bronze helm is weeping brine.",
+  "defeatText": "The Court never strikes first. It does not have to. The Kin cook on the vents, one by one, while the Bell-Knights stand with their hands open and wait, as patiently as they waited at the Steps.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "overcurrent_the_undersinging",
+          "x": 13,
+          "y": 20,
+          "tag": "undersinging"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 12,
+          "y": 21,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 14,
+          "y": 21,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 13,
+          "y": 22,
+          "tag": "swarm"
+        }
+      ]
+    },
+    {
+      "name": "The Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "ai",
+      "warband": [
+        "hadal_court_pit_thrall",
+        "hadal_court_pit_thrall",
+        "hadal_court_lurecaller",
+        "hadal_court_pressure_lancer",
+        "hadal_court_murk_diver",
+        "hadal_court_deep_herald",
+        "hadal_court_bell_knight"
+      ],
+      "units": [
+        {
+          "unit": "hadal_court_tollwarden",
+          "x": 12,
+          "y": 3,
+          "tag": "court_host"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 6,
+          "y": 6,
+          "tag": "court_host"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 16,
+          "y": 6,
+          "tag": "court_host"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 22,
+          "y": 5,
+          "tag": "court_host"
+        },
+        {
+          "unit": "hadal_court_vent_priest",
+          "x": 11,
+          "y": 11,
+          "tag": "court_host"
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 10,
+          "y": 10,
+          "tag": "court_host"
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 13,
+          "y": 10,
+          "tag": "court_host"
+        },
+        {
+          "unit": "hadal_court_trench_crab",
+          "x": 14,
+          "y": 12,
+          "tag": "court_host"
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 11,
+          "y": 4,
+          "tag": "court_host"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 10
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Break the vent-bell"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "undersinging",
+        "label": "The Undersinging must not die"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Break the bell before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "court_host",
+          "status": "stunned",
+          "duration": 1
+        },
+        {
+          "type": "message",
+          "speaker": "A Court Tollwarden",
+          "text": "Upper Kin. The Court does not raise a hand to you. Pass by, and go back up."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 13,
+          "y": 19,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "The Choir",
+          "text": "mmmm. a lamp in a bell. a lamp in a bell."
+        }
+      ]
+    },
+    {
+      "when": {
+        "unitDefeated": "court_host"
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "A Court Tollwarden",
+          "text": "So. You struck first. The Court will remember it was you."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_crushing_maw",
+          "x": 12,
+          "y": 13,
+          "tag": "court_host"
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 50,
+    "bonus": [
+      {
+        "condition": {
+          "type": "turn_limit",
+          "turns": 10,
+          "not": true,
+          "label": "Break the vent-bell before turn 10"
+        },
+        "pearls": 25,
+        "label": "Break the vent-bell before turn 10"
+      }
+    ]
+  }
+}

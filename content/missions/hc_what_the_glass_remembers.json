@@ -1,0 +1,255 @@
+{
+  "id": "hc_what_the_glass_remembers",
+  "name": "What the Glass Remembers",
+  "description": "Walk the Bell-Knights across the beam glass to the north road, breaking no lamps.",
+  "map": "glasswork_reach",
+  "briefing": [
+    "Register of the Third Bell, entered at the edge of the glass. Two voices have now told me that the lamps hold the sea, and that the keepers know who lifted it. The keepers' road to Lantern Shoal crosses this reach, where the old beam swept for three hundred years and turned the sand to glass.",
+    "The keepers are waiting on the glass, and their captain is a drowned man bound to a lamp. He sent one message: that the lamps hold nothing, the keepers know nothing, and the Court should go home. It is the most frightened lie I have been told on the climb, and it was told by a man who is already dead.",
+    "There is nowhere to hide on beam glass, so we will not hide. The Bell-Knights will walk into the beams in front of me, one step at a time, the way they walked out of the trench. I will walk behind them to the north road. We break no lamps."
+  ],
+  "victoryText": "Vhaal steps off the glass onto the north road, and the beams behind her go still. Drenn does not follow. He stands among his drowned sailors and watches the bells go north, and he has noticed, as they all have, that the Court did not break a single lamp. \"Tell Auster I'm sorry,\" he calls after them. Vhaal writes it down and, for the first time on the climb, does not know how to mark it.",
+  "defeatText": "The last of the vanguard falls on the glass, blind in the beam. The keepers do not pursue. Drenn has the bells carried off the glass and laid in the shade, which is the kindest thing anyone on the surface has done for the Court, and changes nothing.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "hadal_court_herald_vhaal",
+          "x": 15,
+          "y": 26,
+          "tag": "herald_vhaal"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 13,
+          "y": 26,
+          "tag": "bell_vanguard"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 14,
+          "y": 26,
+          "tag": "bell_vanguard"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 16,
+          "y": 26,
+          "tag": "bell_vanguard"
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 14,
+          "y": 27
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 16,
+          "y": 27
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 15,
+          "y": 25
+        }
+      ]
+    },
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "ai",
+      "warband": [
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_signalman",
+        "lanternkeepers_glassgrinder",
+        "lanternkeepers_beamwright",
+        "lanternkeepers_lantern_warden"
+      ],
+      "units": [
+        {
+          "unit": "lanternkeepers_captain_hollis_drenn",
+          "x": 14,
+          "y": 10,
+          "tag": "captain_drenn"
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 13,
+          "y": 13,
+          "tag": "keeper_line"
+        },
+        {
+          "unit": "lanternkeepers_oilbearer",
+          "x": 15,
+          "y": 13,
+          "tag": "keeper_line"
+        },
+        {
+          "unit": "lanternkeepers_signalman",
+          "x": 12,
+          "y": 12,
+          "tag": "keeper_line"
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 16,
+          "y": 12,
+          "tag": "keeper_line"
+        },
+        {
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 14,
+          "y": 12,
+          "tag": "keeper_line"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 10
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "herald_vhaal",
+        "tiles": [
+          [
+            12,
+            0
+          ],
+          [
+            13,
+            0
+          ],
+          [
+            14,
+            0
+          ],
+          [
+            15,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        "label": "Walk Vhaal to the north road"
+      },
+      {
+        "type": "eliminate",
+        "team": 1,
+        "label": "Or break the whole keeper line"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "herald_vhaal",
+        "label": "Herald Vhaal must live"
+      },
+      {
+        "type": "defeat_unit",
+        "tag": "bell_vanguard",
+        "label": "Keep a Bell-Knight standing"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 22,
+        "label": "Reach the north road before turn 22"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Captain Hollis Drenn",
+          "text": "Last week a bird stole a page from us. This week, bells. Turn round, Herald. There's nothing up that road but an old woman and a light."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "bell_vanguard",
+          "status": "lk_dazzled",
+          "duration": 2
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_beamwright",
+          "x": 14,
+          "y": 5,
+          "tag": "keeper_line"
+        },
+        {
+          "type": "message",
+          "speaker": "Orrun Tessk",
+          "text": "It is very bright, Herald. I have decided to walk into it anyway."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 8,
+        "team": 0
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "hadal_court_deep_herald",
+          "x": 15,
+          "y": 24
+        },
+        {
+          "type": "status",
+          "tag": "keeper_line",
+          "status": "hc_darkened",
+          "duration": 2
+        },
+        {
+          "type": "message",
+          "speaker": "Maelis Quell",
+          "text": "Now they know what it was like for us. Walk, Herald. Quickly."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 80,
+    "bonus": [
+      {
+        "condition": {
+          "type": "destroy_keystone",
+          "team": 1,
+          "not": true,
+          "label": "Leave the lamp burning"
+        },
+        "pearls": 25,
+        "label": "Leave the lamp burning"
+      }
+    ]
+  }
+}

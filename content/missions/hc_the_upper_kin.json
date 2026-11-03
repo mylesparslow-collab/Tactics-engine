@@ -1,0 +1,213 @@
+{
+  "id": "hc_the_upper_kin",
+  "name": "The Upper Kin",
+  "description": "Hold the terraces and guard the flame while the Overcurrent dry out; strike no first blow.",
+  "map": "tide_steps",
+  "briefing": [
+    "Register of the Third Bell. Deeplight is dark. A Murk Diver came up the Steps last night to say that a wet column came down our bridges singing, that keepers came behind it, and that between them the lamp went out. Over the city it is raining the sea, and the old ones stand in the galleries weeping, with their mouths open to it.",
+    "Since then the sky over the Steps has gone thin, the colour of a bruise healing. This morning things began to fall through it: pale, wet, starving, lit from beneath. They are the Upper Kin, who were lifted with the sea and have lived in it upside down ever since, and the Court does not raise a hand to kin.",
+    "We will not strike first. The Kin cannot live long in the dry, and Maelis's flame is the brightest thing on the terraces, so they will climb toward it and wither on the way. Hold the terraces, guard the flame, and wait. If one must be struck, strike it once, and do not enjoy it."
+  ],
+  "victoryText": "By the tenth turn the Kin on the terraces have dried to pale husks, and the ones in the basin lie in the shallows breathing slowly, like things that have eaten too much. Maelis sits at the water's edge and keeps her flame low so as not to call them. \"They fell out of our sea,\" she says. \"Whatever lifted it lifted them too.\" Vhaal writes nothing in the register. The Kin gave no answer, and told no lie.",
+  "defeatText": "The Kin reach the flame and swallow it, and then lie on the terrace drying in the light they have eaten. The Court carries what is left down to the basin. The water there is too shallow to hold anything up.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "hadal_court_herald_vhaal",
+          "x": 13,
+          "y": 24,
+          "tag": "herald_vhaal"
+        },
+        {
+          "unit": "hadal_court_maelis_quell",
+          "x": 12,
+          "y": 23,
+          "tag": "maelis_quell"
+        },
+        {
+          "unit": "hadal_court_orrun_tessk",
+          "x": 11,
+          "y": 23,
+          "tag": "orrun_tessk"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 11,
+          "y": 24
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 13,
+          "y": 23
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 12,
+          "y": 24
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 10,
+          "y": 24
+        }
+      ]
+    },
+    {
+      "name": "Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "ai",
+      "warband": [
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_gulper",
+        "overcurrent_gulper",
+        "overcurrent_hagwyrm",
+        "overcurrent_lure_mother",
+        "overcurrent_downward_shark"
+      ],
+      "units": [
+        {
+          "unit": "overcurrent_weeping_sunfish",
+          "x": 11,
+          "y": 12,
+          "tag": "upper_kin_sunfish"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 8,
+          "y": 12
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 15,
+          "y": 12
+        },
+        {
+          "unit": "overcurrent_hagwyrm",
+          "x": 5,
+          "y": 13
+        }
+      ],
+      "keystone": false,
+      "startingEssence": 0,
+      "essencePerTurn": 10
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 10,
+        "label": "Hold the terraces for 10 turns"
+      },
+      {
+        "type": "eliminate",
+        "team": 1,
+        "label": "Or the Kin are gone"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "maelis_quell",
+        "label": "Guard Maelis's flame"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "herald_vhaal",
+        "label": "Herald Vhaal must live"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Maelis Quell",
+          "text": "They are all looking at my flame, Herald. I have never been looked at like that."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_downward_shark",
+          "x": 10,
+          "y": 20
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_gulper",
+          "x": 14,
+          "y": 20
+        },
+        {
+          "type": "message",
+          "speaker": "The Upper Kin",
+          "text": "(a sound like a bell heard from under water, and then a sound like teeth)"
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 6,
+          "y": 14,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 3
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_lure_mother",
+          "x": 6,
+          "y": 22
+        },
+        {
+          "type": "message",
+          "speaker": "Orrun Tessk",
+          "text": "It is in my reach, Herald. I am not reaching."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 55,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "upper_kin_sunfish",
+          "not": true,
+          "label": "Spare the weeper"
+        },
+        "pearls": 20,
+        "label": "Spare the weeper"
+      }
+    ]
+  }
+}

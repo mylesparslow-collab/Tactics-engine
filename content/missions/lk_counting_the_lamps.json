@@ -1,0 +1,242 @@
+{
+  "id": "lk_counting_the_lamps",
+  "name": "Counting the Lamps",
+  "map": "glasswork_reach",
+  "description": "Keep a Tide splinter off the glass arms of the Reach and out of the old lamp-room.",
+  "briefing": [
+    "The Count, 311 AE, Lantern Shoal, entered by Captain H. Drenn for Keeper Auster, whose eye is worse. Lamps seen burning from the gallery on the clear nights of the spring: forty-one. Last year, forty-three. The year before that, forty-four, and I have stopped writing down the year I first counted.",
+    "The Shoal's beam swept the Reach for three hundred years and fused the sand to glass, four long arms of it meeting at the old dead tower. The Tide have sent a splinter of penitents onto the glass to wet it. Wet glass scatters the beam, and a scattered beam does not reach the Brinks.",
+    "We keep the lanes clear and the old lamp-room dry. Lensmaster Venn asks permission to burn them off the glass. I have told her she may, provided she does not enjoy it."
+  ],
+  "victoryText": "The splinter breaks and runs north, and the beam comes down the glass clean and white, all the way to the Brinks. Drenn enters the count again in the evening, as if it might change. Forty-one.",
+  "defeatText": "A penitent kneels in the old lamp-room and pours a skin of brine over the glass. The beam scatters into a hundred weak lights. Far off on the Brinks, something that was waiting for it stops waiting.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "lanternkeepers_captain_hollis_drenn",
+          "x": 15,
+          "y": 25,
+          "tag": "captain_drenn"
+        },
+        {
+          "unit": "lanternkeepers_oilbearer",
+          "x": 14,
+          "y": 26
+        },
+        {
+          "unit": "lanternkeepers_oilbearer",
+          "x": 16,
+          "y": 26
+        },
+        {
+          "unit": "lanternkeepers_wick",
+          "x": 15,
+          "y": 24,
+          "tag": "watch"
+        },
+        {
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 14,
+          "y": 15
+        },
+        {
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 15,
+          "y": 15
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 14,
+          "y": 13
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 15,
+          "y": 13
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_tear_slinger",
+        "returning_tide_tear_slinger",
+        "returning_tide_tideskulker",
+        "returning_tide_tideskulker",
+        "returning_tide_wringer",
+        "returning_tide_shroud_mender",
+        "returning_tide_rainsayer"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_wringer",
+          "x": 14,
+          "y": 5,
+          "tag": "splinter_wringer"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 13,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 16,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 12,
+          "y": 6
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 16,
+          "y": 6
+        },
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 15,
+          "y": 3
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 15
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Destroy the splinter's shrine at the north end"
+      },
+      {
+        "type": "eliminate",
+        "team": 1,
+        "label": "Or break the whole splinter"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "reach_tile",
+        "team": 1,
+        "tiles": [
+          [
+            14,
+            14
+          ],
+          [
+            15,
+            14
+          ],
+          [
+            14,
+            15
+          ],
+          [
+            15,
+            15
+          ]
+        ],
+        "label": "Keep the splinter's Wringer off the old lamp-room",
+        "tag": "splinter_wringer"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "captain_drenn",
+        "label": "Captain Drenn must not fall"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The Beacon must not fall"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Captain Drenn",
+          "text": "Forty-one. Keep them off the glass and we stay at forty-one."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 15,
+          "y": 21,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 3
+        },
+        {
+          "type": "message",
+          "speaker": "Lensmaster Venn",
+          "text": "They've wet the south arm. I can't see you through it."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_tideskulker",
+          "x": 2,
+          "y": 14
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_tideskulker",
+          "x": 2,
+          "y": 15
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 30,
+    "bonus": [
+      {
+        "condition": {
+          "type": "turn_limit",
+          "turns": 10,
+          "not": true,
+          "label": "Win before turn 10"
+        },
+        "pearls": 15,
+        "label": "Win before turn 10"
+      }
+    ]
+  }
+}

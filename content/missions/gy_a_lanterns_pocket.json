@@ -1,0 +1,231 @@
+{
+  "id": "gy_a_lanterns_pocket",
+  "name": "A Lantern's Pocket",
+  "description": "Cross the lit glass at night and lift the locked page from Keeper Lusk's lamp-room without hurting her.",
+  "map": "glasswork_reach",
+  "briefing": [
+    "Tally, page twelve, written on the north stack while Ketta Vane's sleds were still climbing it. The Compact came for Brask's box. We let them have it. I kept the ledger.",
+    "Keeper Lusk sleeps one night a month in the ruined lamp-room on the Reach, with the locked page under her pillow. I know because I carried her letters there when I was eleven, and she gave me a biscuit and told me nothing. Forty-one people have tried to buy that page. Nobody has tried to take it, because nobody robs a keeper.",
+    "The glass is open and bright, and the beams light up anything that crosses it. So we cross it fast and we do not stop. I touch nothing but the page, and I do not hurt the keeper. Robbing her is one thing. The Rim would never forgive the other."
+  ],
+  "victoryText": "Wren comes out of the lamp-room with a single page in an iron clasp, still locked. She picks the lock on the wing, a thousand feet up, by beam-light. She reads the first line. Pocket feels her go very still, and banks for home without being told.",
+  "defeatText": "The beam finds Pocket over the glass and holds her there, white and blind. Lusk takes the page back from Wren's coat with a polite apology, and gives her a biscuit.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Gyre",
+      "color": "#5a6470",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "gyre_wren_halloway",
+          "x": 15,
+          "y": 26,
+          "tag": "wren_halloway"
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 14,
+          "y": 26
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 16,
+          "y": 26
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 14,
+          "y": 27
+        },
+        {
+          "unit": "gyre_gullwife",
+          "x": 16,
+          "y": 27
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 15,
+          "y": 25
+        }
+      ]
+    },
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "ai",
+      "warband": [
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_lamplit_sailor",
+        "lanternkeepers_wick",
+        "lanternkeepers_wick",
+        "lanternkeepers_lantern_warden",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_beaconrunner",
+        "lanternkeepers_signalman"
+      ],
+      "units": [
+        {
+          "unit": "lanternkeepers_keeper_of_the_long_watch",
+          "x": 14,
+          "y": 14,
+          "tag": "keeper_lusk"
+        },
+        {
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 13,
+          "y": 13
+        },
+        {
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 16,
+          "y": 13
+        },
+        {
+          "unit": "lanternkeepers_wick",
+          "x": 12,
+          "y": 15
+        },
+        {
+          "unit": "lanternkeepers_wick",
+          "x": 17,
+          "y": 15
+        },
+        {
+          "unit": "lanternkeepers_lantern_warden",
+          "x": 14,
+          "y": 16
+        }
+      ],
+      "startingEssence": 40,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "wren_halloway",
+        "tiles": [
+          [
+            14,
+            14
+          ],
+          [
+            15,
+            14
+          ],
+          [
+            14,
+            15
+          ],
+          [
+            15,
+            15
+          ]
+        ],
+        "label": "Wren into the lamp-room"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "wren_halloway",
+        "label": "Wren must not fall"
+      },
+      {
+        "type": "defeat_unit",
+        "tag": "keeper_lusk",
+        "label": "Do not kill the Keeper"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 12,
+        "label": "Take the page before turn 12"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Keeper Sabine Lusk",
+          "text": "Is that a frigatebird? Tell your captain the letters go to the Shoal tonight, not here."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 14,
+          "y": 22
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 15,
+          "y": 22
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 15,
+          "y": 21
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 8,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Captain Hollis Drenn",
+          "text": "Nobody robs a keeper. Who would even think of it?"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_captain_hollis_drenn",
+          "x": 14,
+          "y": 9,
+          "tag": "captain_drenn"
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 50,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "keeper_lusk",
+          "fraction": 0.5,
+          "label": "Leave Keeper Lusk above half strength"
+        },
+        "pearls": 35,
+        "label": "Leave Keeper Lusk above half strength"
+      }
+    ]
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "id": "lk_the_wet_saint",
+  "name": "The Wet Saint",
+  "map": "weeping_shelf",
+  "description": "Carry the lamp's light across the Weeping Shelf to the Wet Saint's shrine and bring Dunnock down.",
+  "briefing": [
+    "Captain's log. For eleven years the order has hunted the Wet Saint and never once seen his face. After the Steps, Keeper Auster has decided we stop waiting for him to come to the lamps, which is the first time she has changed her mind this century. He has been seen at the shrine on the Weeping Shelf, and we are to bring the lamp's light to his face.",
+    "The Shelf is his ground. The rain makes his people strong and our glass dim, and the chasm gives us one short causeway and one long road round the east edge. Every brine pool on the ledge has a Drowned under it, waiting to be asked.",
+    "I do not like this. The order guards; it does not usually go looking. But Dunnock is the only man alive who has guessed what we know, and if he guessed it, he can act on it."
+  ],
+  "victoryText": "The figure falls in the rain, and the hood comes back on an old woman with a wringer's hands. \"He went down to the light, Captain,\" she says. \"You're late. You were always going to be.\" Then the rain on the Shelf turns from drizzle to downpour, and Drenn feels his lamp, three days' march away, pull at him like a hook.",
+  "defeatText": "The keepers are driven back across the causeway, soaked to the bone and seeing double. On the shrine ledge the figure in the cloak raises its arms, and the rain answers it.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "lanternkeepers_captain_hollis_drenn",
+          "x": 4,
+          "y": 16,
+          "tag": "captain_drenn"
+        },
+        {
+          "unit": "lanternkeepers_keeper_of_the_long_watch",
+          "x": 5,
+          "y": 17
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 3,
+          "y": 17
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 4,
+          "y": 15
+        },
+        {
+          "unit": "lanternkeepers_lantern_warden",
+          "x": 5,
+          "y": 18
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_tideskulker",
+        "returning_tide_tideskulker",
+        "returning_tide_shroud_mender",
+        "returning_tide_rainsayer",
+        "returning_tide_bloat_drowned"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_tide_prophet",
+          "x": 4,
+          "y": 4,
+          "tag": "wet_saint"
+        },
+        {
+          "unit": "returning_tide_choirmaster",
+          "x": 5,
+          "y": 2
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 3,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 6,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_wringer",
+          "x": 7,
+          "y": 8
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 7,
+          "y": 9
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 6,
+          "y": 9
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 8,
+          "y": 9
+        },
+        {
+          "unit": "returning_tide_undertow_singer",
+          "x": 18,
+          "y": 9
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "wet_saint",
+        "label": "Bring down the Wet Saint"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "captain_drenn",
+        "label": "Captain Drenn must not fall"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The Beacon must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Finish before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "The figure in the soaked cloak",
+          "text": "Captain Drenn. You drowned once already. Tell me, wasn't it quiet?"
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 3,
+          "y": 14
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 13,
+          "y": 15
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_drowned",
+          "x": 8,
+          "y": 18
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 7,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "Rain's heavier at the Shoal. Something's pulling on a lamp. Finish. Come home."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 80,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "captain_drenn",
+          "fraction": 0.5,
+          "label": "Keep Captain Drenn above half health"
+        },
+        "pearls": 25,
+        "label": "Keep Captain Drenn above half health"
+      }
+    ]
+  }
+}

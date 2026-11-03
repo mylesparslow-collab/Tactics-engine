@@ -1,0 +1,227 @@
+{
+  "id": "hc_the_market_of_liars",
+  "name": "The Market of Liars",
+  "description": "Walk Vhaal out of the Kettle through a market that has been paid to stop her.",
+  "map": "the_kettle",
+  "briefing": [
+    "Register of the Third Bell, entered in the Kettle. Every voice on the climb has said that if a thing is known on the Ebb, a broker named Odo Brask is selling it. So I have come to his market under the market code, with my bell polished and my Bell-Knights left at the gate as the code requires.",
+    "Brask received me in a stall that smelled of lamp-oil and fear. He named his price, which was high, and I paid it, which surprised him. Then, sweating through three coats, he told me that the keepers of the lamps took our sea and hold it above the world like a purse.",
+    "It has the weight of a true thing and the shape of a sale. I will consider it on the walk back to the gate, where my bells are waiting. Brask will not meet my eye, and the stalls between here and the gate have gone very quiet."
+  ],
+  "victoryText": "Vhaal walks out through the south gate with three harpoons in her bell and the register under her arm, and the market closes behind her like water. At the gate she writes down Brask's answer and holds the pen over it for a long time. She does not mark it false. She writes: \"Weighed. Short.\"",
+  "defeatText": "The Herald falls in the aisles of the Kettle. The salvagers have her bell off its frame and onto a sled before the dust settles, and by nightfall it is sold to a buyer who will not say whom they are buying for.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "hadal_court_herald_vhaal",
+          "x": 11,
+          "y": 12,
+          "tag": "herald_vhaal"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 9,
+          "y": 18
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 11,
+          "y": 18
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 10,
+          "y": 17
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 9,
+          "y": 19
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 11,
+          "y": 19
+        }
+      ]
+    },
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_wrecker",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_snare_tinker",
+        "salvage_compact_lamplighter",
+        "salvage_compact_breach_gunner"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_odo_brask",
+          "x": 12,
+          "y": 9,
+          "tag": "odo_brask"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 6,
+          "y": 17
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 16,
+          "y": 17
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 9,
+          "y": 17
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 13,
+          "y": 17
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "herald_vhaal",
+        "tiles": [
+          [
+            9,
+            18
+          ],
+          [
+            10,
+            18
+          ],
+          [
+            11,
+            18
+          ]
+        ],
+        "label": "Walk Vhaal back to the south gate road"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "herald_vhaal",
+        "label": "Herald Vhaal must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 12,
+        "label": "Reach the gate before turn 12"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Nothing personal, Herald. Somebody paid more for where you'd be standing than you paid for what I said. It's a market."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 11,
+          "y": 11,
+          "terrain": "lamp_oil",
+          "radius": 1,
+          "duration": 3
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 19,
+          "y": 9
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_bone_sled_rider",
+          "x": 19,
+          "y": 10
+        },
+        {
+          "type": "message",
+          "speaker": "Maelis Quell",
+          "text": "Herald, the floor is on fire. I am told this is normal for a market."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_hullbreaker",
+          "x": 4,
+          "y": 16
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_snare_tinker",
+          "x": 5,
+          "y": 16
+        },
+        {
+          "type": "message",
+          "speaker": "Orrun Tessk",
+          "text": "Code or no code, Herald, I am coming in."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 60,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "odo_brask",
+          "not": true,
+          "label": "Protect the paid: Odo Brask is still alive"
+        },
+        "pearls": 20,
+        "label": "Protect the paid: Odo Brask is still alive"
+      }
+    ]
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "id": "rt_rain_on_the_faithful",
+  "name": "Rain on the Faithful",
+  "description": "Hold the shrine pool in the rain until the Rainwatch run out of daylight.",
+  "map": "weeping_shelf",
+  "briefing": [
+    "Tally of Sister Maren Ketch, senior wringer, first leaf. Wrung this season: nine. Six were dying already and asked; two were Concord deserters who did not ask but did not argue; one was a goat, and I am not proud of the goat. The Prophet once kept the Concord's ledgers, and he says a number written down is the only honest witness left on the Ebb.",
+    "The Rainwatch are coming up the north ledge to clear the shrine. Watch-Lieutenant Treave has sent a letter, beautifully spelled, informing us that the rain is a public nuisance and the pool a hazard to health. They mean to salt the pool and pull down the hut Ysolde Marrow built under the first drop.",
+    "We do not need to win. We need to still be standing in the rain when they run out of daylight. The pilgrims at the pool will not move, and I will not ask them to."
+  ],
+  "victoryText": "The Rainwatch fall back across the causeway with their salt sacks still full. Tobin Seck, the youngest pilgrim, stands in the pool with his mouth open and his eyes shut, laughing. That night Maren writes the day's number in the tally and finds she has written it twice.",
+  "defeatText": "Salt hisses into the shrine pool and, for one terrible afternoon, the rain stops. The faithful kneel in the dry and weep instead. Treave's men take down Marrow's hut plank by plank, and number every plank.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "returning_tide_maren_ketch",
+          "x": 4,
+          "y": 16,
+          "tag": "maren_ketch"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 8,
+          "y": 18,
+          "tag": "shrine_pilgrim"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 7,
+          "y": 17,
+          "tag": "shrine_pilgrim"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 18,
+          "tag": "shrine_pilgrim"
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 5,
+          "y": 16
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 3,
+          "y": 17
+        }
+      ]
+    },
+    {
+      "name": "Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brine_slinger",
+        "salt_concord_saltwright",
+        "salt_concord_surveyor"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 3,
+          "y": 5
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 5,
+          "y": 5
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 7,
+          "y": 7
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 9,
+          "y": 6
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 4,
+          "y": 6
+        }
+      ],
+      "startingEssence": 50
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 8,
+        "label": "Survive 8 turns"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The shrine pool must not fall"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "maren_ketch",
+        "label": "Sister Maren must live"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Watch-Lieutenant Ansel Treave",
+          "text": "By order of the Marshals' Office, this ledge is closed. Disperse, and take your dead with you. Both kinds."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 18,
+          "y": 10
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 21,
+          "y": 11
+        },
+        {
+          "type": "message",
+          "speaker": "Imre Dunnock",
+          "text": "Let them come the long way round, Sister. The long way is wet."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 0
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 7,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Maren Ketch",
+          "text": "Hear that? It comes down harder when they shout. So shout back."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 40,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "shrine_pilgrim",
+          "not": true,
+          "label": "No pilgrim dies"
+        },
+        "pearls": 20,
+        "label": "No pilgrim dies"
+      },
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "maren_ketch",
+          "fraction": 0.5,
+          "label": "Maren above half strength"
+        },
+        "pearls": 10,
+        "label": "Maren above half strength"
+      }
+    ]
+  }
+}

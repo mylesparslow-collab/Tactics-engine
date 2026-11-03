@@ -1,0 +1,239 @@
+{
+  "id": "ra_taste_of_rain",
+  "name": "Taste of Rain",
+  "description": "Cross the chasm and stand in the rain pool beside the shrine.",
+  "map": "weeping_shelf",
+  "briefing": [
+    "The light at the bottom of the trench has gone out. We felt it the way you feel a tooth go. Glasswake has not stopped shaking since, and the cliff that weeps from a clear sky is weeping harder, and the wet ones are dancing in it.",
+    "We are going to the rain. We do not want to. We are going because the crumbling is in all of us now, not just the eldest, and because Glasswake says that the rain is the only thing on the Ebb that is made of what we are made of. We think Glasswake is wrong. We are going to prove it.",
+    "The rain is heaviest at the pool beside the shrine, on the far side of the chasm. We cross by the causeway or by the long flank, and we stand in it. Then we will know."
+  ],
+  "victoryText": "We stand in the pool beside the shrine and the rain falls on us, and every crumbling branch goes hard again. We understand. We were laid down, polyp on polyp, in water that is now hanging over our heads. We are the sea's bones. The Ebb that woke us has been starving us since the first morning, and the thing we have been fighting to keep away is the only thing that could feed us. The wet ones are singing. For the first time, we know the tune.",
+  "defeatText": "We never reach the pool. The rain falls on the far side of the chasm, where we can see it and not feel it. The Tide sing to us across the gap, gently, as if we were their own dead. Perhaps we are.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Reef Ascendant",
+      "color": "#e07a6a",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "reef_ascendant_coralspire",
+          "x": 5,
+          "y": 17,
+          "tag": "coralspire"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 4,
+          "y": 17
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 6,
+          "y": 17
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 5,
+          "y": 16
+        },
+        {
+          "unit": "reef_ascendant_spitter_polyp",
+          "x": 3,
+          "y": 17
+        }
+      ]
+    },
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "ai",
+      "warband": [
+        "returning_tide_penitent",
+        "returning_tide_penitent",
+        "returning_tide_drowned",
+        "returning_tide_drowned",
+        "returning_tide_tear_slinger",
+        "returning_tide_tideskulker",
+        "returning_tide_shroud_mender",
+        "returning_tide_anchor_bearer",
+        "returning_tide_wringer"
+      ],
+      "units": [
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 3,
+          "y": 4,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_rainsayer",
+          "x": 5,
+          "y": 4,
+          "tag": "rainsayer"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 4,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_tear_slinger",
+          "x": 6,
+          "y": 5
+        },
+        {
+          "unit": "returning_tide_anchor_bearer",
+          "x": 2,
+          "y": 5
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "coralspire",
+        "tiles": [
+          [
+            8,
+            3
+          ],
+          [
+            7,
+            3
+          ],
+          [
+            9,
+            3
+          ],
+          [
+            8,
+            2
+          ],
+          [
+            8,
+            4
+          ]
+        ],
+        "label": "Coralspire must stand in the rain pool beside the shrine"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "coralspire",
+        "label": "Coralspire must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 14,
+        "label": "Reach the rain before turn 14"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 8,
+          "y": 15,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 13,
+          "y": 15,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Imre Dunnock",
+          "text": "You came to drink with us, little forest. Everyone does, in the end. Welcome home."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "coralspire",
+          "status": "regen",
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Coralspire",
+          "text": "It goes into the branches. It goes in. It tastes like the mire and the basin and the inside of every one of us. It tastes like us."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 6,
+          "y": 9
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 7,
+          "y": 9
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_penitent",
+          "x": 8,
+          "y": 9
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "returning_tide_choirmaster",
+          "x": 7,
+          "y": 8
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 80,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "rainsayer",
+          "label": "Both Rainsayers dead"
+        },
+        "pearls": 25,
+        "label": "Both Rainsayers dead"
+      }
+    ]
+  }
+}

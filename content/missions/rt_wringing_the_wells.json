@@ -1,0 +1,213 @@
+{
+  "id": "rt_wringing_the_wells",
+  "name": "Wringing the Wells",
+  "description": "Kill the four well wardens on the Tide Steps before the Rainwatch relief seals the basin.",
+  "map": "tide_steps",
+  "briefing": [
+    "Tally, fifth leaf. The Prophet has audited the wells. Four Concord tide wells on the Steps draw more than the basin gives back, he says, and for ninety years the difference has been written off as evaporation. He wants them wrung dry and the water poured into the basin where it belongs, as a correction.",
+    "Each well has a warden standing in the damp like a man guarding a purse. Kill the wardens and the wells are ours to empty. A Rainwatch relief column is coming down from the north rim, and once it reaches the basin the Steps are closed to us for good.",
+    "I have never wrung a man standing on water before. The Prophet says it is easier. I think he is guessing, and he never guesses."
+  ],
+  "victoryText": "The fourth warden goes down in the shallows and the Penitents carry the water to the basin in their hands, in their hats, in their mouths. It takes until dark. The basin does not rise by so much as a finger, and Maren notices, and writes that down too.",
+  "defeatText": "The relief column fills the Steps with salt and Rainwatch blue. The faithful withdraw across the terraces, leaving the wells full and the basin as empty as it has been for three hundred years.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "returning_tide_maren_ketch",
+          "x": 12,
+          "y": 23,
+          "tag": "maren_ketch"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 11,
+          "y": 23
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 13,
+          "y": 23
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 12,
+          "y": 22
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 11,
+          "y": 22
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 13,
+          "y": 22
+        }
+      ]
+    },
+    {
+      "name": "Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brine_slinger",
+        "salt_concord_brine_chirurgeon",
+        "salt_concord_tollkeeper"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 4,
+          "y": 9,
+          "tag": "well_warden"
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 17,
+          "y": 11,
+          "tag": "well_warden"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 6,
+          "y": 16,
+          "tag": "well_warden"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 19,
+          "y": 18,
+          "tag": "well_warden"
+        },
+        {
+          "unit": "salt_concord_saltwright",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "unit": "salt_concord_brine_slinger",
+          "x": 14,
+          "y": 9
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 13,
+          "y": 4
+        }
+      ],
+      "startingEssence": 40
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "defeat_unit",
+        "tag": "well_warden",
+        "label": "Kill all four well wardens"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "maren_ketch",
+        "label": "Sister Maren must live"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The Beacon must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 12,
+        "label": "Empty the wells before the relief seals the basin (turn 12)"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Concord Well-Sergeant",
+          "text": "Tide wells are Concord property under the Seventh Water Ordinance. Drink, and you'll be billed. Die, and your family will be billed."
+        }
+      ]
+    },
+    {
+      "when": {
+        "unitDefeated": "well_warden"
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Maren Ketch",
+          "text": "One. I'm counting them now. I don't remember deciding to."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_rim_marshal",
+          "x": 11,
+          "y": 4,
+          "tag": "lt_treave"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 12,
+          "y": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Watch-Lieutenant Ansel Treave",
+          "text": "Sister Ketch. I remember you from the shrine. I have brought more salt."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 45,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "lt_treave",
+          "label": "Kill Watch-Lieutenant Treave"
+        },
+        "pearls": 25,
+        "label": "Kill Watch-Lieutenant Treave"
+      }
+    ]
+  }
+}

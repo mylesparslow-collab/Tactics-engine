@@ -1,0 +1,227 @@
+{
+  "id": "sv_cut_and_run",
+  "name": "Cut and Run",
+  "description": "Get three strongboxes out of the Kettle's north wall and down the south road before the Concord audit seals them.",
+  "map": "the_kettle",
+  "briefing": [
+    "Sled-log. The Concord killed Hesk Varrow on market day last week, in the aisles, in front of everybody. Varrow was a forger and nobody misses him. What they miss is the rule that said the Concord could not do that.",
+    "Now the Concord has decided it likes the Kettle. Toll-agents at the north gaps with a ledger and a warrant for \"contraband\", which means anything in a strongbox. Our strongboxes are under the north wall, because the north wall is the shady side. Three haulers, three sleds, and the dogs ran.",
+    "Get the boxes to the south road. Do not fight in the open aisles if you can help it, because the market will remember who started it. I would like the market to remember it was them."
+  ],
+  "victoryText": "The sleds go out the south road with the toll-agents shouting audit numbers after them. Brask counts the boxes twice, then a third time. His own box, the small iron one with the lock he never lets anyone see, is not among them. Somebody saw a red-throated bird over the north wall. Brask sits down very carefully.",
+  "defeatText": "The boxes are sealed with Concord wax and carried up the Stair. Brask spends a month buying back his own receipts, one at a time, at Concord prices.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salvage_compact_ketta_vane",
+          "x": 10,
+          "y": 18,
+          "tag": "ketta_vane"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 9,
+          "y": 8
+        },
+        {
+          "unit": "salvage_compact_lamplighter",
+          "x": 13,
+          "y": 8
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 8,
+          "y": 7
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 6,
+          "y": 6,
+          "tag": "strongbox_haul"
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 11,
+          "y": 6,
+          "tag": "strongbox_haul"
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 15,
+          "y": 6,
+          "tag": "strongbox_haul"
+        }
+      ]
+    },
+    {
+      "name": "The Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_tollkeeper",
+        "salt_concord_causeway_outrider",
+        "salt_concord_brine_slinger"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_tollkeeper",
+          "x": 11,
+          "y": 3,
+          "tag": "toll_captain"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 9,
+          "y": 4
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 13,
+          "y": 4
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 7,
+          "y": 2
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 15,
+          "y": 2
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 12,
+          "y": 2
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 18
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "strongbox_haul",
+        "tiles": [
+          [
+            9,
+            19
+          ],
+          [
+            10,
+            19
+          ],
+          [
+            11,
+            19
+          ]
+        ],
+        "label": "Get the strongboxes to the south road"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "defeat_unit",
+        "tag": "strongbox_haul",
+        "label": "Do not lose all three haulers"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "ketta_vane",
+        "label": "Ketta Vane must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 12,
+        "label": "Clear the south road before turn 12"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Toll-Captain Merrit Sax",
+          "text": "By order of the Marshals' Office, this market is under audit. Please remain where you are. Please remain."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Two Causeway Outriders come round the rim, cutting at the south road."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 4,
+          "y": 18
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 16,
+          "y": 18
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "I've paid the south gate-ward. He's honest, so it may take him a turn to look away."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 40,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "strongbox_haul",
+          "not": true,
+          "label": "Lose no haulers"
+        },
+        "pearls": 20,
+        "label": "Lose no haulers"
+      }
+    ]
+  }
+}

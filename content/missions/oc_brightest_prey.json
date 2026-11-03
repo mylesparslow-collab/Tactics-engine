@@ -1,0 +1,233 @@
+{
+  "id": "oc_brightest_prey",
+  "name": "Brightest Prey",
+  "description": "The Overcurrent go toward the light across four arms of beam glass, to the glowmoss heart of the old lamp-ruin.",
+  "map": "glasswork_reach",
+  "briefing": [
+    "Entry the fifteenth. I have to write this one as a keeper, not as a witness. They have turned toward the Glasswork Reach, where the Shoal's beam swept for three hundred years and fused the sand into glass. The glass still holds a little of the light, and to them it must look like the floor of heaven.",
+    "Captain Drenn has the beams out on all four arms. My own house stands between the Undersinging and the old lamp-ruin, and I am on the wrong side of the line, with a book instead of a lens.",
+    "The old entries say they come toward the light because it is the only light they have ever had. The old entries do not say what to do about it. I think the keepers who wrote them did not know either."
+  ],
+  "victoryText": "The Undersinging coils into the glowmoss at the heart of the ruin and stops. It does not attack the keepers on the stair. It lies in the old lamp-room with every body lit, humming, as close to the light as it can get. Captain Drenn lowers his lens. \"It isn't hunting,\" he says. \"It's homesick.\"",
+  "defeatText": "The beams pin the long one on the open glass and it dries there, lit from every side, the brightest thing on the Reach for one long minute. Drenn has the carcass burned. Wenna keeps a single bell-body in a jar, and it hums whenever the Shoal lamp turns.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "overcurrent_the_undersinging",
+          "x": 15,
+          "y": 26,
+          "tag": "undersinging"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 14,
+          "y": 27,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 16,
+          "y": 27,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 15,
+          "y": 28,
+          "tag": "swarm"
+        }
+      ]
+    },
+    {
+      "name": "The Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "ai",
+      "warband": [
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_wick",
+        "lanternkeepers_wick",
+        "lanternkeepers_lantern_warden",
+        "lanternkeepers_beaconrunner",
+        "lanternkeepers_lamplit_sailor"
+      ],
+      "units": [
+        {
+          "unit": "lanternkeepers_keeper_of_the_long_watch",
+          "x": 14,
+          "y": 13,
+          "tag": "keepers_watch"
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 12,
+          "y": 12,
+          "tag": "keepers_watch"
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 17,
+          "y": 12,
+          "tag": "keepers_watch"
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 14,
+          "y": 17,
+          "tag": "keepers_watch"
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 15,
+          "y": 17,
+          "tag": "keepers_watch"
+        },
+        {
+          "unit": "lanternkeepers_glassgrinder",
+          "x": 11,
+          "y": 15,
+          "tag": "keepers_watch"
+        },
+        {
+          "unit": "lanternkeepers_signalman",
+          "x": 18,
+          "y": 15,
+          "tag": "keepers_watch"
+        }
+      ],
+      "startingEssence": 20,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "undersinging",
+        "tiles": [
+          [
+            14,
+            14
+          ],
+          [
+            15,
+            14
+          ],
+          [
+            14,
+            15
+          ],
+          [
+            15,
+            15
+          ]
+        ],
+        "label": "Reach the glowmoss heart of the ruin"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "undersinging",
+        "label": "The Undersinging must not die"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 15,
+        "label": "Reach the heart before turn 15"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 15,
+          "y": 24,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 5
+        },
+        {
+          "type": "terrain",
+          "x": 15,
+          "y": 19,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 5
+        },
+        {
+          "type": "message",
+          "speaker": "Light",
+          "text": "bright. bright. there. there. THERE."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Captain Hollis Drenn",
+          "text": "Beams down every arm. Keep it on the glass, where it can't hide."
+        },
+        {
+          "type": "status",
+          "tag": "undersinging",
+          "status": "lk_dazzled",
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 15,
+          "y": 22,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Keeper Wenna Cray",
+          "text": "Hold the south beam. No. Let it come. I need to see what it does at the glass."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 55,
+    "bonus": [
+      {
+        "condition": {
+          "type": "turn_limit",
+          "turns": 10,
+          "not": true,
+          "label": "Reach the heart before turn 10"
+        },
+        "pearls": 25,
+        "label": "Reach the heart before turn 10"
+      }
+    ]
+  }
+}

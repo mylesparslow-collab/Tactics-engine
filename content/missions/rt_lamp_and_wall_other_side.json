@@ -1,0 +1,210 @@
+{
+  "id": "rt_lamp_and_wall_other_side",
+  "name": "Lamp and Wall, the Other Side",
+  "description": "Probe the Concord wall at Lantern Shoal, hold eight turns, and bring the column home.",
+  "map": "lantern_shoal",
+  "briefing": [
+    "Tally, sixth leaf. The Prophet sends us to Lantern Shoal and has told us plainly that we will not take it. A new Concord company is digging in around the old wall, under a commander who measures everything twice; the scouts say she keeps a night lamp in her tent like a Rim child. We are to walk up to the wall, test it, and come home.",
+    "\"Test the wall,\" he said, and then said it again, the way he repeats a number he does not like. I asked what we are testing for. He said: whether the light flinches when the faithful come near, and how long the soldiers stand before they look up at it for help.",
+    "I lead the column in, wet and silent, from the east road. Hold for eight turns, keep the shrine-cart standing, and bring home as many as the wall allows. Tobin Seck asked to walk at the front, and I said yes, and I have written his name in the tally before the battle, which I have never done."
+  ],
+  "victoryText": "The column breaks and flows back into the haze as ordered, leaving wet footprints that dry too fast. Looking back, Maren sees an old woman walk out of the tower and hears her say, \"Good. They'll be back.\" Dunnock does not look back at all. He is already looking toward the Brinks, where a fallen lamp burns at the bottom of a trench.",
+  "defeatText": "The wall does not break, and neither does the column, until it does. Maren carries Tobin out across the salt on her back. The tally that night has a column of names and no total, because she cannot make herself add them up.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "returning_tide_maren_ketch",
+          "x": 10,
+          "y": 17,
+          "tag": "maren_ketch"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 9,
+          "y": 17,
+          "tag": "tobin_seck"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 11,
+          "y": 17
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 10,
+          "y": 18
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 11,
+          "y": 18
+        }
+      ]
+    },
+    {
+      "name": "Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_surveyor",
+        "salt_concord_stair_warden",
+        "salt_concord_brine_slinger"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 10,
+          "y": 14,
+          "tag": "shoal_sergeant"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 8,
+          "y": 14
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 12,
+          "y": 14
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 6,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_saltwright",
+          "x": 11,
+          "y": 11
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 12,
+          "y": 9
+        },
+        {
+          "unit": "salt_concord_brine_slinger",
+          "x": 10,
+          "y": 7
+        }
+      ],
+      "startingEssence": 20,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 8,
+        "label": "Survive 8 turns"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "maren_ketch",
+        "label": "Sister Maren must live"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The forward shrine must not fall"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "Don't touch the lamp. Don't let them near the lamp. That's all."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 0
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 4,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 3
+        },
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "returning_tide_wringer",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Imre Dunnock",
+          "text": "Up out of the pool, Brother, behind them. Now watch which way the soldiers turn. Not at you. At the lamp."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Imre Dunnock",
+          "text": "Enough. Sister, bring them home. The wall holds, the lamp holds, and now I know which one to ask."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 40,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "tobin_seck",
+          "not": true,
+          "label": "Tobin comes home"
+        },
+        "pearls": 20,
+        "label": "Tobin comes home"
+      },
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "shoal_sergeant",
+          "label": "Kill the wall sergeant"
+        },
+        "pearls": 10,
+        "label": "Kill the wall sergeant"
+      }
+    ]
+  }
+}

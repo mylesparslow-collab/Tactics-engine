@@ -1,0 +1,291 @@
+{
+  "id": "ra_crumbling_branches",
+  "name": "Crumbling Branches",
+  "description": "Hold the brine basin against the Hadal Court while the eldest branches fail.",
+  "map": "tide_steps",
+  "briefing": [
+    "Something is wrong with us. The oldest branches, the ones that woke first, have begun to come apart in the night; they do not break, they soften, and then they are sand. Marrowbloom says this is very interesting and asks if it may eat them, and we have said no, for now.",
+    "There is a basin at the bottom of the Steps that the tide keeps trying to refill. When we stand in it, the crumbling slows, and we do not know why. Glasswake knows, we think, and is not saying. The bell-shaped ones from below are climbing toward it, slowly, the way they do everything, and they mean to drink from it on their long walk up.",
+    "We hold the basin. They are huge and patient, and we are many. If they want water, they can take it from the sky that they keep staring at."
+  ],
+  "victoryText": "The Court stops at the edge of the basin and looks at us for a long time. Then they turn and go on up the Steps, toward the Shoal, without drinking. Vhaal is the last to go. \"You are made of the thing you are keeping out,\" she says. \"I had hoped the old ones would know that.\" We stand in the basin all night. The crumbling slows. It does not stop.",
+  "defeatText": "The Bell-Knights wade into the basin and the water closes over them like a door. We stand on the terraces and feel the oldest of us soften, branch by branch, into sand. Vhaal does not look back. She has her answer, or enough of it.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Reef Ascendant",
+      "color": "#e07a6a",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "reef_ascendant_coralspire",
+          "x": 12,
+          "y": 23,
+          "tag": "coralspire"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 11,
+          "y": 23
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 13,
+          "y": 23
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 12,
+          "y": 22
+        },
+        {
+          "unit": "reef_ascendant_spitter_polyp",
+          "x": 11,
+          "y": 22
+        },
+        {
+          "unit": "reef_ascendant_sting_anemone",
+          "x": 13,
+          "y": 22
+        }
+      ]
+    },
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "ai",
+      "warband": [
+        "hadal_court_pit_thrall",
+        "hadal_court_pit_thrall",
+        "hadal_court_bell_knight",
+        "hadal_court_lurecaller",
+        "hadal_court_lantern_spitter",
+        "hadal_court_vent_priest",
+        "hadal_court_murk_diver",
+        "hadal_court_trench_crab",
+        "hadal_court_pit_thrall"
+      ],
+      "units": [
+        {
+          "unit": "hadal_court_tollwarden",
+          "x": 11,
+          "y": 4,
+          "tag": "tollwarden"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 12,
+          "y": 4
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 9,
+          "y": 4
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 13,
+          "y": 4
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 12,
+        "label": "Hold the basin for 12 turns"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "reach_tile",
+        "team": 1,
+        "tiles": [
+          [
+            9,
+            12
+          ],
+          [
+            10,
+            12
+          ],
+          [
+            11,
+            12
+          ],
+          [
+            12,
+            12
+          ],
+          [
+            13,
+            12
+          ],
+          [
+            14,
+            12
+          ],
+          [
+            8,
+            13
+          ],
+          [
+            9,
+            13
+          ],
+          [
+            14,
+            13
+          ],
+          [
+            15,
+            13
+          ],
+          [
+            8,
+            14
+          ],
+          [
+            9,
+            14
+          ],
+          [
+            14,
+            14
+          ],
+          [
+            15,
+            14
+          ],
+          [
+            9,
+            15
+          ],
+          [
+            10,
+            15
+          ],
+          [
+            11,
+            15
+          ],
+          [
+            12,
+            15
+          ],
+          [
+            13,
+            15
+          ],
+          [
+            14,
+            15
+          ]
+        ],
+        "label": "The Court must not reach the brine pools of the basin"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "coralspire",
+        "label": "Coralspire must live"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Herald Vhaal",
+          "text": "Eldest. You were on the floor when the weight went. You are old enough to know. Who lifted the sea?"
+        },
+        {
+          "type": "message",
+          "speaker": "Coralspire",
+          "text": "We were dead. We remember the weight going. We do not remember anything holding it."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "coralspire",
+          "status": "weakened",
+          "duration": 99
+        },
+        {
+          "type": "terrain",
+          "x": 12,
+          "y": 22,
+          "terrain": "calcite",
+          "radius": 1
+        },
+        {
+          "type": "message",
+          "speaker": "Marrowbloom",
+          "text": "It's still you. It's still good. Please."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_trench_crab",
+          "x": 1,
+          "y": 11
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_pit_thrall",
+          "x": 1,
+          "y": 12
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "hadal_court_pit_thrall",
+          "x": 2,
+          "y": 12
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 70,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "tollwarden",
+          "label": "The Toll-Warden dies"
+        },
+        "pearls": 25,
+        "label": "The Toll-Warden dies"
+      }
+    ]
+  }
+}

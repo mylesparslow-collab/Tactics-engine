@@ -1,0 +1,251 @@
+{
+  "id": "sv_the_roost_debt",
+  "name": "The Roost Debt",
+  "description": "Climb the Gull Stacks the long way round to take Brask's iron strongbox back from the Rimfall Thief.",
+  "map": "gull_stacks",
+  "briefing": [
+    "Sled-log. Brask's iron box is on the high east stack at the Gull Stacks, sitting in a nest like an egg. We know because the thief sent us a letter saying so. The letter was written on the back of one of Brask's own receipts, which is the kind of joke I would admire if it were not my month's wages.",
+    "Her name is Wren Halloway. She flies a frigatebird and she is very good. Birds do not need roads. We do. The stacks have bridges, but they go the long way, and the Gyre know every one of them.",
+    "Brask says only that there is a page in that box he needs back, and that he would rather lose the gold. That is the first time in eleven years I have heard Brask prefer paper to gold. So we climb."
+  ],
+  "victoryText": "The box is open and the gold is all there. Wren is already a speck over the trench, waving. One page is missing from Brask's ledger of keeper receipts: the one that lists which Lanternkeeper carries the locked page of the Vigil Book, and where she sleeps. Ketta looks at the gap in the ledger for a long time. Then she shuts the box and does not ask.",
+  "defeatText": "The crew climbs down in the dark. Wren drops the empty box on the sled-camp at dawn, with a feather in it and a note: \"Thanks for the exercise.\"",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salvage_compact_ketta_vane",
+          "x": 14,
+          "y": 24,
+          "tag": "ketta_vane"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 13,
+          "y": 24
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 15,
+          "y": 24
+        },
+        {
+          "unit": "salvage_compact_lamplighter",
+          "x": 14,
+          "y": 23
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 13,
+          "y": 23
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 15,
+          "y": 23
+        }
+      ]
+    },
+    {
+      "name": "The Gyre",
+      "color": "#5a6470",
+      "controller": "ai",
+      "warband": [
+        "gyre_salt_crow",
+        "gyre_salt_crow",
+        "gyre_roost_runner",
+        "gyre_roost_runner",
+        "gyre_roostwarden",
+        "gyre_shrike_harrier",
+        "gyre_windreader"
+      ],
+      "units": [
+        {
+          "unit": "gyre_wren_halloway",
+          "x": 24,
+          "y": 4,
+          "tag": "wren_halloway"
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 21,
+          "y": 4
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 22,
+          "y": 9
+        },
+        {
+          "unit": "gyre_gullwife",
+          "x": 25,
+          "y": 5
+        },
+        {
+          "unit": "gyre_frigate_thief",
+          "x": 13,
+          "y": 6
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 12,
+          "y": 12
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 16,
+          "y": 13
+        }
+      ],
+      "startingEssence": 40,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tiles": [
+          [
+            23,
+            3
+          ],
+          [
+            24,
+            3
+          ],
+          [
+            25,
+            3
+          ],
+          [
+            26,
+            3
+          ]
+        ],
+        "label": "Reach the strongbox on the high east stack"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "ketta_vane",
+        "label": "Ketta Vane must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 16,
+        "label": "Reach the box before turn 16"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Wren Halloway",
+          "text": "You walked? All this way? I'd have brought it down for a fee."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "Two Salt Crows and a Shrike Harrier come off the west perch, harrying the climb from behind."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "gyre_salt_crow",
+          "x": 1,
+          "y": 22
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "gyre_salt_crow",
+          "x": 2,
+          "y": 21
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "gyre_shrike_harrier",
+          "x": 3,
+          "y": 22
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "If the box is open, don't read anything. If you read anything, don't tell me which page."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 45,
+    "bonus": [
+      {
+        "condition": {
+          "type": "reach_tile",
+          "team": 0,
+          "tag": "ketta_vane",
+          "tiles": [
+            [
+              23,
+              3
+            ],
+            [
+              24,
+              3
+            ],
+            [
+              25,
+              3
+            ],
+            [
+              26,
+              3
+            ]
+          ],
+          "label": "Ketta opens the box herself"
+        },
+        "pearls": 20,
+        "label": "Ketta opens the box herself"
+      },
+      {
+        "condition": {
+          "type": "turn_limit",
+          "turns": 10,
+          "not": true,
+          "label": "Finish before turn 10"
+        },
+        "pearls": 15,
+        "label": "Finish before turn 10"
+      }
+    ]
+  }
+}

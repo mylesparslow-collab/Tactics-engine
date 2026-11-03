@@ -1,0 +1,240 @@
+{
+  "id": "rt_the_glass_road",
+  "name": "The Glass Road",
+  "description": "Cross the Glasswork Reach to the Brinks road, or break the keepers' Beacon on the way.",
+  "map": "glasswork_reach",
+  "briefing": [
+    "Tally, seventh leaf. The Prophet has told us at last. The Shoal is too strong and too watched, but a lamp fell into a trench at Deeplight fifty years ago and burns still, and the Court that built a city round it only stares at it. Put that one out, he says, and the sea will hear us knock.",
+    "Between us and the Brinks lies the Glasswork Reach, where the Shoal's beam swept so long the sand turned to glass. The Lanternkeepers hold it. They have hunted the faithful for three centuries without once explaining why, and their beams run down the glass lanes like a ruler across a page.",
+    "We cross the glass and come out the north side, or we break their Beacon and walk out over it. Keep off the bright lanes when you can. Wet them when you cannot."
+  ],
+  "victoryText": "Maren comes off the north end of the glass with her shadow running ahead of her, long and thin, thrown by a beam that has stopped sweeping and is pointing at her back. Below lie the Brinks, and the trench, and very far down, a cold white light. She does not write a number in the tally that night. She writes a question, and crosses it out.",
+  "defeatText": "The beams find every wet foot on the reach. The faithful retreat south over glass still warm to the touch, and the keepers do not follow, and do not say a word.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Returning Tide",
+      "color": "#3f7a5c",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "returning_tide_maren_ketch",
+          "x": 15,
+          "y": 25,
+          "tag": "maren_ketch"
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 14,
+          "y": 25
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 16,
+          "y": 25
+        },
+        {
+          "unit": "returning_tide_penitent",
+          "x": 15,
+          "y": 24
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 14,
+          "y": 24
+        },
+        {
+          "unit": "returning_tide_drowned",
+          "x": 16,
+          "y": 24
+        }
+      ]
+    },
+    {
+      "name": "Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "ai",
+      "warband": [
+        "lanternkeepers_wick",
+        "lanternkeepers_wick",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_beamwright",
+        "lanternkeepers_glassgrinder",
+        "lanternkeepers_lantern_warden",
+        "lanternkeepers_bellringer"
+      ],
+      "units": [
+        {
+          "unit": "lanternkeepers_keeper_of_the_long_watch",
+          "x": 13,
+          "y": 4,
+          "tag": "glass_warden"
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 14,
+          "y": 8
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 15,
+          "y": 21
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 14,
+          "y": 19
+        },
+        {
+          "unit": "lanternkeepers_signalman",
+          "x": 12,
+          "y": 14
+        },
+        {
+          "unit": "lanternkeepers_lantern_warden",
+          "x": 17,
+          "y": 13
+        },
+        {
+          "unit": "lanternkeepers_wick",
+          "x": 21,
+          "y": 14
+        }
+      ],
+      "startingEssence": 40
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "maren_ketch",
+        "tiles": [
+          [
+            12,
+            0
+          ],
+          [
+            13,
+            0
+          ],
+          [
+            14,
+            0
+          ],
+          [
+            15,
+            0
+          ],
+          [
+            16,
+            0
+          ]
+        ],
+        "label": "Maren steps off the north edge onto the Brinks road"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Or break the keepers' Beacon"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "maren_ketch",
+        "label": "Sister Maren must live"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The Beacon must not fall"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 16,
+        "label": "Cross the glass before turn 16"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Keeper of the Long Watch",
+          "text": "Tide on the reach. Beams down every lane. Do not speak to them. They listen too well."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 0
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 15,
+          "y": 22,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "Tideskulker scout",
+          "text": "A big bird went over low before dawn, Sister, north, with a rider on it. The keepers have been shouting at the sky ever since."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 11,
+          "y": 13
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "lanternkeepers_lamplit_sailor",
+          "x": 18,
+          "y": 13
+        },
+        {
+          "type": "message",
+          "speaker": "Maren Ketch",
+          "text": "Those are drowned men. Those are ours. Why are they standing in the light?"
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 45,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "glass_warden",
+          "label": "Kill the Keeper of the Long Watch"
+        },
+        "pearls": 20,
+        "label": "Kill the Keeper of the Long Watch"
+      }
+    ]
+  }
+}

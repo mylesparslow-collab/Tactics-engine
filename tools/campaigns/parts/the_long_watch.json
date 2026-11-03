@@ -1,0 +1,76 @@
+{
+  "id": "the_long_watch",
+  "name": "The Long Watch",
+  "description": "Captain Drenn and the Lanternkeepers keep their vow of silence through the crisis of 311 AE and learn what the silence cost.",
+  "faction": "lanternkeepers",
+  "startingRoster": [
+    "lanternkeepers_captain_hollis_drenn",
+    "lanternkeepers_wick",
+    "lanternkeepers_wick",
+    "lanternkeepers_lamplit_sailor",
+    "lanternkeepers_lamplit_sailor",
+    "lanternkeepers_oilbearer",
+    "lanternkeepers_oilbearer",
+    "lanternkeepers_signalman",
+    "lk_spell_lamp_flash",
+    "lk_equip_wick_trimmers"
+  ],
+  "missions": [
+    {
+      "mission": "lk_counting_the_lamps",
+      "unlocks": [
+        "lanternkeepers_lantern_warden",
+        "lanternkeepers_glassgrinder"
+      ]
+    },
+    {
+      "mission": "lk_signal_fire",
+      "unlocks": [
+        "lanternkeepers_beaconrunner",
+        "lk_equip_signal_horn"
+      ]
+    },
+    {
+      "mission": "lk_the_ledger",
+      "unlocks": [
+        "lanternkeepers_stairkeeper",
+        "lk_equip_stairwell_greaves"
+      ]
+    },
+    {
+      "mission": "lk_book_in_the_kettle",
+      "unlocks": [
+        "lanternkeepers_bellringer",
+        "lk_spell_tithe_of_oil"
+      ]
+    },
+    {
+      "mission": "lk_the_fallen_lamp",
+      "unlocks": [
+        "lanternkeepers_beamwright",
+        "lk_equip_first_lens"
+      ]
+    },
+    {
+      "mission": "lk_what_feeds_below_the_beam",
+      "unlocks": [
+        "lanternkeepers_keeper_of_the_long_watch",
+        "lk_spell_beam_of_the_long_watch"
+      ]
+    },
+    {
+      "mission": "lk_the_wet_saint",
+      "unlocks": [
+        "lanternkeepers_keeper_pell_auster",
+        "lk_equip_lamplit_mantle"
+      ]
+    },
+    {
+      "mission": "lk_the_lamp_will_not_go_out",
+      "unlocks": [
+        "lanternkeepers_lensmaster_oriel_venn",
+        "lanternkeepers_first_flame"
+      ]
+    }
+  ]
+}

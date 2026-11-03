@@ -1,0 +1,332 @@
+{
+  "id": "oc_below_the_beam",
+  "name": "Below the Beam",
+  "description": "Everything that fell comes to Lantern Shoal, the brightest light in the world, and the Undersinging climbs to the glass.",
+  "map": "lantern_shoal",
+  "briefing": [
+    "Entry the last, if I am lucky. The page came back to me today. A bird-girl dropped it on the Shoal stair and flew off without a word, and I have bound my loose leaves into it, so it is whole again.",
+    "Everything that fell is coming here. The Shoal lamp is the brightest light in the world, and the sky above it is so thin I can see shapes moving in it. Keeper Auster has her hand on the glass, my house is on the stair, and the Concord company is on the wall. None of us has ever faced anything that wanted the lamp more than we do.",
+    "I have read the whole page now, every keeper's hand back to the Oaths. There is one line at the bottom in the oldest ink, with a space under it for someone to write whether it was true. I think tonight I find out."
+  ],
+  "victoryText": "The Undersinging climbs the tower and lays its hundred bodies against the glass, and does not break it. It hums at the lamp's own pitch, and the lamp hums back. Inside, Keeper Auster keeps her hand where it is. Above, the floor of the sky knits shut; below, a Concord commander looks up and sees the sea for the first time, and the sea looks back. By morning everything that fell lies grey on the salt around the Shoal, dried in rings, every one of them facing the lamp. The locked page's last line, in the oldest ink, reads: \"What feeds below the beam does not want the lamp out. It has never had another sun. Keep it lit for them too.\" Under it, in fresh ink, Wenna Cray writes one word: \"True.\"",
+  "defeatText": "The lamp gutters. For one breath the sky is open all the way up, and the Undersinging sees past the light the whole dark weight of its own sea, coming down after it. Then there is no above or below, only water, and the hum goes on under it for a while.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "overcurrent_the_undersinging",
+          "x": 10,
+          "y": 18,
+          "tag": "undersinging"
+        },
+        {
+          "unit": "overcurrent_mother_mantle",
+          "x": 9,
+          "y": 19,
+          "tag": "mother_mantle"
+        },
+        {
+          "unit": "overcurrent_saint_rictus",
+          "x": 12,
+          "y": 19,
+          "tag": "saint_rictus"
+        },
+        {
+          "unit": "overcurrent_bellyeye_shoal",
+          "x": 11,
+          "y": 18,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 9,
+          "y": 20,
+          "tag": "swarm"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 12,
+          "y": 20,
+          "tag": "swarm"
+        }
+      ]
+    },
+    {
+      "name": "The Lanternkeepers",
+      "color": "#e3b04b",
+      "controller": "ai",
+      "warband": [
+        "lanternkeepers_signalman",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_oilbearer",
+        "lanternkeepers_bellringer",
+        "lanternkeepers_beaconrunner",
+        "lanternkeepers_wick",
+        "lanternkeepers_lamplit_sailor"
+      ],
+      "units": [
+        {
+          "unit": "lanternkeepers_first_flame",
+          "x": 10,
+          "y": 8,
+          "tag": "shoal_keepers"
+        },
+        {
+          "unit": "lanternkeepers_keeper_of_the_long_watch",
+          "x": 11,
+          "y": 8,
+          "tag": "shoal_keepers"
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 8,
+          "y": 9,
+          "tag": "shoal_keepers"
+        },
+        {
+          "unit": "lanternkeepers_beamwright",
+          "x": 13,
+          "y": 9,
+          "tag": "shoal_keepers"
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 9,
+          "y": 12,
+          "tag": "shoal_keepers"
+        },
+        {
+          "unit": "lanternkeepers_stairkeeper",
+          "x": 12,
+          "y": 12,
+          "tag": "shoal_keepers"
+        },
+        {
+          "unit": "lanternkeepers_lantern_warden",
+          "x": 10,
+          "y": 13,
+          "tag": "shoal_keepers"
+        },
+        {
+          "unit": "lanternkeepers_keeper_pell_auster",
+          "x": 11,
+          "y": 9,
+          "tag": "keeper_auster"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 15
+    },
+    {
+      "name": "The Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "keystone": false,
+      "warband": [
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brine_slinger",
+        "salt_concord_brine_slinger"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 7,
+          "y": 16,
+          "tag": "shoal_company"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 5,
+          "y": 16,
+          "tag": "shoal_company"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 6,
+          "y": 17,
+          "tag": "shoal_company"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 15,
+          "y": 17,
+          "tag": "shoal_company"
+        },
+        {
+          "unit": "salt_concord_caustic_lantern",
+          "x": 4,
+          "y": 18,
+          "tag": "shoal_company"
+        },
+        {
+          "unit": "salt_concord_salt_levy",
+          "x": 3,
+          "y": 16,
+          "tag": "shoal_company"
+        },
+        {
+          "unit": "salt_concord_rim_marshal",
+          "x": 16,
+          "y": 16,
+          "tag": "shoal_company"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 10
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "undersinging",
+        "tiles": [
+          [
+            10,
+            10
+          ],
+          [
+            11,
+            10
+          ],
+          [
+            10,
+            11
+          ],
+          [
+            11,
+            11
+          ]
+        ],
+        "label": "Reach the glass"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "undersinging",
+        "label": "The Undersinging must not die"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "keeper_auster",
+        "label": "Keeper Auster must not die: the lamp goes out with her"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 16,
+        "label": "Reach the glass before turn 16"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 10,
+          "y": 16,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 4
+        },
+        {
+          "type": "message",
+          "speaker": "The Choir",
+          "text": "mmmmmmmm. the brightest. the brightest. the brightest."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Lensmaster Oriel Venn",
+          "text": "Keepers don't speak. I'm speaking. Every lens on the stair, now. It does not touch the glass."
+        },
+        {
+          "type": "status",
+          "tag": "undersinging",
+          "status": "lk_dazzled",
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "overcurrent_the_thinning",
+          "x": 10,
+          "y": 15,
+          "tag": "the_thinning"
+        },
+        {
+          "type": "terrain",
+          "x": 4,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 5
+        },
+        {
+          "type": "terrain",
+          "x": 16,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 5
+        },
+        {
+          "type": "message",
+          "speaker": "Keeper Pell Auster",
+          "text": "Shutters open. All of them. Let it look. Nobody touches the glass but me."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 80,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "mother_mantle",
+          "not": true,
+          "label": "Mother Mantle survives"
+        },
+        "pearls": 25,
+        "label": "Mother Mantle survives"
+      },
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "saint_rictus",
+          "not": true,
+          "label": "Saint Rictus survives"
+        },
+        "pearls": 25,
+        "label": "Saint Rictus survives"
+      }
+    ]
+  }
+}

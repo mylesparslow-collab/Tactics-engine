@@ -1,0 +1,74 @@
+{
+  "id": "the_weeping_shelf",
+  "name": "The Weeping Shelf",
+  "description": "Sister Maren Ketch keeps a tally of everything she wrings, from the shrine on the Shelf to the fallen lamp at Deeplight.",
+  "faction": "returning_tide",
+  "startingRoster": [
+    "returning_tide_maren_ketch",
+    "returning_tide_penitent",
+    "returning_tide_penitent",
+    "returning_tide_penitent",
+    "returning_tide_drowned",
+    "returning_tide_drowned",
+    "rt_spell_brine_lash",
+    "rt_equip_oilskin_cloak"
+  ],
+  "missions": [
+    {
+      "mission": "rt_rain_on_the_faithful",
+      "unlocks": [
+        "returning_tide_wringer",
+        "returning_tide_tear_slinger"
+      ]
+    },
+    {
+      "mission": "rt_the_broken_toll",
+      "unlocks": [
+        "returning_tide_tideskulker",
+        "returning_tide_rainsayer"
+      ]
+    },
+    {
+      "mission": "rt_bracks_crew",
+      "unlocks": [
+        "returning_tide_shroud_mender",
+        "rt_spell_drowned_rise"
+      ]
+    },
+    {
+      "mission": "rt_paper_swords",
+      "unlocks": [
+        "returning_tide_anchor_bearer",
+        "rt_equip_drowners_gaff"
+      ]
+    },
+    {
+      "mission": "rt_wringing_the_wells",
+      "unlocks": [
+        "returning_tide_undertow_singer",
+        "rt_spell_wringing_rite"
+      ]
+    },
+    {
+      "mission": "rt_lamp_and_wall_other_side",
+      "unlocks": [
+        "returning_tide_choirmaster",
+        "rt_equip_second_tide_shroud"
+      ]
+    },
+    {
+      "mission": "rt_the_glass_road",
+      "unlocks": [
+        "returning_tide_bloat_drowned",
+        "rt_spell_the_sea_remembers"
+      ]
+    },
+    {
+      "mission": "rt_the_light_goes_out_at_deeplight",
+      "unlocks": [
+        "returning_tide_imre_dunnock",
+        "returning_tide_oswin_brack"
+      ]
+    }
+  ]
+}

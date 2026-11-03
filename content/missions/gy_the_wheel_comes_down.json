@@ -1,0 +1,317 @@
+{
+  "id": "gy_the_wheel_comes_down",
+  "name": "The Wheel Comes Down",
+  "description": "Hold the roost through the night, and keep Oskeline, Lusk and the chicks alive until morning.",
+  "map": "gull_stacks",
+  "briefing": [
+    "Tally, last page. There is a lamp on the Stacks. It has always been there, on the stone under the roost, and the birds have nested on its gallery for three hundred years. Nobody ever tended it, and it has never once gone out. Keeper Lusk climbed up here last night with her spectacles fogged by the rain, and looked at it, and sat down.",
+    "She did not ask for the page. She said the things on the underside of the beam go toward light, and that tonight ours is the brightest light between here and the Shoal. Every bird on the Rim is in these cliffs because they know it too. The sky I thought nobody could take is where the sea is. It was always where the sea is.",
+    "So nobody flies out, and nothing comes in. We hold the roost until morning, and we keep the old woman, the keeper and the chicks alive. After that I have something to give back."
+  ],
+  "victoryText": "Toward dawn the rain stops. Lusk looks south toward the Shoal and says one word, \"Pell\", and nothing else. Wren takes the iron clasp out of her coat and puts it into the keeper's hand, lock broken, page folded once. \"I read it,\" she says. \"I'd like you to know it was me.\" Lusk nods. \"Everyone will,\" she says. \"That's the trouble with you, Wren Halloway. Everyone always will.\"",
+  "defeatText": "The Thinning's shadow covers the roost and does not lift. In the morning the Stacks are quiet, and every bird on the Rim is flying inland, away from the sky.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "The Gyre",
+      "color": "#5a6470",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "gyre_wren_halloway",
+          "x": 14,
+          "y": 22,
+          "tag": "wren_halloway"
+        },
+        {
+          "unit": "gyre_roost_mother_oskeline",
+          "x": 14,
+          "y": 23,
+          "tag": "roost_mother"
+        },
+        {
+          "unit": "lanternkeepers_keeper_of_the_long_watch",
+          "x": 15,
+          "y": 24,
+          "tag": "keeper_lusk"
+        },
+        {
+          "unit": "gyre_roostwarden",
+          "x": 13,
+          "y": 23
+        },
+        {
+          "unit": "gyre_gullwife",
+          "x": 15,
+          "y": 23
+        },
+        {
+          "unit": "gyre_roost_runner",
+          "x": 13,
+          "y": 22
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 15,
+          "y": 22
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 3,
+          "y": 7,
+          "tag": "nestling"
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 23,
+          "y": 12,
+          "tag": "nestling"
+        },
+        {
+          "unit": "gyre_salt_crow",
+          "x": 4,
+          "y": 13,
+          "tag": "nestling"
+        }
+      ]
+    },
+    {
+      "name": "Overcurrent",
+      "color": "#8cc7e8",
+      "controller": "ai",
+      "warband": [
+        "overcurrent_gulper",
+        "overcurrent_gulper",
+        "overcurrent_gulper",
+        "overcurrent_tongue_louse",
+        "overcurrent_tongue_louse",
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_bellyeye_shoal",
+        "overcurrent_driftbell",
+        "overcurrent_siphon_chain",
+        "overcurrent_hagwyrm"
+      ],
+      "units": [
+        {
+          "unit": "overcurrent_gulper",
+          "x": 13,
+          "y": 5,
+          "tag": "overcurrent_host"
+        },
+        {
+          "unit": "overcurrent_gulper",
+          "x": 14,
+          "y": 5,
+          "tag": "overcurrent_host"
+        },
+        {
+          "unit": "overcurrent_hagwyrm",
+          "x": 14,
+          "y": 6,
+          "tag": "overcurrent_host"
+        },
+        {
+          "unit": "overcurrent_driftbell",
+          "x": 13,
+          "y": 6,
+          "tag": "overcurrent_host"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 22,
+          "y": 11,
+          "tag": "overcurrent_host"
+        },
+        {
+          "unit": "overcurrent_tongue_louse",
+          "x": 5,
+          "y": 15,
+          "tag": "overcurrent_host"
+        }
+      ],
+      "startingEssence": 0,
+      "essencePerTurn": 20,
+      "keystone": false
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 12,
+        "label": "Hold the roost for 12 turns"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "unit_lost",
+        "tag": "roost_mother",
+        "label": "Oskeline must not fall"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "wren_halloway",
+        "label": "Wren must not fall"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Keeper Sabine Lusk",
+          "text": "Keep the page until morning. You'll want to know what you are looking at."
+        },
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 3,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Scout",
+          "text": "The rain reaches the Stacks. Two things fall onto the nest perches."
+        },
+        {
+          "type": "terrain",
+          "x": 14,
+          "y": 13,
+          "terrain": "brine_pool",
+          "radius": 2,
+          "duration": 4
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_downward_shark",
+          "x": 4,
+          "y": 7,
+          "tag": "overcurrent_host"
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_downward_shark",
+          "x": 22,
+          "y": 12,
+          "tag": "overcurrent_host"
+        },
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 6,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 8,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Roost-Mother Oskeline",
+          "text": "Its shadow's here. It isn't."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "overcurrent_the_thinning",
+          "x": 14,
+          "y": 17,
+          "tag": "overcurrent_host"
+        },
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 4
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 10,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "status",
+          "tag": "overcurrent_host",
+          "status": "oc_wet",
+          "duration": 3
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 70,
+    "bonus": [
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "nestling",
+          "not": true,
+          "label": "Lose no nestlings"
+        },
+        "pearls": 25,
+        "label": "Lose no nestlings"
+      },
+      {
+        "condition": {
+          "type": "unit_hp_above",
+          "tag": "keeper_lusk",
+          "fraction": 0.5,
+          "label": "Keeper Lusk above half strength"
+        },
+        "pearls": 25,
+        "label": "Keeper Lusk above half strength"
+      }
+    ]
+  }
+}

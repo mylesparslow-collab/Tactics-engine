@@ -1,0 +1,76 @@
+{
+  "id": "what_feeds_below",
+  "name": "What Feeds Below the Beam",
+  "description": "The fallen Overcurrent dry, hunt and climb toward the one light in the world that was ever theirs, as the keeper who follows them writes it down.",
+  "faction": "overcurrent",
+  "startingRoster": [
+    "overcurrent_the_undersinging",
+    "overcurrent_bellyeye_shoal",
+    "overcurrent_bellyeye_shoal",
+    "overcurrent_gulper",
+    "overcurrent_gulper",
+    "overcurrent_tongue_louse",
+    "overcurrent_tongue_louse",
+    "oc_spell_brine_squall",
+    "oc_equip_gill_bladder"
+  ],
+  "missions": [
+    {
+      "mission": "oc_the_floor_thins",
+      "unlocks": [
+        "overcurrent_driftbell",
+        "oc_spell_something_heavy"
+      ]
+    },
+    {
+      "mission": "oc_wet_ground",
+      "unlocks": [
+        "overcurrent_weeping_sunfish",
+        "oc_spell_spawning_water"
+      ]
+    },
+    {
+      "mission": "oc_the_slime_knot",
+      "unlocks": [
+        "overcurrent_hagwyrm",
+        "oc_equip_hookskin"
+      ]
+    },
+    {
+      "mission": "oc_a_saint_is_fed",
+      "unlocks": [
+        "overcurrent_siphon_chain",
+        "oc_equip_parasite_crown"
+      ]
+    },
+    {
+      "mission": "oc_the_upper_kin",
+      "unlocks": [
+        "overcurrent_barrelgaze",
+        "overcurrent_downward_shark"
+      ]
+    },
+    {
+      "mission": "oc_brightest_prey",
+      "unlocks": [
+        "overcurrent_lure_mother",
+        "oc_equip_belly_lantern"
+      ]
+    },
+    {
+      "mission": "oc_the_hooked_arms",
+      "unlocks": [
+        "overcurrent_ribbon_king",
+        "oc_spell_hunger"
+      ]
+    },
+    {
+      "mission": "oc_below_the_beam",
+      "unlocks": [
+        "overcurrent_mother_mantle",
+        "overcurrent_saint_rictus",
+        "overcurrent_the_thinning"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "id": "ra_first_light",
+  "name": "First Light",
+  "description": "Grow, spread, and break the Compact cutting camp on the northern lighthouse stone.",
+  "map": "oyster_banks",
+  "briefing": [
+    "We are awake. We have been awake for ninety-seven summers and we are still waking, one branch at a time, toward the light that came when the water went. The light is good. We would like it to stay exactly as it is.",
+    "Something is cutting us. On the eastern bank and on the western bank, small dry bodies with saws are taking our living stone and loading it onto sleds. We have tasted the sleds before. They go north to a market and do not come back.",
+    "We will grow bodies. We will send them across the shallows to the cutters, and then to the place the cutters sleep. We do not hate the cutters. We have no word for that yet. We only want them to be calcite."
+  ],
+  "victoryText": "The cutting camp burns in its own lamp oil and the sleds stand empty on the silt. We take back what was cut. It is dead stone now, but it remembers being us, and we lay it down where the shallows are warmest. On the north bank, a cutter who ran too slowly becomes very quiet, and then becomes reef.",
+  "defeatText": "The saws go on until evening. The sleds go north, heavy. We do not die; we are too many to die. But a branch that was thinking about the sun is gone, and we cannot remember what it was thinking.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Reef Ascendant",
+      "color": "#e07a6a",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "reef_ascendant_coralspire",
+          "x": 14,
+          "y": 19,
+          "tag": "coralspire"
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 13,
+          "y": 19
+        },
+        {
+          "unit": "reef_ascendant_polyp_drone",
+          "x": 15,
+          "y": 19
+        },
+        {
+          "unit": "reef_ascendant_spitter_polyp",
+          "x": 14,
+          "y": 18
+        }
+      ]
+    },
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "ai",
+      "warband": [
+        "salvage_compact_scrapper",
+        "salvage_compact_scrapper",
+        "salvage_compact_wrecker",
+        "salvage_compact_rivet_slinger",
+        "salvage_compact_powder_monk",
+        "salvage_compact_tallow_mender",
+        "salvage_compact_snare_tinker",
+        "salvage_compact_scrapper",
+        "salvage_compact_bone_sled_rider"
+      ],
+      "units": [
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 23,
+          "y": 16,
+          "tag": "reef_cutters"
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 24,
+          "y": 15,
+          "tag": "reef_cutters"
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 3,
+          "y": 17,
+          "tag": "reef_cutters"
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 2,
+          "y": 18,
+          "tag": "reef_cutters"
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 12,
+          "y": 3
+        },
+        {
+          "unit": "salvage_compact_scrapper",
+          "x": 14,
+          "y": 3
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "destroy_keystone",
+        "team": 1,
+        "label": "Break the cutting camp on the northern lighthouse stone"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "Our Beacon must not fall"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "coralspire",
+        "label": "Coralspire must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 16,
+        "label": "Break the camp before turn 16"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Coralspire",
+          "text": "Small saws. We remember saws. We were a ship's anchorage once, and the anchors were worse."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 2
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 14,
+          "y": 19,
+          "terrain": "living_reef",
+          "radius": 1
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Cutter-boss Abel Snee",
+          "text": "It's moving. Why is it moving? Brask pays by the cartload, not by the scream. Light it up."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_powder_monk",
+          "x": 15,
+          "y": 4
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_wrecker",
+          "x": 16,
+          "y": 4
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salvage_compact_wrecker",
+          "x": 15,
+          "y": 5
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 30,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "reef_cutters",
+          "label": "All four cutters dead"
+        },
+        "pearls": 20,
+        "label": "All four cutters dead"
+      }
+    ]
+  }
+}

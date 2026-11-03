@@ -1,0 +1,303 @@
+{
+  "id": "hc_deeplight_rising",
+  "name": "Deeplight Rising",
+  "description": "Hold the middle and lower tiers of Deeplight against the Concord prospectors.",
+  "map": "trench_deeplight",
+  "briefing": [
+    "Register of the Third Bell, entered at Deeplight. Six days ago a Concord company carried a Lanternkeeper across our bridges to the fallen lamp. I put my question to their commander, and she said she did not know. I have marked it as the first lie of the climb.",
+    "Behind her company came prospectors, the way hagfish come behind a carcass. They have pitched a survey camp on the lamp terrace and are walking down the bridges with salt-markers in their packs, writing our city into their ledger one tier at a time. One salt-marker driven into the brood galleries below the lower bell-gate would kill a generation of thralls.",
+    "We hold the middle and lower tiers until the camp loses heart. Orrun Tessk has come up from the floor to stand with us. He has not said why, and in three hundred years nobody has found the courage to ask him."
+  ],
+  "victoryText": "The prospectors break on the middle bridges and run back up past the lamp, leaving their ledger in the brine. Vhaal reads it. Every tier of Deeplight is drawn, numbered and priced, and across the top someone has written \"unclaimed\". She enters it in the register, and marks it false.",
+  "defeatText": "A surveyor reaches the brood galleries and drives his marker into the warm silt. The salt spreads in a white ring. By nightfall the pools are still, and the Court carries its young up the bridges in its arms.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Hadal Court",
+      "color": "#2b2f6b",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "hadal_court_herald_vhaal",
+          "x": 10,
+          "y": 17,
+          "tag": "herald_vhaal"
+        },
+        {
+          "unit": "hadal_court_orrun_tessk",
+          "x": 10,
+          "y": 16,
+          "tag": "orrun_tessk"
+        },
+        {
+          "unit": "hadal_court_bell_knight",
+          "x": 9,
+          "y": 17
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 11,
+          "y": 17
+        },
+        {
+          "unit": "hadal_court_pit_thrall",
+          "x": 9,
+          "y": 16
+        },
+        {
+          "unit": "hadal_court_lantern_spitter",
+          "x": 11,
+          "y": 16
+        }
+      ]
+    },
+    {
+      "name": "Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_brine_slinger",
+        "salt_concord_saltwright",
+        "salt_concord_causeway_outrider"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 8,
+          "y": 4,
+          "tag": "salt_surveyor"
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 12,
+          "y": 4,
+          "tag": "salt_surveyor"
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 10,
+          "y": 5,
+          "tag": "salt_surveyor"
+        },
+        {
+          "unit": "salt_concord_tollkeeper",
+          "x": 10,
+          "y": 4,
+          "tag": "survey_chief"
+        }
+      ],
+      "startingEssence": 30,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "survive",
+        "turns": 10,
+        "label": "Hold Deeplight for 10 turns"
+      },
+      {
+        "type": "defeat_unit",
+        "tag": "salt_surveyor",
+        "label": "Kill every surveyor"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "reach_tile",
+        "team": 1,
+        "tag": "salt_surveyor",
+        "tiles": [
+          [
+            6,
+            19
+          ],
+          [
+            7,
+            19
+          ],
+          [
+            8,
+            19
+          ],
+          [
+            9,
+            19
+          ],
+          [
+            10,
+            19
+          ],
+          [
+            11,
+            19
+          ],
+          [
+            12,
+            19
+          ],
+          [
+            13,
+            19
+          ],
+          [
+            14,
+            19
+          ],
+          [
+            15,
+            19
+          ],
+          [
+            6,
+            20
+          ],
+          [
+            7,
+            20
+          ],
+          [
+            8,
+            20
+          ],
+          [
+            9,
+            20
+          ],
+          [
+            10,
+            20
+          ],
+          [
+            11,
+            20
+          ],
+          [
+            12,
+            20
+          ],
+          [
+            13,
+            20
+          ],
+          [
+            14,
+            20
+          ],
+          [
+            15,
+            20
+          ]
+        ],
+        "label": "A surveyor must not reach the brood galleries"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "herald_vhaal",
+        "label": "Herald Vhaal must live"
+      },
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "Hold the lower bell-gate"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Orrun Tessk",
+          "text": "They are standing on the lamp, Herald. They are measuring it."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 4,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 3,
+          "y": 13
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_causeway_outrider",
+          "x": 18,
+          "y": 13
+        },
+        {
+          "type": "message",
+          "speaker": "Survey-Chief Abel Marrish",
+          "text": "We're not taking anything, Herald. We're only writing down where it is."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 7,
+        "team": 1
+      },
+      "do": [
+        {
+          "type": "terrain",
+          "x": 3,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "terrain",
+          "x": 18,
+          "y": 10,
+          "terrain": "brine_pool",
+          "radius": 1,
+          "duration": 4
+        },
+        {
+          "type": "status",
+          "tag": "salt_surveyor",
+          "status": "soaked",
+          "duration": 2
+        },
+        {
+          "type": "message",
+          "speaker": "Herald Vhaal",
+          "text": "The sky weeps on my city. It did not used to. Make a note of it."
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 40,
+    "bonus": [
+      {
+        "condition": {
+          "type": "defeat_unit",
+          "tag": "survey_chief",
+          "label": "Take the survey ledger"
+        },
+        "pearls": 15,
+        "label": "Take the survey ledger"
+      }
+    ]
+  }
+}

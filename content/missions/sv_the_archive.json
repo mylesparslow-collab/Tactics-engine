@@ -1,0 +1,248 @@
+{
+  "id": "sv_the_archive",
+  "name": "The Archive",
+  "description": "Hold the skull gate of Mother Hull until Brask is out with the book, then get him down the jaw.",
+  "map": "mother_hull",
+  "briefing": [
+    "Sled-log, Mother Hull. Brask sold the skull. Not the whole skull. The third hinge of the archive door, and the gas trap on it, to a Concord commander called Orrel, who is in the ribs right now with her company and two Caustic Lanterns. Brask sent me a note to say so. The note said, \"Hold them as long as you can. I need ten minutes with the book.\"",
+    "The book is the Compact's copy of the Vigil Book. The Lanternkeepers' book. We have had it in the skull for sixty years and nobody has read past the first page, because the Charter says the archive is for keeping, not reading. Brask has decided the Charter is wrong. I would argue, but he is inside the door and I am outside it.",
+    "So: hold the skull gate, keep the Harpoon Engine firing, and when Brask comes out, get him down the jaw and onto the silt. If the door goes before he is out, he does not come out. I do not want to explain to Mother Hull that we lost her archive and her worst citizen on the same day."
+  ],
+  "victoryText": "Brask comes down the jaw on the seat of his three coats, white as salt. Behind them the archive door goes in at the third hinge, and Orrel's company pours into the skull to find the book open on the floor where Brask left it. Ketta waits for him to say something clever. He does not. He says, \"She's not dead, you know. Mother Hull. She's holding something,\" and then he is sick on the silt.",
+  "defeatText": "The skull gate goes, and the Concord carries out the archive in crates, with Brask in the last one. He is ransomed back a week later. He will not say what he read, and he will not go near the heart-chamber.",
+  "startingEssence": 100,
+  "essencePerTurn": 25,
+  "teams": [
+    {
+      "name": "Salvage Compact",
+      "color": "#a8552e",
+      "controller": "human",
+      "useCampaignRoster": true,
+      "units": [
+        {
+          "unit": "salvage_compact_ketta_vane",
+          "x": 4,
+          "y": 10,
+          "tag": "ketta_vane"
+        },
+        {
+          "unit": "salvage_compact_harpoon_engine",
+          "x": 5,
+          "y": 8,
+          "tag": "harpoon_engine"
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 4,
+          "y": 11
+        },
+        {
+          "unit": "salvage_compact_wrecker",
+          "x": 4,
+          "y": 9
+        },
+        {
+          "unit": "salvage_compact_lamplighter",
+          "x": 5,
+          "y": 10
+        },
+        {
+          "unit": "salvage_compact_rivet_slinger",
+          "x": 5,
+          "y": 11
+        }
+      ]
+    },
+    {
+      "name": "The Salt Concord",
+      "color": "#3f6e9e",
+      "controller": "ai",
+      "warband": [
+        "salt_concord_brineguard",
+        "salt_concord_brineguard",
+        "salt_concord_salt_levy",
+        "salt_concord_salt_levy",
+        "salt_concord_surveyor",
+        "salt_concord_brine_slinger",
+        "salt_concord_saltwright",
+        "salt_concord_stair_warden"
+      ],
+      "units": [
+        {
+          "unit": "salt_concord_caustic_lantern",
+          "x": 19,
+          "y": 9,
+          "tag": "caustic_lantern"
+        },
+        {
+          "unit": "salt_concord_caustic_lantern",
+          "x": 19,
+          "y": 12,
+          "tag": "caustic_lantern"
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 16,
+          "y": 10
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 16,
+          "y": 11
+        },
+        {
+          "unit": "salt_concord_brineguard",
+          "x": 17,
+          "y": 12
+        },
+        {
+          "unit": "salt_concord_stair_warden",
+          "x": 15,
+          "y": 10
+        },
+        {
+          "unit": "salt_concord_surveyor",
+          "x": 17,
+          "y": 9
+        }
+      ],
+      "startingEssence": 40,
+      "essencePerTurn": 20
+    }
+  ],
+  "objectives": {
+    "victory": [
+      {
+        "type": "reach_tile",
+        "team": 0,
+        "tag": "odo_brask",
+        "tiles": [
+          [
+            0,
+            20
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            0,
+            21
+          ],
+          [
+            1,
+            21
+          ]
+        ],
+        "label": "Get Odo Brask down the jaw"
+      }
+    ],
+    "defeat": [
+      {
+        "type": "destroy_keystone",
+        "team": 0,
+        "label": "The skull gate must hold until Brask is out"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "odo_brask",
+        "label": "Odo Brask must live"
+      },
+      {
+        "type": "unit_lost",
+        "tag": "ketta_vane",
+        "label": "Ketta Vane must live"
+      },
+      {
+        "type": "turn_limit",
+        "turns": 16,
+        "label": "Get Brask out before turn 16"
+      }
+    ]
+  },
+  "events": [
+    {
+      "when": {
+        "turn": 1
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Commander Tamsin Orrel",
+          "text": "Lanterns on the Harpoon Engine first. Then the gate."
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 5
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "Ketta, the bit about the hand. I've got to the bit about the hand. Give me a minute."
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_brineguard",
+          "x": 1,
+          "y": 12
+        },
+        {
+          "type": "spawn",
+          "team": 1,
+          "unit": "salt_concord_salt_levy",
+          "x": 2,
+          "y": 9
+        }
+      ]
+    },
+    {
+      "when": {
+        "turn": 8
+      },
+      "do": [
+        {
+          "type": "message",
+          "speaker": "Odo Brask",
+          "text": "I've read it. I've read it, Ketta. We need to go, and then we need to talk about the heart."
+        },
+        {
+          "type": "spawn",
+          "team": 0,
+          "unit": "salvage_compact_odo_brask",
+          "x": 1,
+          "y": 10,
+          "tag": "odo_brask"
+        }
+      ]
+    }
+  ],
+  "salvage": {
+    "winPearls": 60,
+    "bonus": [
+      {
+        "condition": {
+          "type": "destroy_keystone",
+          "team": 0,
+          "not": true,
+          "label": "The skull gate still stands"
+        },
+        "pearls": 25,
+        "label": "The skull gate still stands"
+      },
+      {
+        "condition": {
+          "type": "unit_lost",
+          "tag": "harpoon_engine",
+          "not": true,
+          "label": "Bring the Harpoon Engine home"
+        },
+        "pearls": 20,
+        "label": "Bring the Harpoon Engine home"
+      }
+    ]
+  }
+}
