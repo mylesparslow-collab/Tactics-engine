@@ -4,7 +4,7 @@ import { label } from '../engine/content';
 import { clear, h } from './dom';
 import { describeObjectives } from './text';
 import { buildSkirmish, playableFactions } from '../engine/skirmish';
-import { artNode } from './cards';
+import { artNode, paintedArtUrl } from './cards';
 import { crestSvg, glyph, illuminated, installArt, kit, teamFaction } from './art';
 import { Game } from '../engine/game';
 import { Renderer } from '../render/renderer';
@@ -154,6 +154,7 @@ function showCampaign(ctx: Ctx) {
     const won = sel < prog.completed;
     const unlocks = (step.unlocks ?? []).map(u => ({ id: u, name: content.units[u]?.name ?? content.spells[u]?.name ?? content.equipment[u]?.name ?? u }));
     detail.append(h('div', null,
+      camp.faction ? h('figure', { class: 'md-art' }, heroImg(content, camp.faction)) : null,
       h('div', { class: 'kicker' }, `Mission ${sel + 1} of ${n}`),
       h('h2', null, md?.name ?? step.mission),
       ornament(),
@@ -232,6 +233,7 @@ function showSkirmish(ctx: Ctx) {
       const fid = memo[key], f = content.factions?.[fid];
       box.style.setProperty('--fc', f?.color ?? '#777');
       box.append(
+        h('figure', { class: 'fs-art' }, heroImg(content, fid)),
         h('div', { class: 'kicker' }, title),
         h('div', { class: 'fhero' }, crest(fid, 'crest big'), h('div', { class: 'fhero-t' }, h('h2', null, f?.name ?? fid), h('p', null, f?.tagline ?? ''))),
         h('div', { class: 'fgrid' }, ...factions.map(id => h('button', {
@@ -304,7 +306,37 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
   const teams = m.teams.map(t => ({ t, f: missionTeamFaction(content, m, t) }));
   const story = (m.briefing ?? []).filter(t => t.trim() !== m.description?.trim());
   const objRow = (kind: 'win' | 'lose', t: string) => h('li', { class: 'bo-row ' + kind }, h('i', { class: 'bo-mark' }), h('span', null, t));
-  host.append(h('div', { class: 'scr brief-scr' },
+  const side = h('aside', { class: 'brief-side framed' },
+    h('div', { class: 'bs-map' }, mapPreview(content, m.map),
+      h('div', { class: 'bs-mapname' }, h('span', { class: 'kicker' }, 'Battlefield'), h('b', null, map?.name ?? m.map),
+        h('small', null, `${m.startingEssence ?? 100} ${label(content, 'essence')} to start`))),
+    h('div', { class: 'bs-forces' }, ...teams.map(({ t, f }) =>
+      h('div', { class: 'bs-force', style: `--tc:${t.color}` }, crest(f, 'crest', t.color),
+        h('b', null, t.name), h('small', null, t.controller === 'human' ? 'You' : 'Enemy')))),
+    h('div', { class: 'bs-objs' },
+      h('div', { class: 'kicker' }, obj.winAny ? 'Victory, any of' : 'Victory'),
+      h('ul', null, ...obj.win.map(t => objRow('win', t))),
+      h('div', { class: 'kicker lose' }, 'Defeat'),
+      h('ul', null, ...obj.lose.map(t => objRow('lose', t)))),
+    h('button', { class: 'btn-gold big bs-deploy', onclick: onStart }, 'Deploy'));
+  const me = teams.find(x => x.t.controller === 'human') ?? teams[0];
+  const foe = teams.find(x => x !== me) ?? teams[1];
+  if (!choice.campaign && me && foe) {
+    // Skirmish: the two sides face each other as painted heroes; the order of battle sits between them.
+    const fig = (x: typeof me, who: string, cls: string) => {
+      const fd = x.f ? content.factions?.[x.f] : undefined;
+      return h('figure', { class: 'bf-art ' + cls, style: `--tc:${fd?.color ?? x.t.color}` }, heroImg(content, x.f),
+        h('figcaption', null, crest(x.f, 'crest', x.t.color), h('span', { class: 'kicker' }, who), h('b', null, (fd?.name ?? x.t.name)), fd?.tagline ? h('i', null, fd.tagline) : null));
+    };
+    host.append(h('div', { class: 'scr brief-scr vs-brief' },
+      h('header', { class: 'brief-top' }, h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back'))),
+      h('div', { class: 'vsb-grid' }, fig(me, 'You', 'mine'),
+        h('div', { class: 'vsb-mid' }, h('div', { class: 'kicker' }, 'Skirmish'), h('div', { class: 'vsb-vs' }, 'vs'), side),
+        fig(foe, 'Opponent', 'theirs'))));
+    return;
+  }
+  host.append(h('div', { class: 'scr brief-scr' + (me?.f && paintedArtUrl(heroOf(content, me.f) ?? '') ? ' has-art' : '') },
+    me?.f ? h('figure', { class: 'brief-bg', style: `--tc:${me.t.color}` }, heroImg(content, me.f)) : null,
     h('header', { class: 'brief-top' }, h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back'))),
     h('div', { class: 'brief-grid' },
       h('section', { class: 'brief-story' },
@@ -312,17 +344,18 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
         h('h1', { class: 'brief-title' }, m.name),
         m.description ? h('p', { class: 'lead' }, m.description) : null,
         story.length ? h('div', { class: 'brief-text' }, ...story.map((t, i) => i || t.length < 160 ? h('p', null, t) : h('p', { class: 'dropcap' }, ...illuminated(t)))) : null),
-      h('aside', { class: 'brief-side framed' },
-        h('div', { class: 'bs-map' }, mapPreview(content, m.map),
-          h('div', { class: 'bs-mapname' }, h('span', { class: 'kicker' }, 'Battlefield'), h('b', null, map?.name ?? m.map),
-            h('small', null, `${m.startingEssence ?? 100} ${label(content, 'essence')} to start`))),
-        h('div', { class: 'bs-forces' }, ...teams.map(({ t, f }) =>
-          h('div', { class: 'bs-force', style: `--tc:${t.color}` }, crest(f, 'crest', t.color),
-            h('b', null, t.name), h('small', null, t.controller === 'human' ? 'You' : 'Enemy')))),
-        h('div', { class: 'bs-objs' },
-          h('div', { class: 'kicker' }, obj.winAny ? 'Victory, any of' : 'Victory'),
-          h('ul', null, ...obj.win.map(t => objRow('win', t))),
-          h('div', { class: 'kicker lose' }, 'Defeat'),
-          h('ul', null, ...obj.lose.map(t => objRow('lose', t)))),
-        h('button', { class: 'btn-gold big bs-deploy', onclick: onStart }, 'Deploy')))));
+      side)));
+}
+
+/** Each faction's face: the campaign lead where there is one, else the first hero. */
+const LEADS: Record<string, string> = { salt_concord: 'salt_concord_tamsin_orrel', hadal_court: 'hadal_court_herald_vhaal', returning_tide: 'returning_tide_maren_ketch',
+  salvage_compact: 'salvage_compact_ketta_vane', reef_ascendant: 'reef_ascendant_coralspire', lanternkeepers: 'lanternkeepers_captain_hollis_drenn',
+  overcurrent: 'overcurrent_the_undersinging', gyre: 'gyre_wren_halloway' };
+function heroOf(content: Content, fid: string): string | undefined {
+  if (LEADS[fid] && content.units[LEADS[fid]]) return LEADS[fid];
+  return Object.keys(content.units).find(id => content.units[id].faction === fid && content.units[id].hero);
+}
+function heroImg(content: Content, fid: string | undefined): HTMLElement | null {
+  const id = fid ? heroOf(content, fid) : undefined; const url = id ? paintedArtUrl(id) : undefined;
+  return url ? h('img', { src: url, alt: '', draggable: 'false' }) : null;
 }
