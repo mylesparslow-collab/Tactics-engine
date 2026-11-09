@@ -61,7 +61,6 @@ def build(P):
         'skin': skin_mat(P, skin=W['skin_mid'], hair=_hex('#3b2a20')),
         'glove': salted(_hex('#3e2c22'), 0.2),
         'rangepole': rod_mat('_pa', '_pb', P, band=0.12),
-        'chalk_puff': Material(SALT_HI, emissive=tuple(np.array(SALT_HI) * 0.6), rim=0.0),
     })
     return finish(P, FACTION, parts, mats)
 

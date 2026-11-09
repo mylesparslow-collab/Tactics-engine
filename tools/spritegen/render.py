@@ -52,6 +52,13 @@ class Scene:
     ground_clip: bool = False           # cut everything below y=0 (sinking deaths, burrowing)
 
 
+def strip_fx(scene):
+    """Drop animated-effect emitter markers (kit/fx.py): the game draws those live, not the tracer."""
+    if not any(isinstance(p.mat, str) and p.mat.startswith('fx:') for p in scene.parts):
+        return scene
+    return Scene([p for p in scene.parts if not p.mat.startswith('fx:')], scene.materials, scene.lights, scene.ground_clip)
+
+
 def _hex(h):
     h = h.lstrip('#')
     return tuple(int(h[i:i + 2], 16) / 255.0 for i in (0, 2, 4))
@@ -250,6 +257,7 @@ class Look:
 
 
 def render(scene: Scene, cam: Camera = Camera(), look: Look = Look(), debug=False):
+    scene = strip_fx(scene)
     fwd, right, up = cam.basis()
     ss = cam.ss
     W, H = cam.width * ss, cam.height * ss

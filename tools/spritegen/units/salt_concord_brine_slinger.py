@@ -9,6 +9,7 @@ from kit.humanoid import *
 from kit.anim import humanoid_rows
 from kit.looks import LOOKS
 from _salt_concord_common import *
+from kit.fx import emit
 
 UNIT_ID = 'salt_concord_brine_slinger'
 FACTION = 'salt_concord'
@@ -64,7 +65,7 @@ def build(P):
         add(Capsule(g, tip - sv * 0.03, 0.005), 'leather')
         add(RoundBox(tip + d * 0.02, (0.06, 0.055, 0.02), 0.006, basis_from(d, (0, 0, 1))), 'crystal')
         if P['fx'] > 0:
-            add(Sphere(tip + d * 0.15, 0.07 * P['fx']), 'spray')
+            emit(add, tip + d * 0.15, 'spray', 0.8 + 1.0 * P['fx'])
     mats = base_mats(P)
     mats.update({
         # pale salt and steel blue, like the rest of the line: rolled road-grey sleeves instead of bare
@@ -75,7 +76,6 @@ def build(P):
         'wrap': salted(STEEL, 0.3),
         'wraps': salted(CANVAS, 0.2),
         'skin': skin_mat(P, skin=W['skin_mid'], hair=_hex('#2c2018')),
-        'spray': Material(SALT_HI, emissive=tuple(np.array(_hex('#e8f4f2')) * 0.5), rim=0.0),
     })
     return finish(P, FACTION, parts, mats)
 

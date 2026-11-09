@@ -4,6 +4,7 @@ with one teal port, and a trailing air-hose. Murk smoke clings to its heels.
 Defining detail: the low four-legged crouch and the single port light (the fastest thing in the Court).
 """
 from _hadal_court_common import *
+from kit.fx import emit
 
 UNIT_ID = 'hadal_court_murk_diver'
 CAMERA = Camera(ppm=52)
@@ -54,17 +55,15 @@ def build(P):
             fd = norm(v3(0, -0.4, 1.0 if front else 0.6))
             for c in (-1, 0, 1):
                 add(Capsule(ft + v3(0, 0.05, 0), ft + v3(c * 0.045, 0.0, 0) + fd * 0.10, 0.015, 0.005), 'claw', 0.0)
-    # murk wisps
-    for k in range(3):
-        q = v3(0.14 * (k - 1), 0.03, -0.45 - 0.12 * k)
-        add(Ellipsoid(q, (0.16, 0.03, 0.11)), 'murk', 0.03)
+    # murk clinging to its heels: live emitters (kit/fx.py), thicker on the run and in the murk-step cast
+    for k in range(2):
+        emit(add, hip + v3(0.12 * (2 * k - 1), -0.42, -0.10), 'murk', 0.7 + 0.8 * abs(st) + 1.2 * P.get('vanish', 0.0))
     parts[:] = transform_parts(squash_parts(creature_place(parts, P), sy=1.15, sxz=1.15), t=(0.24, 0, -0.34))
     mats = hadal_mats(P, {
         'plate': Material(cracked_albedo(_hex('#363c5e'), crack=_hex('#14162a'), freq=9, width=0.012, seep=TEAL, barn=0.2), spec=0.35, gloss=24, metal=0.3),
         'helm': bell_metal(hd, Rh, base=_hex('#424862'), spacing=0.18, barn=0.25),
         'hose': Material(_hex('#2c2f42'), spec=0.4, gloss=25),
         'claw': Material(_hex('#b3b0a0'), spec=0.4),
-        'murk': Material(_hex('#151726'), spec=0.0, brush=0.12, rim=0.3),
     }, lamp_gain=1.3)
     lights = [teal_light((port + v3(0, P['bob'], 0.08)) * 1.15 + v3(0.24, 0, -0.34), P, 0.8, 0.6)]
     return hadal_finish(P, parts, mats, lights)
@@ -74,6 +73,7 @@ def _extra(rows):
     # cast = murk-step: crouch, vanish into smoke, reappear
     for i, (P, o) in enumerate(rows['cast']):
         P['squash'] = [0.9, 0.7, 1.0][i]
+        P['vanish'] = [0.3, 1.0, 0.6][i]
     return rows
 
 
