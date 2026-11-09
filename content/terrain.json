@@ -471,5 +471,43 @@
       "side": "tiles/sinkmud_side.png"
     }
   },
-  "void": {"name": "Chasm", "description": "Nothing below but the long fall.", "moveCost": 99, "defense": 0, "color": "#000000", "impassable": true, "void": true}
+  "void": {
+    "name": "Chasm",
+    "description": "Nothing below but the long fall.",
+    "moveCost": 99,
+    "defense": 0,
+    "color": "#000000",
+    "impassable": true,
+    "void": true
+  },
+  "floodwater": {
+    "name": "Floodwater",
+    "description": "The sea coming back. Slow to wade, and it drowns anyone not at home in it for 3 a turn (the Returning Tide are). Wet units do not dry out here.",
+    "moveCost": 2,
+    "defense": 0,
+    "color": "#3f8f9a",
+    "wet": true,
+    "onTurnStart": [
+      {
+        "type": "damage",
+        "amount": 3,
+        "damageType": "drowning",
+        "filter": {
+          "notFaction": [
+            "returning_tide"
+          ]
+        }
+      }
+    ],
+    "tiles": {
+      "top": [
+        "tiles/brine_pool_top_0.png",
+        "tiles/brine_pool_top_1.png",
+        "tiles/brine_pool_top_2.png"
+      ],
+      "side": "tiles/brine_pool_side.png",
+      "animatedTop": true
+    },
+    "underlay": "silt"
+  }
 }

@@ -191,7 +191,7 @@ export type Trigger =
 
 export interface MissionEvent { when: Trigger; do: MissionAction[]; once?: boolean }
 
-export interface PlacedUnit { unit: string; x: number; y: number; tag?: string }
+export interface PlacedUnit { unit: string; x: number; y: number; tag?: string; /** Equipment id attached at the start of the battle. */ equipment?: string }
 
 export interface MissionTeam {
   name: string;

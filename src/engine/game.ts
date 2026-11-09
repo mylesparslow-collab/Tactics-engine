@@ -86,7 +86,7 @@ export class Game {
     mission.teams.forEach((t, team) => {
       const ks = this.map.keystones?.find(k => k.team === team);
       if (ks && t.keystone !== false) this.spawn('keystone', team, ks.x, ks.y, `keystone_${team}`);
-      t.units?.forEach(u => this.spawn(u.unit, team, u.x, u.y, u.tag));
+      t.units?.forEach(u => { const s = this.spawn(u.unit, team, u.x, u.y, u.tag); if (u.equipment && this.content.equipment[u.equipment]) s.equipment = u.equipment; });
     });
     // Heroes are unique: a hero already on the field is not also in the hand (campaign rosters list the commander).
     this.teams.forEach((t, team) => {

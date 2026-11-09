@@ -70,8 +70,9 @@ type Clip = { kind: 'sheet'; img: string; a: SheetAnim; m: Manifest; name: AnimS
 interface UnitArt { still?: string; clips: Partial<Record<AnimState, Clip>>; animated: boolean }
 
 const artCache = new Map<string, UnitArt>();
-export function unitArt(defId: string, def: UnitDef): UnitArt {
-  const hit = artCache.get(defId); if (hit) return hit;
+export function unitArt(id: string, def: UnitDef): UnitArt {
+  const hit = artCache.get(id); if (hit) return hit;
+  const defId = id.startsWith('tw:') ? id.split(':')[1] : id; // Tidewatch tempered variants share their base unit's art
   const sp = def.sprite as SpriteExt;
   // Convention for the painted sprite set: sprites/<id>_still.png marks new art; when it exists, the sheet and
   // manifest default to sprites/<id>.png + sprites/<id>.json even if units.json doesn't name them. Older sheets
@@ -93,7 +94,7 @@ export function unitArt(defId: string, def: UnitDef): UnitArt {
   }
   if (!art.clips.cast && art.clips.attack) art.clips.cast = art.clips.attack;
   art.animated = Object.keys(art.clips).length > 0;
-  artCache.set(defId, art);
+  artCache.set(id, art);
   return art;
 }
 
