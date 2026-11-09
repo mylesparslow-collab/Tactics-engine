@@ -347,7 +347,8 @@
     "status": "caustic",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "mist"
  },
  "sc_salt_cloud": {
   "name": "Salt Cloud",
@@ -376,7 +377,8 @@
     "status": "sc_parched",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "salt"
  },
  "sc_raise_wall": {
   "name": "Raise Salt Wall",
@@ -492,7 +494,8 @@
     "type": "heal",
     "amount": 6
    }
-  ]
+  ],
+  "vfx": "spray"
  },
  "sc_field_dressing": {
   "name": "Field Dressing",
@@ -692,7 +695,8 @@
     "status": "caustic",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "mist"
  },
  "sc_brine_flare": {
   "name": "Brine Flare",
@@ -1138,7 +1142,8 @@
     "status": "sc_parched",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "salt"
  },
  "sc_orrel_survey_blade": {
   "name": "Survey Blade",
@@ -1729,7 +1734,8 @@
     "amount": 0,
     "damageType": "physical"
    }
-  ]
+  ],
+  "vfx": "steam"
  },
  "hc_vent_mend": {
   "name": "Vent Mend",
@@ -1746,7 +1752,8 @@
     "type": "heal",
     "amount": 7
    }
-  ]
+  ],
+  "vfx": "steam"
  },
  "hc_warm_brine": {
   "name": "Warm Brine",
@@ -1773,7 +1780,8 @@
     "status": "regen",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "steam"
  },
  "hc_scald": {
   "name": "Scald",
@@ -1796,7 +1804,8 @@
     "status": "burning",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "steam"
  },
  "hc_lance_shot": {
   "name": "Lance Shot",
@@ -1887,7 +1896,8 @@
    {
     "type": "teleport"
    }
-  ]
+  ],
+  "vfx": "murk"
  },
  "hc_dark_ambush": {
   "name": "Dark Ambush",
@@ -1910,7 +1920,8 @@
     "status": "hc_darkened",
     "duration": 1
    }
-  ]
+  ],
+  "vfx": "murk"
  },
  "hc_pincer": {
   "name": "Pincer",
@@ -2091,7 +2102,8 @@
     "status": "hc_lured",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "veil"
  },
  "hc_drowning_hymn": {
   "name": "Drowning Hymn",
@@ -2434,7 +2446,8 @@
     "status": "weakened",
     "duration": 1
    }
-  ]
+  ],
+  "vfx": "murk"
  },
  "hc_trench_grip": {
   "name": "Trench Grip",
@@ -2480,7 +2493,8 @@
     "status": "crushed",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "veil"
  },
  "hc_dirge_of_night": {
   "name": "Dirge of Night",
@@ -3385,7 +3399,8 @@
   "cooldown": 2,
   "requires": [
    "terrain"
-  ]
+  ],
+  "vfx": "cloud"
  },
  "rt_drizzle": {
   "name": "Drizzle",
@@ -3408,7 +3423,8 @@
    "shape": "radius",
    "size": 1
   },
-  "affects": "enemies"
+  "affects": "enemies",
+  "vfx": "cloud"
  },
  "rt_shroud_mend": {
   "name": "Wet Shroud",
@@ -3851,7 +3867,8 @@
    "shape": "radius",
    "size": 2
   },
-  "affects": "enemies"
+  "affects": "enemies",
+  "vfx": "spray"
  },
  "rt_last_rites": {
   "name": "Last Rites",
@@ -4600,7 +4617,8 @@
     "amount": 0,
     "damageType": "physical"
    }
-  ]
+  ],
+  "vfx": "smoke"
  },
  "sv_harpoon_bolt": {
   "name": "Harpoon Bolt",
@@ -4679,7 +4697,8 @@
     "status": "marked",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "embers"
  },
  "sv_dirty_trick": {
   "name": "Dirty Trick",
@@ -4894,7 +4913,8 @@
     "status": "burning",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "soot"
  },
  "sv_blessed_fuse": {
   "name": "Blessed Fuse",
@@ -4946,7 +4966,8 @@
     "status": "burning",
     "duration": 3
    }
-  ]
+  ],
+  "vfx": "embers"
  },
  "sv_sled_dash": {
   "name": "Sled Dash",
@@ -5302,7 +5323,8 @@
     "amount": 2,
     "damageType": "fire"
    }
-  ]
+  ],
+  "vfx": "smoke"
  },
  "sv_grapeshot": {
   "name": "Grapeshot",
@@ -5325,7 +5347,8 @@
     "amount": 0,
     "damageType": "physical"
    }
-  ]
+  ],
+  "vfx": "smoke"
  },
  "sv_overcharge": {
   "name": "Overcharge",
@@ -5403,7 +5426,8 @@
     "status": "burning",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "smoke"
  },
  "sv_twin_bolt": {
   "name": "Twin Bolt",
@@ -5594,7 +5618,8 @@
    {
     "type": "teleport"
    }
-  ]
+  ],
+  "vfx": "salt"
  },
  "sv_ketta_never_still": {
   "name": "Never Still",
@@ -9416,7 +9441,8 @@
     "status": "oc_wet",
     "duration": 3
    }
-  ]
+  ],
+  "vfx": "cloud"
  },
  "oc_r3_shark_row": {
   "name": "Every Row at Once",
@@ -9590,7 +9616,8 @@
     "status": "oc_inked",
     "duration": 2
    }
-  ]
+  ],
+  "vfx": "ink"
  },
  "oc_mantle_eight_fold": {
   "name": "Eight-Fold",

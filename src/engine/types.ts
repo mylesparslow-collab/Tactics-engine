@@ -50,6 +50,8 @@ export interface AbilityDef {
   /** Passive abilities are never cast; their 'aura' effects apply continuously. */
   passive?: boolean;
   requires?: string[];
+  /** Live visual effect at the target (src/render/fx.ts preset: smoke, ink, murk, mist, salt, ...). */
+  vfx?: string;
 }
 
 /** A card cast straight from the hand for essence (no unit needed). */
@@ -65,6 +67,11 @@ export interface SpellDef {
   affects?: Affects;
   effects: Effect[];
   icon?: string;
+  /** How the spell animates (src/render/spellfx.ts: beam, hail, fall, glyph, summon, geyser, crush, vortex,
+   *  blast, cloud, drain, heal, growth, feathers, hex); defaults from its effects. */
+  anim?: string;
+  /** The particle preset the animation uses (src/render/fx.ts: smoke, ink, salt, water, coral, ...). */
+  vfx?: string;
 }
 
 /** A card attached to a friendly unit from the hand; lasts until the unit dies. One per unit. */
@@ -97,6 +104,8 @@ export interface StatusDef {
   ignoresEngagement?: boolean;
   /** A unit carrying this status counts as standing in water (it does not dry out). */
   wet?: boolean;
+  /** Live visual effect clinging to the unit while it has the status (src/render/fx.ts preset). */
+  vfx?: string;
 }
 
 export interface TerrainDef {

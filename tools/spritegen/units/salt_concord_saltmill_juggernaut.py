@@ -14,6 +14,7 @@ from kit.anim import creature_frames, CREATURE_DEFAULTS, ROWS
 from kit.xform import transform_parts
 from kit.looks import LOOKS
 from _salt_concord_common import *
+from kit.fx import emit
 
 UNIT_ID = 'salt_concord_saltmill_juggernaut'
 FACTION = 'salt_concord'
@@ -126,22 +127,8 @@ def build(P):
         for i in range(6):
             add(Ellipsoid(v3(-0.45 + 0.18 * i, 0.06, dc[2] + 0.30 + 0.05 * np.sin(i * 1.7)),
                           (0.11 * pl, 0.06 * pl, 0.10 * pl)), 'plume', 0.05)
-        # plume of ground salt billowing up past the drum on the far side
-        cs, rs = [], []
-        for i in range(12):
-            t = i / 11
-            cs.append(v3(0.40 + 0.14 * np.sin(i * 1.9 + ph) + 0.25 * t, 0.30 + 1.35 * t, dc[2] + 0.15 - 0.65 * t
-                         + 0.08 * np.cos(i * 2.3 + ph)))
-            rs.append((0.06 + 0.15 * t) * pl)
-        cs, rs = np.array(cs), np.array(rs)
-
-        def puffs(p, cs=cs, rs=rs, ph=ph):
-            d = np.full(len(p), 1e3)
-            for c, r in zip(cs, rs):
-                d = smin(d, np.linalg.norm(p - c, axis=1) - r, 0.06)
-            return d - 0.05 * (fbm(p + v3(0, -ph * 0.05, 0), 9.0, 3) - 0.5)
-        lo, hi = cs.min(0) - 0.3, cs.max(0) + 0.3
-        add(Func(puffs, (lo + hi) / 2, float(np.linalg.norm(hi - lo) / 2)), 'plume', 0.05)
+        # the billowing plume rises past the drum on the far side: live emitter (kit/fx.py)
+        emit(add, v3(0.40, 0.35, dc[2] + 0.10), 'salt', pl)
     R = rot_x(P['lean'] * 0.3) @ rot_z(-P['tilt'])
     parts[:] = transform_parts(parts, R=R, t=(0.0, P['bob'], -0.45), s=0.70, pivot=(0, 0, 0))
     mats = base_mats(P)

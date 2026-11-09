@@ -6,6 +6,8 @@ import { drawUnitShadow, drawUnitSprite, figureHeight, type SpriteOpts } from '.
 import { backdropFor, diamondPath, glowSprite } from './terrain';
 import { BoardPainter, onTileArtReady, visualTiles, type AnimTile } from './board';
 import { clipDuration, clipHitTime, frameFor, unitArt, type AnimState } from './anim';
+import { Fx, isFxPreset } from './fx';
+import { playSpell, type SpellHost } from './spellfx';
 
 export interface Preview { text: string; color: string }
 export interface Overlay {
@@ -90,6 +92,18 @@ export class Renderer {
   private bolts: Bolt[] = [];
   private columns: Column[] = [];
   private particles: Particle[] = [];
+  /** Live smoke / ink / mist / spray (src/render/fx.ts). */
+  private fx = new Fx(); private frameDt = 16;
+  private spellHost: SpellHost = {
+    fx: this.fx,
+    at: (t, fn) => this.at(t, fn),
+    project: p => this.view.project(p.x, p.y, this.tileZ(p)),
+    ring: (pos, start, dur, color, rune) => this.rings.push({ pos, start, dur, color, rune }),
+    column: (pos, start, dur, color, width) => this.columns.push({ pos, start, dur, color, width }),
+    shake: (t, mag, ms) => this.shakeCamera(t, mag, ms),
+    tiles: (c, size) => this.game.radiusTiles(c, size),
+    sparks: (p, n, color, opts) => this.burst(p, n, color, opts),
+  };
   private items: Item[] = [];
   private cachedNow = 0; private pickList: Drawable[] | null = null;
   private lastFrame = 0;
@@ -111,6 +125,7 @@ export class Renderer {
     this.segs.clear(); this.anims.clear(); this.hpShown.clear(); this.flashUntil.clear(); this.shake.clear();
     this.pendingDeath.clear(); this.dying.clear(); this.pendingDeploy.clear(); this.popStart.clear(); this.facing.clear();
     this.floats = []; this.rings = []; this.bolts = []; this.columns = []; this.particles = []; this.items = []; this.cursor = 0; this.endAt = 0;
+    this.fx.clear(); this.fx.reduced = this.reduced;
     for (const u of game.units) this.hpShown.set(u.uid, u.hp);
     this.seeds = new Uint32Array(game.width * game.height);
     for (let y = 0; y < game.height; y++) for (let x = 0; x < game.width; x++) this.seeds[y * game.width + x] = (((x * 73856093) ^ (y * 19349663) ^ 0x5bd1e995) >>> 0);
@@ -351,6 +366,8 @@ export class Renderer {
             this.setAnim(e.uid, state, t, dur, { impact: hit, target: e.target, ranged });
             if (ranged && state === 'attack') this.bolts.push({ from: { x: u.x, y: u.y }, to: e.target, start: t + hit * 0.35, dur: hit * 0.65, color: '#ffd37a' });
           });
+          if (a?.vfx && a.effects.some(x => x.type === 'teleport')) { const from = { x: u.x, y: u.y }; this.at(t, () => this.fxArea(a.vfx, from, 0, 0)); }
+          this.at(t + hit, () => this.fxArea(a?.vfx, e.target, a?.area?.size ?? 0, 2600));
           this.at(t + hit, () => {
             if (a?.area) { this.rings.push({ pos: e.target, start: t + hit, dur: 520, color: state === 'cast' ? '#9fe3ff' : '#ffb347' }); this.burst(e.target, 14, state === 'cast' ? '#bfeeff' : '#ffb347', { up: 60, spread: 70, life: 600 }); }
             else this.rings.push({ pos: e.target, start: t + hit, dur: 380, color: state === 'cast' ? '#9fe3ff' : '#ffb347' });
@@ -428,7 +445,7 @@ export class Renderer {
             const art = unitArt(u.defId, g.def(u));
             this.setAnim(e.uid, 'death', t, clipDuration(art, 'death') ?? DEATH_MS);
             this.burst(u, 14, mix(g.teams[u.team].color, '#ffffff', 0.5), { up: 30, spread: 45, life: 900, size: 3, g: 30 });
-            this.burst(u, 10, '#c9c2b0', { up: 20, spread: 30, life: 1100, size: 4, g: 10 });
+            { const s = this.view.project(u.x, u.y, this.tileZ(u)); this.fx.burst('dust', s.sx, s.sy - 8, 9, { radius: 16 }); }
           }
         });
         this.endAt = Math.max(this.endAt, t + DEATH_MS);
@@ -448,22 +465,14 @@ export class Renderer {
         break;
       }
       case 'spell': {
-        // A shaft of light falls on the target in the spell's colour, its rune circle lights the ground,
-        // and every tile in the area flashes; damage spells land with a shake.
+        // Each spell plays its own animation (src/render/spellfx.ts): salt hail, pressure crushing in, geysers,
+        // ink clouds, undertow, powder blasts, coral bursting up, feather squalls; the Lanternkeepers' lamp beam.
         const t = this.cursor, sp = this.game.content.spells[e.spell];
-        const col = spellColor(sp?.effects ?? []);
-        const area = sp?.area?.size ?? 0;
-        this.columns.push({ pos: e.target, start: t, dur: 760, color: col, width: 26 + area * 14 });
-        this.rings.push({ pos: e.target, start: t, dur: 820, color: col, rune: true });
-        if (area) for (const p of this.game.radiusTiles(e.target, area)) if (p.x !== e.target.x || p.y !== e.target.y) this.rings.push({ pos: p, start: t + 180 + 40 * (Math.abs(p.x - e.target.x) + Math.abs(p.y - e.target.y)), dur: 520, color: col });
         this.cue(t, { kind: 'spell' });
-        this.at(t + 260, () => {
-          this.burst(e.target, 22 + area * 10, mix(col, '#ffffff', 0.4), { up: 90, spread: 60 + area * 30, life: 800, size: 3.2 });
-          this.burst(e.target, 10, col, { up: 30, spread: 20, life: 1100, size: 2.4, g: -30, rise: true });
-          if (sp?.effects.some(x => x.type === 'damage')) this.shakeCamera(t + 260, 3 + area * 1.5, 260);
-        });
-        this.endAt = Math.max(this.endAt, t + 820);
-        this.cursor += 420; break;
+        if (!sp) { this.cursor += 420; break; }
+        const { impact, dur } = playSpell(this.spellHost, sp, e.target, t, spellColor(sp.effects));
+        this.endAt = Math.max(this.endAt, t + dur);
+        this.cursor += impact; break;
       }
       case 'equip': {
         const t = this.cursor;
@@ -575,6 +584,7 @@ export class Renderer {
       this.particles = this.particles.filter(p => now - p.born < p.life);
       for (const p of this.particles) { p.x += p.vx * s; p.y += p.vy * s; p.vy += p.g * s; p.vx *= 0.98; }
     }
+    this.fx.update(now, dt); this.frameDt = dt;
     this.stepGlide(now);
     if (this.panVel.x || this.panVel.y) { const sp = Math.max(this.cssW, this.cssH) * 0.9 * dt / 1000; this.pan(this.panVel.x * sp, this.panVel.y * sp); }
     if (this.boardDirty) this.buildBoard(true);
@@ -607,6 +617,7 @@ export class Renderer {
     // all shadows first, on the ground under the overlays, so no shadow ever darkens another unit's body
     for (const o of opts) drawUnitShadow(ctx, o);
     this.drawOverlays(now);
+    this.fx.draw(ctx, 'ground', now); // murk and mist lie under the units
 
     const drops = g.drops.map(dp => ({ dp, d: this.view.depth(dp.x, dp.y) + 0.3 })).sort((a, b) => a.d - b.d); let di = 0;
     units.forEach((dr, i) => {
@@ -655,6 +666,7 @@ export class Renderer {
       ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (1 - k * 0.5), 0, Math.PI * 2); ctx.fill();
     }
     ctx.globalAlpha = 1;
+    this.fx.draw(ctx, 'air', now);
     // previews + floats on top
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     for (const [uid, pv] of this.overlay.previews) {
@@ -965,6 +977,7 @@ export class Renderer {
       x: sx, y: sy, alpha, dim,
       flash: Math.max(0, Math.min(1, fl / 220)),
       hp: hpNow, maxHp: def.stats.hp,
+      ap: def.structure ? undefined : u.ap, maxAp: def.structure ? undefined : g.stat(u, 'ap'),
       statuses: u.statuses.map(s => ({ id: s.id, name: g.content.statuses[s.id]?.name ?? s.id })),
       selected: !!ov.selected && ov.selected.x === u.x && ov.selected.y === u.y && !this.segs.has(u.uid),
       hovered: !!ov.hover && ov.hover.x === u.x && ov.hover.y === u.y,
@@ -976,8 +989,33 @@ export class Renderer {
 
   private drawUnit(d: Extract<Drawable, { kind: 'unit' }>, o: SpriteOpts, now: number) {
     drawUnitSprite(this.ctx, o);
+    this.unitFx(d.u, o, now);
     const vip = d.u.tag ? this.vip.get(d.u.tag) : undefined;
     if (vip && d.u.alive && o.alpha > 0.3) this.drawVipBadge(o.x, o.y - figureHeight(o) * o.scale - o.lift - 30, vip, now);
+  }
+
+  /** Feed the unit's live effects: emitters baked into its sprite frames (sheet manifest `fx`), and any
+   *  status with a `vfx` (Inked units trail ink, Sooted ones soot). */
+  private unitFx(u: Unit, o: SpriteOpts, now: number) {
+    if (o.alpha <= 0.05) return;
+    const f = o.frame, dt = this.frameDt;
+    if (f?.fx) f.fx.forEach((e, i) => {
+      if (!isFxPreset(e.preset)) return;
+      const x = o.x + (e.x - f.ax) * f.scale * o.scale * o.facing / o.squash;
+      const y = o.y - o.lift + (e.y - f.ay) * f.scale * o.scale * o.squash;
+      this.fx.stream(`${u.uid}:${i}`, e.preset, x, y, e.s * 1.3 * o.alpha, dt, now, 2);
+    });
+    if (u.alive) for (const st of u.statuses) {
+      const v = this.game.content.statuses[st.id]?.vfx;
+      if (isFxPreset(v)) this.fx.stream(`${u.uid}:s:${st.id}`, v, o.x, o.y - o.lift - figureHeight(o) * o.scale * 0.5, 0.9 * o.alpha, dt, now, 1.3);
+    }
+  }
+  /** A lingering effect cloud over an area (or a puff on one tile), `ms` long. */
+  private fxArea(preset: string | undefined, at: Pos, size: number, ms: number) {
+    if (!isFxPreset(preset)) return;
+    const s = this.view.project(at.x, at.y, this.tileZ(at));
+    if (size > 0) this.fx.area(preset, s.sx, s.sy - 6, (size + 0.5) * TW * 0.5, ms, performance.now());
+    else this.fx.burst(preset, s.sx, s.sy - 14, 18, { radius: 18, scale: 1.4 });
   }
 
   /** Mission-critical units wear a badge: a gold shield for "must survive", a red target for "must die". */

@@ -13,6 +13,7 @@ export interface SpriteOpts {
   dim: boolean;
   flash: number;                  // 0..1 white hit flash
   hp: number; maxHp: number;
+  ap?: number; maxAp?: number;   // undefined for structures
   statuses: { id: string; name: string }[];
   selected: boolean;
   hovered: boolean;
@@ -228,6 +229,15 @@ export function drawUnitSprite(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
     ctx.fillStyle = hg; ctx.fillRect(x - bw / 2, by, bw * ratio, bh);
     ctx.strokeStyle = rgba(o.teamColor, 0.9); ctx.lineWidth = 1;
     ctx.beginPath(); ctx.roundRect(x - bw / 2 - 1, by - 1, bw + 2, bh + 2, 2); ctx.stroke();
+    if (o.maxAp && o.ap !== undefined) { // AP ticks under the HP bar
+      const n = Math.min(Math.max(o.maxAp, o.ap), 10), gap = 1.5, ay = by + bh + 3, ah = 3;
+      const tw = (bw - gap * (n - 1)) / n;
+      ctx.fillStyle = 'rgba(8,8,12,0.85)'; ctx.fillRect(x - bw / 2 - 1.5, ay - 1.5, bw + 3, ah + 3);
+      for (let i = 0; i < n; i++) {
+        ctx.fillStyle = i < o.ap ? '#6fa2ff' : 'rgba(111,162,255,0.18)';
+        ctx.fillRect(x - bw / 2 + i * (tw + gap), ay, tw, ah);
+      }
+    }
     const st = o.statuses.slice(0, 5);
     st.forEach((s, i) => {
       const sx = x - (st.length - 1) * 6 + i * 12, sy = by - 9;
