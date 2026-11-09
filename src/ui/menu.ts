@@ -311,7 +311,7 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
         h('div', { class: 'kicker' }, kicker),
         h('h1', { class: 'brief-title' }, m.name),
         m.description ? h('p', { class: 'lead' }, m.description) : null,
-        story.length ? h('div', { class: 'brief-text' }, ...story.map((t, i) => i ? h('p', null, t) : h('p', { class: 'dropcap' }, ...illuminated(t)))) : null),
+        story.length ? h('div', { class: 'brief-text' }, ...story.map((t, i) => i || t.length < 160 ? h('p', null, t) : h('p', { class: 'dropcap' }, ...illuminated(t)))) : null),
       h('aside', { class: 'brief-side framed' },
         h('div', { class: 'bs-map' }, mapPreview(content, m.map),
           h('div', { class: 'bs-mapname' }, h('span', { class: 'kicker' }, 'Battlefield'), h('b', null, map?.name ?? m.map),
