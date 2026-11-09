@@ -435,7 +435,7 @@ export class GameSession {
 
   private updateOverlay() {
     const g = this.g, ov = this.renderer.overlay;
-    ov.reach.clear(); ov.range.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.skyfall.clear(); ov.path = []; ov.pathCost = null; ov.previews = new Map();
+    ov.reach.clear(); ov.range.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.skyfall.clear(); ov.path = []; ov.pathCost = null; ov.pathEngaged = 0; ov.previews = new Map();
     ov.hover = this.hover;
     const u = this.sel();
     ov.selected = u ? { x: u.x, y: u.y } : null;
@@ -463,7 +463,7 @@ export class GameSession {
       const reach = g.reachable(u);
       for (const k of reach.keys()) if (k !== key(u.x, u.y)) ov.reach.add(k);
       if (hv && reach.has(key(hv.x, hv.y)) && !(hv.x === u.x && hv.y === u.y)) {
-        ov.path = g.pathTo(u, hv.x, hv.y); ov.pathCost = reach.get(key(hv.x, hv.y))!.cost;
+        ov.path = g.pathTo(u, hv.x, hv.y); ov.pathCost = reach.get(key(hv.x, hv.y))!.cost; ov.pathEngaged = g.disengageCost(u);
       }
     } else if (this.mode.kind === 'ability') {
       const ab = this.mode.ability, a = g.ability(ab);
@@ -608,6 +608,7 @@ export class GameSession {
   private unitPanel(u: Unit, full: boolean) {
     const g = this.g, d = g.def(u), team = g.teams[u.team];
     const maxAp = g.stat(u, 'ap');
+    const engaged = d.structure || !u.alive ? 0 : g.disengageCost(u);
     const fc = d.faction ? this.content.factions?.[d.faction]?.color : undefined;
     const stat = (cls: string, lab: string, v: number, base: number) => h('span', { class: `ustat ${cls}${v > base ? ' up' : v < base ? ' down' : ''}`, title: lab }, h('small', null, lab), h('b', null, String(v)));
     const box = h('div', { class: 'upanel' + (full ? ' full' : ' mini'), style: `--tc:${team.color};--fc:${fc ?? team.color}` },
@@ -618,7 +619,9 @@ export class GameSession {
           h('span', { class: 'u-hp' }, h('i', { class: 'hcoin' }), h('div', { class: 'ubar hp' }, h('div', { class: 'fill', style: `width:${Math.max(0, u.hp / d.stats.hp * 100)}%` }), h('span', null, `${u.hp}/${d.stats.hp}`))),
           stat('atk', 'ATK', g.stat(u, 'attack'), d.stats.attack), stat('def', 'DEF', g.stat(u, 'defense'), d.stats.defense)),
         d.structure ? null : h('div', { class: 'pips', title: `AP ${u.ap}/${maxAp}` }, ...Array.from({ length: Math.min(maxAp, 14) }, (_, i) => h('i', { class: i < u.ap ? 'on' : '' }))),
-        u.statuses.length ? h('div', { class: 'statuses' }, ...u.statuses.map(s => {
+        u.statuses.length || engaged ? h('div', { class: 'statuses' },
+          engaged ? h('span', { class: 'schip', style: '--sc:#e0a040', title: `Next to an enemy: walking away costs +${engaged} AP.` }, 'Engaged', h('small', null, `+${engaged}`)) : null,
+          ...u.statuses.map(s => {
           const sd = g.content.statuses[s.id];
           return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
         })) : null,

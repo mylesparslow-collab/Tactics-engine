@@ -198,7 +198,8 @@
  },
  "sv_fleet_foot": {
   "name": "Fleet Foot",
-  "description": "Greased boots. +1 AP.",
+  "description": "Greased boots. +1 AP, and slips away from enemies without paying the disengage cost.",
+  "ignoresEngagement": true,
   "statMods": {
    "ap": 1
   }
