@@ -562,7 +562,12 @@ export class GameSession {
     else if (!team.hand.length) row.prepend(h('div', { class: 'empty' }, 'Hand empty. You draw 2 cards each turn; resting relics return soon.'));
     const hintFor = () => {
       if (this.mode.kind === 'ability') { const a = g.ability(this.mode.ability); return `${a?.name ?? ''}: choose a target \u00B7 Esc cancels`; }
-      if (this.mode.kind !== 'card') return t === g.current && this.canActSoft() ? 'Play a relic, or select a unit on the board' : 'Waiting for the enemy';
+      if (this.mode.kind !== 'card') {
+        if (!(t === g.current && this.canActSoft())) return 'Waiting for the enemy';
+        const su = this.sel();
+        if (su && su.team === t && !g.def(su).structure) return su.ap > 0 ? 'Blue tiles: move \u00B7 Number keys: abilities \u00B7 Esc deselects' : `${g.def(su).name} is out of AP \u00B7 select another unit or end the turn`;
+        return 'Play a relic, or select a unit on the board';
+      }
       const k = g.cardKind(team.hand[this.mode.index] ?? '');
       return k === 'spell' ? 'Choose a target to cast \u00B7 Esc cancels' : k === 'equipment' ? 'Choose a friendly unit to equip \u00B7 Esc cancels' : g.content.units[team.hand[this.mode.index] ?? '']?.skyfall ? 'Green: deploy now \u00B7 Violet: drops in next turn \u00B7 Esc cancels' : 'Choose a glowing tile to deploy \u00B7 Esc cancels';
     };
@@ -572,10 +577,11 @@ export class GameSession {
     const strip = h('div', { class: 'hstrip' },
       h('button', { class: 'htoggle', title: this.handOpen ? 'Hide hand' : 'Show hand', onclick: (e: Event) => this.setHandOpen(!this.handOpen, e.currentTarget as HTMLElement) },
         h('span', { class: 'chev' + (this.handOpen ? '' : ' up') }, '\u25BE'), h('span', null, this.L('warband')), h('b', null, String(team.hand.length)), team.deck.length ? h('span', { class: 'hdeck', title: `${team.deck.length} cards left to draw` }, `+${team.deck.length}`) : null),
-      tabs, h('span', { class: 'hint' }, hintFor()));
+      tabs);
+    const targeting = this.mode.kind === 'card' || this.mode.kind === 'ability';
     const end = h('button', { id: 'endturn', class: 'endturn-big', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() },
       h('span', { class: 'et-text' }, 'End Turn'), h('span', { class: 'et-key' }, 'Enter \u00D7 2'));
-    this.hand.append(strip, h('div', { class: 'hmain' }, row, end));
+    this.hand.append(h('div', { class: 'hprompt' + (targeting ? ' act' : '') }, hintFor()), strip, h('div', { class: 'hmain' }, row, end));
     this.layoutHand();
     row.scrollLeft = scroll;
   }
@@ -617,7 +623,7 @@ export class GameSession {
         h('div', { class: 'u-line' },
           h('span', { class: 'u-hp' }, h('i', { class: 'hcoin' }), h('div', { class: 'ubar hp' }, h('div', { class: 'fill', style: `width:${Math.max(0, u.hp / d.stats.hp * 100)}%` }), h('span', null, `${u.hp}/${d.stats.hp}`))),
           stat('atk', 'ATK', g.stat(u, 'attack'), d.stats.attack), stat('def', 'DEF', g.stat(u, 'defense'), d.stats.defense)),
-        d.structure ? null : h('div', { class: 'pips', title: `AP ${u.ap}/${maxAp}` }, ...Array.from({ length: Math.min(maxAp, 14) }, (_, i) => h('i', { class: i < u.ap ? 'on' : '' }))),
+        d.structure ? null : h('div', { class: 'pips', title: `Action points ${u.ap}/${maxAp}` }, h('small', null, 'AP'), ...Array.from({ length: Math.min(maxAp, 14) }, (_, i) => h('i', { class: i < u.ap ? 'on' : '' })), h('b', { class: 'num' }, `${u.ap}/${maxAp}`)),
         u.statuses.length ? h('div', { class: 'statuses' }, ...u.statuses.map(s => {
           const sd = g.content.statuses[s.id];
           return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
@@ -645,7 +651,8 @@ export class GameSession {
           const range = a.range.min === a.range.max ? `${a.range.max}` : `${a.range.min}-${a.range.max}`;
           const tipEl = h('div', { class: 'abtip' }, h('b', null, a.name), h('span', { class: 'abmeta' }, a.passive ? 'Passive' : `${a.apCost} AP \u00B7 range ${range}${a.area ? ` \u00B7 area ${a.area.size}` : ''}${a.cooldown ? ` \u00B7 cooldown ${a.cooldown}` : ''}`),
             h('p', null, a.description ?? a.effects.map(e => effectText(this.content, e)).join('. ')));
-          if (a.passive) { list.append(h('div', { class: 'abtn passive', tabindex: '0' }, glyph(abilityGlyph(a)), tipEl)); return; }
+          const meta = a.passive ? 'Passive' : `${range === '0' ? 'Self' : `Range ${range}`}${a.area ? ` \u00B7 area ${a.area.size}` : ''}`;
+          if (a.passive) { list.append(h('div', { class: 'abtn passive', tabindex: '0' }, h('span', { class: 'ab-ic' }, glyph(abilityGlyph(a))), h('span', { class: 'ab-txt' }, h('span', { class: 'ab-name' }, a.name), h('span', { class: 'ab-meta' }, meta)), tipEl)); return; }
           const cd = u.cooldowns[id] ?? 0;
           const usable = u.team === g.current && this.canActSoft() && g.canUse(u, id);
           const active = this.mode.kind === 'ability' && this.mode.ability === id;
@@ -655,7 +662,9 @@ export class GameSession {
             onclick: () => { if (!this.canAct()) return; this.mode = active ? { kind: 'move' } : { kind: 'ability', ability: id }; this.hoverAbility = null; this.refresh(); },
             onmouseenter: () => { this.hoverAbility = id; this.updateOverlay(); },
             onmouseleave: () => { if (this.hoverAbility === id) { this.hoverAbility = null; this.updateOverlay(); } },
-          }, glyph(abilityGlyph(a)), h('span', { class: 'ab-ap hc-num' }, String(a.apCost)), h('span', { class: 'ab-key' }, String(idx)), cd > 0 ? h('span', { class: 'ab-cd hc-num' }, String(cd)) : null, tipEl));
+          }, h('span', { class: 'ab-key' }, String(idx)), h('span', { class: 'ab-ic' }, glyph(abilityGlyph(a))),
+            h('span', { class: 'ab-txt' }, h('span', { class: 'ab-name' }, a.name), h('span', { class: 'ab-meta' }, cd > 0 ? `Ready in ${cd}` : meta)),
+            h('span', { class: 'ab-ap hc-num', title: `${a.apCost} AP` }, String(a.apCost), h('small', null, 'AP')), tipEl));
         });
         card.append(list);
       }
