@@ -432,10 +432,10 @@ def bird(add, mats, F, S, P, tag='b'):
             mats[name] = Material(wing_paint(bl, S['col'], seg, S['nf'], S['cov'], S['tip_t']), spec=0.05, brush=0.05)
             add(bl, name, 0.0)
             if seg == 'i':
-                add(Capsule(A, A + e * Ls, 0.040 * k, 0.030 * k), tag + '_cov', 0.02)
+                add(Capsule(A, A + e * Ls, 0.040 * k * S.get('spar', 1.0), 0.030 * k * S.get('spar', 1.0)), tag + '_cov', 0.02)
             else:
                 tip = A + e * Ls
-                add(Capsule(A, tip, 0.030 * k, 0.012 * k), tag + '_cov', 0.0)
+                add(Capsule(A, tip, 0.030 * k * S.get('spar', 1.0), 0.012 * k * S.get('spar', 1.0)), tag + '_cov', 0.0)
                 tips[side] = tip
                 nfing = S.get('fingers', 5)
                 for j in range(nfing):
