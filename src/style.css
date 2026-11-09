@@ -321,6 +321,9 @@ p { margin: 0; }
 .ubar span { position: relative; display: flex; justify-content: center; width: 100%; font-size: 12px; line-height: 16px; color: #fff; text-shadow: 0 1px 2px #000; }
 .ustat { display: inline-flex; align-items: baseline; gap: 3px; font-family: var(--font-ui); } .ustat small { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: .14em; }
 .ustat b { font-size: 17px; color: #f1e6cc; } .ustat.up b { color: var(--green); } .ustat.down b { color: var(--red); }
+.u-ap { display: flex; align-items: center; gap: 8px; font-family: var(--font-ui); }
+.u-ap small { font-size: 10px; font-weight: 600; letter-spacing: .14em; color: var(--muted); }
+.u-ap b { margin-left: auto; font-size: 17px; color: #cfe0ff; } .u-ap b span { font-size: 12px; color: var(--muted); }
 .pips { display: flex; gap: 3px; } .pips i { width: 10px; height: 10px; border-radius: 50%; background: #0b1520; box-shadow: inset 0 0 0 1px #6fa6ff55; }
 .pips i.on { background: radial-gradient(circle at 35% 30%, #d6e6ff, #4f8cff 55%, #1f4aa0); box-shadow: 0 0 5px #4f8cffaa; }
 .statuses { display: flex; flex-wrap: wrap; gap: 4px; }

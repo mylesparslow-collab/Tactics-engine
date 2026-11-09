@@ -959,6 +959,7 @@ export class Renderer {
       x: sx, y: sy, alpha, dim,
       flash: Math.max(0, Math.min(1, fl / 220)),
       hp: hpNow, maxHp: def.stats.hp,
+      ap: def.structure ? undefined : u.ap, maxAp: def.structure ? undefined : g.stat(u, 'ap'),
       statuses: u.statuses.map(s => ({ id: s.id, name: g.content.statuses[s.id]?.name ?? s.id })),
       selected: !!ov.selected && ov.selected.x === u.x && ov.selected.y === u.y && !this.segs.has(u.uid),
       hovered: !!ov.hover && ov.hover.x === u.x && ov.hover.y === u.y,
