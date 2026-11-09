@@ -139,7 +139,11 @@ export class Renderer {
     this.resize();
   }
 
-  start() { const loop = () => { this.raf = requestAnimationFrame(loop); this.frame(performance.now()); }; this.raf = requestAnimationFrame(loop); }
+  /** Animation clock in ms. Runs at `speed` x real time so spectator battles can be sped up without desyncing from the game. */
+  private clk = performance.now(); private lastReal = performance.now(); private speed = 1;
+  now(): number { const r = performance.now(); this.clk += (r - this.lastReal) * this.speed; this.lastReal = r; return this.clk; }
+  setSpeed(s: number) { this.now(); this.speed = s; }
+  start() { const loop = () => { this.raf = requestAnimationFrame(loop); this.frame(this.now()); }; this.raf = requestAnimationFrame(loop); }
   stop() { cancelAnimationFrame(this.raf); }
 
   get rotation() { return this.view.rot; }
@@ -216,7 +220,7 @@ export class Renderer {
   private zoomTimer: ReturnType<typeof setTimeout> | undefined;
   /** Pan by CSS pixels. */
   pan(dx: number, dy: number) {
-    this.panX += dx; this.panY += dy; this.userMoved = true; this.lastUserPan = performance.now(); this.glide = null;
+    this.panX += dx; this.panY += dy; this.userMoved = true; this.lastUserPan = this.now(); this.glide = null;
     this.clampPan(); this.applyView();
   }
   /** Multiply zoom, keeping the CSS point (cx,cy) fixed. */
@@ -244,7 +248,7 @@ export class Renderer {
   private lastUserPan = -1e9;
   /** Keep the enemy's actions on screen: glide to a tile when it is outside the comfortable middle of the view. */
   follow(p: Pos, force = false) {
-    if (!this.view || performance.now() - this.lastUserPan < 2500) return;
+    if (!this.view || this.now() - this.lastUserPan < 2500) return;
     const z = this.vt[p.y]?.[p.x]?.height ?? 0;
     const w = this.view.project(p.x, p.y, z);
     const sx = w.sx * this.scale + this.ox, sy = (w.sy - 40) * this.scale + this.oy;
@@ -252,7 +256,7 @@ export class Renderer {
     if (!force && sx > mx && sx < this.cssW - mx && sy > my && sy < H - my) return;
     const dx = this.cssW / 2 - sx, dy = H / 2 - sy;
     const toX = this.panX + dx, toY = this.panY + dy;
-    this.glide = { fromX: this.panX, fromY: this.panY, toX, toY, start: performance.now(), dur: 420 };
+    this.glide = { fromX: this.panX, fromY: this.panY, toX, toY, start: this.now(), dur: 420 };
     this.userMoved = true; // keep the followed view across resizes instead of snapping back to the Beacon
   }
   private stepGlide(now: number) {
@@ -267,7 +271,7 @@ export class Renderer {
   setBottomInset(px: number) { if (px !== this.bottomInset) { this.bottomInset = px; this.applyView(); } }
 
   // ---------- animation scheduling ----------
-  busy() { return performance.now() < this.endAt; }
+  busy() { return this.now() < this.endAt; }
 
   private at(start: number, fn: () => void) { this.items.push({ start, fn }); this.endAt = Math.max(this.endAt, start); }
   private uname(uid: number) { return this.game.unit(uid); }
@@ -284,7 +288,7 @@ export class Renderer {
     if (t + ms > this.camShake.until || mag > this.camShake.mag) this.camShake = { until: t + ms, mag: Math.max(mag, t < this.camShake.until ? this.camShake.mag : 0) };
   }
   private burst(p: Pos, n: number, color: string, opts: { up?: number; spread?: number; life?: number; size?: number; g?: number; rise?: boolean } = {}) {
-    const s = this.view.project(p.x, p.y, this.tileZ(p)), now = performance.now();
+    const s = this.view.project(p.x, p.y, this.tileZ(p)), now = this.now();
     for (let i = 0; i < n; i++) {
       const a = Math.random() * Math.PI * 2, sp = (opts.spread ?? 40) * (0.4 + Math.random() * 0.6);
       this.particles.push({ x: s.sx + (Math.random() - 0.5) * 20, y: s.sy - (opts.rise ? Math.random() * 40 : 0), vx: Math.cos(a) * sp, vy: Math.sin(a) * sp * 0.5 - (opts.up ?? 40) * (0.5 + Math.random()),
@@ -321,7 +325,7 @@ export class Renderer {
   }
 
   handleEvent(e: GameEvent) {
-    const now = performance.now();
+    const now = this.now();
     this.cursor = Math.max(this.cursor, now);
     const g = this.game;
     const push = (uid: number, seg: Seg) => { const l = this.segs.get(uid) ?? []; l.push(seg); this.segs.set(uid, l); this.endAt = Math.max(this.endAt, seg.start + seg.dur); };
@@ -395,7 +399,7 @@ export class Renderer {
           this.setAnim(e.uid, 'hit', t, clipDuration(art, 'hit') ?? HIT_MS);
           const p = this.unitPos(u, t);
           // Big hits and killing blows read at a glance: larger, hotter numbers and more debris.
-          this.floatAt(p, `-${e.amount}`, lethal ? '#ffd166' : heavy ? '#ff7a4d' : '#ff5d4d', performance.now(), undefined, lethal ? 1.7 : heavy ? 1.35 : 1);
+          this.floatAt(p, `-${e.amount}`, lethal ? '#ffd166' : heavy ? '#ff7a4d' : '#ff5d4d', this.now(), undefined, lethal ? 1.7 : heavy ? 1.35 : 1);
           this.burst(p, lethal ? 18 : heavy ? 12 : 6, lethal ? '#ffd9a0' : '#ff8a6a', { up: lethal ? 80 : 50, spread: lethal ? 80 : 50, life: 500, size: lethal ? 3.5 : 2.5 });
         });
         this.endAt = Math.max(this.endAt, t + HIT_MS);
@@ -406,7 +410,7 @@ export class Renderer {
         this.at(t, () => {
           const u = this.uname(e.uid); if (!u) return;
           this.hpShown.set(e.uid, (this.hpShown.get(e.uid) ?? u.hp) + e.amount);
-          this.floatAt(this.unitPos(u, t), `+${e.amount}`, '#6fe08a', performance.now());
+          this.floatAt(this.unitPos(u, t), `+${e.amount}`, '#6fe08a', this.now());
           this.onCue?.({ kind: 'heal', uid: e.uid });
           this.burst(u, 12, '#8ff0a0', { up: 70, spread: 18, life: 900, size: 2.5, g: -20, rise: true });
         });
@@ -419,7 +423,7 @@ export class Renderer {
           this.hpShown.set(e.uid, e.hp);
           this.popStart.set(e.uid, t);
           this.anims.delete(e.uid);
-          this.floatAt(this.unitPos(u, t), 'Revived!', '#ffe27a', performance.now(), undefined, 1.3);
+          this.floatAt(this.unitPos(u, t), 'Revived!', '#ffe27a', this.now(), undefined, 1.3);
           this.onCue?.({ kind: 'revive', uid: e.uid });
           this.burst(u, 16, '#ffe9a0', { up: 60, spread: 40, life: 800, size: 3 });
         });
@@ -428,7 +432,7 @@ export class Renderer {
       case 'status': {
         const t = this.cursor;
         const name = g.content.statuses[e.status]?.name ?? e.status;
-        this.at(t, () => { const u = this.uname(e.uid); if (u) this.floatAt(this.unitPos(u, t), name, '#c79bff', performance.now(), e.status); });
+        this.at(t, () => { const u = this.uname(e.uid); if (u) this.floatAt(this.unitPos(u, t), name, '#c79bff', this.now(), e.status); });
         this.cue(t, { kind: 'status', uid: e.uid });
         break;
       }
@@ -475,7 +479,7 @@ export class Renderer {
       case 'equip': {
         const t = this.cursor;
         this.cue(t, { kind: 'equip', uid: e.uid });
-        this.at(t, () => { const u = this.uname(e.uid); if (u) { this.floatAt(this.unitPos(u, t), 'Equipped', '#ffe27a', performance.now()); this.burst(u, 8, '#ffe9a0', { up: 50, spread: 20, life: 700, size: 2.5, g: -10, rise: true }); } });
+        this.at(t, () => { const u = this.uname(e.uid); if (u) { this.floatAt(this.unitPos(u, t), 'Equipped', '#ffe27a', this.now()); this.burst(u, 8, '#ffe9a0', { up: 50, spread: 20, life: 700, size: 2.5, g: -10, rise: true }); } });
         break;
       }
       case 'land': {
@@ -490,7 +494,7 @@ export class Renderer {
       }
       case 'terrain': { this.boardDirty = true; break; }
       case 'essence': { // HUD shows totals; a well payout also pops over the well
-        if (e.at) { const at = e.at, t = this.cursor; this.cue(t, { kind: 'essence' }); this.at(t, () => { this.floatAt(at, `+${e.amount} ${label(this.game.content, 'essence')}`, '#7fe0ff', performance.now()); this.burst(at, 12, '#9fe8ff', { up: 70, spread: 18, life: 900, size: 2.5, g: -20, rise: true }); }); this.cursor += 250; }
+        if (e.at) { const at = e.at, t = this.cursor; this.cue(t, { kind: 'essence' }); this.at(t, () => { this.floatAt(at, `+${e.amount} ${label(this.game.content, 'essence')}`, '#7fe0ff', this.now()); this.burst(at, 12, '#9fe8ff', { up: 70, spread: 18, life: 900, size: 2.5, g: -20, rise: true }); }); this.cursor += 250; }
         break;
       }
       default: break;
@@ -1034,7 +1038,7 @@ export class Renderer {
    *  clickable), then a unit's body, then the rest of a top face, then cliff sides. */
   pick(cx: number, cy: number): Pos | null {
     const wx = (cx - this.ox) / this.scale, wy = (cy - this.oy) / this.scale;
-    const g = this.game, now = performance.now();
+    const g = this.game, now = this.now();
     const list = this.pickList ??= this.buildDrawables(this.cachedNow || now);
     const topDist = (x: number, y: number) => {
       const s = this.view.project(x, y, this.vt[y][x].height);

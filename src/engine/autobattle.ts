@@ -497,7 +497,7 @@ export const battleSeed = (run: Run) => mixSeed(run.seed, run.watch, 31337) % 21
 export interface Battle { missionId: string; mission: MissionDef; arena: MapDef; enemy: EnemyCrew; seed: number; crewTags: Map<number, string> }
 
 /** Build the battle mission for the current watch, register its arena and tempered units in `content`, and return it. */
-export function buildBattleMission(c: Content, run: Run): Battle {
+export function buildBattleMission(c: Content, run: Run, opts: { preview?: boolean } = {}): Battle {
   const arena = cropArena(c, run.seed, run.watch);
   c.maps[arena.id] = arena;
   const enemy = enemyCrew(c, run);
@@ -509,12 +509,12 @@ export function buildBattleMission(c: Content, run: Run): Battle {
     return { unit: ensureTempered(c, m.def, rankOf(m.def, m.xp)), x: p.x, y: p.y, tag, ...(m.equip ? { equipment: m.equip } : {}) };
   });
   const epos = enemyLayout(c, arena, enemy);
-  const theirs = enemy.members.map((mem, i) => ({ unit: ensureTempered(c, mem.def, mem.rank), x: epos[i].x, y: epos[i].y, tag: `e${i}` })).filter((_, i) => epos[i]);
+  const theirs = opts.preview ? [] : enemy.members.map((mem, i) => ({ unit: ensureTempered(c, mem.def, mem.rank), x: epos[i].x, y: epos[i].y, tag: `e${i}` })).filter((_, i) => epos[i]);
   const hymns = run.hymns.map(h => h.id);
   const tide = hymns.reduce((n, id) => n + cardCost(c, id), 0);
   const f0 = run.charter[0];
   const mission: MissionDef = {
-    id: 'tw:battle', name: `Watch ${run.watch}${isLampEater(run.watch) ? ': Lamp-eater' : ''}`, description: arena.description, map: arena.id,
+    id: opts.preview ? 'tw:preview' : 'tw:battle', name: `Watch ${run.watch}${isLampEater(run.watch) ? ': Lamp-eater' : ''}`, description: arena.description, map: arena.id,
     teams: [
       { name: run.charter.map(f => factionName(c, f)).join(' and ') + ' crew', color: c.factions?.[f0]?.color ?? '#e0b84d', controller: 'ai', warband: hymns, units: mine, startingEssence: tide, essencePerTurn: 0 },
       { name: enemy.name, color: c.factions?.[enemy.faction]?.color ?? '#3d8fe0', controller: 'ai', warband: [], units: theirs, startingEssence: 0, essencePerTurn: 0 },
@@ -554,17 +554,25 @@ export function resultOf(g: Game, battle: Battle): BattleResult {
   };
 }
 
-/** True once a battle must stop: decided, or both crews survived the round cap. */
-export const battleOver = (g: Game) => g.phase !== 'playing' || g.round > TW.roundCap;
+/** Watches a game and captures its result the moment it is decided, or when round 13 would begin (the cap), before the next round's drowning can skew it. */
+export function trackBattle(g: Game, battle: Battle): { result: BattleResult | null } {
+  const t: { result: BattleResult | null } = { result: null };
+  g.on(e => {
+    if (t.result) return;
+    if (e.kind === 'end' || (e.kind === 'turn' && e.turn > TW.roundCap)) t.result = resultOf(g, battle);
+  });
+  return t;
+}
 
 /** Fight the watch headless with the same seed and AI the on-screen battle uses. */
 export function resolveBattle(c: Content, run: Run): BattleResult {
   const battle = buildBattleMission(c, run);
   try {
     const g = new Game(c, battle.missionId, { seed: battle.seed });
+    const t = trackBattle(g, battle);
     let guard = 0;
-    while (!battleOver(g) && guard++ < 200) playAiTurn(g);
-    return resultOf(g, battle);
+    while (!t.result && guard++ < 200) playAiTurn(g);
+    return t.result ?? resultOf(g, battle);
   } finally { clearTempered(c); }
 }
 

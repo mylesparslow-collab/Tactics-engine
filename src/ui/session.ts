@@ -24,6 +24,16 @@ export interface SessionOpts {
   onExit: () => void;
   onRetry: () => void;
   onNext?: () => void;
+  /** Spectator mode (auto-battles): both crews are AI, no hand or End Turn, speed and Skip controls instead. */
+  spectator?: boolean;
+  /** Fix the game seed so a battle can be replayed headless with the same outcome. */
+  seed?: number;
+  /** Spectator: stop the battle once this many rounds have been played (the controller decides the winner). */
+  roundCap?: number;
+  /** Spectator: called once when the battle is over (phase 'playing' means the round cap was reached), instead of the victory/defeat modal. */
+  onBattleEnd?: (phase: 'playing' | 'victory' | 'defeat') => void;
+  /** Spectator: Skip was pressed. The controller resolves the battle headless. */
+  onSkip?: () => void;
 }
 
 type Mode = { kind: 'idle' } | { kind: 'move' } | { kind: 'ability'; ability: string } | { kind: 'card'; index: number };
@@ -56,10 +66,11 @@ export class GameSession {
   private handFilter: 'all' | 'unit' | 'spell' | 'equipment' = 'all';
   private hudTop!: HTMLElement;
   private factions: (string | undefined)[] = [];
+  private speed = 1;
 
   constructor(container: HTMLElement, private opts: SessionOpts) {
     this.content = opts.content;
-    this.game = new Game(opts.content, opts.missionId, { roster: opts.roster });
+    this.game = new Game(opts.content, opts.missionId, { roster: opts.roster, seed: opts.seed });
     this.root = container;
     this.build();
     this.renderer = new Renderer(this.canvas);
@@ -117,7 +128,7 @@ export class GameSession {
   // ---------- DOM ----------
   private build() {
     installArt(); stopBackdrop();
-    clear(this.root); this.root.className = 'game';
+    clear(this.root); this.root.className = 'game' + (this.opts.spectator ? ' spectator' : '');
     const g = this.g;
     this.factions = g.teams.map((t, i) => teamFaction(this.content, [...t.hand, ...t.deck, ...g.units.filter(u => u.team === i).map(u => u.defId)]));
     this.hudTop = h('header', { id: 'hudtop' });
@@ -141,7 +152,7 @@ export class GameSession {
       vb('center', 'Reset view', () => this.renderer.resetView()));
     const fade = h('div', { class: 'fadein' });
     this.stage = h('main', { id: 'stage' }, this.canvas, this.hudTop, this.logBox, this.banner, this.toast, ctl, this.preview, this.right, fade);
-    this.root.append(this.stage, this.hand);
+    if (this.opts.spectator) this.root.append(this.stage); else this.root.append(this.stage, this.hand);
     this.bindPointer();
   }
 
@@ -221,7 +232,9 @@ export class GameSession {
       case 'drop': this.logLine(`${e.amount} ${this.L('essence')} spills on the seabed.`, 'sys'); break;
       case 'pickup': this.logLine(`${this.uname(e.uid)} collects ${e.amount} ${this.L('essence')}.`, 'sys'); break;
       case 'terrain': this.logLine(`The ground at ${e.x},${e.y} becomes ${g.content.terrain[e.terrain]?.name ?? e.terrain}.`, 'sys'); break;
-      case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); playTurnBell(g.teams[e.team].controller === 'human'); break;
+      case 'turn':
+        if (this.opts.spectator && this.opts.roundCap && e.turn > this.opts.roundCap) { this.ended = true; this.waitForEnd('playing'); break; }
+        this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); playTurnBell(g.teams[e.team].controller === 'human'); break;
       case 'message': this.logLine(`${e.speaker ? e.speaker + ': ' : ''}${e.text}`, 'msg'); this.bannerQueue.push({ text: e.text, speaker: e.speaker }); this.pumpBanner(); break;
       case 'draw': if (g.teams[e.team].controller === 'human') { this.logLine(`You draw ${g.cardName(e.card)}.`, 'sys'); playCard(); } break;
       case 'end': this.ended = true; this.logLine(e.phase === 'victory' ? 'Victory!' : 'Defeat.', 'turn'); this.waitForEnd(e.phase); break;
@@ -267,6 +280,7 @@ export class GameSession {
     const poll = () => {
       if (this.destroyed) return;
       if (this.renderer.busy()) { setTimeout(poll, 150); return; }
+      if (this.opts.spectator) { setTimeout(() => { if (!this.destroyed) this.opts.onBattleEnd?.(phase); }, 900 / this.speed); return; }
       setTimeout(() => { if (this.destroyed) return; playEnd(phase === 'victory'); this.showEnd(phase); }, 500);
     };
     poll();
@@ -310,15 +324,16 @@ export class GameSession {
     const tick = () => {
       if (this.destroyed) return;
       if (g.phase !== 'playing') { this.aiRunning = false; this.refresh(); return; }
+      if (this.ended) { this.aiRunning = false; return; }
       if (this.renderer.busy()) { this.aiTimer = window.setTimeout(tick, 80); return; }
       let more = false;
       try { more = steps++ < 80 && aiStep(g); } catch (err) { console.error('AI error', err); }
       if (!more && g.phase === 'playing') g.endTurn();
       this.refresh();
-      if (g.phase === 'playing' && g.teams[g.current].controller === 'ai') { steps = more ? steps : 0; this.aiTimer = window.setTimeout(tick, 200); }
+      if (g.phase === 'playing' && !this.ended && g.teams[g.current].controller === 'ai') { steps = more ? steps : 0; this.aiTimer = window.setTimeout(tick, 200 / this.speed); }
       else { this.aiRunning = false; this.refresh(); }
     };
-    this.aiTimer = window.setTimeout(tick, 350);
+    this.aiTimer = window.setTimeout(tick, 350 / this.speed);
   }
 
   // ---------- input ----------
@@ -504,15 +519,23 @@ export class GameSession {
     const cur = g.teams[g.current], me = this.humanTeam();
     const myTurn = cur.controller === 'human';
     const others = g.teams.map((_, i) => i).filter(i => i !== me);
-    const endBtn = h('button', { class: 'endturn-pill btn-gold', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() }, 'End Turn');
+    const spec = !!this.opts.spectator;
+    const speedBtns = spec ? h('div', { class: 'speedctl', role: 'group', 'aria-label': 'Battle speed' }, ...[1, 2, 4].map(n =>
+      h('button', { class: 'spd' + (this.speed === n ? ' on' : ''), title: `${n}x speed`, onclick: () => this.setSpeed(n) }, `${n}x`)),
+      h('button', { class: 'spd skip', title: 'Skip to the result', onclick: () => this.opts.onSkip?.() }, 'Skip')) : null;
+    const endBtn = spec ? null : h('button', { class: 'endturn-pill btn-gold', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() }, 'End Turn');
     this.top.append(
       h('div', { class: 'hud-l' }, this.teamGauge(me, 'left')),
       h('div', { class: 'roundmed', style: `--tc:${cur.color}` },
         h('div', { class: 'rm-round' }, 'Round ', h('b', { class: 'num' }, String(g.round))),
         h('div', { class: 'rm-turn' }, myTurn ? 'Your turn' : this.aiRunning ? `${cur.name.replace(/^The /, '')} acting` : `${cur.name.replace(/^The /, '')}`)),
-      h('div', { class: 'hud-r' }, ...others.map(i => this.teamGauge(i, 'right')), endBtn,
+      h('div', { class: 'hud-r' }, ...others.map(i => this.teamGauge(i, 'right')), speedBtns, endBtn,
         h('button', { class: 'iconbtn menubtn soundbtn', title: isMuted() ? 'Sound off (M)' : 'Sound settings (M mutes)', 'data-snd': 'open', onclick: (e: Event) => openSoundPanel(e.currentTarget as HTMLElement) }, glyph(isMuted() ? 'mute' : 'sound')),
         h('button', { class: 'iconbtn menubtn', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, glyph('gear'))));
+  }
+
+  private setSpeed(n: number) {
+    this.speed = n; this.renderer.setSpeed(n); this.renderTop();
   }
 
   // ---------- hand ----------
