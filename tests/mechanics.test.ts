@@ -553,3 +553,51 @@ describe('void (chasm) terrain', () => {
     expect(g.skyfallTiles(0).some(p => g.terrainAt(p.x, p.y).void)).toBe(false);
   });
 });
+
+describe('engagement', () => {
+  // v (human) at 4,4 is adjacent to the enemy e at 5,4. Row 4-5 east of the trench is open grass.
+  const mk = (unit = 'vanguard', extra: { unit: string; x: number; y: number; tag?: string }[] = [], edit?: (c: Content) => void) =>
+    world({ teams: [team('human', [anchor(0, 5), { unit, x: 4, y: 4, tag: 'v' }, ...extra]), team('ai', [anchor(7, 0), { unit: 'vanguard', x: 5, y: 4, tag: 'e' }])], edit });
+  const tag = (g: Game, t: string) => g.units.find(u => u.tag === t)!;
+
+  it('costs +2 AP on the first step away from an adjacent enemy, even a step that stays adjacent', () => {
+    const g = mk();
+    const v = tag(g, 'v');
+    expect(g.disengageCost(v)).toBe(2);
+    expect(g.reachable(v).get('4,5')?.cost).toBe(3);
+    expect(g.reachable(v).get('4,3')?.cost).toBe(3);
+    expect(g.reachable(v).get('4,2')?.cost).toBe(4); // only once per move
+    const ap = v.ap;
+    expect(g.move(v.uid, 4, 3)).toBe(true);
+    expect(v.ap).toBe(ap - 3);
+    expect(g.disengageCost(v)).toBe(0); // free now
+    expect(g.reachable(v).get('4,2')?.cost).toBe(1);
+  });
+
+  it('charges again when moving between two tiles that both touch the enemy', () => {
+    const g = mk();
+    const v = tag(g, 'v');
+    // 5,5 is adjacent to e (5,4) as well; 4,4 -> 4,5 -> 5,5 = 2 steps + 2
+    expect(g.reachable(v).get('5,5')?.cost).toBe(4);
+  });
+
+  it('is free for flyers, ignoresEngagement units and statuses, and next to structures', () => {
+    expect(g0('wisp')).toBe(0);
+    expect(g0('vanguard', c => { c.units.vanguard.ignoresEngagement = true; })).toBe(0);
+    const g = mk();
+    const v = tag(g, 'v');
+    g.content.statuses.slippery = { name: 'Slippery', ignoresEngagement: true };
+    v.statuses.push({ id: 'slippery', remaining: 2 });
+    expect(g.disengageCost(v)).toBe(0);
+    const dead = mk(); tag(dead, 'e').alive = false;
+    expect(dead.disengageCost(tag(dead, 'v'))).toBe(0);
+    function g0(unit: string, edit?: (c: Content) => void) { const gg = mk(unit, [], edit); return gg.disengageCost(tag(gg, 'v')); }
+  });
+
+  it('shrinks the AI threat range too', () => {
+    const g = mk();
+    const e = tag(g, 'e');
+    const free = mk(); free.units.find(u => u.tag === 'v')!.alive = false;
+    expect(g.moveRange(e).size).toBeLessThan(free.moveRange(free.units.find(u => u.tag === 'e')!).size);
+  });
+});

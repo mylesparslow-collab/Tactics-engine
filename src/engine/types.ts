@@ -100,6 +100,8 @@ export interface StatusDef {
   /** Re-applying adds a stack (up to maxStacks); statMods and onTurnStart amounts scale with stacks. */
   stacks?: boolean;
   maxStacks?: number;
+  /** A unit carrying this status walks away from adjacent enemies without paying the engagement cost. */
+  ignoresEngagement?: boolean;
   /** A unit carrying this status counts as standing in water (it does not dry out). */
   wet?: boolean;
   /** Live visual effect clinging to the unit while it has the status (src/render/fx.ts preset). */
@@ -148,6 +150,8 @@ export interface UnitDef {
   skyfall?: { impact: number };
   /** Loses this many HP at the start of its owner's turn unless on a wet tile or carrying a wet status. */
   dries?: number;
+  /** Never pays the extra AP to leave an adjacent enemy (flyers already don't). */
+  ignoresEngagement?: boolean;
   /** Every passable tile costs 1 AP, no jump limit, may cross (not end on) impassable tiles, ignores onEnter, holds no Wells. */
   flying?: boolean;
 }

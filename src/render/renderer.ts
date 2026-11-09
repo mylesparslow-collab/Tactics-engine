@@ -21,6 +21,8 @@ export interface Overlay {
   skyfall: Set<string>;
   path: Pos[];
   pathCost: number | null;
+  /** AP of pathCost spent breaking away from an adjacent enemy (shown as "+2 engaged"). */
+  pathEngaged?: number;
   selected: Pos | null;
   hover: Pos | null;
   previews: Map<number, Preview>;
@@ -859,6 +861,10 @@ export class Renderer {
         ctx.font = 'bold 15px Cinzel, Georgia, serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
         ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(0,0,0,0.85)';
         const txt = `${ov.pathCost} AP`; ctx.strokeText(txt, sx, sy - 22); ctx.fillStyle = '#fff'; ctx.fillText(txt, sx, sy - 22);
+        if (ov.pathEngaged) {
+          const note = `+${ov.pathEngaged} engaged`; ctx.font = 'bold 12px Cinzel, Georgia, serif';
+          ctx.strokeText(note, sx, sy - 40); ctx.fillStyle = '#f0b450'; ctx.fillText(note, sx, sy - 40);
+        }
       }
     });
     const outline = (p: Pos, color: string, lw: number) => {
