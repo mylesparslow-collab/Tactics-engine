@@ -310,5 +310,47 @@
   "statMods": {
    "ap": -1
   }
+ },
+ "gy_slowed": {
+  "name": "Slowed",
+  "description": "Gummed with guano and falling jar-glass. -2 AP.",
+  "statMods": {
+   "ap": -2
+  }
+ },
+ "gy_sealed_letter": {
+  "name": "Sealed Letter",
+  "description": "Carried under the Gyre's oldest bargain: delivered, and not to be touched. Cannot be targeted by enemies.",
+  "untargetable": true
+ },
+ "hc_condemned": {
+  "name": "Condemned",
+  "description": "Sentence passed by the Court. -3 defense and -1 attack.",
+  "statMods": {
+   "defense": -3,
+   "attack": -1
+  }
+ },
+ "lk_deafened": {
+  "name": "Deafened",
+  "description": "Ears ringing from the horn. -2 AP.",
+  "statMods": {
+   "ap": -2
+  }
+ },
+ "sc_silenced": {
+  "name": "Silenced",
+  "description": "Spoken over by the Concord. -2 attack and -2 AP.",
+  "statMods": {
+   "attack": -2,
+   "ap": -2
+  }
+ },
+ "sc_winded": {
+  "name": "Winded",
+  "description": "Slow to turn after the charge. -1 AP.",
+  "statMods": {
+   "ap": -1
+  }
  }
 }

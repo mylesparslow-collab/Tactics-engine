@@ -12,7 +12,9 @@ export type Effect = EffectBody & { ifTargetStatus?: string };
 type EffectBody =
   | { type: 'damage'; amount: number; damageType?: string; ignoreAttack?: boolean; pierce?: boolean;
       /** +`bonus` to the amount (before defense/resist) when the target's current HP is below `below` x its max HP. */
-      vsWounded?: { below: number; bonus: number }; filter?: EffectFilter }
+      vsWounded?: { below: number; bonus: number }; filter?: EffectFilter;
+      /** If this kills the target (not a hero, not a Beacon/keystone), summon one of this unit for the caster's team on its tile. */
+      convertOnKill?: string }
   | { type: 'heal'; amount: number; target?: 'caster'; filter?: EffectFilter }
   | { type: 'sacrifice' }
   /** status target 'caster': applied to the caster once per use instead of to each unit hit. */
@@ -22,6 +24,8 @@ type EffectBody =
   | { type: 'pull'; distance: number }
   | { type: 'swap' }
   | { type: 'summon'; unit: string; count?: number }
+  /** The caster's team draws `count` cards into hand (respecting the hand limit). */
+  | { type: 'draw'; count: number }
   | { type: 'terrain'; terrain: string; duration?: number }
   | { type: 'essence'; amount: number; team?: 'self' | 'enemy' }
   | { type: 'aura'; radius: number; affects?: Affects; statMods?: Partial<Record<StatKey, number>>; resist?: Record<string, number>;
@@ -31,7 +35,7 @@ type EffectBody =
       keepsWet?: boolean };
 
 /** Effects applied once per cast (at the target tile) rather than once per affected unit. */
-export const CAST_LEVEL_EFFECTS = ['teleport', 'summon', 'terrain', 'essence', 'swap', 'sacrifice'] as const;
+export const CAST_LEVEL_EFFECTS = ['teleport', 'summon', 'terrain', 'essence', 'swap', 'sacrifice', 'draw'] as const;
 
 export type TargetKind = 'enemy' | 'ally' | 'unit' | 'tile' | 'empty' | 'self';
 export type Affects = 'enemies' | 'allies' | 'all';
@@ -104,6 +108,8 @@ export interface StatusDef {
   ignoresEngagement?: boolean;
   /** A unit carrying this status counts as standing in water (it does not dry out). */
   wet?: boolean;
+  /** A unit carrying this status cannot be directly targeted by enemy abilities or spells (area effects not centred on it still hit). */
+  untargetable?: boolean;
   /** Live visual effect clinging to the unit while it has the status (src/render/fx.ts preset). */
   vfx?: string;
 }

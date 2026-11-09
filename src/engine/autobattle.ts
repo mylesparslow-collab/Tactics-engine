@@ -595,7 +595,8 @@ export function applyBattleResult(c: Content, run: Run, res: BattleResult): Watc
   if (run.light <= 0) run.status = 'defeat';
   else if (run.watch >= TW.watches && res.outcome !== 'loss') run.status = 'victory';
   else {
-    run.watch++;
+    // A loss on the final watch with Light left replays that watch instead of running past the last one.
+    run.watch = Math.min(run.watch + 1, TW.watches);
     run.salvage += income;
     rollOffers(c, run);
     // Berths grew: promote held champions into open berths automatically.

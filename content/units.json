@@ -3186,5 +3186,796 @@
    "glyph": "Ta"
   },
   "description": "A mercenary who rides a vast bald vulture and follows armies for the dead, selling the Rim's battles their own cleanup. He wants only what every scavenger wants: for the fighting to last a little longer."
+ },
+ "gyre_cormorant_diver": {
+  "name": "Cormorant Diver",
+  "role": "Ambusher",
+  "faction": "gyre",
+  "cost": 40,
+  "stats": {
+   "hp": 21,
+   "ap": 6,
+   "attack": 8,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "gy_diver_beak",
+   "gy_dive",
+   "gy_surfacing_strike"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Cd"
+  },
+  "description": "Dives under the salt crust like it was water and comes up where nobody was looking. The Gyre says a cormorant is a gull that has seen the bottom."
+ },
+ "gyre_guano_bombardier": {
+  "name": "Guano Bombardier",
+  "role": "Flying Siege",
+  "faction": "gyre",
+  "cost": 45,
+  "stats": {
+   "hp": 22,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "flying": true,
+  "abilities": [
+   "gy_bomber_talon",
+   "gy_bomb_run"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Gb"
+  },
+  "description": "Drops jars from on high and does not wait to see them land. The jars are guano, mostly. The rest is a Gyre secret and smells worse."
+ },
+ "gyre_kite_rigger": {
+  "name": "Kite-Rigger",
+  "role": "Terrain",
+  "faction": "gyre",
+  "cost": 30,
+  "stats": {
+   "hp": 22,
+   "ap": 5,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "gy_rigger_pole",
+   "gy_raise_perch"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Kr"
+  },
+  "description": "Strings kites and perches along the high ground until the Gyre has a sky to stand on. She hums while she works, a song about someone who never came back down."
+ },
+ "gyre_linnet_garr": {
+  "name": "Linnet Garr",
+  "title": "the Rider Who Delivers",
+  "role": "Hero",
+  "faction": "gyre",
+  "hero": true,
+  "cost": 70,
+  "stats": {
+   "hp": 28,
+   "ap": 8,
+   "attack": 7,
+   "defense": 1,
+   "jump": 2
+  },
+  "flying": true,
+  "abilities": [
+   "gy_linnet_quill",
+   "gy_carry",
+   "gy_sealed_letter_send"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Lg"
+  },
+  "description": "The messenger from the Lanternkeeper campaign, the rider who never breaks the Gyre's oldest bargain: what is carried is delivered. She will carry you out of a fight too, if you ask nicely."
+ },
+ "hadal_court_bell_bearer": {
+  "name": "Bell-Bearer",
+  "role": "Transport",
+  "faction": "hadal_court",
+  "cost": 45,
+  "stats": {
+   "hp": 26,
+   "ap": 5,
+   "attack": 6,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_bearer_chain",
+   "hc_lower_the_bell",
+   "hc_bell_ward"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Bb"
+  },
+  "description": "Two thralls haul a pressure-bell on chains, and the Court's giants ride in its shadow. Anything the Bell swings over is simply moved, and nobody argues with the Bell."
+ },
+ "hadal_court_anglet": {
+  "name": "Anglet",
+  "role": "Cheap Ranged",
+  "faction": "hadal_court",
+  "cost": 30,
+  "stats": {
+   "hp": 12,
+   "ap": 6,
+   "attack": 7,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_anglet_spit",
+   "hc_anglet_skitter"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "An"
+  },
+  "description": "A small lantern-jawed pressure-born that spits glowing bile at anything that looks warm. It would be frightening if it were bigger. It is aware of this."
+ },
+ "hadal_court_silt_weaver": {
+  "name": "Silt-Weaver",
+  "role": "Terrain Controller",
+  "faction": "hadal_court",
+  "cost": 40,
+  "stats": {
+   "hp": 18,
+   "ap": 6,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_weaver_lash",
+   "hc_lay_the_murk",
+   "hc_pull_of_the_floor"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Sw"
+  },
+  "description": "Trails trench silt from long gill-veils and lays it down in drifts the colour of a held breath. The floor is a thing the Court has always owned, and the Silt-Weaver is how it collects."
+ },
+ "hadal_court_justiciar_oulme": {
+  "name": "Oulme",
+  "title": "Justiciar, the Second Bell",
+  "role": "Justiciar of the Hadal Court",
+  "faction": "hadal_court",
+  "hero": true,
+  "cost": 85,
+  "stats": {
+   "hp": 38,
+   "ap": 5,
+   "attack": 9,
+   "defense": 3,
+   "jump": 1
+  },
+  "abilities": [
+   "hc_oulme_gavel",
+   "hc_pass_sentence",
+   "hc_weight_of_the_verdict",
+   "hc_second_bell"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Ou"
+  },
+  "description": "The Court's judge, who carries the indictment of the surface in a pressure-casket and has not yet found it empty. She does not hate the sunlit world. She has read the charges."
+ },
+ "lanternkeepers_foghorn_crew": {
+  "name": "Foghorn Crew",
+  "role": "Area Control",
+  "faction": "lanternkeepers",
+  "cost": 45,
+  "stats": {
+   "hp": 20,
+   "ap": 5,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_crew_hook",
+   "lk_sound_the_horn"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Fh"
+  },
+  "description": "Two keepers on a hand-cranked horn, one at the crank and one watching the fog. When the reefs come up out of the dark, they are the first to say so, loudly."
+ },
+ "lanternkeepers_wreck_light": {
+  "name": "Wreck-Light",
+  "role": "Trickster",
+  "faction": "lanternkeepers",
+  "cost": 40,
+  "stats": {
+   "hp": 17,
+   "ap": 6,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_false_lamp_dart",
+   "lk_false_light",
+   "lk_shoal_ahead"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Wl"
+  },
+  "description": "The keepers' oldest secret: a lamp hung where no lamp should be, to put a ship on the rocks. They do not talk about it, and they have not stopped."
+ },
+ "lanternkeepers_lens_apprentice": {
+  "name": "Lens-Apprentice",
+  "role": "Cheap Body",
+  "faction": "lanternkeepers",
+  "cost": 25,
+  "stats": {
+   "hp": 13,
+   "ap": 5,
+   "attack": 5,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_apprentice_chip",
+   "lk_cracked_flare"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "La"
+  },
+  "description": "Glass-dust on her apron, a cracked lens in her hand, and a lamp she has not yet learned to keep from flickering. The Bellringer calls her a promising girl."
+ },
+ "lanternkeepers_sabeth_moor": {
+  "name": "Archivist Sabeth Moor",
+  "title": "Keeper of the Archive",
+  "role": "Hero",
+  "faction": "lanternkeepers",
+  "hero": true,
+  "cost": 80,
+  "stats": {
+   "hp": 28,
+   "ap": 6,
+   "attack": 7,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "lk_sabeth_quill",
+   "lk_recorded_truth",
+   "lk_footnote",
+   "lk_draw_from_the_record"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Sm"
+  },
+  "description": "Keeper of the Archive, and the only one living who has read the true logbooks of the Long Ebb. She speaks quietly now, as someone does who knows what is written in them."
+ },
+ "overcurrent_rainmoth_cloud": {
+  "name": "Rainmoth Cloud",
+  "role": "Cheap Ranged",
+  "faction": "overcurrent",
+  "cost": 25,
+  "stats": {
+   "hp": 10,
+   "ap": 6,
+   "attack": 5,
+   "defense": 0,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 2
+  },
+  "dries": 1,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_moth_flutter",
+   "oc_rain_shed"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Rm"
+  },
+  "description": "A shoal of grey moths that carries its own weather. They shed rain on whoever stands beneath, friend or not, and it has never once been a mistake."
+ },
+ "overcurrent_cloudwhale_calf": {
+  "name": "Cloudwhale Calf",
+  "role": "Tank",
+  "faction": "overcurrent",
+  "cost": 55,
+  "stats": {
+   "hp": 38,
+   "ap": 5,
+   "attack": 7,
+   "defense": 2,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 5
+  },
+  "dries": 2,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_calf_nudge",
+   "oc_calf_shove",
+   "oc_spout"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Cc"
+  },
+  "description": "A young cloud-whale, slow and enormous, still learning that the sky is not meant to be walked on. What it lands on is flattened and what it stands beside is moved."
+ },
+ "overcurrent_stormglass_squid": {
+  "name": "Stormglass Squid",
+  "role": "Burst Ranged",
+  "faction": "overcurrent",
+  "cost": 50,
+  "stats": {
+   "hp": 15,
+   "ap": 6,
+   "attack": 9,
+   "defense": 0,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 3
+  },
+  "dries": 1,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_squid_jet",
+   "oc_glass_lance"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Sq"
+  },
+  "description": "A squid with lightning in its glass-clear mantle, fallen from the high cold where the storms are born. It does not aim so much as release."
+ },
+ "overcurrent_old_sounding": {
+  "name": "Old Sounding",
+  "title": "the Whale That Climbed Back",
+  "role": "Hero",
+  "faction": "overcurrent",
+  "hero": true,
+  "cost": 85,
+  "stats": {
+   "hp": 40,
+   "ap": 5,
+   "attack": 9,
+   "defense": 2,
+   "jump": 1
+  },
+  "skyfall": {
+   "impact": 5
+  },
+  "dries": 2,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "oc_sounding_fluke",
+   "oc_rain_shadow",
+   "oc_sound_the_deep"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Os"
+  },
+  "description": "An ancient cloud-whale that fell once already and climbed back, and has no intention of leaving the sea again. Where it stands, the old rain stays."
+ },
+ "reef_ascendant_mantis_striker": {
+  "name": "Mantis Striker",
+  "role": "Burst",
+  "faction": "reef_ascendant",
+  "cost": 40,
+  "stats": {
+   "hp": 13,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "ra_club_jab",
+   "ra_shell_breaker"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Ms"
+  },
+  "description": "A mantis shrimp grown in living calcite, its club a knuckle of the same stuff the Reef builds walls from. It hits once, and what it hits stops being a wall."
+ },
+ "reef_ascendant_spore_drifter": {
+  "name": "Spore Drifter",
+  "role": "Flier Drone",
+  "faction": "reef_ascendant",
+  "cost": 25,
+  "stats": {
+   "hp": 10,
+   "ap": 6,
+   "attack": 4,
+   "defense": 0,
+   "jump": 1
+  },
+  "flying": true,
+  "resist": {
+   "brine": 1
+  },
+  "abilities": [
+   "ra_drifter_sting",
+   "ra_seed"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Sd"
+  },
+  "description": "A coral jelly that drifts on warm updrafts and drops where the colony wants a footing. The Reef sends it first and grows where it lands."
+ },
+ "reef_ascendant_siphon_sponge": {
+  "name": "Siphon Sponge",
+  "role": "Drain",
+  "faction": "reef_ascendant",
+  "cost": 35,
+  "stats": {
+   "hp": 18,
+   "ap": 5,
+   "attack": 4,
+   "defense": 2,
+   "jump": 1
+  },
+  "resist": {
+   "brine": 2
+  },
+  "abilities": [
+   "ra_sponge_press",
+   "ra_filter",
+   "ra_feed_the_many"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Sn"
+  },
+  "description": "A pulsing sponge-mound that drinks whatever walks past. What it filters out of the enemy it passes to the nearest drone, because the Reef wastes nothing."
+ },
+ "reef_ascendant_the_bleached": {
+  "name": "The Bleached",
+  "title": "The White Mind",
+  "role": "Hero",
+  "faction": "reef_ascendant",
+  "hero": true,
+  "cost": 80,
+  "stats": {
+   "hp": 36,
+   "ap": 5,
+   "attack": 9,
+   "defense": 2,
+   "jump": 1
+  },
+  "dries": 1,
+  "resist": {
+   "brine": 2
+  },
+  "abilities": [
+   "ra_bleached_lash",
+   "ra_bleaching_synapse",
+   "ra_eat_the_colony"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Bl"
+  },
+  "description": "A mind-coral that turned white in the sun and is starving. It still thinks for the drones around it, and it has begun to think of them as food."
+ },
+ "returning_tide_ferryman": {
+  "name": "Ferryman",
+  "role": "Reviver",
+  "faction": "returning_tide",
+  "cost": 40,
+  "stats": {
+   "hp": 20,
+   "ap": 6,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_ferry_oar",
+   "rt_toll_of_water",
+   "rt_bring_them_over"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Fe"
+  },
+  "description": "Rows a dry boat across the salt on runners, humming the fare. Whoever he carries over comes back a little wetter, and somehow never complains of the crossing."
+ },
+ "returning_tide_cistern_wife": {
+  "name": "Cistern-Wife",
+  "role": "Flood Engine",
+  "faction": "returning_tide",
+  "cost": 45,
+  "stats": {
+   "hp": 24,
+   "ap": 5,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_cistern_ladle",
+   "rt_open_the_cistern",
+   "rt_wading_rite"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Cw"
+  },
+  "description": "Carries a cracked cistern on her back that never empties and never says whose water it was. Where she stops to rest the ground remembers the sea."
+ },
+ "returning_tide_salt_drinker": {
+  "name": "Salt-Drinker",
+  "role": "Sacrifice Fodder",
+  "faction": "returning_tide",
+  "cost": 25,
+  "stats": {
+   "hp": 14,
+   "ap": 6,
+   "attack": 6,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_drinker_slap",
+   "rt_brine_burst"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Sd"
+  },
+  "description": "A penitent who swallowed brine until it killed them, and kept walking. They are very full. They are going to be somebody else's problem soon."
+ },
+ "returning_tide_ash_harrowgate": {
+  "name": "Ash Harrowgate",
+  "title": "Deacon of the Returning Tide",
+  "role": "Deacon of the Returning Tide",
+  "faction": "returning_tide",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 38,
+   "ap": 6,
+   "attack": 10,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "rt_harrowgate_rod",
+   "rt_wring_the_doubter",
+   "rt_congregation",
+   "rt_harrowgate_sermon"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "AH"
+  },
+  "description": "Dunnock's enforcer, who wrings the doubters first and gently. He does not shout. The congregation stands closer when he speaks, which is how he knows it is working."
+ },
+ "salt_concord_rainwatch_inquisitor": {
+  "name": "Rainwatch Inquisitor",
+  "role": "Anti-Caster",
+  "faction": "salt_concord",
+  "cost": 45,
+  "stats": {
+   "hp": 19,
+   "ap": 6,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_inquisitor_censer",
+   "sc_censure",
+   "sc_dry_the_heretic"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Ri"
+  },
+  "description": "The Concord's answer to the Tide's rain-shrines, in white oilcloth with a salt censer on a chain. Where the Inquisitor walks, a sermon goes dry in the middle of a word."
+ },
+ "salt_concord_salt_sapper": {
+  "name": "Salt Sapper",
+  "role": "Demolition",
+  "faction": "salt_concord",
+  "cost": 40,
+  "stats": {
+   "hp": 16,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_sapper_pick",
+   "sc_charge_the_seam",
+   "sc_fuse"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Sp"
+  },
+  "description": "Mine-crew with a barrow of salt charges and a short fuse. The Concord builds roads and walls; the Sappers are the ones who are asked to take them down again."
+ },
+ "salt_concord_verge_lancer": {
+  "name": "Verge Lancer",
+  "role": "Shock Cavalry",
+  "faction": "salt_concord",
+  "cost": 55,
+  "stats": {
+   "hp": 23,
+   "ap": 7,
+   "attack": 9,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_lancer_pike",
+   "sc_verge_charge",
+   "sc_couched_lance"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Vl"
+  },
+  "description": "Heavy horse of the Verge forts in salt-scaled barding. A Lancer wants a straight road and a clear target, and takes a long moment to forgive either being missing."
+ },
+ "salt_concord_abel_pryce": {
+  "name": "Abel Pryce",
+  "title": "Surveyor-Royal of the Salt Concord",
+  "role": "Surveyor-Royal of the Salt Concord",
+  "faction": "salt_concord",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 30,
+   "ap": 6,
+   "attack": 9,
+   "defense": 2,
+   "jump": 1
+  },
+  "abilities": [
+   "sc_pryce_theodolite",
+   "sc_pryce_triangulate",
+   "sc_pryce_survey_holds",
+   "sc_pryce_plumb_line"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "AP"
+  },
+  "description": "The Concord's chief cartographer, who measured every waterline mark on the Shelf and quietly knows the Ebb is not permanent. He keeps the survey exact and his conclusions to himself."
+ },
+ "salvage_compact_ballast_diver": {
+  "name": "Ballast Diver",
+  "role": "Tank",
+  "faction": "salvage_compact",
+  "cost": 50,
+  "stats": {
+   "hp": 30,
+   "ap": 4,
+   "attack": 7,
+   "defense": 4,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_diver_wrench",
+   "sv_lead_boots",
+   "sv_crowbar"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Bd"
+  },
+  "description": "Wreck-diver in a riveted copper suit with lead boots, who walks the sea floor like a man late for a funeral. It takes a lot to move him, and he has a crowbar for whatever else needs shifting."
+ },
+ "salvage_compact_kettle_broker": {
+  "name": "Kettle Broker",
+  "role": "Economy",
+  "faction": "salvage_compact",
+  "cost": 40,
+  "stats": {
+   "hp": 15,
+   "ap": 6,
+   "attack": 4,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_broker_cane",
+   "sv_fence_it",
+   "sv_bad_debt"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Kb"
+  },
+  "description": "Sells to everyone and cheats everyone, and has a kettle on in case it is ever called a conversation. Weak in a fight, which is why the rest of the crew is so careful to keep him alive."
+ },
+ "salvage_compact_fat_renderer": {
+  "name": "Fat-Renderer",
+  "role": "Cheap Fire",
+  "faction": "salvage_compact",
+  "cost": 35,
+  "stats": {
+   "hp": 17,
+   "ap": 6,
+   "attack": 6,
+   "defense": 0,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_render_scoop",
+   "sv_hot_ladle",
+   "sv_grease_the_deck"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Fr"
+  },
+  "description": "Boils leviathan fat into powder in a vat chained to a cart. The smell arrives about a minute before the Renderer does, and about a minute before the fire."
+ },
+ "salvage_compact_hesk_varrow": {
+  "name": "Hesk Varrow",
+  "title": "The Forger",
+  "role": "The Forger of the Salvage Compact",
+  "faction": "salvage_compact",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 28,
+   "ap": 7,
+   "attack": 9,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "sv_hesk_quill",
+   "sv_hesk_forged_orders",
+   "sv_hesk_paper_trail",
+   "sv_hesk_short_change"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "HV"
+  },
+  "description": "The broker from the paper swords, before the Concord caught him, with a quill behind one ear and a knife behind the other. Every order he has signed is real, in the sense that someone obeyed it."
  }
 }

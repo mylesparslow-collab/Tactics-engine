@@ -554,6 +554,94 @@ describe('void (chasm) terrain', () => {
   });
 });
 
+describe('draw effect, convertOnKill and untargetable', () => {
+  const tag = (g: Game, t: string) => g.units.find(u => u.tag === t)!;
+  const extra = (c: Content) => {
+    c.statuses.veiled = { name: 'Veiled', untargetable: true };
+    c.units.hero1 = { name: 'Hero', cost: 30, stats: stats(1), abilities: [], sprite, hero: true };
+    c.units.thrall = { name: 'Thrall', cost: 0, stats: stats(5), abilities: ['basic_strike'], sprite };
+    c.abilities.insight = { name: 'Insight', apCost: 1, range: { min: 0, max: 0 }, target: 'self', effects: [{ type: 'draw', count: 2 }] };
+    c.abilities.reap = { name: 'Reap', apCost: 1, range: { min: 1, max: 1 }, target: 'enemy', effects: [{ type: 'damage', amount: 50, convertOnKill: 'thrall' }] };
+    c.abilities.blast = { name: 'Blast', apCost: 1, range: { min: 1, max: 4 }, target: 'tile', area: { shape: 'radius', size: 1 }, affects: 'enemies', effects: [{ type: 'damage', amount: 1 }] };
+    c.abilities.mend = { name: 'Mend', apCost: 1, range: { min: 1, max: 1 }, target: 'ally', effects: [{ type: 'heal', amount: 1 }] };
+    c.units.seer = { name: 'Seer', cost: 30, stats: stats(20), abilities: ['insight'], sprite };
+    c.units.reaper = { name: 'Reaper', cost: 30, stats: stats(20), abilities: ['reap', 'blast', 'mend', 'basic_strike'], sprite };
+    c.spells.zap = { name: 'Zap', cost: 5, target: 'enemy', effects: [{ type: 'damage', amount: 3 }] };
+    c.spells.cull = { name: 'Cull', cost: 5, target: 'enemy', effects: [{ type: 'damage', amount: 50, convertOnKill: 'thrall' }] };
+  };
+  const mk = (me: { unit: string; x: number; y: number; tag?: string }[], foes: { unit: string; x: number; y: number; tag?: string }[], hand: string[] = []) =>
+    world({ teams: [team('human', [anchor(0, 4), ...me], hand), team('ai', [anchor(), ...foes])], map: KEYSTONE, edit: extra });
+
+  it('validates the new content', () => {
+    expect(validateContent(normalizeContent(structuredClone(mk([], []).content)))).toEqual([]);
+  });
+
+  it('draw pulls cards from the deck, stops at the hand max, and emits draw events', () => {
+    const g = mk([{ unit: 'seer', x: 1, y: 1, tag: 's' }], []);
+    const seer = tag(g, 's');
+    g.teams[0].deck = ['vanguard', 'seer', 'reaper'];
+    const events: string[] = [];
+    g.on(e => events.push(e.kind));
+    expect(g.useAbility(seer.uid, 'insight', 1, 1)).toBe(true);
+    expect(g.teams[0].hand).toEqual(['vanguard', 'seer']);
+    expect(g.teams[0].deck).toEqual(['reaper']);
+    expect(events.filter(k => k === 'draw')).toHaveLength(2);
+    g.teams[0].hand = Array(8).fill('vanguard');
+    seer.ap = 6; seer.usedAbilities = [];
+    g.useAbility(seer.uid, 'insight', 1, 1);
+    expect(g.teams[0].hand).toHaveLength(8);
+    expect(g.teams[0].deck).toEqual(['reaper']);
+  });
+
+  it('convertOnKill summons a unit on the victim tile that acts next turn', () => {
+    const g = mk([{ unit: 'reaper', x: 4, y: 4, tag: 'r' }], [{ unit: 'vanguard', x: 5, y: 4, tag: 'v' }]);
+    expect(g.useAbility(tag(g, 'r').uid, 'reap', 5, 4)).toBe(true);
+    const t = g.unitAt(5, 4)!;
+    expect(t.defId).toBe('thrall');
+    expect(t.team).toBe(0);
+    expect(t.summonedThisTurn).toBe(true);
+    cycle(g);
+    expect(g.unitAt(5, 4)!.summonedThisTurn).toBe(false);
+  });
+
+  it('convertOnKill does not convert heroes or the Beacon, nor survivors', () => {
+    const g = mk([{ unit: 'reaper', x: 4, y: 4, tag: 'r' }], [{ unit: 'hero1', x: 5, y: 4, tag: 'h' }, { unit: 'armored', x: 3, y: 4, tag: 'a' }]);
+    const r = tag(g, 'r');
+    g.useAbility(r.uid, 'reap', 5, 4);
+    expect(tag(g, 'h').alive).toBe(false);
+    expect(g.unitAt(5, 4)).toBeUndefined();
+    const g2 = mk([{ unit: 'reaper', x: 4, y: 4, tag: 'r' }], [{ unit: 'armored', x: 5, y: 4, tag: 'a' }]);
+    g2.units.find(u => u.tag === 'a')!.hp = 1;
+    g2.useAbility(tag(g2, 'r').uid, 'reap', 5, 4);
+    expect(g2.unitAt(5, 4)?.defId).toBe('thrall');
+  });
+
+  it('convertOnKill works from spells too', () => {
+    const g = mk([], [{ unit: 'vanguard', x: 4, y: 4 }], ['cull']);
+    expect(g.playCard(0, 0, 4, 4)).toBe(true);
+    expect(g.unitAt(4, 4)).toMatchObject({ defId: 'thrall', team: 0 });
+  });
+
+  it('untargetable units cannot be targeted by enemy abilities or spells, but allies and area effects work', () => {
+    const g = mk([{ unit: 'reaper', x: 4, y: 4, tag: 'r' }], [{ unit: 'vanguard', x: 5, y: 4, tag: 'v' }, { unit: 'vanguard', x: 5, y: 5, tag: 'w' }], ['zap']);
+    const r = tag(g, 'r'), v = tag(g, 'v');
+    v.statuses.push({ id: 'veiled', remaining: 2 });
+    expect(g.untargetable(v)).toBe(true);
+    expect(g.validTargets(r, 'reap').some(p => p.x === 5 && p.y === 4)).toBe(false);
+    expect(g.useAbility(r.uid, 'reap', 5, 4)).toBe(false);
+    expect(g.validTargets(r, 'blast').some(p => p.x === 5 && p.y === 4)).toBe(false); // not centred on it
+    expect(g.validTargets(r, 'blast').some(p => p.x === 5 && p.y === 5)).toBe(true); // (5,5) centre hits (5,4)
+    const hp = v.hp;
+    expect(g.useAbility(r.uid, 'blast', 5, 5)).toBe(true);
+    expect(v.hp).toBeLessThan(hp);
+    expect(g.cardTargets(0, 0).some(p => p.x === 5 && p.y === 4)).toBe(false);
+    expect(g.cardTargets(0, 0).some(p => p.x === 5 && p.y === 5)).toBe(true);
+    // allies may still target a veiled unit
+    v.team = 0;
+    expect(g.validTargets(r, 'mend').some(p => p.x === 5 && p.y === 4)).toBe(true);
+  });
+});
+
 describe('engagement', () => {
   // v (human) at 4,4 is adjacent to the enemy e at 5,4. Row 4-5 east of the trench is open grass.
   const mk = (unit = 'vanguard', extra: { unit: string; x: number; y: number; tag?: string }[] = [], edit?: (c: Content) => void) =>

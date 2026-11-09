@@ -59,7 +59,11 @@ Effect types:
 - `{type:"aura", ..., perAdjacentAlly: true, maxStacks?}` — swarm bonus: statMods multiplied by the number of allies adjacent to the affected unit
 
 Passive abilities: `{name, description, passive: true, effects: [aura...]}`; apCost/range/target can be omitted.
-Optional `requires: string[]` on abilities is ignored by the engine (author bookkeeping).
+Optional `requires: string[]` on abilities is ignored by the engine (author bookkeeping). Tags for engine features: `terrain`, `draw`, `convert_on_kill`, `untargetable`.
+
+Effect additions:
+- `{"type":"draw","count":N}` (requires `draw`): cast-level; the caster's team draws N cards from its deck into hand, stopping at the hand max (8) or an empty deck; emits a `draw` event per card. Allowed in abilities and spells.
+- `convertOnKill: "<unitId>"` on a `damage` effect (requires `convert_on_kill`): if the damage kills the target (not a hero, not a structure/Beacon), one `<unitId>` is summoned for the caster's team on the target's tile after the death (acts next turn, like `summon`). Works in abilities and spells.
 
 ## Cards: the warband is a deck
 A warband / roster / unlock list may contain unit ids, spell ids and equipment ids. Ids must be unique across

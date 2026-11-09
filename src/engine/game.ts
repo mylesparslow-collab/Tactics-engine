@@ -346,6 +346,7 @@ export class Game {
       const occIsSelf = occ?.uid === u.uid;
       const atSelfTile = x === from.x && y === from.y;
       const target = atSelfTile ? u : (occIsSelf ? undefined : occ);
+      if (target && target.team !== u.team && this.untargetable(target)) continue;
       switch (a.target) {
         case 'enemy': if (target && target.team !== u.team) out.push({ x, y }); break;
         case 'ally': if (target && target.team === u.team && !this.def(target).structure) out.push({ x, y }); break;
@@ -355,6 +356,11 @@ export class Game {
       }
     }
     return out;
+  }
+
+  /** True while the unit carries a status with `untargetable`: enemies cannot pick it as a target. */
+  untargetable(u: Unit): boolean {
+    return u.statuses.some(s => this.content.statuses[s.id]?.untargetable);
   }
 
   validTargets(u: Unit, abilityId: string): Pos[] {
@@ -491,7 +497,7 @@ export class Game {
       const had = this.statusSnapshot(sp.effects, targets);
       for (const e of sp.effects) {
         if ((CAST_LEVEL_EFFECTS as readonly string[]).includes(e.type)) { if (this.snapOk(e, had)) this.applyCastEffect(e, team, undefined, this.radiusTiles({ x, y }, sp.area?.size ?? 0), { x, y }); }
-        else for (const t of targets) if (t.alive && this.snapOk(e, had, t)) this.applyEffect(e, t, undefined, { x, y });
+        else for (const t of targets) if (t.alive && this.snapOk(e, had, t)) this.applyEffect(e, t, undefined, { x, y }, team);
       }
     }
     this.afterAction();
@@ -521,6 +527,7 @@ export class Game {
     for (let y = 0; y < this.height; y++) for (let x = 0; x < this.width; x++) {
       if (cr !== undefined && !anchors.some(f => manhattan(f, { x, y }) <= reach)) continue;
       const occ = this.unitAt(x, y);
+      if (occ && occ.team !== team && this.untargetable(occ)) continue;
       switch (sp.target) {
         case 'enemy': if (occ && occ.team !== team) out.push({ x, y }); break;
         case 'ally': if (occ && occ.team === team && !this.def(occ).structure) out.push({ x, y }); break;
@@ -755,13 +762,16 @@ export class Game {
   }
 
   /** `source` = casting unit (ability); `origin` = spell target tile used for push/pull direction. */
-  private applyEffect(e: Effect, target: Unit, source?: Unit, origin?: Pos) {
+  private applyEffect(e: Effect, target: Unit, source?: Unit, origin?: Pos, team = source?.team) {
     const center: Pos | undefined = source ?? origin;
     if ('filter' in e && !this.passesFilter(target, e.filter)) return;
     switch (e.type) {
       case 'damage': {
         const amt = source ? this.previewDamage(source, target, e) : origin ? this.previewSpellDamage(target, e) : Math.max(1, e.amount);
         this.damage(target, amt, e.damageType);
+        const d = this.def(target);
+        if (e.convertOnKill && !target.alive && team !== undefined && !d.hero && !d.structure && !target.tag?.startsWith('keystone_'))
+          this.summonAt(e.convertOnKill, team, target, 1);
         break;
       }
       case 'heal': {
@@ -841,12 +851,14 @@ export class Game {
         this.enterTile(u); if (o.alive) this.enterTile(o);
         return;
       }
-      case 'summon': {
-        for (let i = 0; i < (e.count ?? 1); i++) {
-          const p = !this.unitAt(target.x, target.y) && !this.terrainAt(target.x, target.y).impassable ? target : this.nearestFree(target);
-          if (!p) return;
-          const s = this.spawn(e.unit, team, p.x, p.y);
-          this.emit({ kind: 'deploy', uid: s.uid });
+      case 'summon': this.summonAt(e.unit, team, target, e.count ?? 1); return;
+      case 'draw': {
+        const t = this.teams[team];
+        for (let i = 0; i < e.count; i++) {
+          if (!t.deck.length || t.hand.length >= DRAW.maxHand) break;
+          const card = t.deck.shift()!;
+          t.hand.push(card);
+          this.emit({ kind: 'draw', team, card });
         }
         return;
       }
@@ -869,6 +881,16 @@ export class Game {
         this.gainEssence(e.team === 'enemy' ? (team === 0 ? 1 : 0) : team, e.amount);
         return;
       }
+    }
+  }
+
+  /** Summon `count` of a unit for `team` on (or next to) a tile; they act next turn. */
+  private summonAt(unit: string, team: number, target: Pos, count: number) {
+    for (let i = 0; i < count; i++) {
+      const p = !this.unitAt(target.x, target.y) && !this.terrainAt(target.x, target.y).impassable ? target : this.nearestFree(target);
+      if (!p) return;
+      const s = this.spawn(unit, team, p.x, p.y);
+      this.emit({ kind: 'deploy', uid: s.uid });
     }
   }
 
