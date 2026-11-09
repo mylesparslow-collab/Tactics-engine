@@ -1,6 +1,6 @@
 import type { AbilityDef, Content, Condition, Effect, MissionAction, StatKey } from './types';
 
-const EFFECT_TYPES = ['damage', 'heal', 'status', 'push', 'pull', 'swap', 'teleport', 'summon', 'terrain', 'essence', 'aura', 'sacrifice'];
+const EFFECT_TYPES = ['damage', 'heal', 'status', 'push', 'pull', 'swap', 'teleport', 'summon', 'terrain', 'essence', 'aura', 'sacrifice', 'draw'];
 
 /** Fill in defaults so content authors can omit fields (e.g. passives need no range/target/apCost). */
 export function normalizeContent(c: Content): Content {
@@ -43,6 +43,8 @@ export function validateContent(c: Content): string[] {
     if (e.type === 'status' && !has(c.statuses, e.status)) errs.push(`${where}: unknown status "${e.status}"`);
     if (!EFFECT_TYPES.includes(e.type)) errs.push(`${where}: unknown effect type "${(e as Effect).type}"`);
     if (e.type === 'summon' && !has(c.units, e.unit)) errs.push(`${where}: unknown summon unit "${e.unit}"`);
+    if (e.type === 'draw' && (!Number.isInteger(e.count) || e.count < 1)) errs.push(`${where}: draw needs an integer count >= 1`);
+    if (e.type === 'damage' && e.convertOnKill !== undefined && (typeof e.convertOnKill !== 'string' || !has(c.units, e.convertOnKill))) errs.push(`${where}: unknown convertOnKill unit "${e.convertOnKill}"`);
     if (e.type === 'terrain' && !has(c.terrain, e.terrain)) errs.push(`${where}: unknown terrain "${e.terrain}"`);
     if (e.type === 'damage' && e.vsWounded && (typeof e.vsWounded.below !== 'number' || typeof e.vsWounded.bonus !== 'number')) errs.push(`${where}: vsWounded needs numeric below and bonus`);
     if (e.ifTargetStatus !== undefined && !has(c.statuses, e.ifTargetStatus)) errs.push(`${where}: ifTargetStatus names unknown status "${e.ifTargetStatus}"`);
@@ -70,6 +72,7 @@ export function validateContent(c: Content): string[] {
   }
   for (const [id, s] of Object.entries(c.statuses)) {
     if (s.wet !== undefined && typeof s.wet !== 'boolean') errs.push(`status ${id}: wet must be true or false`);
+    if (s.untargetable !== undefined && typeof s.untargetable !== 'boolean') errs.push(`status ${id}: untargetable must be true or false`);
     s.onTurnStart?.forEach((e, i) => {
       if (e.type !== 'damage' && e.type !== 'heal') errs.push(`status ${id} onTurnStart ${i}: only damage/heal supported`);
     });
