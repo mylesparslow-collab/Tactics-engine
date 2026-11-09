@@ -4,6 +4,7 @@ Gaunt, hooded dark-green robe, bare feet, a staff hung with tarnished bells in o
 arm raised to the sky. Defining detail: a small rain cloud hanging over the raised hand, raining.
 """
 from _returning_tide_common import *
+from kit.fx import emit
 
 UNIT_ID = 'returning_tide_rainsayer'
 
@@ -49,12 +50,7 @@ def build(P):
     cg = P['cast_glow']
     if hl[1] > 1.4:
         cc = hl + v3(0.02, 0.13, 0.0)
-        s = 1.35 + 0.35 * cg
-        for o, r_ in ((v3(0, 0, 0), 0.075), (v3(0.07, -0.01, 0.02), 0.06), (v3(-0.07, -0.015, -0.01), 0.055),
-                      (v3(0.02, 0.04, -0.02), 0.05), (v3(-0.03, -0.02, 0.06), 0.045)):
-            add(Sphere(cc + o * s, r_ * s), 'cloud', 0.03)
-        rain(add, cc + v3(0, -0.06, 0), w=0.09 * s, n=10, length=0.10, phase=P['tell'] + cg, top=0.0,
-             bottom=-0.45, seed=4)
+        emit(add, cc, 'cloud', 1.0 + 0.6 * cg)
     drips(P, add, [P['wr_r'] + v3(0, -0.07, 0), P['pelvis'] + v3(0.12, -0.80, 0.06)])
     puddle(P, add, r=0.26)
     mats = {
@@ -63,8 +59,6 @@ def build(P):
         'skin': wet_skin(P, SKIN_PALE, hair=BLACK, sunken=0.5),
         'driftwood': Material(_hex('#6e6252'), spec=0.2, gloss=18, brush=0.12),
         'bronze': Material(_hex('#7d7a52'), spec=0.6, gloss=30, metal=0.7, brush=0.06),
-        'cloud': Material(_hex('#8e9a98'), spec=0.05, brush=0.10,
-                          emissive=tuple(np.array(BRINE) * 0.3 * cg) if cg > 0 else None),
     }
     return tide_finish(P, parts, mats, add)
 

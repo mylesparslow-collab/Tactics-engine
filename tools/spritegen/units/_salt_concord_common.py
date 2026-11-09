@@ -10,6 +10,7 @@ from sdf import (v3, norm, basis_from, rot_y, rot_x, rot_z, Sphere, Ellipsoid, C
 from render import Material, _hex
 from kit.humanoid import head_R, hand_pos, face_albedo, W
 from kit.looks import PALETTES
+from kit.fx import emit
 
 SC = PALETTES['salt_concord']
 SALT = _hex('#e2ddcf')
@@ -339,5 +340,5 @@ def crossbow(P, add, side='r', size=1.0, stock='wood', prod='iron', string='ink'
     add(Capsule(g + d * 0.12 * s + up * 0.02, front + d * 0.06, 0.008), bolt)                   # chalk bolt
     add(RoundBox(g + d * 0.02 * s + up * 0.04, (0.012, 0.03, 0.012), 0.004, R), 'brass')         # brass sight
     if P['fx'] > 0:
-        add(Sphere(front + d * 0.12, 0.05 * P['fx']), 'chalk_puff')
+        emit(add, front + d * 0.12, 'salt', 0.35 + 0.45 * P['fx'])  # chalk dust puff off the bolt
     return g, front
