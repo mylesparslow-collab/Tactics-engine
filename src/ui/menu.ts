@@ -4,17 +4,18 @@ import { label } from '../engine/content';
 import { clear, h } from './dom';
 import { describeObjectives } from './text';
 import { buildSkirmish, playableFactions } from '../engine/skirmish';
-import { artNode } from './cards';
+import { artNode, paintedArtUrl } from './cards';
 import { crestSvg, glyph, illuminated, installArt, kit, teamFaction } from './art';
 import { Game } from '../engine/game';
 import { Renderer } from '../render/renderer';
 import { showCollection } from './collection';
 import { allRelics, ownedRelics } from '../engine/collection';
+import { loadBest, loadRun, TW } from '../engine/autobattle';
 
 export interface MissionChoice { missionId: string; campaign?: { id: string; index: number } }
 
 type Pick = (c: MissionChoice) => void;
-interface Ctx { root: HTMLElement; content: Content; errors: string[]; onPick: Pick }
+interface Ctx { root: HTMLElement; content: Content; errors: string[]; onPick: Pick; tw?: TidewatchMenu }
 
 // remembered between visits to the menu (not persisted)
 const memo = { mine: '', theirs: '', map: '', campaign: '', node: -1 };
@@ -22,7 +23,7 @@ const memo = { mine: '', theirs: '', map: '', campaign: '', node: -1 };
 function svgEl(markup: string, cls: string) {
   const s = h('span', { class: cls }); s.innerHTML = markup; return s;
 }
-function crest(fid: string | undefined, cls = 'crest', color?: string) { return svgEl(crestSvg(fid, color), cls); }
+export function crest(fid: string | undefined, cls = 'crest', color?: string) { return svgEl(crestSvg(fid, color), cls); }
 
 let backdrop: { r: Renderer; ro: ResizeObserver } | null = null;
 /** Stop the live board behind the menus (called when a battle starts). */
@@ -54,7 +55,7 @@ function liveBoard(content: Content): HTMLElement {
 }
 
 /** Persistent menu backdrop; screens swap inside its host. */
-function shell(root: HTMLElement, content: Content): HTMLElement {
+export function shell(root: HTMLElement, content: Content): HTMLElement {
   installArt();
   let host = root.querySelector<HTMLElement>(':scope > .shell > .host');
   if (!host || !root.classList.contains('screen')) {
@@ -67,21 +68,24 @@ function shell(root: HTMLElement, content: Content): HTMLElement {
   return host;
 }
 
-function screenHeader(title: string, kicker: string | null, onBack: () => void) {
+export function screenHeader(title: string, kicker: string | null, onBack: () => void) {
   return h('header', { class: 'scr-head' },
     h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back')),
     h('div', { class: 'scr-title' }, kicker ? h('div', { class: 'kicker' }, kicker) : null, h('h1', null, title)),
     h('div', { class: 'scr-head-sp' }));
 }
 
-function ornament(cls = 'orn') {
+export function ornament(cls = 'orn') {
   return h('div', { class: cls }, h('i'), svgEl('<svg viewBox="0 0 40 16"><path d="M20 1 L27 8 L20 15 L13 8 Z" fill="currentColor"/><circle cx="4" cy="8" r="2" fill="currentColor"/><circle cx="36" cy="8" r="2" fill="currentColor"/></svg>', 'orn-gem'), h('i'));
 }
 
 // ---------------------------------------------------------------- title
 
-export function showMenu(root: HTMLElement, content: Content, errors: string[], onPick: Pick) {
-  const ctx: Ctx = { root, content, errors, onPick };
+/** Tidewatch entry points wired by main.ts. */
+export interface TidewatchMenu { onStart: () => void; onResume: () => void; onAbandon: () => void }
+
+export function showMenu(root: HTMLElement, content: Content, errors: string[], onPick: Pick, tw?: TidewatchMenu) {
+  const ctx: Ctx = { root, content, errors, onPick, tw };
   const host = shell(root, content);
   const L = content.config?.labels ?? {};
   const camps = Object.entries(content.campaigns);
@@ -97,13 +101,25 @@ export function showMenu(root: HTMLElement, content: Content, errors: string[], 
     h('nav', { class: 'mainnav' },
       item('Campaign', campTotal ? `${campDone} / ${campTotal}` : '', camps.length ? () => showCampaign(ctx) : null, ' primary'),
       item('Skirmish', '', playableFactions(content).length >= 2 ? () => showSkirmish(ctx) : null),
+      ...tidewatchItems(item, tw),
       item('Scenarios', String(scen), scen ? () => showScenarios(ctx) : null),
-      item('Collection', `${ownedRelics(content).size} / ${allRelics(content).length}`, () => showCollection(shell(root, content), content, () => showMenu(root, content, errors, onPick)))),
+      item('Collection', `${ownedRelics(content).size} / ${allRelics(content).length}`, () => showCollection(shell(root, content), content, () => showMenu(root, content, errors, onPick, tw)))),
     errors.length ? h('details', { class: 'errbox' }, h('summary', null, `Content check: ${errors.length} problem${errors.length === 1 ? '' : 's'}`),
       h('ul', null, ...errors.slice(0, 30).map(e => h('li', null, e)))) : null,
     h('footer', { class: 'ver' }, 'Early access'));
   (scr.querySelector('.logo-img') as HTMLImageElement).src = kit('logo');
   host.append(scr);
+}
+
+/** Tidewatch nav entries: a plain entry with the best result, or Resume / Abandon when a run is saved. */
+function tidewatchItems(item: (title: string, sub: string, on: (() => void) | null, extra?: string) => HTMLElement, tw?: TidewatchMenu): HTMLElement[] {
+  if (!tw) return [];
+  const saved = loadRun(), best = loadBest();
+  if (saved) return [
+    item('Resume Tidewatch', `Watch ${saved.watch} / ${TW.watches} \u00B7 Light ${saved.light}`, tw.onResume),
+    item('Abandon run', '', () => { if (confirm('Abandon your Tidewatch run? It cannot be resumed.')) tw.onAbandon(); }, ' minor'),
+  ];
+  return [item('Tidewatch', best ? (best.won ? 'Held all ten' : `Best: watch ${best.watch}`) : '', tw.onStart)];
 }
 
 // ---------------------------------------------------------------- campaign
@@ -154,6 +170,7 @@ function showCampaign(ctx: Ctx) {
     const won = sel < prog.completed;
     const unlocks = (step.unlocks ?? []).map(u => ({ id: u, name: content.units[u]?.name ?? content.spells[u]?.name ?? content.equipment[u]?.name ?? u }));
     detail.append(h('div', null,
+      camp.faction ? h('figure', { class: 'md-art' }, heroImg(content, camp.faction)) : null,
       h('div', { class: 'kicker' }, `Mission ${sel + 1} of ${n}`),
       h('h2', null, md?.name ?? step.mission),
       ornament(),
@@ -183,7 +200,7 @@ function showCampaign(ctx: Ctx) {
     }, (f?.name ?? c.name).replace(/^The /, ''), h('span', { class: 'tab-prog' }, `${won}/${c.missions.length}`));
   })) : null;
   host.append(h('div', { class: 'scr camp-scr' },
-    screenHeader(camp.name, 'Campaign', () => showMenu(ctx.root, content, ctx.errors, ctx.onPick)),
+    screenHeader(camp.name, 'Campaign', () => showMenu(ctx.root, content, ctx.errors, ctx.onPick, ctx.tw)),
     tabs,
     h('div', { class: 'camp-body' }, h('div', { class: 'chartwrap framed' }, chart), detail),
     h('div', { class: 'camp-foot' },
@@ -232,6 +249,7 @@ function showSkirmish(ctx: Ctx) {
       const fid = memo[key], f = content.factions?.[fid];
       box.style.setProperty('--fc', f?.color ?? '#777');
       box.append(
+        h('figure', { class: 'fs-art' }, heroImg(content, fid)),
         h('div', { class: 'kicker' }, title),
         h('div', { class: 'fhero' }, crest(fid, 'crest big'), h('div', { class: 'fhero-t' }, h('h2', null, f?.name ?? fid), h('p', null, f?.tagline ?? ''))),
         h('div', { class: 'fgrid' }, ...factions.map(id => h('button', {
@@ -258,7 +276,7 @@ function showSkirmish(ctx: Ctx) {
   drawMap();
 
   host.append(h('div', { class: 'scr skirm-scr' },
-    screenHeader('Skirmish', 'Battle', () => showMenu(ctx.root, content, ctx.errors, ctx.onPick)),
+    screenHeader('Skirmish', 'Battle', () => showMenu(ctx.root, content, ctx.errors, ctx.onPick, ctx.tw)),
     h('div', { class: 'skirm-body' },
       side('mine', 'Your faction'),
       h('div', { class: 'vs-col' }, h('div', { class: 'vs' }, 'VS'), mapBox,
@@ -277,7 +295,7 @@ function showScenarios(ctx: Ctx) {
   const host = shell(ctx.root, ctx.content);
   const list = Object.entries(content.missions).filter(([id]) => !id.startsWith('skirmish:'));
   host.append(h('div', { class: 'scr scen-scr' },
-    screenHeader('Scenarios', 'Standalone battles', () => showMenu(ctx.root, content, ctx.errors, ctx.onPick)),
+    screenHeader('Scenarios', 'Standalone battles', () => showMenu(ctx.root, content, ctx.errors, ctx.onPick, ctx.tw)),
     h('div', { class: 'scen-grid' }, ...list.map(([id, m]) => {
       const fids = m.teams.map(t => missionTeamFaction(content, m, t));
       return h('button', { class: 'scen framed', onclick: () => ctx.onPick({ missionId: id }) },
@@ -304,25 +322,56 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
   const teams = m.teams.map(t => ({ t, f: missionTeamFaction(content, m, t) }));
   const story = (m.briefing ?? []).filter(t => t.trim() !== m.description?.trim());
   const objRow = (kind: 'win' | 'lose', t: string) => h('li', { class: 'bo-row ' + kind }, h('i', { class: 'bo-mark' }), h('span', null, t));
-  host.append(h('div', { class: 'scr brief-scr' },
+  const side = h('aside', { class: 'brief-side framed' },
+    h('div', { class: 'bs-map' }, mapPreview(content, m.map),
+      h('div', { class: 'bs-mapname' }, h('span', { class: 'kicker' }, 'Battlefield'), h('b', null, map?.name ?? m.map),
+        h('small', null, `${m.startingEssence ?? 100} ${label(content, 'essence')} to start`))),
+    h('div', { class: 'bs-forces' }, ...teams.map(({ t, f }) =>
+      h('div', { class: 'bs-force', style: `--tc:${t.color}` }, crest(f, 'crest', t.color),
+        h('b', null, t.name), h('small', null, t.controller === 'human' ? 'You' : 'Enemy')))),
+    h('div', { class: 'bs-objs' },
+      h('div', { class: 'kicker' }, obj.winAny ? 'Victory, any of' : 'Victory'),
+      h('ul', null, ...obj.win.map(t => objRow('win', t))),
+      h('div', { class: 'kicker lose' }, 'Defeat'),
+      h('ul', null, ...obj.lose.map(t => objRow('lose', t)))),
+    h('button', { class: 'btn-gold big bs-deploy', onclick: onStart }, 'Deploy'));
+  const me = teams.find(x => x.t.controller === 'human') ?? teams[0];
+  const foe = teams.find(x => x !== me) ?? teams[1];
+  if (!choice.campaign && me && foe) {
+    // Skirmish: the two sides face each other as painted heroes; the order of battle sits between them.
+    const fig = (x: typeof me, who: string, cls: string) => {
+      const fd = x.f ? content.factions?.[x.f] : undefined;
+      return h('figure', { class: 'bf-art ' + cls, style: `--tc:${fd?.color ?? x.t.color}` }, heroImg(content, x.f),
+        h('figcaption', null, crest(x.f, 'crest', x.t.color), h('span', { class: 'kicker' }, who), h('b', null, (fd?.name ?? x.t.name)), fd?.tagline ? h('i', null, fd.tagline) : null));
+    };
+    host.append(h('div', { class: 'scr brief-scr vs-brief' },
+      h('header', { class: 'brief-top' }, h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back'))),
+      h('div', { class: 'vsb-grid' }, fig(me, 'You', 'mine'),
+        h('div', { class: 'vsb-mid' }, h('div', { class: 'kicker' }, 'Skirmish'), h('div', { class: 'vsb-vs' }, 'vs'), side),
+        fig(foe, 'Opponent', 'theirs'))));
+    return;
+  }
+  host.append(h('div', { class: 'scr brief-scr' + (me?.f && paintedArtUrl(heroOf(content, me.f) ?? '') ? ' has-art' : '') },
+    me?.f ? h('figure', { class: 'brief-bg', style: `--tc:${me.t.color}` }, heroImg(content, me.f)) : null,
     h('header', { class: 'brief-top' }, h('button', { class: 'iconbtn back', title: 'Back', onclick: onBack }, glyph('back'))),
     h('div', { class: 'brief-grid' },
       h('section', { class: 'brief-story' },
         h('div', { class: 'kicker' }, kicker),
         h('h1', { class: 'brief-title' }, m.name),
         m.description ? h('p', { class: 'lead' }, m.description) : null,
-        story.length ? h('div', { class: 'brief-text' }, ...story.map((t, i) => i ? h('p', null, t) : h('p', { class: 'dropcap' }, ...illuminated(t)))) : null),
-      h('aside', { class: 'brief-side framed' },
-        h('div', { class: 'bs-map' }, mapPreview(content, m.map),
-          h('div', { class: 'bs-mapname' }, h('span', { class: 'kicker' }, 'Battlefield'), h('b', null, map?.name ?? m.map),
-            h('small', null, `${m.startingEssence ?? 100} ${label(content, 'essence')} to start`))),
-        h('div', { class: 'bs-forces' }, ...teams.map(({ t, f }) =>
-          h('div', { class: 'bs-force', style: `--tc:${t.color}` }, crest(f, 'crest', t.color),
-            h('b', null, t.name), h('small', null, t.controller === 'human' ? 'You' : 'Enemy')))),
-        h('div', { class: 'bs-objs' },
-          h('div', { class: 'kicker' }, obj.winAny ? 'Victory, any of' : 'Victory'),
-          h('ul', null, ...obj.win.map(t => objRow('win', t))),
-          h('div', { class: 'kicker lose' }, 'Defeat'),
-          h('ul', null, ...obj.lose.map(t => objRow('lose', t)))),
-        h('button', { class: 'btn-gold big bs-deploy', onclick: onStart }, 'Deploy')))));
+        story.length ? h('div', { class: 'brief-text' }, ...story.map((t, i) => i || t.length < 160 ? h('p', null, t) : h('p', { class: 'dropcap' }, ...illuminated(t)))) : null),
+      side)));
+}
+
+/** Each faction's face: the campaign lead where there is one, else the first hero. */
+const LEADS: Record<string, string> = { salt_concord: 'salt_concord_tamsin_orrel', hadal_court: 'hadal_court_herald_vhaal', returning_tide: 'returning_tide_maren_ketch',
+  salvage_compact: 'salvage_compact_ketta_vane', reef_ascendant: 'reef_ascendant_coralspire', lanternkeepers: 'lanternkeepers_captain_hollis_drenn',
+  overcurrent: 'overcurrent_the_undersinging', gyre: 'gyre_wren_halloway' };
+function heroOf(content: Content, fid: string): string | undefined {
+  if (LEADS[fid] && content.units[LEADS[fid]]) return LEADS[fid];
+  return Object.keys(content.units).find(id => content.units[id].faction === fid && content.units[id].hero);
+}
+function heroImg(content: Content, fid: string | undefined): HTMLElement | null {
+  const id = fid ? heroOf(content, fid) : undefined; const url = id ? paintedArtUrl(id) : undefined;
+  return url ? h('img', { src: url, alt: '', draggable: 'false' }) : null;
 }

@@ -3,6 +3,7 @@ translucent mantle like a sail with its organs showing, a door-sized never-blink
 eight spread arms whose suckers turned out to be rotating hooks, and a beak that works behind them. Ink curls from
 the funnel. Defining detail: the great eye with its thin gold-pearl ring. Tell: arms curl, ink drifts, eye holds still."""
 from _overcurrent_common import *
+from kit.fx import emit
 
 UNIT_ID = 'overcurrent_mother_mantle'
 CAMERA = Camera(ppm=44)
@@ -77,14 +78,12 @@ def build(P):
 
     def world(add2):
         drips(add2, P, dp, rise=0.2)
-        # ink curling from the funnel
+        # ink curling from the funnel: live emitters (kit/fx.py), heavier in the Ink Sea cast
         if P['end'] < 0.7:
-            for k, (dx, dy, dz, r) in enumerate([(0.0, 0.0, 0.0, 0.10), (0.18, 0.08, 0.10, 0.13), (0.34, 0.20, 0.06, 0.16), (0.52, 0.34, 0.12, 0.13), (0.68, 0.52, 0.10, 0.10)]):
-                q = pl.pt(v3(0.34 + dx * 0.8, 0.70 + dy, 0.44 + dz))
-                add2(Sphere(q + v3(0.04 * np.sin(ph + k), 0.03 * np.cos(ph + k), 0), r * (1 + 0.5 * P['cast_glow'])), 'ink', 0.05)
+            for dx, dy, dz, w in ((0.0, 0.0, 0.0, 0.7), (0.30, 0.18, 0.08, 0.5)):
+                emit(add2, pl.pt(v3(0.34 + dx, 0.70 + dy, 0.44 + dz)), 'ink', w + 0.9 * P['cast_glow'])
         spray(add2, P, pl.pt(v3(0, 1.0, 0.7)))
         ripple(add2, P)
-    mats['ink'] = Material(_hex('#14224a'), spec=0.3, gloss=20, rim=0.6, emissive=tuple(np.array(CYAN) * 0.04))
     return finish(P, pl, parts, mats, lights, world)
 
 

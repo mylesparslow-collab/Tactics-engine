@@ -9,7 +9,12 @@ interface SheetAnim { row: number; frames: number; fps: number; loop?: boolean; 
 export interface Manifest {
   frameWidth: number; frameHeight: number; anchor?: [number, number]; facing?: string;
   animations: Partial<Record<AnimState, SheetAnim>>;
+  /** Live effect emitters (smoke, ink, ...) from tools/spritegen/kit/fx.py: per animation, one entry per frame,
+   *  [x, y, strength] in frame pixels, or 0 when the emitter is off on that frame. */
+  fx?: { preset: string; tracks: Partial<Record<AnimState, ([number, number, number] | 0)[]>> }[];
 }
+/** An effect emitter active on the current frame, in source-frame pixels. */
+export interface FrameFx { preset: string; x: number; y: number; s: number }
 interface FrameAnim { frames: string[]; fps?: number; loop?: boolean; hitFrame?: number; holdLast?: boolean }
 /** Content-side extensions of UnitDef.sprite that the engine types do not know about. */
 export type SpriteExt = UnitDef['sprite'] & {
@@ -58,14 +63,16 @@ export interface Frame {
   scale: number;                                    // world px per source px
   done: boolean;                                    // non-looping animation has finished
   index: number;
+  fx?: FrameFx[];                                   // live effect emitters on this frame
 }
 
-type Clip = { kind: 'sheet'; img: string; a: SheetAnim; m: Manifest } | { kind: 'frames'; a: FrameAnim; srcs: string[] };
+type Clip = { kind: 'sheet'; img: string; a: SheetAnim; m: Manifest; name: AnimState } | { kind: 'frames'; a: FrameAnim; srcs: string[] };
 interface UnitArt { still?: string; clips: Partial<Record<AnimState, Clip>>; animated: boolean }
 
 const artCache = new Map<string, UnitArt>();
-export function unitArt(defId: string, def: UnitDef): UnitArt {
-  const hit = artCache.get(defId); if (hit) return hit;
+export function unitArt(id: string, def: UnitDef): UnitArt {
+  const hit = artCache.get(id); if (hit) return hit;
+  const defId = id.startsWith('tw:') ? id.split(':')[1] : id; // Tidewatch tempered variants share their base unit's art
   const sp = def.sprite as SpriteExt;
   // Convention for the painted sprite set: sprites/<id>_still.png marks new art; when it exists, the sheet and
   // manifest default to sprites/<id>.png + sprites/<id>.json even if units.json doesn't name them. Older sheets
@@ -75,7 +82,7 @@ export function unitArt(defId: string, def: UnitDef): UnitArt {
   const sheet = assetUrl(sp.sheet ?? (paintedStill ? (assetUrl(`sprites/${defId}.webp`) ? `sprites/${defId}.webp` : `sprites/${defId}.png`) : undefined));
   const man = manifestFor(sp.manifest ?? (paintedStill ? `sprites/${defId}.json` : undefined));
   if (sheet && man?.animations) {
-    for (const [k, a] of Object.entries(man.animations)) if (a) art.clips[k as AnimState] = { kind: 'sheet', img: sheet, a, m: man };
+    for (const [k, a] of Object.entries(man.animations)) if (a) art.clips[k as AnimState] = { kind: 'sheet', img: sheet, a, m: man, name: k as AnimState };
   }
   if (sp.animations) {
     for (const [k0, a] of Object.entries(sp.animations)) {
@@ -87,7 +94,7 @@ export function unitArt(defId: string, def: UnitDef): UnitArt {
   }
   if (!art.clips.cast && art.clips.attack) art.clips.cast = art.clips.attack;
   art.animated = Object.keys(art.clips).length > 0;
-  artCache.set(defId, art);
+  artCache.set(id, art);
   return art;
 }
 
@@ -98,6 +105,18 @@ function stillLayout(img: Pic, structure: boolean) {
   const ax = w / 2, ay = spec ? h * (104 / 112) : h * 0.92;
   const target = structure ? 150 : spec ? 112 : 96;
   return { ax, ay, scale: target / h };
+}
+
+const fxCache = new WeakMap<Manifest, Map<string, FrameFx[] | undefined>>();
+function frameFx(m: Manifest, name: AnimState, i: number): FrameFx[] | undefined {
+  if (!m.fx?.length) return undefined;
+  let c = fxCache.get(m); if (!c) { c = new Map(); fxCache.set(m, c); }
+  const key = name + i;
+  if (c.has(key)) return c.get(key);
+  const out: FrameFx[] = [];
+  for (const t of m.fx) { const e = t.tracks[name]?.[i]; if (e) out.push({ preset: t.preset, x: e[0], y: e[1], s: e[2] }); }
+  c.set(key, out.length ? out : undefined);
+  return c.get(key);
 }
 
 /** Duration in ms of a non-looping clip, or undefined when procedural. */
@@ -130,7 +149,7 @@ export function frameFor(art: UnitArt, state: AnimState, elapsed: number, struct
       if (img) {
         const fw = clip.m.frameWidth || 96, fh = clip.m.frameHeight || 112;
         const [ax, ay] = clip.m.anchor ?? [fw / 2, fh * 104 / 112];
-        return { img, sx: i * fw, sy: clip.a.row * fh, sw: fw, sh: fh, ax, ay, scale: structure ? 150 / fh : 1, done, index: i };
+        return { img, sx: i * fw, sy: clip.a.row * fh, sw: fw, sh: fh, ax, ay, scale: structure ? 150 / fh : 1, done, index: i, fx: frameFx(clip.m, clip.name, i) };
       }
     } else {
       const img = getImage(clip.srcs[i]) ?? getImage(clip.srcs[0]);

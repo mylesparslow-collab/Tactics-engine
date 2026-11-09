@@ -122,3 +122,8 @@
   .cl-info { overflow: visible; }
   .cl-sheet { place-items: start center; }
 }
+/* pass 4: the faction rail wraps instead of hiding factions off the right edge */
+.cl-factions { display: grid; grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)); overflow: visible; }
+.cl-fac { min-height: 46px; padding: 5px 10px 5px 7px; gap: 7px; border-radius: 3px; }
+.cl-fac .crest { width: 24px; } .cl-fac-ic { width: 24px; font-size: 18px; }
+.cl-fac-t b { font-size: 13.5px; }

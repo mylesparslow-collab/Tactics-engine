@@ -15,6 +15,9 @@ export const DRAW = { opening: 5, perTurn: 2, maxHand: 8, minOpeningUnits: 2 };
 export const COOLDOWN = { tidePerTurn: 15, min: 2 };
 export const cooldownFor = (cost: number) => Math.max(COOLDOWN.min, Math.ceil(cost / COOLDOWN.tidePerTurn));
 /** Tide a dying champion spills on its tile: max(min, cost × fraction) rounded to 5. Free summons and structures drop nothing. */
+/** Extra AP to walk away from an adjacent enemy (see Game.disengageCost). */
+export const ENGAGE_COST = 2;
+
 export const TIDE_DROP = { fraction: 0.25, min: 5 };
 export const tideDropFor = (cost: number) => cost > 0 ? Math.max(TIDE_DROP.min, Math.round(cost * TIDE_DROP.fraction / 5) * 5) : 0;
 
@@ -86,7 +89,7 @@ export class Game {
     mission.teams.forEach((t, team) => {
       const ks = this.map.keystones?.find(k => k.team === team);
       if (ks && t.keystone !== false) this.spawn('keystone', team, ks.x, ks.y, `keystone_${team}`);
-      t.units?.forEach(u => this.spawn(u.unit, team, u.x, u.y, u.tag));
+      t.units?.forEach(u => { const s = this.spawn(u.unit, team, u.x, u.y, u.tag); if (u.equipment && this.content.equipment[u.equipment]) s.equipment = u.equipment; });
     });
     // Heroes are unique: a hero already on the field is not also in the hand (campaign rosters list the commander).
     this.teams.forEach((t, team) => {
@@ -210,6 +213,20 @@ export class Game {
     return this.isActive(u) && !this.def(u).structure && !u.summonedThisTurn && !this.hasFlag(u, 'preventsMove');
   }
 
+  /** Engagement: a unit that starts a move next to a living enemy (not a structure) pays ENGAGE_COST extra AP
+   *  on the first step, once per move, even if that step keeps it adjacent. Flyers and units with an
+   *  `ignoresEngagement` trait or status slip away for free. Ability movement (charge, swap, push) ignores it. */
+  engagedBy(u: Unit): Unit[] {
+    if (u.alive === false) return [];
+    return this.units.filter(o => o.alive && o.team !== u.team && !this.def(o).structure && manhattan(o, u) === 1);
+  }
+  ignoresEngagement(u: Unit) {
+    const d = this.def(u);
+    return !!d.flying || !!d.ignoresEngagement || u.statuses.some(s => this.content.statuses[s.id]?.ignoresEngagement);
+  }
+  /** Extra AP this unit pays to step away from where it stands now. */
+  disengageCost(u: Unit) { return !this.ignoresEngagement(u) && this.engagedBy(u).length ? ENGAGE_COST : 0; }
+
   /** Dijkstra over AP. Units may pass through allies but not stop on them; enemies block. Flyers pay 1 AP per tile, ignore height, and may cross (not end on) impassable tiles. */
   reachable(u: Unit, apBudget = u.ap): Map<string, ReachNode> {
     const out = this.reachRaw(u, apBudget);
@@ -241,6 +258,7 @@ export class Game {
     const jump = this.stat(u, 'jump');
     const flying = !!this.def(u).flying;
     const faction = this.def(u).faction;
+    const leave = this.disengageCost(u);
     const frontier: { x: number; y: number; cost: number }[] = [{ x: u.x, y: u.y, cost: 0 }];
     while (frontier.length) {
       frontier.sort((a, b) => a.cost - b.cost);
@@ -256,7 +274,7 @@ export class Game {
         const occ = this.unitAt(nx, ny);
         if (occ && occ.team !== u.team) continue;
         if (occ && this.def(occ).structure) continue;
-        const cost = cur.cost + (flying ? 1 : (faction !== undefined ? terr.factionMoveCost?.[faction] : undefined) ?? terr.moveCost);
+        const cost = cur.cost + (cur.x === u.x && cur.y === u.y ? leave : 0) + (flying ? 1 : (faction !== undefined ? terr.factionMoveCost?.[faction] : undefined) ?? terr.moveCost);
         if (cost > apBudget) continue;
         const k = key(nx, ny);
         if (cost < (out.get(k)?.cost ?? Infinity)) {

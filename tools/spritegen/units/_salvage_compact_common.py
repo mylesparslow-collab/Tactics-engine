@@ -11,6 +11,7 @@ from kit.humanoid import *
 from kit.anim import humanoid_rows
 from kit.looks import LOOKS, PALETTES
 from sdf import hash3
+from kit.fx import emit
 
 FACTION = 'salvage_compact'
 SV = PALETTES[FACTION]
@@ -138,7 +139,6 @@ def sv_materials(P, skin='weathered', hair=_hex('#3a2a20'), beard=None, eyes=_he
         'flare': Material(fl, spec=0.2, gloss=16, brush=0.05),
         'flare_lit': Material(_hex('#ff6a45'), emissive=tuple(np.array(_hex('#ff5a3a')) * 1.2), rim=0.0),
         'fuse': Material(_hex('#ffd48a'), emissive=tuple(np.array(_hex('#ffb347')) * np.clip(g, 0.2, 2.0)), rim=0.0),
-        'smoke': Material(_hex('#5c5650'), spec=0.0, brush=0.12, rim=0.4),
         'brass': Material(_hex('#a78a4e'), spec=0.8, gloss=36, metal=0.8, brush=0.06),
         'goggle': Material(_hex('#c9b07a'), spec=1.0, gloss=60, metal=0.2, brush=0.02),
         'scrap': Material(lambda p, n: np.where((hash3(np.floor(p * 30)) > 0.55)[:, None], _arr(BONE, len(p)) * 0.9,
@@ -317,10 +317,8 @@ def candle(add, lights, base, P, height=0.08, r=0.016, lit=True):
 def smoke_puffs(add, c, amount, n=4, seed=3, spread=0.12, size=0.05):
     if amount <= 0:
         return
-    rng = np.random.default_rng(seed)
-    for i in range(n):
-        o = v3(rng.uniform(-1, 1) * spread, i * size * 1.3 + 0.02, rng.uniform(-1, 1) * spread * 0.6)
-        add(Sphere(c + o * amount, size * (0.6 + 0.6 * amount) * rng.uniform(0.8, 1.2)), 'smoke', 0.02)
+    # one live smoke emitter at about the middle of where the old puffs stood (kit/fx.py)
+    emit(add, c + v3(0, size * 1.3 * (n - 1) * 0.5 * amount + 0.02, 0), 'smoke', amount)
 
 
 # ------------------------------------------------------------------ rows
@@ -434,13 +432,8 @@ def bone_sled(add, P, length=1.5, width=0.5, deck=0.17, sail=False, rich=False):
     # salt spray off the runners
     sp = P.get('spray', 0.0)
     if sp > 0:
-        rng = np.random.default_rng(int(P.get('spray_seed', 1)))
         for sx in (-1, 1):
-            for k in range(7):
-                t = k / 6
-                c = v3(sx * (Wd * 0.5 + 0.06 + t * 0.25 * sp), 0.04 + t * 0.22 * sp + rng.uniform(0, 0.04),
-                       -L * 0.5 + 0.1 - t * 0.35 * sp + rng.uniform(-0.05, 0.05))
-                add(Sphere(c, (0.045 - 0.025 * t) * (0.6 + 0.6 * sp)), 'spray', 0.03)
+            emit(add, v3(sx * (Wd * 0.5 + 0.12 * sp), 0.10 + 0.08 * sp, -L * 0.5 + 0.05), 'spray', 0.4 + 1.2 * sp)
     if rich:
         # bone figurehead: a jaw bone at the prow
         add(Capsule(v3(-Wd * 0.46, 0.28, L * 0.48), v3(0, 0.36, L * 0.56), 0.02, 0.012), 'bone', 0.01)
@@ -456,6 +449,7 @@ def sled_materials():
     return {
         'plank': Material(lambda p, n: _arr(_hex('#6b5440'), len(p)) * (0.8 + 0.3 * fbm(p * np.array([1, 1, 0.2]), 30, 2)[:, None]),
                           spec=0.06, brush=0.1),
+        # solid debris chunks (hullbreaker crumble_scatter); the sled's salt spray is now a live emitter
         'spray': Material(_hex('#efeadc'), spec=0.0, brush=0.04, rim=0.6),
     }
 

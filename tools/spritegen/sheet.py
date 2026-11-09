@@ -6,7 +6,7 @@ Writes <unit>.png (sheet, one animation per row), <unit>.json (manifest),
 """
 import os
 os.environ.setdefault("OMP_NUM_THREADS", "1"); os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
-import sys, json, time, argparse, importlib, dataclasses
+import sys, json, time, argparse, importlib, dataclasses, copy
 from multiprocessing import Pool
 import numpy as np
 from PIL import Image
@@ -15,6 +15,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, 'units'))
 from render import render, Camera, Look
+import kit.fx as fxkit
 
 _mod = None
 
@@ -38,11 +39,28 @@ def _job(args):
     modname, row, i, tw, style = args
     mod = importlib.import_module(modname)
     P, over = _frames(mod, tw)[row][i]
+    cam = getattr(mod, 'CAMERA', Camera())
+    em = [(pr, s, *fxkit.project(cam, c)) for pr, s, c in fxkit.split(mod.build(copy.deepcopy(P)).parts)[1]]
     if style != 'painted':
         from styles import styled
-        return row, i, styled(mod, P, style, over)
+        return row, i, styled(mod, P, style, over), em
     look = dataclasses.replace(getattr(mod, 'LOOK', Look()), **over)
-    return row, i, render(mod.build(P), getattr(mod, 'CAMERA', Camera()), look)
+    return row, i, render(mod.build(P), cam, look), em
+
+
+def fx_tracks(rows, fr, got_fx):
+    """Per-frame emitter tracks for the manifest: [{preset, tracks: {row: [[x, y, strength] | 0, ...]}}].
+    The k-th emitter of a preset in a frame belongs to track `preset#k`."""
+    tracks = {}
+    for name, *_ in rows:
+        n = len(fr[name])
+        for i in range(n):
+            seen = {}
+            for pr, s, x, y in got_fx[(name, i)]:
+                k = seen.get(pr, 0); seen[pr] = k + 1
+                t = tracks.setdefault((pr, k), {})
+                t.setdefault(name, [0] * n)[i] = [round(x, 1), round(y, 1), round(s, 2)]
+    return [dict(preset=pr, tracks=t) for (pr, k), t in sorted(tracks.items())]
 
 
 def quantize(img, colors=192):
@@ -67,7 +85,8 @@ def main():
     with Pool(a.jobs) as pool:
         res = pool.map(_job, jobs)
     print('rendered %d frames in %.0fs' % (len(res), time.time() - t0))
-    got = {(r, i): img for r, i, img in res}
+    got = {(r, i): img for r, i, img, _ in res}
+    got_fx = {(r, i): em for r, i, _, em in res}
     fw, fh = 96, 112
     ncol = max(len(fr[r[0]]) for r in rows)
     sheet = np.zeros((fh * len(rows), fw * ncol, 4), np.uint8)
@@ -77,6 +96,9 @@ def main():
         for i in range(n):
             sheet[ri * fh:(ri + 1) * fh, i * fw:(i + 1) * fw] = got[(name, i)]
         manifest['animations'][name] = dict(row=ri, frames=n, fps=fps, loop=loop, **extra)
+    fx = fx_tracks(rows, fr, got_fx)
+    if fx:
+        manifest['fx'] = fx   # live smoke / ink / mist emitters, drawn by src/render/fx.ts
     os.makedirs(a.out, exist_ok=True)
     uid = mod.UNIT_ID
     Image.fromarray(sheet).save(os.path.join(a.out, uid + '_rgba.png'))

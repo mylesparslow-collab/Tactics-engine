@@ -9,6 +9,7 @@ import { enterBattle, enterMenu, seedOf } from './audio/scenes';
 import { installUiSounds } from './audio/ui';
 import { soundButton } from './ui/soundpanel';
 import { buildSkirmish } from './engine/skirmish';
+import { createTidewatch, type DemoStage } from './ui/autobattle';
 
 installAudioUnlock();
 installUiSounds();
@@ -26,9 +27,15 @@ new MutationObserver(() => {
   sbRaf = requestAnimationFrame(() => { sbRaf = 0; const t = root.querySelector('.title-scr'); if (t && !t.querySelector('.menu-sound')) t.append(soundButton()); });
 }).observe(root, { childList: true, subtree: true });
 
+const tidewatch = createTidewatch({ root, content, onExit: () => menu() });
+
 function menu() {
   session?.destroy(); session = null;
-  showMenu(root, content, errors, briefing);
+  showMenu(root, content, errors, briefing, {
+    onStart: () => { preloadBattleBanks(); tidewatch.start(); },
+    onResume: () => { preloadBattleBanks(); if (!tidewatch.resume()) menu(); },
+    onAbandon: () => { tidewatch.abandon(); menu(); },
+  });
   enterMenu();
 }
 
@@ -58,6 +65,11 @@ menu();
 if (import.meta.env.DEV) {
   (window as unknown as { brinewake: () => GameSession | null }).brinewake = () => session;
   (window as unknown as { ebbPlay: (id: string) => void }).ebbPlay = id => play({ missionId: id }); // perf/playtest harness
+  // Tidewatch: ebbTidewatch.demo('market' | 'formation' | 'battle' | 'result' | 'charter') jumps to a screen with a seeded demo run.
+  (window as unknown as { ebbTidewatch: unknown }).ebbTidewatch = {
+    demo: (stage: DemoStage) => { session?.destroy(); session = null; tidewatch.demo(stage); },
+    start: () => tidewatch.start(), run: () => tidewatch.state(), session: () => tidewatch.session(),
+  };
   // Quick battle straight onto a map (map screenshots): ebbSkirmish('kelpmire', 'salt_concord', 'overcurrent').
   (window as unknown as { ebbSkirmish: (map: string, a: string, b: string) => void }).ebbSkirmish = (map, a, b) => {
     const m = buildSkirmish(content, map, [a, b]); content.missions[m.id] = m; play({ missionId: m.id });

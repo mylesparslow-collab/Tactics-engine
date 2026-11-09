@@ -24,6 +24,16 @@ export interface SessionOpts {
   onExit: () => void;
   onRetry: () => void;
   onNext?: () => void;
+  /** Spectator mode (auto-battles): both crews are AI, no hand or End Turn, speed and Skip controls instead. */
+  spectator?: boolean;
+  /** Fix the game seed so a battle can be replayed headless with the same outcome. */
+  seed?: number;
+  /** Spectator: stop the battle once this many rounds have been played (the controller decides the winner). */
+  roundCap?: number;
+  /** Spectator: called once when the battle is over (phase 'playing' means the round cap was reached), instead of the victory/defeat modal. */
+  onBattleEnd?: (phase: 'playing' | 'victory' | 'defeat') => void;
+  /** Spectator: Skip was pressed. The controller resolves the battle headless. */
+  onSkip?: () => void;
 }
 
 type Mode = { kind: 'idle' } | { kind: 'move' } | { kind: 'ability'; ability: string } | { kind: 'card'; index: number };
@@ -56,10 +66,11 @@ export class GameSession {
   private handFilter: 'all' | 'unit' | 'spell' | 'equipment' = 'all';
   private hudTop!: HTMLElement;
   private factions: (string | undefined)[] = [];
+  private speed = 1;
 
   constructor(container: HTMLElement, private opts: SessionOpts) {
     this.content = opts.content;
-    this.game = new Game(opts.content, opts.missionId, { roster: opts.roster });
+    this.game = new Game(opts.content, opts.missionId, { roster: opts.roster, seed: opts.seed });
     this.root = container;
     this.build();
     this.renderer = new Renderer(this.canvas);
@@ -117,7 +128,7 @@ export class GameSession {
   // ---------- DOM ----------
   private build() {
     installArt(); stopBackdrop();
-    clear(this.root); this.root.className = 'game';
+    clear(this.root); this.root.className = 'game' + (this.opts.spectator ? ' spectator' : '');
     const g = this.g;
     this.factions = g.teams.map((t, i) => teamFaction(this.content, [...t.hand, ...t.deck, ...g.units.filter(u => u.team === i).map(u => u.defId)]));
     this.hudTop = h('header', { id: 'hudtop' });
@@ -141,7 +152,7 @@ export class GameSession {
       vb('center', 'Reset view', () => this.renderer.resetView()));
     const fade = h('div', { class: 'fadein' });
     this.stage = h('main', { id: 'stage' }, this.canvas, this.hudTop, this.logBox, this.banner, this.toast, ctl, this.preview, this.right, fade);
-    this.root.append(this.stage, this.hand);
+    if (this.opts.spectator) this.root.append(this.stage); else this.root.append(this.stage, this.hand);
     this.bindPointer();
   }
 
@@ -221,7 +232,9 @@ export class GameSession {
       case 'drop': this.logLine(`${e.amount} ${this.L('essence')} spills on the seabed.`, 'sys'); break;
       case 'pickup': this.logLine(`${this.uname(e.uid)} collects ${e.amount} ${this.L('essence')}.`, 'sys'); break;
       case 'terrain': this.logLine(`The ground at ${e.x},${e.y} becomes ${g.content.terrain[e.terrain]?.name ?? e.terrain}.`, 'sys'); break;
-      case 'turn': this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); playTurnBell(g.teams[e.team].controller === 'human'); break;
+      case 'turn':
+        if (this.opts.spectator && this.opts.roundCap && e.turn > this.opts.roundCap) { this.ended = true; this.waitForEnd('playing'); break; }
+        this.logLine(`Round ${e.turn} - ${g.teams[e.team].name}`, 'turn'); this.toastMsg(`Round ${e.turn} - ${g.teams[e.team].name}`, g.teams[e.team].color, e.team); playTurnBell(g.teams[e.team].controller === 'human'); break;
       case 'message': this.logLine(`${e.speaker ? e.speaker + ': ' : ''}${e.text}`, 'msg'); this.bannerQueue.push({ text: e.text, speaker: e.speaker }); this.pumpBanner(); break;
       case 'draw': if (g.teams[e.team].controller === 'human') { this.logLine(`You draw ${g.cardName(e.card)}.`, 'sys'); playCard(); } break;
       case 'end': this.ended = true; this.logLine(e.phase === 'victory' ? 'Victory!' : 'Defeat.', 'turn'); this.waitForEnd(e.phase); break;
@@ -267,6 +280,7 @@ export class GameSession {
     const poll = () => {
       if (this.destroyed) return;
       if (this.renderer.busy()) { setTimeout(poll, 150); return; }
+      if (this.opts.spectator) { setTimeout(() => { if (!this.destroyed) this.opts.onBattleEnd?.(phase); }, 900 / this.speed); return; }
       setTimeout(() => { if (this.destroyed) return; playEnd(phase === 'victory'); this.showEnd(phase); }, 500);
     };
     poll();
@@ -310,15 +324,16 @@ export class GameSession {
     const tick = () => {
       if (this.destroyed) return;
       if (g.phase !== 'playing') { this.aiRunning = false; this.refresh(); return; }
+      if (this.ended) { this.aiRunning = false; return; }
       if (this.renderer.busy()) { this.aiTimer = window.setTimeout(tick, 80); return; }
       let more = false;
       try { more = steps++ < 80 && aiStep(g); } catch (err) { console.error('AI error', err); }
       if (!more && g.phase === 'playing') g.endTurn();
       this.refresh();
-      if (g.phase === 'playing' && g.teams[g.current].controller === 'ai') { steps = more ? steps : 0; this.aiTimer = window.setTimeout(tick, 200); }
+      if (g.phase === 'playing' && !this.ended && g.teams[g.current].controller === 'ai') { steps = more ? steps : 0; this.aiTimer = window.setTimeout(tick, 200 / this.speed); }
       else { this.aiRunning = false; this.refresh(); }
     };
-    this.aiTimer = window.setTimeout(tick, 350);
+    this.aiTimer = window.setTimeout(tick, 350 / this.speed);
   }
 
   // ---------- input ----------
@@ -435,7 +450,7 @@ export class GameSession {
 
   private updateOverlay() {
     const g = this.g, ov = this.renderer.overlay;
-    ov.reach.clear(); ov.range.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.skyfall.clear(); ov.path = []; ov.pathCost = null; ov.previews = new Map();
+    ov.reach.clear(); ov.range.clear(); ov.targets.clear(); ov.area.clear(); ov.deploy.clear(); ov.skyfall.clear(); ov.path = []; ov.pathCost = null; ov.pathEngaged = 0; ov.previews = new Map();
     ov.hover = this.hover;
     const u = this.sel();
     ov.selected = u ? { x: u.x, y: u.y } : null;
@@ -463,7 +478,7 @@ export class GameSession {
       const reach = g.reachable(u);
       for (const k of reach.keys()) if (k !== key(u.x, u.y)) ov.reach.add(k);
       if (hv && reach.has(key(hv.x, hv.y)) && !(hv.x === u.x && hv.y === u.y)) {
-        ov.path = g.pathTo(u, hv.x, hv.y); ov.pathCost = reach.get(key(hv.x, hv.y))!.cost;
+        ov.path = g.pathTo(u, hv.x, hv.y); ov.pathCost = reach.get(key(hv.x, hv.y))!.cost; ov.pathEngaged = g.disengageCost(u);
       }
     } else if (this.mode.kind === 'ability') {
       const ab = this.mode.ability, a = g.ability(ab);
@@ -504,15 +519,23 @@ export class GameSession {
     const cur = g.teams[g.current], me = this.humanTeam();
     const myTurn = cur.controller === 'human';
     const others = g.teams.map((_, i) => i).filter(i => i !== me);
-    const endBtn = h('button', { class: 'endturn-pill btn-gold', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() }, 'End Turn');
+    const spec = !!this.opts.spectator;
+    const speedBtns = spec ? h('div', { class: 'speedctl', role: 'group', 'aria-label': 'Battle speed' }, ...[1, 2, 4].map(n =>
+      h('button', { class: 'spd' + (this.speed === n ? ' on' : ''), title: `${n}x speed`, onclick: () => this.setSpeed(n) }, `${n}x`)),
+      h('button', { class: 'spd skip', title: 'Skip to the result', onclick: () => this.opts.onSkip?.() }, 'Skip')) : null;
+    const endBtn = spec ? null : h('button', { class: 'endturn-pill btn-gold', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() }, 'End Turn');
     this.top.append(
       h('div', { class: 'hud-l' }, this.teamGauge(me, 'left')),
       h('div', { class: 'roundmed', style: `--tc:${cur.color}` },
         h('div', { class: 'rm-round' }, 'Round ', h('b', { class: 'num' }, String(g.round))),
         h('div', { class: 'rm-turn' }, myTurn ? 'Your turn' : this.aiRunning ? `${cur.name.replace(/^The /, '')} acting` : `${cur.name.replace(/^The /, '')}`)),
-      h('div', { class: 'hud-r' }, ...others.map(i => this.teamGauge(i, 'right')), endBtn,
+      h('div', { class: 'hud-r' }, ...others.map(i => this.teamGauge(i, 'right')), speedBtns, endBtn,
         h('button', { class: 'iconbtn menubtn soundbtn', title: isMuted() ? 'Sound off (M)' : 'Sound settings (M mutes)', 'data-snd': 'open', onclick: (e: Event) => openSoundPanel(e.currentTarget as HTMLElement) }, glyph(isMuted() ? 'mute' : 'sound')),
         h('button', { class: 'iconbtn menubtn', title: 'Menu', onclick: () => { if (this.ended || confirm('Abandon this battle and return to the menu?')) this.opts.onExit(); } }, glyph('gear'))));
+  }
+
+  private setSpeed(n: number) {
+    this.speed = n; this.renderer.setSpeed(n); this.renderTop();
   }
 
   // ---------- hand ----------
@@ -562,7 +585,12 @@ export class GameSession {
     else if (!team.hand.length) row.prepend(h('div', { class: 'empty' }, 'Hand empty. You draw 2 cards each turn; resting relics return soon.'));
     const hintFor = () => {
       if (this.mode.kind === 'ability') { const a = g.ability(this.mode.ability); return `${a?.name ?? ''}: choose a target \u00B7 Esc cancels`; }
-      if (this.mode.kind !== 'card') return t === g.current && this.canActSoft() ? 'Play a relic, or select a unit on the board' : 'Waiting for the enemy';
+      if (this.mode.kind !== 'card') {
+        if (!(t === g.current && this.canActSoft())) return 'Waiting for the enemy';
+        const su = this.sel();
+        if (su && su.team === t && !g.def(su).structure) return su.ap > 0 ? 'Blue tiles: move \u00B7 Number keys: abilities \u00B7 Esc deselects' : `${g.def(su).name} is out of AP \u00B7 select another unit or end the turn`;
+        return 'Play a relic, or select a unit on the board';
+      }
       const k = g.cardKind(team.hand[this.mode.index] ?? '');
       return k === 'spell' ? 'Choose a target to cast \u00B7 Esc cancels' : k === 'equipment' ? 'Choose a friendly unit to equip \u00B7 Esc cancels' : g.content.units[team.hand[this.mode.index] ?? '']?.skyfall ? 'Green: deploy now \u00B7 Violet: drops in next turn \u00B7 Esc cancels' : 'Choose a glowing tile to deploy \u00B7 Esc cancels';
     };
@@ -572,10 +600,11 @@ export class GameSession {
     const strip = h('div', { class: 'hstrip' },
       h('button', { class: 'htoggle', title: this.handOpen ? 'Hide hand' : 'Show hand', onclick: (e: Event) => this.setHandOpen(!this.handOpen, e.currentTarget as HTMLElement) },
         h('span', { class: 'chev' + (this.handOpen ? '' : ' up') }, '\u25BE'), h('span', null, this.L('warband')), h('b', null, String(team.hand.length)), team.deck.length ? h('span', { class: 'hdeck', title: `${team.deck.length} cards left to draw` }, `+${team.deck.length}`) : null),
-      tabs, h('span', { class: 'hint' }, hintFor()));
+      tabs);
+    const targeting = this.mode.kind === 'card' || this.mode.kind === 'ability';
     const end = h('button', { id: 'endturn', class: 'endturn-big', disabled: !this.canActSoft(), title: 'End turn (Enter twice)', onclick: () => this.endTurn() },
       h('span', { class: 'et-text' }, 'End Turn'), h('span', { class: 'et-key' }, 'Enter \u00D7 2'));
-    this.hand.append(strip, h('div', { class: 'hmain' }, row, end));
+    this.hand.append(h('div', { class: 'hprompt' + (targeting ? ' act' : '') }, hintFor()), strip, h('div', { class: 'hmain' }, row, end));
     this.layoutHand();
     row.scrollLeft = scroll;
   }
@@ -608,6 +637,7 @@ export class GameSession {
   private unitPanel(u: Unit, full: boolean) {
     const g = this.g, d = g.def(u), team = g.teams[u.team];
     const maxAp = g.stat(u, 'ap');
+    const engaged = d.structure || !u.alive ? 0 : g.disengageCost(u);
     const fc = d.faction ? this.content.factions?.[d.faction]?.color : undefined;
     const stat = (cls: string, lab: string, v: number, base: number) => h('span', { class: `ustat ${cls}${v > base ? ' up' : v < base ? ' down' : ''}`, title: lab }, h('small', null, lab), h('b', null, String(v)));
     const box = h('div', { class: 'upanel' + (full ? ' full' : ' mini'), style: `--tc:${team.color};--fc:${fc ?? team.color}` },
@@ -617,8 +647,10 @@ export class GameSession {
         h('div', { class: 'u-line' },
           h('span', { class: 'u-hp' }, h('i', { class: 'hcoin' }), h('div', { class: 'ubar hp' }, h('div', { class: 'fill', style: `width:${Math.max(0, u.hp / d.stats.hp * 100)}%` }), h('span', null, `${u.hp}/${d.stats.hp}`))),
           stat('atk', 'ATK', g.stat(u, 'attack'), d.stats.attack), stat('def', 'DEF', g.stat(u, 'defense'), d.stats.defense)),
-        d.structure ? null : h('div', { class: 'pips', title: `AP ${u.ap}/${maxAp}` }, ...Array.from({ length: Math.min(maxAp, 14) }, (_, i) => h('i', { class: i < u.ap ? 'on' : '' }))),
-        u.statuses.length ? h('div', { class: 'statuses' }, ...u.statuses.map(s => {
+        d.structure ? null : h('div', { class: 'pips', title: `Action points ${u.ap}/${maxAp}` }, h('small', null, 'AP'), ...Array.from({ length: Math.min(maxAp, 14) }, (_, i) => h('i', { class: i < u.ap ? 'on' : '' })), h('b', { class: 'num' }, `${u.ap}/${maxAp}`)),
+        u.statuses.length || engaged ? h('div', { class: 'statuses' },
+          engaged ? h('span', { class: 'schip', style: '--sc:#e0a040', title: `Next to an enemy: walking away costs +${engaged} AP.` }, 'Engaged', h('small', null, `+${engaged}`)) : null,
+          ...u.statuses.map(s => {
           const sd = g.content.statuses[s.id];
           return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
         })) : null,
@@ -645,7 +677,8 @@ export class GameSession {
           const range = a.range.min === a.range.max ? `${a.range.max}` : `${a.range.min}-${a.range.max}`;
           const tipEl = h('div', { class: 'abtip' }, h('b', null, a.name), h('span', { class: 'abmeta' }, a.passive ? 'Passive' : `${a.apCost} AP \u00B7 range ${range}${a.area ? ` \u00B7 area ${a.area.size}` : ''}${a.cooldown ? ` \u00B7 cooldown ${a.cooldown}` : ''}`),
             h('p', null, a.description ?? a.effects.map(e => effectText(this.content, e)).join('. ')));
-          if (a.passive) { list.append(h('div', { class: 'abtn passive', tabindex: '0' }, glyph(abilityGlyph(a)), tipEl)); return; }
+          const meta = a.passive ? 'Passive' : `${range === '0' ? 'Self' : `Range ${range}`}${a.area ? ` \u00B7 area ${a.area.size}` : ''}`;
+          if (a.passive) { list.append(h('div', { class: 'abtn passive', tabindex: '0' }, h('span', { class: 'ab-ic' }, glyph(abilityGlyph(a))), h('span', { class: 'ab-txt' }, h('span', { class: 'ab-name' }, a.name), h('span', { class: 'ab-meta' }, meta)), tipEl)); return; }
           const cd = u.cooldowns[id] ?? 0;
           const usable = u.team === g.current && this.canActSoft() && g.canUse(u, id);
           const active = this.mode.kind === 'ability' && this.mode.ability === id;
@@ -655,7 +688,9 @@ export class GameSession {
             onclick: () => { if (!this.canAct()) return; this.mode = active ? { kind: 'move' } : { kind: 'ability', ability: id }; this.hoverAbility = null; this.refresh(); },
             onmouseenter: () => { this.hoverAbility = id; this.updateOverlay(); },
             onmouseleave: () => { if (this.hoverAbility === id) { this.hoverAbility = null; this.updateOverlay(); } },
-          }, glyph(abilityGlyph(a)), h('span', { class: 'ab-ap hc-num' }, String(a.apCost)), h('span', { class: 'ab-key' }, String(idx)), cd > 0 ? h('span', { class: 'ab-cd hc-num' }, String(cd)) : null, tipEl));
+          }, h('span', { class: 'ab-key' }, String(idx)), h('span', { class: 'ab-ic' }, glyph(abilityGlyph(a))),
+            h('span', { class: 'ab-txt' }, h('span', { class: 'ab-name' }, a.name), h('span', { class: 'ab-meta' }, cd > 0 ? `Ready in ${cd}` : meta)),
+            h('span', { class: 'ab-ap hc-num', title: `${a.apCost} AP` }, String(a.apCost), h('small', null, 'AP')), tipEl));
         });
         card.append(list);
       }
