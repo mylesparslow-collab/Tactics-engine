@@ -12,7 +12,8 @@
   "description": "Salt eats at armour and skin. -1 defense.",
   "statMods": {
    "defense": -1
-  }
+  },
+  "vfx": "mist"
  },
  "crushed": {
   "name": "Crushed",
@@ -30,7 +31,8 @@
     "amount": 2,
     "damageType": "fire"
    }
-  ]
+  ],
+  "vfx": "embers"
  },
  "regen": {
   "name": "Mending",
@@ -121,7 +123,8 @@
   "statMods": {
    "attack": -1,
    "defense": -1
-  }
+  },
+  "vfx": "murk"
  },
  "hc_lured": {
   "name": "Lured",
@@ -186,7 +189,8 @@
     "amount": 1,
     "damageType": "fire"
    }
-  ]
+  ],
+  "vfx": "soot"
  },
  "sv_harpooned": {
   "name": "Harpooned",
@@ -282,7 +286,8 @@
   "statMods": {
    "attack": -2,
    "defense": -1
-  }
+  },
+  "vfx": "ink"
  },
  "gy_pinned": {
   "name": "Pinned",
