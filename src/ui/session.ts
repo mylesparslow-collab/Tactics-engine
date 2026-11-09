@@ -617,10 +617,7 @@ export class GameSession {
         h('div', { class: 'u-line' },
           h('span', { class: 'u-hp' }, h('i', { class: 'hcoin' }), h('div', { class: 'ubar hp' }, h('div', { class: 'fill', style: `width:${Math.max(0, u.hp / d.stats.hp * 100)}%` }), h('span', null, `${u.hp}/${d.stats.hp}`))),
           stat('atk', 'ATK', g.stat(u, 'attack'), d.stats.attack), stat('def', 'DEF', g.stat(u, 'defense'), d.stats.defense)),
-        d.structure ? null : h('div', { class: 'u-ap', title: `Action points: ${u.ap} of ${maxAp} left this turn` },
-          h('small', null, 'AP'),
-          h('div', { class: 'pips' }, ...Array.from({ length: Math.min(Math.max(maxAp, u.ap), 14) }, (_, i) => h('i', { class: i < u.ap ? 'on' : '' }))),
-          h('b', { class: 'num' }, String(u.ap), h('span', null, `/${maxAp}`))),
+        d.structure ? null : h('div', { class: 'pips', title: `AP ${u.ap}/${maxAp}` }, ...Array.from({ length: Math.min(maxAp, 14) }, (_, i) => h('i', { class: i < u.ap ? 'on' : '' }))),
         u.statuses.length ? h('div', { class: 'statuses' }, ...u.statuses.map(s => {
           const sd = g.content.statuses[s.id];
           return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
