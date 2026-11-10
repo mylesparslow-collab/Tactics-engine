@@ -19,9 +19,11 @@ def bell_on_side():
         F2 = Frame(F.o, F.R @ rot_x(TH), 1.0)
         mats = inner(add, P, F2)
         # the crown rope: a thick tail hanging off the back
-        crown = F2.p((0, H / 2 + 0.10, 0))
-        for a, b in ((v3(0, 0, 0), v3(-0.05, 0.12, -0.10)), (v3(-0.05, 0.12, -0.10), v3(-0.10, 0.10, -0.26))):
-            add(Capsule(crown + F2.v(a), crown + F2.v(b), 0.03, 0.026), 'rope', 0.01)
+        crown = F2.p((0, H / 2 + 0.09, 0))
+        pts = [crown, crown + F.v((0.0, 0.02, -0.14)), crown + F.v((0.05, -0.12, -0.26)), crown + F.v((0.10, -0.38, -0.30)),
+               crown + F.v((0.12, -0.55, -0.26))]
+        for a, b in zip(pts[:-1], pts[1:]):
+            add(Capsule(a, b, 0.038, 0.034), 'rope', 0.01)
         # the long crack: a dark zig-zag from the lip nearly to the shoulder (also drawn as a groove so it reads at 1x)
         hb = -H / 2
         pts = []

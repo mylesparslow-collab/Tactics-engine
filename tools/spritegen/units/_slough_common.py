@@ -416,6 +416,11 @@ def body_path(P, N):
     up = spline(ctrl, 17)[5:]
     rr = np.interp(np.linspace(0, 1, len(up)), [0, 0.45, 1.0], [r, (r + wr) * 0.5 * 1.04, wr])
     for i, q in enumerate(up):
+        # keep the S off the frame bottom: limit how far toward the camera a low point may sit
+        dep = q @ E2 - P['coil_c'] @ E2 * 0.0
+        lim = (0.866 * q[1] + 0.10 - rr[i]) / 0.5
+        if dep > lim:
+            q = q - E2 * (dep - lim)
         pts.append(q)
         rad.append(rr[i])
         t = i / (len(up) - 1)
@@ -1034,7 +1039,7 @@ def naga_finish(P, N, parts, mats=None, lights=(), B=None, world=None):
     e = P['end']
     fl = P['flat']
     if fl > 0:
-        parts[:] = [Part(Squash(pt.prim, 1 - 0.75 * fl, 1 - 0.10 * fl, tuple(-E2 * 0.45)), pt.mat, pt.k) for pt in parts]
+        parts[:] = [Part(Squash(pt.prim, 1 - 0.75 * fl, 1 - 0.15 * fl, tuple(-E2 * 0.8)), pt.mat, pt.k) for pt in parts]
     m = husked(m, e)
     lights = [Light(L.pos, L.color, L.intensity * (1 - e), L.radius) for L in lights]
     return Scene(parts=parts, materials=m, lights=lights, ground_clip=True)
@@ -1155,8 +1160,10 @@ def _attack_pose(base, i, style):
     sides = [k[3:] for k in P if k.startswith('hd_')]
     if style == 'thrust':      # two-handed pole: pull back along the shaft, then drive it forward
         d = _pole_dir(P)
-        k = {'wind': -0.22, 'rise': -0.05, 'strike': 0.16, 'recover': 0.06}[ph] * s
+        k = {'wind': -0.22, 'rise': -0.05, 'strike': 0.14, 'recover': 0.06}[ph] * s
         move_hands(P, d * k + v3(0, 0.0, 0), sides)
+        if ph == 'strike':
+            slide(P, v3(-0.06, 0.0, -0.12) * s, mid=0.5)   # the weapon does the reaching
     elif style == 'swing':     # one-handed weapon in the right hand: raise high back, cut down across
         R = {'wind': rot_x(-1.9) @ rot_z(-0.2), 'rise': rot_x(-1.3), 'strike': rot_x(0.35) @ rot_z(0.15),
              'recover': rot_x(0.12)}[ph]
@@ -1230,12 +1237,12 @@ def death_pose(base, i):
     # sink the waist toward the top of the coil and fall toward the figure's left (screen right)
     slide(P, v3(-0.02, -0.50 * f, -0.06) * s, mid=0.75)
     bend(P, side=np.radians(28) * f, fwd=np.radians(-72) * f)
-    P['mid'] = P['mid'] + v3(0.05, -0.18, -0.02) * f * s
+    P['mid'] = P['mid'] + v3(0.05, -0.12, -0.32) * f * s
     P['head_pitch'] = P['head_pitch'] + np.radians(30) * f
     P['head_roll'] = np.radians(-40) * f
     P['hood'] = [0.35, 0.3, 0.15, 0.1][i]
     P['jaw'] = [0.6, 0.4, 0.1, 0.0][i]
-    P['coil_sq'] = [0.92, 0.9, 0.85, 0.85][i]
+    P['coil_sq'] = [0.94, 0.95, 0.97, 0.97][i]
     P['coil_w'] = [1.0, 1.02, 1.03, 1.03][i]
     P['drop'] = [0, 0.3, 1.0, 1.0][i]
     P['end'] = [0, 0.3, 0.65, 1.0][i]

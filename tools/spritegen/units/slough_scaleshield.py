@@ -25,10 +25,10 @@ def build(P):
     c = (P['hd_r'] + P['hd_l']) / 2 + nz * 0.07 * s + v3(0, 0.06, 0) * s
     up = norm(v3(0, 1, 0) - nz * nz[1])
     if P['drop'] > 0:      # death: the scale falls flat in front of the coil
-        k = P['drop']
-        c = lerp(c, v3(-0.10, 0.05, -0.05), k)
+        k = min(1.0, P['drop'] * 2.5)
+        c = lerp(c, scr(0.05, 0.05, -0.30), k)
         nz = norm(lerp(nz, v3(0, 1, 0.05), k))
-        up = norm(lerp(up, norm(v3(0.2, 0, -1)), k))
+        up = norm(lerp(up, E1, k))
     scale_shield(add, c, nz, up, w=0.40 * s, h=0.60 * s)
     return naga_finish(P, N, parts)
 

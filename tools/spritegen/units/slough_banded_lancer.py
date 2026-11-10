@@ -18,7 +18,7 @@ def neutral_pose():
 def build(P):
     parts, add = new_parts()
     B = naga_body(P, add, N)
-    pole(add, P, "r", "l", "lance", below=0.45, above=0.60)
+    pole(add, P, "r", "l", "lance", below=0.40, above=0.50)
     return naga_finish(P, N, parts)
 
 

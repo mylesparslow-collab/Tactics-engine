@@ -6,7 +6,7 @@ from _slough_common import *
 
 UNIT_ID = 'slough_hundredcoat'
 N = Naga(height=2.6, arms=4, girth=1.30, tube=0.21, coil_r=0.56, loops=1.75, coil_back=0.27, hood='broad',
-         hood_w=1.05, band_len=0.30, accent=(), body_r=0.19, head_len=1.15,
+         hood_w=1.08, hood_h=0.86, band_len=0.30, accent=(), body_r=0.19, head_len=1.15,
          skin=_hex('#6a5a44'), belly=_hex('#8a6a3a'))
 CAMERA = naga_camera(N)
 
@@ -34,4 +34,23 @@ def build(P):
     return naga_finish(P, N, parts)
 
 
-ROWS, frames = naga_rows(neutral_pose, attack='quad')
+def _fit(row, i, P):
+    """Giant in a ppm-44 frame: keep the raised glaives under the top edge and the coil off the bottom."""
+    s = P['s']
+    if row == 'cast':            # spread the upper arms out instead of up
+        up = [0.12, 0.28, 0.10][i] * s
+        P['hd_r'] = P['hd_r'] + v3(0, -up, 0) + E1 * -0.06 * (i == 1)
+        P['hd_l'] = P['hd_l'] + v3(0, -up, 0) + E1 * 0.06 * (i == 1)
+        P['hd_r2'] = P['hd_r2'] + v3(0, -up * 0.5, 0)
+        P['hd_l2'] = P['hd_l2'] + v3(0, -up * 0.5, 0)
+    if row == 'cast':
+        slide(P, v3(0, -[0.03, 0.06, 0.0][i] * s, 0))
+        bend(P, fwd=np.radians([3, 7, 0][i]))
+        P['hood'] = min(P['hood'], 1.25)
+    if row == 'attack' and i == 0:
+        move_hands(P, v3(0, -0.10 * s, 0), ('r', 'l'))
+    P['coil_sq'] = max(P['coil_sq'], 0.95)
+    P['coil_w'] = min(P['coil_w'], 1.0)
+
+
+ROWS, frames = naga_rows(neutral_pose, attack='quad', hook=_fit)

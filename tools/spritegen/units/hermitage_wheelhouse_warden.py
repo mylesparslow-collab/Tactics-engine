@@ -8,9 +8,9 @@ UNIT_ID = 'hermitage_wheelhouse_warden'
 SIZE = 'large'
 CAMERA = size_camera(SIZE)
 
-HX, HY, HZ = 0.42, 0.37, 0.46       # half extents of the wheelhouse box
-WIN = (0.0, 0.07, 0.30, 0.17)        # window centre x, y, half width, half height (front wall, +z)
-DOOR = (0.09, -0.07, 0.19, 0.30)     # door centre z, y, half width, half height (right wall, -x)
+HX, HY, HZ = 0.46, 0.40, 0.40       # half extents of the wheelhouse box
+WIN = (0.0, 0.08, 0.34, 0.21)        # window centre x, y, half width, half height (front wall, +z)
+DOOR = (0.04, -0.06, 0.19, 0.28)     # door centre z, y, half width, half height (right wall, -x)
 
 
 def _box(p, c, h):
@@ -37,27 +37,28 @@ def wheelhouse():
         for sx in (-1, 1):
             F.box(add, (sx * (WIN[2] + 0.03), WIN[1], HZ + 0.005), (0.03, WIN[3] + 0.06, 0.02), 0.01, 'trim')
         # flat roof with a deep overhang, a low coaming and a ventilator cowl
-        F.box(add, (0, HY + 0.04, 0.02), (HX + 0.09, 0.035, HZ + 0.12), 0.015, 'roof')
-        F.box(add, (0, HY + 0.095, 0.02), (HX + 0.02, 0.025, HZ + 0.05), 0.012, 'trim')
+        F.box(add, (0, HY + 0.03, 0.02), (HX + 0.05, 0.024, HZ + 0.05), 0.015, 'roof')
+        F.box(add, (0, HY + 0.075, 0.02), (HX + 0.0, 0.02, HZ + 0.01), 0.012, 'trim')
         F.cyl(add, (-0.18, HY + 0.10, -0.20), (-0.18, HY + 0.24, -0.20), 0.055, 'iron', 0.02, 0.01)
         F.sph(add, (-0.18, HY + 0.26, -0.20), 0.07, 'iron')
         # the open door leaf, swung back against the wall
         F.box(add, (-HX - 0.20, DOOR[1], DOOR[0] + DOOR[2] + 0.03), (0.20, DOOR[3], 0.016), 0.012, 'trim', R=rot_y(0.25))
         F.box(add, (-HX - 0.20, DOOR[1], DOOR[0] + DOOR[2] + 0.03), (0.13, 0.11, 0.02), 0.012, 'timber', R=rot_y(0.25))
+        F.box(add, (0, WIN[1], HZ - 0.22), (WIN[2] + 0.05, WIN[3] + 0.05, 0.02), 0.01, 'dark')
         # the brass wheel, set back in the window: six thick spokes with handles, turns with P['spin']
         a0 = P['spin']
         wc = v3(WIN[0], WIN[1] - 0.005, HZ - 0.13)
-        F.put(add, Torus(wc, v3(0, 0, 1), 0.125, 0.020), 'brass')
+        F.put(add, Torus(wc, v3(0, 0, 1), 0.150, 0.022), 'brass')
         F.sph(add, tuple(wc), 0.045, 'brass')
         F.cyl(add, tuple(wc - v3(0, 0, 0.03)), tuple(wc + v3(0, 0, 0.04)), 0.032, 'brassd', 0.0, 0.01)
         for k in range(6):
             a = a0 + k * np.pi / 3
             d = v3(np.sin(a), np.cos(a), 0)
-            F.put(add, Capsule(wc, wc + d * 0.17, 0.020, 0.016), 'brass')
-            F.sph(add, tuple(wc + d * 0.185), 0.026, 'brassd')
+            F.put(add, Capsule(wc, wc + d * 0.20, 0.022, 0.017), 'brass')
+            F.sph(add, tuple(wc + d * 0.22), 0.030, 'brassd')
 
         def alb(q, n):
-            a = _arr(OAK_GREY, len(q))
+            a = _arr(_hex('#a39d90'), len(q))
             v = fbm(q * v3(1, 4, 1), 6.0, 2)[:, None]
             a = a * (0.78 + 0.34 * v)
             # horizontal plank seams
@@ -66,18 +67,18 @@ def wheelhouse():
             # faded cream paint on the upper planks, flaking away
             paint = (q[:, 1] > 0.02)
             flake = (vnoise(q, 8.0) > 0.52)
-            pc = _arr(_hex('#a9a290'), len(q)) * (0.88 + 0.2 * fbm(q, 9.0, 2)[:, None])
+            pc = _arr(_hex('#c4bca4'), len(q)) * (0.88 + 0.2 * fbm(q, 9.0, 2)[:, None])
             a = np.where((paint & flake)[:, None], np.where(pl[:, None], pc * 0.6, pc), a)
             # inside is tar-dark
             inside = (np.abs(q[:, 0]) < HX - 0.03) & (np.abs(q[:, 2]) < HZ - 0.03) & (q[:, 1] < HY - 0.03)
             return np.where(inside[:, None], np.array(TAR)[None, :] * 0.9, a)
 
         def brass(q, n):
-            a = _arr(BRASS, len(q))
+            a = _arr(_hex('#d0a752'), len(q))
             g = (vnoise(q, 14.0) > 0.66)[:, None]
             return np.where(g, np.array(VERDI)[None, :] * 0.9, a)
         return {'timber': Material(local_albedo(F, alb), spec=0.08, gloss=10, brush=0.10),
-                'trim': Material(_hex('#4e463f'), spec=0.1, gloss=12, brush=0.08),
+                'trim': Material(_hex('#6e655a'), spec=0.1, gloss=12, brush=0.08),
                 'roof': Material(_hex('#34302f'), spec=0.12, gloss=14, brush=0.08),
                 'iron': Material(_hex('#4a2c1c'), spec=0.4, gloss=24, metal=0.4),
                 'brass': Material(local_albedo(F, brass), spec=0.8, gloss=48, metal=0.7),
@@ -88,8 +89,8 @@ def wheelhouse():
 def _eyes():
     out = []
     for sx in (-1, 1):
-        base = v3(sx * 0.24, -0.16, 0.10)
-        tgt = v3(sx * 0.235, 0.15, HZ - 0.10)
+        base = v3(sx * 0.27, -0.16, 0.10)
+        tgt = v3(sx * 0.27, 0.17, HZ - 0.08)
         d = tgt - base
         out.append((tuple(base), tuple(norm(d)), float(np.linalg.norm(d))))
     return tuple(out)
@@ -97,12 +98,12 @@ def _eyes():
 
 SHELL = Shell(
     build=wheelhouse(),
-    ride=1.00, tilt=0.14, crab_at=(0, -0.30, 0.02), crab_pitch=0.0, z0=-0.20, x0=0.0, yaw=0.62,
+    ride=1.04, tilt=0.02, crab_at=(0, -0.30, 0.02), crab_pitch=0.0, z0=-0.115, x0=0.24, yaw=-0.30,
     feet=((-0.52, 0.34), (0.56, 0.30), (-0.56, -0.40), (0.60, -0.44)),
     leg_roots=((-0.22, -0.40, 0.18), (0.22, -0.40, 0.18), (-0.26, -0.40, -0.16), (0.26, -0.40, -0.16)),
     eyes=_eyes(), eye_bead=0.05, antennae=False,
-    guard=((0.30, -0.06, 0.26), (1.0, 0.30, 0.45)),
-    big=1.25, small=0.55, side_r=0.42, tip_angle=1.25, leg_len=1.15, leg_r=1.15)
+    guard=((0.34, 0.28, 0.22), (0.95, 0.06, 0.28)),
+    big=1.45, small=0.55, side_r=0.42, tip_angle=1.25, leg_len=1.15, leg_r=1.15)
 
 
 def neutral_pose():

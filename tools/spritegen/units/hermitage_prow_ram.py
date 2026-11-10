@@ -7,16 +7,16 @@ from _hermitage_common import *
 
 UNIT_ID = 'hermitage_prow_ram'
 SIZE = 'large'
-CAMERA = size_camera(SIZE)
+CAMERA = Camera(ppm=44)
 
-HL = 0.52          # half length of the bow section (stern cut at -z, stem at +z)
+HL = 0.48          # half length of the bow section (stern cut at -z, stem at +z)
 W0 = 0.33          # half beam at the cut stern
 HK = 0.74          # depth of the hull below the deck at the stern
 CUT = 0.56         # the planking is smashed out below this depth under the deck
 
 
 def _deck_y(u):
-    return 0.18 + 0.42 * u ** 2.6
+    return 0.18 + 0.34 * u ** 2.6
 
 
 def _half_w(u):
@@ -89,7 +89,7 @@ def prow_shell():
             F.put(add, Torus(c, v3(sx, 0.0, 0.5), 0.045, 0.014), 'ramband')
             F.put(add, Cylinder(c - v3(sx, 0, 0.5) * 0.02, c + v3(sx, 0, 0.5) * 0.02, 0.04, 0.0), 'dark')
         # figurehead: a bust leaning out over the stem, arms crossed, blank stare
-        G = F.child((0, _deck_y(1.0) + 0.22, HL + 0.12), rot_y(-0.75) @ rot_x(0.12), 1.45)
+        G = F.child((0, _deck_y(1.0) + 0.22, HL + 0.12), rot_y(-0.75) @ rot_x(0.12), 1.3)
         fy, fz = 0.0, 0.0
         G.ell(add, (0, fy + 0.04, fz - 0.02), (0.115, 0.15, 0.09), 'gown', 0.03, R=rot_x(0.35))
         G.ell(add, (0, fy - 0.04, fz - 0.06), (0.10, 0.10, 0.10), 'gown', 0.03)
@@ -154,12 +154,12 @@ def _eyes():
 
 SHELL = Shell(
     build=prow_shell(),
-    ride=1.02, tilt=0.12, crab_at=(0, -0.32, 0.12), crab_pitch=0.05, z0=-0.30, x0=-0.10, yaw=0.78,
+    ride=0.98, tilt=0.12, crab_at=(0, -0.32, 0.12), crab_pitch=0.05, z0=-0.505, x0=0.02, yaw=0.78,
     feet=((-0.46, 0.40), (0.50, 0.36), (-0.50, -0.36), (0.54, -0.40)),
     leg_roots=((-0.20, -0.38, 0.18), (0.20, -0.38, 0.18), (-0.28, -0.38, -0.12), (0.28, -0.38, -0.12)),
     eyes=_eyes(), eye_bead=0.055, antennae=False,
     guard=((0.12, -0.04, 0.44), (-0.45, 0.20, 0.80)),
-    big=1.25, small=0.55, side_r=0.42, tip_angle=1.25, leg_len=1.12, leg_r=1.15)
+    big=1.1, small=0.5, side_r=0.42, tip_angle=1.25, leg_len=1.12, leg_r=1.15)
 
 
 def neutral_pose():
@@ -174,8 +174,8 @@ def _rows(R):
     # attack: the prow dips and lunges, the claw snaps under the ram
     for i, (P, o) in enumerate(R['attack']):
         P['lean'] = [-0.10, -0.16, 0.12, 0.03][i]
-        P['slide'] = [0.0, -0.03, 0.10, 0.04][i]
-        P['snap'] *= 0.6
+        P['slide'] = [0.0, -0.04, 0.0, 0.0][i]
+        P['snap'] *= 0.4
     for row in ('hit', 'death', 'cast'):
         for P, o in R[row]:
             P['snap'] *= 0.6
