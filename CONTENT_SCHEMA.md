@@ -120,8 +120,16 @@ The strike emits `react` then a normal `ability` event. It does not trigger the 
   hit is discarded and the unit is **Evicted**: it becomes `shell.evicted` (new stats, abilities, sprite, traits), body HP
   carries over capped to the new max, statuses and equipment stay, ability cooldowns are cleared, AP is capped to the new
   max. `pierce` damage and `venom`/`drying`/`sacrifice` damage skip the shell and hit the body. Healing heals the body only.
+- `shell.onBreak?: Effect[]` — cast-level effects run for the owner at the unit's tile when the shell breaks (forced eviction
+  only, not moveOut). Only `essence`, `summon`, `terrain` and `draw` are allowed, e.g. `[{"type":"essence","amount":4}]`.
 - Evicted forms are ordinary UnitDefs, mark them `"token": true` (cost 0). A champion that dies after being evicted (or after
   rehousing into something else) still puts the card it was DEPLOYED as on cooldown and spills that card's Tide.
+- Heroes: give the hero's evicted form its own token UnitDef without `hero: true`. The unit still counts and shows as a hero
+  (crown, AI value, convertOnKill immunity, one-per-side) because the card it was deployed as is a hero (`Game.isHero`).
+- Tidewatch Tempering: a tempered shelled champion's evicted form gets the same Tempering stat bonuses and rank abilities
+  (as a synthesized `tw:<evicted>:<rank>:<card>` token). Rehousing into a different shelled unit does not carry Tempering.
+- Several UnitDefs may share art through `sprite.image` / `sprite.sheet` / `sprite.manifest`; the renderer looks the art up
+  from the unit's current definition every frame, so the sprite swaps on eviction/rehouse.
 - Empty shells: `{ "structure": true, "token": true, "emptyShell": { "becomes": "<shelled unitId>" }, "stats": {"hp": N, ...}, "abilities": [] }`.
   They belong to a team, block movement (even for allies), can be attacked, never count for `eliminate`, hold no Wells,
   drop no Tide. A spell or ability drops one with the normal `summon` effect (full `stats.hp`).
@@ -133,8 +141,8 @@ The strike emits `react` then a normal `ability` event. It does not trigger the 
 - `{ "type": "moveOut" }` in an ability with `"target": "empty"`, range 1. The caster must have a `shell` (unusable
   otherwise). It steps to the target tile as its `shell.evicted` form and leaves `shell.leaves` (an empty-shell unit of its
   team, HP = its shellHp at that moment) on the tile it left. No shell is left if `leaves` is absent or shellHp is 0.
-- `{ "type": "shell", "amount": N }` repairs the target's shell by N (up to `shell.hp`).
-- `filter: { "shelled": true|false }` on any effect: target's shell up (shellHp > 0) or not.
+- `{ "type": "shell", "amount": N }` repairs the target's shell by N (up to `shell.hp`). Allowed in abilities and spells.
+- `filter: { "shelled": true|false }` on any effect, passive `aura` effects included: target's shell up (shellHp > 0) or not.
 - Every definition change (eviction, rehouse, moveOut) clears ability cooldowns; abilities already used this turn stay used.
 - Rehouse/moveOut steps are effect movement (no AP for the step, no `onEnter`, no Coiled trigger). They emit `move` + `rehouse`/`evict`.
 
@@ -152,7 +160,7 @@ segment affect the segment (a structure), i.e. nothing.
 
 ### Events (for UI)
 `damage` gains `shell?: true` (the hit landed on the shell). New: `shed {uid, from, to, husk?}`,
-`evict {uid, from, to, voluntary?}` (voluntary = moveOut), `rehouse {uid, from, to, at}`, `shell {uid, amount}` (repair),
+`evict {uid, from, to, at, voluntary?}` (voluntary = moveOut; `at` = where the unit stands after it), `rehouse {uid, from, to, at}`, `shell {uid, amount}` (repair),
 `react {uid, target, ability}` (Coiled strike), `vanish {uid}` (removed without dying: expired husk, used empty shell,
 old tail segment). A unit's `defId` can change mid-battle; its `deployedAs` keeps the id it entered play as.
 

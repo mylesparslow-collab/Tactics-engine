@@ -137,6 +137,13 @@ export function validateContent(c: Content): string[] {
       ref('shell.evicted', u.shell?.evicted, d => d.shell ? 'must not have a shell itself' : d.structure ? 'must not be a structure' : undefined);
       if (u.shell?.leaves !== undefined) ref('shell.leaves', u.shell.leaves, d => d.emptyShell ? undefined : 'must be an emptyShell unit');
       if (u.structure) errs.push(`unit ${id}: a structure cannot have a shell`);
+      if (u.shell?.onBreak !== undefined) {
+        if (!Array.isArray(u.shell.onBreak)) errs.push(`unit ${id}: shell.onBreak must be a list of effects`);
+        else u.shell.onBreak.forEach((e, i) => {
+          checkEffect(e, `unit ${id} shell.onBreak ${i}`);
+          if (!['essence', 'summon', 'terrain', 'draw'].includes(e.type)) errs.push(`unit ${id} shell.onBreak ${i}: only essence, summon, terrain and draw are allowed`);
+        });
+      }
     }
     if (u.emptyShell !== undefined) {
       ref('emptyShell.becomes', u.emptyShell?.becomes, d => d.shell ? undefined : 'must be a unit with a shell');

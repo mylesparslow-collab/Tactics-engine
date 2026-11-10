@@ -151,6 +151,20 @@ export function ensureTempered(c: Content, def: string, rank: number): string {
     for (const [k, v] of Object.entries(t.statMods ?? {})) u.stats[k as 'hp'] += v ?? 0;
     if (t.addAbility && c.abilities[t.addAbility] && !u.abilities.includes(t.addAbility)) u.abilities.push(t.addAbility);
   }
+  // A shelled champion's evicted form keeps its Tempering (stats and rank abilities) as its own tempered token.
+  const ev = u.shell?.evicted;
+  if (ev && c.units[ev] && !isTempered(ev)) {
+    const evId = `tw:${ev}:${r}:${def}`;
+    if (!c.units[evId]) {
+      const e: UnitDef = structuredClone(c.units[ev]);
+      for (const t of temperingOf(def).slice(0, r)) {
+        for (const [k, v] of Object.entries(t.statMods ?? {})) e.stats[k as 'hp'] += v ?? 0;
+        if (t.addAbility && c.abilities[t.addAbility] && !e.abilities.includes(t.addAbility)) e.abilities.push(t.addAbility);
+      }
+      c.units[evId] = e;
+    }
+    u.shell = { ...u.shell!, evicted: evId };
+  }
   c.units[id] = u;
   return id;
 }

@@ -648,7 +648,7 @@ export class GameSession {
     const box = h('div', { class: 'upanel' + (full ? ' full' : ' mini'), style: `--tc:${team.color};--fc:${fc ?? team.color}` },
       h('div', { class: 'u-portrait' }, artNode(u.defId, this.content)),
       h('div', { class: 'u-body' },
-        h('div', { class: 'u-name' }, d.name, d.hero ? h('span', { class: 'u-hero', title: 'Hero' }, '\u2655') : null),
+        h('div', { class: 'u-name' }, d.name, g.isHero(u) ? h('span', { class: 'u-hero', title: 'Hero' }, '\u2655') : null),
         h('div', { class: 'u-line' },
           h('span', { class: 'u-hp' }, h('i', { class: 'hcoin' }), h('div', { class: 'ubar hp' }, h('div', { class: 'fill', style: `width:${Math.max(0, u.hp / d.stats.hp * 100)}%` }), h('span', null, `${u.hp}/${d.stats.hp}`))),
           d.shell ? h('span', { class: 'u-hp', title: 'Shell: soaks damage before HP' }, h('div', { class: 'ubar hp' }, h('div', { class: 'fill', style: `width:${Math.max(0, (u.shellHp ?? 0) / d.shell.hp * 100)}%;background:#d9822b` }), h('span', null, `Shell ${u.shellHp ?? 0}/${d.shell.hp}`))) : null,

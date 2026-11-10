@@ -134,7 +134,7 @@ function danger(g: Game, th: Threat, u: Unit, p: Pos, vip: boolean): number {
   const def = g.stat(u, 'defense') + g.terrainAt(p.x, p.y).defense;
   // Roughly one hit per threatening enemy; defense applies to each, so subtract it about twice.
   const expected = Math.max(0, raw - def * 2);
-  const worth = g.def(u).cost / 6 + (g.def(u).hero ? 6 : 0);
+  const worth = g.def(u).cost / 6 + (g.isHero(u) ? 6 : 0);
   let pen = expected * 0.25;
   if (expected >= u.hp) pen += worth;
   return vip ? pen * 3 + (expected > 0 ? 4 : 0) : pen;
@@ -209,6 +209,18 @@ function scoreAbility(g: Game, u: Unit, abilityId: string, target: Pos, from: Po
     const src = occ ? undefined : g.terrainAt(target.x, target.y).shellSource;
     const shellHp = occ ? occ.hp : src ? g.content.units[src]?.shell?.hp ?? 0 : 0;
     s += 6 + shellHp * 0.6;
+  }
+  // moveOut: only to trade a nearly broken shell for a fresh one next to the tile it steps to; otherwise never.
+  if (a.effects.some(e => e.type === 'moveOut')) {
+    const sh = g.def(u).shell, left = u.shellHp ?? 0;
+    const fresh = !!sh && left <= sh.hp * 0.25 && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => {
+      const x = target.x + dx, y = target.y + dy;
+      if (!g.inBounds(x, y) || (x === from.x && y === from.y)) return false;
+      const o = g.unitAt(x, y);
+      if (o) return o.uid !== u.uid && o.team === u.team && !!g.def(o).emptyShell && o.hp > left + 2;
+      return !!g.terrainAt(x, y).shellSource;
+    });
+    s += fresh ? 1.5 : -100;
   }
   // Terrain effects: hazards dropped under enemies are worth something, under friends they hurt.
   const terr = a.effects.find((e): e is Extract<Effect, { type: 'terrain' }> => e.type === 'terrain');

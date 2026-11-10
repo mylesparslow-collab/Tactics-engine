@@ -8,6 +8,9 @@ import { isCardUnit, nonCardUnits, normalizeContent, validateContent } from '../
 import { factionDeck, playableFactions } from '../src/engine/skirmish';
 import { allRelics } from '../src/engine/collection';
 import type { Content, GameEvent, MapDef, MissionDef, Unit } from '../src/engine/types';
+import { ensureTempered } from '../src/engine/autobattle';
+import relicsJson from '../content/relics.json';
+const relics = relicsJson as unknown as Record<string, { tempering?: { statMods?: Record<string, number>; addAbility?: string }[] }>;
 
 const base = loadFixtureContent();
 const stats = (hp: number, ap = 6, attack = 4, defense = 0, jump = 1) => ({ hp, ap, attack, defense, jump });
@@ -416,6 +419,65 @@ describe('shells', () => {
     const c = byTag(g, 'c');
     expect(c.defId).toBe('crab');
     expect(c.shellHp).toBe(8);
+  });
+});
+
+describe('shell extras (Hermitage design)', () => {
+  it('shell repair works in spells; filter.shelled works on passive auras', () => {
+    const g = world({ teams: [team('human', [{ unit: 'crab', x: 3, y: 2, tag: 'c' }, { unit: 'crab_bare', x: 5, y: 2, tag: 'b' }, { unit: 'warden', x: 4, y: 2, tag: 'w' }, anchor(0, 5)], ['patch_spell']),
+      team('ai', [anchor()])], edit: c => {
+      c.spells.patch_spell = { name: 'Patch', cost: 10, target: 'ally', effects: [{ type: 'shell', amount: 5 }] };
+      c.abilities.shell_ward = { name: 'Ward', apCost: 0, range: { min: 0, max: 0 }, target: 'self', passive: true,
+        effects: [{ type: 'aura', radius: 2, affects: 'allies', statMods: { defense: 2 }, filter: { shelled: true } }] };
+      c.units.warden = { name: 'Warden', cost: 30, stats: stats(20), abilities: ['shell_ward'], sprite };
+    } });
+    expect(validateContent(g.content)).toEqual([]);
+    const c = byTag(g, 'c'), b = byTag(g, 'b');
+    expect(g.stat(c, 'defense')).toBe(2);
+    expect(g.stat(b, 'defense')).toBe(0);
+    c.shellHp = 2;
+    expect(g.playCard(0, 0, 3, 2)).toBe(true);
+    expect(c.shellHp).toBe(7);
+  });
+
+  it('an evicted hero still counts and shows as a hero; onBreak fires with the evict position', () => {
+    const g = world({ teams: [team('human', [{ unit: 'hitter', x: 3, y: 2, tag: 'h' }, anchor(0, 5)]), team('ai', [{ unit: 'king', x: 4, y: 2, tag: 'k' }, anchor()])],
+      edit: c => {
+        c.units.king_bare = { name: 'Bare King', cost: 0, token: true, stats: stats(15), abilities: ['poke'], sprite };
+        c.units.king = { name: 'King', hero: true, cost: 80, stats: stats(30), abilities: ['poke'], sprite,
+          shell: { hp: 2, evicted: 'king_bare', onBreak: [{ type: 'essence', amount: 4 }] } };
+      } });
+    expect(validateContent(g.content)).toEqual([]);
+    const ev = events(g);
+    const k = byTag(g, 'k');
+    const before = g.teams[1].essence;
+    g.useAbility(byTag(g, 'h').uid, 'poke', 4, 2);
+    expect(k.defId).toBe('king_bare');
+    expect(g.isHero(k)).toBe(true);
+    expect(g.teams[1].essence).toBe(before + 4);
+    expect(ev.find(e => e.kind === 'evict')).toMatchObject({ uid: k.uid, at: { x: 4, y: 2 } });
+  });
+
+  it('Tidewatch tempering carries over to the evicted form', () => {
+    const c = wave3Content();
+    const real = Object.keys(relics).find(k => (relics[k].tempering ?? []).some(t => t.statMods?.hp))!;
+    c.units[real] = { ...structuredClone(c.units.crab), name: 'Tempered Crab' };
+    const ranks = relics[real].tempering!;
+    const hpBonus = ranks.reduce((n, t) => n + (t.statMods?.hp ?? 0), 0);
+    const id = ensureTempered(c, real, ranks.length);
+    const evId = c.units[id].shell!.evicted;
+    expect(evId).toBe(`tw:crab_bare:${ranks.length}:${real}`);
+    expect(c.units[evId].stats.hp).toBe(12 + hpBonus);
+    const added = ranks.map(t => t.addAbility).filter((x): x is string => !!x && !!c.abilities[x]);
+    for (const ab of added) expect(c.units[evId].abilities).toContain(ab);
+  });
+
+  it('the AI never moves a healthy crab out of its shell', () => {
+    const g = world({ teams: [team('human', [{ unit: 'dummy', x: 0, y: 5 }]),
+      team('ai', [{ unit: 'crab', x: 6, y: 0, tag: 'c' }, { unit: 'crab_empty', x: 6, y: 2 }, anchor(7, 4)])] });
+    g.endTurn();
+    playAiTurn(g);
+    expect(byTag(g, 'c').defId).toBe('crab');
   });
 });
 

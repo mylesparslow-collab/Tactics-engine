@@ -1007,7 +1007,7 @@ export class Renderer {
     const frame = frameFor(art, state, el, !!def.structure);
     const hpNow = this.hpShown.get(u.uid) ?? u.hp;
     return {
-      def, hero: !!def.hero, teamColor: g.teams[u.team].color, factionColor: def.faction ? g.content.factions?.[def.faction]?.color : undefined,
+      def, hero: g.isHero(u), teamColor: g.teams[u.team].color, factionColor: def.faction ? g.content.factions?.[def.faction]?.color : undefined,
       x: sx, y: sy, alpha, dim,
       flash: Math.max(0, Math.min(1, fl / 220)),
       hp: hpNow, maxHp: def.stats.hp,

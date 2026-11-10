@@ -97,7 +97,7 @@ export class Game {
     });
     // Heroes are unique: a hero already on the field is not also in the hand (campaign rosters list the commander).
     this.teams.forEach((t, team) => {
-      const seen = new Set(this.units.filter(u => u.team === team && this.def(u).hero).map(u => u.defId));
+      const seen = new Set(this.units.filter(u => u.team === team && this.isHero(u)).map(u => u.deployedAs ?? u.defId));
       t.hand = t.hand.filter(id => { if (!this.content.units[id]?.hero) return true; if (seen.has(id)) return false; seen.add(id); return true; });
     });
     // Shuffle each Chart and draw the opening hand. Short warbands (scripted fights, tests) stay fully in hand.
@@ -212,6 +212,8 @@ export class Game {
   /** True while the unit's shell is up. */
   shelled(u: Unit): boolean { return (u.shellHp ?? 0) > 0; }
   /** True for units that are not real fighters: decoys, empty shells and tail segments (AI and UI treat them as props). */
+  /** Heroes stay heroes after an eviction or rehouse: the card it was deployed as counts. */
+  isHero(u: Unit): boolean { return !!this.def(u).hero || !!this.content.units[u.deployedAs ?? '']?.hero; }
   isProp(u: Unit): boolean { const d = this.def(u); return !!d.decoy || !!d.emptyShell || u.tailOf !== undefined; }
   /** A tail segment stands in for its head; anything else is itself. */
   proxyOf(u: Unit): Unit { if (u.tailOf === undefined) return u; const h = this.unit(u.tailOf); return h && h.alive ? h : u; }
@@ -846,9 +848,10 @@ export class Game {
   private evict(u: Unit) {
     const sh = this.def(u).shell;
     if (!sh || !this.content.units[sh.evicted]) { u.shellHp = 0; return; }
-    const from = u.defId;
+    const from = u.defId, at = { x: u.x, y: u.y };
     this.morph(u, sh.evicted);
-    this.emit({ kind: 'evict', uid: u.uid, from, to: u.defId });
+    this.emit({ kind: 'evict', uid: u.uid, from, to: u.defId, at });
+    for (const e of sh.onBreak ?? []) if ((CAST_LEVEL_EFFECTS as readonly string[]).includes(e.type)) this.applyCastEffect(e, u.team, u, [at], at);
   }
 
   /** Shed: drop every status, leave a husk on this tile and slide away from the nearest enemy. */
@@ -986,7 +989,7 @@ export class Game {
         const amt = source ? this.previewDamage(source, target, e) : origin ? this.previewSpellDamage(target, e) : Math.max(1, e.amount);
         this.damage(target, amt, e.damageType, e.pierce);
         const d = this.def(target);
-        if (e.convertOnKill && !target.alive && team !== undefined && !d.hero && !d.structure && !target.tag?.startsWith('keystone_'))
+        if (e.convertOnKill && !target.alive && team !== undefined && !d.hero && !this.isHero(target) && !d.structure && !target.tag?.startsWith('keystone_'))
           this.summonAt(e.convertOnKill, team, target, 1);
         break;
       }
@@ -1140,7 +1143,7 @@ export class Game {
         const at = { x: u.x, y: u.y }, left = u.shellHp ?? 0, from = u.defId;
         this.stepTo(u, target);
         this.morph(u, sh.evicted);
-        this.emit({ kind: 'evict', uid: u.uid, from, to: u.defId, voluntary: true });
+        this.emit({ kind: 'evict', uid: u.uid, from, to: u.defId, voluntary: true, at: { x: u.x, y: u.y } });
         if (sh.leaves && left > 0 && this.content.units[sh.leaves]) {
           const s = this.spawn(sh.leaves, u.team, at.x, at.y);
           s.hp = left;

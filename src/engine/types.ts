@@ -188,7 +188,9 @@ export interface UnitDef {
   /** If it used no ability during its own last turn, the first enemy walking next to it during an enemy turn is hit by `ability`. */
   coiled?: { ability: string };
   /** Enters play with `hp` shell points that soak damage first; at 0 the unit becomes `evicted`. */
-  shell?: { hp: number; evicted: string; leaves?: string };
+  shell?: { hp: number; evicted: string; leaves?: string;
+    /** Cast-level effects (essence, summon, terrain, draw) run for the owner at the unit's tile when the shell breaks (forced eviction only). */
+    onBreak?: Effect[] };
   /** An empty shell (structure, token): a friendly `rehouse` onto it turns the caster into `becomes`. */
   emptyShell?: { becomes: string };
   /** Long body: walking leaves `length` (1-3) `segment` structures on the tiles behind it. */
@@ -390,7 +392,7 @@ export type GameEvent =
   /** Shed: statuses dropped, a husk left at `from` (uid `husk`), the unit slid to `to`. */
   | { kind: 'shed'; uid: number; from: Pos; to: Pos; husk?: number }
   /** The unit's definition changed: forced eviction (shell broke) or a voluntary moveOut (`voluntary: true`). */
-  | { kind: 'evict'; uid: number; from: string; to: string; voluntary?: boolean }
+  | { kind: 'evict'; uid: number; from: string; to: string; voluntary?: boolean; at: Pos }
   /** The unit climbed into a shell at `at` and became `to`. */
   | { kind: 'rehouse'; uid: number; from: string; to: string; at: Pos }
   /** Shell repaired by `amount`. */
