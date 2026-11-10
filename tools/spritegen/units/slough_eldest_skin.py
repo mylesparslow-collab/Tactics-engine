@@ -19,8 +19,8 @@ SKIN_OLD = _hex('#eee7cc')
 SKIN_OLDER = _hex('#d9d0ae')
 
 # cape strips behind the shoulders: (x across the back -1..1, length m, width m, outward splay, tier, shade)
-CAPE = ((-1.25, 1.02, 0.22, 1.10, 0, 0), (-0.60, 1.14, 0.24, 0.70, 0, 1), (0.10, 1.05, 0.24, 0.20, 0, 0),
-        (0.70, 1.10, 0.22, 0.75, 0, 1), (1.25, 0.95, 0.20, 1.10, 0, 0),
+CAPE = ((-1.20, 0.96, 0.22, 0.80, 0, 0), (-0.60, 1.14, 0.24, 0.70, 0, 1), (0.10, 1.05, 0.24, 0.20, 0, 0),
+        (0.70, 1.10, 0.22, 0.75, 0, 1), (1.20, 0.92, 0.20, 0.95, 0, 0),
         (-1.00, 0.58, 0.20, 0.55, 1, 1), (1.00, 0.52, 0.19, 0.55, 1, 1))
 STAFF_SKINS = ((-0.17, 0.78, 0.12), (0.03, 0.98, 0.14), (0.20, 0.66, 0.11))
 
@@ -41,8 +41,8 @@ def lying_pole(P, below, length):
     k = P['drop']
     if k <= 0:
         return b0, t0
-    b2 = scr(-0.55, 0.05, -0.12)
-    t2 = b2 + E1 * 1.05
+    b2 = scr(-0.48, 0.05, -0.12)
+    t2 = b2 + E1 * 0.95
     return lerp(b0, b2, k), lerp(t0, t2, k)
 
 
@@ -80,7 +80,7 @@ def build(P):
         out = rt * np.sign(x) if abs(x) > 0.05 else -fw
         L = ln * s * (1 - 0.55 * min(dr, 1.0))
         if dr > 0:   # death: the strips spill flat over the coil
-            dn = norm(lerp(dn, rt * np.sign(x + 1e-3) * 0.8 - fw * 0.5 + v3(0, -0.15, 0), min(dr, 1.0)))
+            dn = norm(lerp(dn, rt * np.sign(x + 1e-3) * 0.45 - fw * 0.6 + v3(0, -0.25, 0), min(dr, 1.0)))
         strip(add, top, dn, out, L, w * s * 1.05, mat, sway=sw * (1 if j % 2 else -1))
     # --- the crook-staff hung with three long skins
     butt, tip = lying_pole(P, 1.20, 0.90)
