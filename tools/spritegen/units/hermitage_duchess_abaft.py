@@ -76,8 +76,8 @@ def stern(add, P, F):
         d = norm(v3(np.sin(ang) * 0.4, np.cos(ang) * 0.5, 0.9))
         F.put(add, Capsule(a, a + d * ln, 0.035, 0.012), 'oakd')
     # the rudder: off the stern post, trailing back down to the salt like a tail
-    a = v3(0, 0.12, -HZ + 0.02)
-    b = v3(-0.20, -0.92, -0.92)
+    a = v3(-0.10, 0.12, -HZ + 0.02)
+    b = v3(-0.34, -0.95, -0.72)
     b = a + (b - a) * (1 - 0.45 * P['tip'])
     d = norm(b - a)
     L = float(np.linalg.norm(b - a))
@@ -128,7 +128,7 @@ def _eyes():
 
 
 SHELL = Shell(
-    build=stern, ride=1.02, tilt=0.05, crab_at=(0, -0.22, 0.14), crab_pitch=0.0, z0=-0.45, x0=0.39, yaw=-0.12,
+    build=stern, ride=1.02, tilt=0.05, crab_at=(0, -0.22, 0.14), crab_pitch=0.0, z0=-0.38, x0=0.48, yaw=0.02,
     feet=((-0.62, 0.30), (0.66, 0.26), (-0.64, -0.38), (0.68, -0.42)),
     leg_roots=((-0.26, -0.33, 0.18), (0.26, -0.33, 0.18), (-0.30, -0.33, -0.12), (0.30, -0.33, -0.12)),
     eyes=_eyes(), eye_bead=0.05, antennae=False,

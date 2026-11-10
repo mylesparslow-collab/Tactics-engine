@@ -1,6 +1,6 @@
 """Spitting Olive (Slough common, ranged). Lean olive-skinned krait with faint black bands, reared to 2.0 m, the
-hood wide and flat, the throat swollen into a round pale sac that glows chartreuse inside. No weapon: the right
-hand raised palm-out as if aiming, the left on the throat. Spits a thin bright stream (never a cloud).
+hood wide and flat, the throat swollen into a round pale sac that glows chartreuse inside. The right hand is
+raised with a short fang sabre held out to the side; the left is on the throat. Spits a thin bright stream (never a cloud).
 Defining detail: the inflated throat sac."""
 from _slough_common import *
 
@@ -17,14 +17,16 @@ def neutral_pose():
     P = naga_pose(N, u_sac=v3(0, 0, 0))
     s = P['s']
     P['u_sac'] = P['neck'] + v3(0.0, 0.09, 0.13) * s
-    reach(P, 'r', v3(-0.20, 1.62 * s, 0.46))
+    reach(P, 'r', scr(-0.40, 1.42 * s, 0.30))
     reach(P, 'l', P['u_sac'] + v3(0.10, -0.08, 0.05) * s)
+    P['item_r'] = sdir(-0.55, 0.85, 0.25)
     return P
 
 
 def build(P):
     parts, add = new_parts()
     B = naga_body(P, add, N)
+    blade(add, P, 'r', 'sabre', length=0.44, below=0.06)
     s = P['s']
     sp = max(P['spit'], P['venom'] * 0.6, P['cast_glow'])
     sac_r = 0.085 * s * (1 + 0.22 * sp) * (1 - 0.6 * P['flat'])

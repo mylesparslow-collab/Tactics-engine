@@ -8,7 +8,7 @@ from _hermitage_common import *
 UNIT_ID = 'hermitage_old_knell'
 SIZE = 'large'
 CAMERA = size_camera(SIZE)
-H, RB, RT = 1.22, 0.58, 0.27
+H, RB, RT = 1.08, 0.53, 0.25
 HB, HT = -H / 2, H / 2
 VP_T, VP_AZ = 0.60, -0.95          # viewport height fraction and azimuth from +z
 STUD_AZ = (-1.95, -1.45, -0.85, -0.30, 0.30)
@@ -86,7 +86,7 @@ def _eyes():
 
 
 SHELL = Shell(
-    build=pressure_bell, ride=1.00, tilt=0.42, crab_at=(0, -0.42, 0.22), crab_pitch=0.30, z0=-0.15, x0=0.22, yaw=-0.12,
+    build=pressure_bell, ride=1.00, tilt=0.42, crab_at=(0, -0.42, 0.22), crab_pitch=0.30, z0=-0.50, x0=0.46, yaw=-0.12,
     feet=((-0.52, 0.34), (0.56, 0.30), (-0.58, -0.30), (0.62, -0.34)),
     leg_roots=((-0.22, -0.52, 0.26), (0.22, -0.52, 0.26), (-0.30, -0.52, -0.06), (0.30, -0.52, -0.06)),
     eyes=_eyes(), eye_bead=0.055, antennae=False, barn=3,
@@ -108,6 +108,8 @@ def _rows(R):
             P['snap'] *= 0.6
             P['drum'] *= 0.6
             P['limp'] *= 0.5
+    for P, o in R['death']:
+        P['slide'] -= 0.20 * P['tip']
     return R
 
 

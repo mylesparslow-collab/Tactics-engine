@@ -128,6 +128,9 @@ def _rows(R):
         for P, o in R[row]:
             P['snap'] *= 0.6
             P['drum'] *= 0.6
+    for P, o in R['death']:
+        P['recoil'] = 0.60 * P['tip']
+        P['limp'] *= 0.5
     return R
 
 

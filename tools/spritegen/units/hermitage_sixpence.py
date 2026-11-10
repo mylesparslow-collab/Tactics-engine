@@ -21,9 +21,12 @@ def keg(add, P, F):
         a = a0(p, n)
         q = F.inv(p)
         edge = (vnoise(q * 3.0, 6.0) - 0.5) * 0.10
-        band = (q[:, 2] + edge > 0.02) & (q[:, 2] + edge < 0.20)
+        band = (q[:, 2] + edge > -0.02) & (q[:, 2] + edge < 0.30)
         soot = (q[:, 2] < 0.02) & (vnoise(q * v3(2, 1, 0.5) + 4.0, 9.0) > 0.72) & (q[:, 2] > -0.12)
-        a = np.where(band[:, None], np.array(TAR)[None, :] * 1.15, a)
+        a = a * 0.82
+        a = np.where(band[:, None], np.array(TAR)[None, :] * 0.9, a)
+        ember = band & (vnoise(q * 2.5 + 7.0, 9.0) > 0.80)
+        a = np.where(ember[:, None], np.array(ORANGE)[None, :] * 0.8, a)
         return np.where(soot[:, None], a * 0.5, a)
     m['stave'] = dataclasses.replace(st, albedo=alb)
     m['hoop'] = dataclasses.replace(m['hoop'])

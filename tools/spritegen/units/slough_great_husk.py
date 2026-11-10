@@ -25,7 +25,7 @@ def build(P):
     bend(P, side=np.radians(1.0) * np.sin(2 * np.pi * P['tell']) + 0.05 * sh)
     B = naga_body(P, add, N, arms=False)
     sleeves(P, add, N, B)
-    lacquer_coat(add, P, B, N, rows=3, per_row=5, coil=True)
+    lacquer_coat(add, P, B, N, rows=3, per_row=3, coil=False)   # a few patches left, not a full coat
     P['end'] = 1.0
     mats = {'eye': Material(EMPTY, spec=0.0, rim=0.0), 'pupil': Material(EMPTY, spec=0.0, rim=0.0),
             'band_skin': Material(HUSK, spec=0.0, sss=0.6), 'mouth': Material(EMPTY, spec=0.0, rim=0.0)}

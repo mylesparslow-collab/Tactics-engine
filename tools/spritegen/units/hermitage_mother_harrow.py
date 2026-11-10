@@ -14,7 +14,7 @@ FACTION = 'hermitage'
 SMOCK = _hex('#8f8d86')
 SMOCK_DK = _hex('#6f6d68')
 APRON = _hex('#855a38')
-SCARF = _hex('#94604a')
+SCARF = _hex('#74879c')
 BONE = _hex('#e3d9c6')
 TARC = _hex('#1f1a1d')
 RAGV = _hex('#7a3a9e')
@@ -30,8 +30,8 @@ def neutral_pose():
     rig.lean(P, fwd=np.radians(5))
     P['head_pitch'] = np.radians(2)
     P['head_yaw'] = np.radians(-22)
-    rig.place_arm(P, 'r', v3(-0.34, 1.02, 0.30), (-0.6, -1.0, -0.3))          # mallet raised, ready to tap
-    P['item_r'] = norm(v3(-0.05, 1.0, 0.45))
+    rig.place_arm(P, 'r', v3(-0.47, 1.22, 0.12), (-1.0, -0.6, -0.2))          # mallet raised, ready to tap
+    P['item_r'] = norm(v3(-0.18, 1.0, 0.12))
     rig.place_arm(P, 'l', v3(0.27, 0.95, 0.10), (1, -0.1, -0.7))             # fist on the hip
     return P
 
@@ -50,17 +50,24 @@ def build(P):
         ax = norm(el - sh)
         add(Torus(a, ax, 0.060 * b, 0.022), 'smockdk', 0.01)
     # leather apron: bib to the knee, a pocket and a strap round the neck
-    ap = ch + v3(0, -0.25 * h, 0.123 * b * 1.1)
-    add(Ellipsoid(ap + v3(0, 0.02, 0.0), (0.150 * b, 0.34 * h, 0.030), basis_from(v3(0, 0, 1), (0, 1, 0))), 'apron', 0.02)
-    add(Ellipsoid(ap + v3(0, -0.20 * h, 0.014), (0.105 * b, 0.07 * h, 0.022)), 'apron2', 0.01)       # pocket
+    ap = ch + v3(0, -0.27 * h, 0.150 * b)
+    Ra = rot_x(0.10)
+    add(Ellipsoid(ap, (0.165 * b, 0.34 * h, 0.04), Ra), 'apron', 0.02)
+    add(Ellipsoid(ap + v3(0, -0.17 * h, 0.03), (0.11 * b, 0.07 * h, 0.022), Ra), 'apron2', 0.01)       # pocket
     for sx in (-1, 1):
         add(Capsule(ch + v3(sx * 0.070 * b, 0.13 * h, 0.07), ch + v3(sx * 0.046 * b, 0.28 * h, 0.03), 0.014), 'apron2')
     # tar-black caulking iron through the belt on her left hip
     a = pel + v3(0.15 * b, 0.07 * h, 0.07)
     add(Capsule(a + v3(0.02, -0.17, -0.02), a + v3(-0.03, 0.12, 0.05), 0.014), 'tar')
     add(RoundBox(a + v3(-0.04, 0.14, 0.055), (0.012, 0.05, 0.026), 0.004, basis_from(v3(-0.5, 1, 0.4), (0, 0, 1))), 'iron')
+    # a tar pail hanging off her belt on the left hip: a fat iron-banded bucket, handle loop and tar skin
+    pc = pel + v3(0.24 * b, -0.12 * h, 0.04)
+    add(Cylinder(pc + v3(0, -0.10, 0), pc + v3(0, 0.10, 0), 0.085, 0.01), 'pail', 0.0)
+    add(Cylinder(pc + v3(0, 0.095, 0), pc + v3(0, 0.105, 0), 0.075, 0.005), 'tar')
+    add(Torus(pc + v3(0, 0.0, 0), v3(0, 1, 0), 0.09, 0.012), 'iron')
+    add(Torus(pc + v3(0, 0.13, 0), v3(0.2, 0, 1), 0.07, 0.008), 'iron')
     # oakum: two fat coils over the left shoulder and across the chest, a loose end hanging
-    axis = norm(v3(0.75, 1.0, 0.25))
+    axis = norm(v3(1.0, 1.0, 0.2))
     add(Torus(ch + v3(0.0, -0.06 * h, -0.01), axis, 0.215 * b, 0.050), 'oakum', 0.0)
     add(Capsule(ch + v3(0.10, -0.12 * h, 0.15 * b), ch + v3(0.13, -0.30 * h, 0.17 * b), 0.030, 0.022), 'oakum', 0.01)
     # headscarf: cap over the crown, a band, and a knot with two tails at the back; a grey fringe at the temples
@@ -77,13 +84,13 @@ def build(P):
     if d is not None:
         d = norm(d)
         g = hand_pos(P, 'r')
-        butt, tip = g - d * 0.07, g + d * 0.30
+        butt, tip = g - d * 0.07, g + d * 0.36
         add(Capsule(butt, tip, 0.020, 0.018), 'wood', 0.0)
         sv = norm(np.cross(d, v3(0, 0, 1))) if abs(d[2]) < 0.9 else v3(1, 0, 0)
         hc = tip + d * 0.02
-        add(Cylinder(hc - sv * 0.075, hc + sv * 0.075, 0.056, 0.012), 'mallet')
+        add(Cylinder(hc - sv * 0.09, hc + sv * 0.09, 0.066, 0.014), 'mallet')
         for k in (-1, 1):
-            add(Torus(hc + sv * k * 0.055, sv, 0.058, 0.009), 'iron')
+            add(Torus(hc + sv * k * 0.068, sv, 0.069, 0.010), 'iron')
     # the violet rag round her right upper arm
     sh, el = P['sh_r'], P['el_r']
     rag(add, sh + (el - sh) * 0.50, norm(el - sh), 0.056 * b, P, length=0.15, width=0.05)
@@ -97,11 +104,12 @@ def build(P):
         'scarf': Material(SCARF, spec=0.04, brush=0.08),
         'hairg': Material(HAIR, spec=0.2, brush=0.1),
         'tar': Material(TARC, spec=0.3, gloss=20),
+        'pail': Material(_hex('#4a4e57'), spec=0.5, gloss=26, metal=0.4),
         'mallet': Material(_hex('#8a6440'), spec=0.1, gloss=12, brush=0.08),
         'rag': Material(RAGV, spec=0.08, gloss=8, brush=0.06),
         'skin': Material(_face(P), spec=0.06, gloss=12, sss=0.6, brush=0.02),
     }
-    return finish(P, FACTION, parts, mats, end_style='crust')
+    return finish(P, FACTION, parts, mats, end_style='gutter')
 
 
 def _smock(col, _):
