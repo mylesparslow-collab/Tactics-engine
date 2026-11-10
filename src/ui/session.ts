@@ -217,18 +217,18 @@ export class GameSession {
       case 'ability': this.logLine(`${this.uname(e.uid)} uses ${g.ability(e.ability)?.name ?? e.ability}.`, 'ability'); break;
       case 'damage': this.logLine(`${this.uname(e.uid)} takes ${e.amount} ${e.damageType ?? ''} damage${e.shell ? ' to its shell' : ''}.`.replace('  ', ' '), 'dmg'); break;
       case 'heal': this.logLine(`${this.uname(e.uid)} recovers ${e.amount} HP.`, 'heal'); break;
-      case 'status': this.logLine(`${this.uname(e.uid)} is ${g.content.statuses[e.status]?.name ?? e.status}.`, 'status'); break;
+      case 'status': this.logLine(g.content.statuses[e.status]?.stacks ? `${this.uname(e.uid)} is afflicted with ${g.content.statuses[e.status]?.name ?? e.status}.` : `${this.uname(e.uid)} is ${g.content.statuses[e.status]?.name ?? e.status}.`, 'status'); break;
       case 'push': this.logLine(`${this.uname(e.uid)} is moved.`, 'move'); break;
       case 'death': this.logLine(`${this.uname(e.uid)} is defeated.`, 'death'); break;
-      case 'shed': this.logLine(`${this.uname(e.uid)} sheds its skin and slips away.`, 'move'); break;
+      case 'shed': this.logLine(e.husk !== undefined ? `${this.uname(e.uid)} sheds its skin, leaving a husk behind, and slips away.` : `${this.uname(e.uid)} sheds its skin and slips away.`, 'move'); break;
       case 'evict': this.logLine(e.voluntary ? `${g.content.units[e.from]?.name ?? e.from} moves out and is now ${this.uname(e.uid)}.` : `${g.content.units[e.from]?.name ?? e.from} is evicted from its shell.`, 'status'); break;
       case 'rehouse': this.logLine(`${g.content.units[e.from]?.name ?? e.from} moves into a new shell: ${this.uname(e.uid)}.`, 'status'); break;
       case 'shell': this.logLine(`${this.uname(e.uid)} repairs ${e.amount} shell.`, 'heal'); break;
-      case 'react': this.logLine(`${this.uname(e.uid)} strikes from coiled at ${this.uname(e.target)}!`, 'ability'); break;
+      case 'react': this.logLine(`${this.uname(e.uid)} uncoils and strikes ${this.uname(e.target)}!`, 'ability'); break;
       case 'revive': this.logLine(`${this.uname(e.uid)} rises again with ${e.hp} HP.`, 'heal'); break;
       case 'spell': this.logLine(`${g.teams[e.team].name} casts ${g.content.spells[e.spell]?.name ?? e.spell}.`, 'ability'); break;
       case 'equip': this.logLine(`${this.uname(e.uid)} is equipped with ${g.content.equipment[e.equipment]?.name ?? e.equipment}.`, 'status'); break;
-      case 'deploy': this.logLine(`${this.uname(e.uid)} enters the field.`, 'move'); break;
+      case 'deploy': if (g.unit(e.uid)?.tailOf === undefined) this.logLine(`${this.uname(e.uid)} enters the field.`, 'move'); break; // a growing tail is not an arrival
       case 'skyfall': this.logLine(`${g.content.units[e.defId]?.name ?? e.defId} is falling toward ${e.x},${e.y}.`, 'move'); break;
       case 'land': this.logLine(`${this.uname(e.uid)} crashes down at ${e.to.x},${e.to.y}.`, 'move'); break;
       case 'essence': this.logLine(`${g.teams[e.team].name} ${e.amount >= 0 ? 'gains' : 'loses'} ${Math.abs(e.amount)} ${this.L('essence')}.`, 'sys'); break;
@@ -659,7 +659,8 @@ export class GameSession {
           u.coiled && d.coiled && u.alive ? h('span', { class: 'schip', style: '--sc:#b5c934', title: `The first enemy to walk next to it this turn is struck by ${g.ability(d.coiled.ability)?.name ?? d.coiled.ability}.` }, 'Coiled') : null,
           ...u.statuses.map(s => {
           const sd = g.content.statuses[s.id];
-          return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
+          // stacking statuses (Venom) show their stack count; a 99-round duration is just "until it wears off" and means nothing to the player
+          return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, sd?.stacks ? `\u00D7${s.stacks ?? 1}` : s.remaining >= 90 ? '' : `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
         })) : null,
         traitLine(d) ? h('div', { class: 'line' }, traitLine(d)) : null,
         ...(full ? traitRules(this.content, d).map(t => h('div', { class: 'line' }, `${t.name}: ${t.text}`)) : []),
