@@ -46,7 +46,7 @@ def _fit(row, i, P):
     """The flat hood is the widest thing on the board: keep it (and the lunging head) inside the frame."""
     P['hood'] = min(P['hood'], 1.12)
     if row == 'attack':
-        P['head'] = P['head'] - E1 * 0.10 * P['s'] * (i >= 1)
+        P['head'] = P['head'] - E1 * 0.15 * P['s'] * (i >= 1)
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='spit', cast='spit', hook=_fit)
