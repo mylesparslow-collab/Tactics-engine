@@ -1,24 +1,36 @@
-"""The Eldest Skin (Slough hero). Old, very large for a non-giant (2.4 m, ppm 48), a stooped body with an enormous
-ragged hood and faded grey-and-bone bands, a single chartreuse ring at the throat. A skin-staff hung with a dozen
-small pale skins in the right hand, a cape of many shed skins heaped over the coil behind her so she reads as a
-heap of paper with a hood. Defining detail: the cape of skins."""
+"""The Eldest Skin (Slough hero). The oldest of the serpent-folk, shed ninety times; 2.35 m, ppm 48. The living snake
+reads first: a crisp banded coil (old grey-black and bone), a dark scaled torso with a muted gold front, a huge ragged
+dark hood with a pale rim, and a bright chartreuse ring at the throat. Her old skins are worn as a layered cape of
+long pale strips hanging from behind the shoulders down to the coil, framing (never covering) the dark body, with a
+short second tier over the upper arms. Signature prop: a tall crook-staff in her right hand hung with three long
+skins, a thin gold ring on the oldest. Left hand raised, fingers spread. Defining detail: the skin cape and staff."""
 from _slough_common import *
 
 UNIT_ID = 'slough_eldest_skin'
-N = Naga(height=2.3, girth=1.15, tube=0.185, coil_r=0.56, loops=1.8, coil_back=0.30, hood='ragged', hood_w=1.4,
-         hood_h=1.15, head_len=1.85, band_len=0.30, band_dark=0.5, band_fade=0.35, grey=0.55, accent=('neck',),
-         dark=_hex('#3c4040'), light=_hex('#d9d4bc'), belly=_hex('#d6c58e'), skin=_hex('#6a6248'),
-         mantle=_hex('#34383a'), hood_face=_hex('#cfc7a0'), hood_rim=_hex('#f4efdc'), lip=_hex('#efe6bd'),
-         lean=0.10, tail_side=-1)
+N = Naga(height=2.28, girth=1.12, tube=0.18, coil_r=0.54, loops=1.8, coil_back=0.30, hood='ragged', hood_w=1.55,
+         hood_h=1.25, head_len=1.8, band_len=0.28, band_dark=0.5, band_fade=0.08, grey=0.25, accent=(),
+         dark=_hex('#2b2e31'), light=_hex('#ddd7c0'), belly=_hex('#b49a58'), skin=_hex('#45463d'),
+         mantle=_hex('#24272a'), hood_face=_hex('#4d4c42'), hood_rim=_hex('#f1ead0'), lip=_hex('#d9cfa6'),
+         lean=0.08, tail_side=-1)
 CAMERA = naga_camera(N)
+
+GOLD_HERO = _hex('#e0b84a')
+SKIN_OLD = _hex('#eee7cc')
+SKIN_OLDER = _hex('#d9d0ae')
+
+# cape strips behind the shoulders: (x across the back -1..1, length m, width m, outward splay, tier, shade)
+CAPE = ((-1.25, 1.02, 0.22, 1.10, 0, 0), (-0.60, 1.14, 0.24, 0.70, 0, 1), (0.10, 1.05, 0.24, 0.20, 0, 0),
+        (0.70, 1.10, 0.22, 0.75, 0, 1), (1.25, 0.95, 0.20, 1.10, 0, 0),
+        (-1.00, 0.58, 0.20, 0.55, 1, 1), (1.00, 0.52, 0.19, 0.55, 1, 1))
+STAFF_SKINS = ((-0.17, 0.78, 0.12), (0.03, 0.98, 0.14), (0.20, 0.66, 0.11))
 
 
 def neutral_pose():
     P = naga_pose(N)
     s = P['s']
-    reach(P, 'r', scr(-0.40, 1.30 * s, 0.26))
+    reach(P, 'r', scr(-0.46, 1.22 * s, 0.24))
     aim(P, 'r', v3(0, 1, 0))
-    reach(P, 'l', scr(0.50, 1.55 * s, 0.22))
+    reach(P, 'l', scr(0.46, 1.60 * s, 0.20))
     return P
 
 
@@ -29,9 +41,21 @@ def lying_pole(P, below, length):
     k = P['drop']
     if k <= 0:
         return b0, t0
-    b2 = scr(-0.50, 0.05, -0.10)
-    t2 = b2 + E1 * 1.0
+    b2 = scr(-0.55, 0.05, -0.12)
+    t2 = b2 + E1 * 1.05
     return lerp(b0, b2, k), lerp(t0, t2, k)
+
+
+def strip(add, top, dn, out, ln, w, mat, sway=0.0):
+    """A hanging shed skin: two overlapping flat ribbons with a slight bend, ragged narrower lower end."""
+    fl = norm(np.cross(dn, out))                      # ribbon face normal
+    mid = top + dn * ln * 0.5
+    d2 = norm(dn + out * (0.12 + sway) + fl * 0.05)
+    a_c = top + dn * ln * 0.27
+    b_c = mid + d2 * ln * 0.23
+    add(Ellipsoid(a_c, (w * 0.5, ln * 0.29, 0.012), R_from(dn, fl)), mat, 0.01)
+    add(Ellipsoid(b_c, (w * 0.40, ln * 0.27, 0.011), R_from(d2, fl)), mat, 0.01)
+    return b_c + d2 * ln * 0.25
 
 
 def build(P):
@@ -39,50 +63,76 @@ def build(P):
     B = naga_body(P, add, N)
     s = P['s']
     dr = P['drop']
-    # --- cape of shed skins over the coil, behind her
-    rng = np.random.default_rng(11)
-    c0 = P['coil_c']
-    back = norm(v3(0.25, 0, -1.0))
-    rt = v3(back[2], 0, -back[0])
-    for ri, (R, y, n) in enumerate(((0.66, 0.30, 12), (0.54, 0.52, 10), (0.42, 0.74, 8))):
-        for j in range(n):
-            a = np.radians(-118 + 236 * (j + 0.5 * (ri % 2)) / n)
-            out = norm(back * np.cos(a) + rt * np.sin(a))
-            q = c0 + out * R * (1.0 + 0.1 * rng.uniform(-1, 1)) + v3(0, y * s, 0) * 0.9
-            nrm = norm(out + v3(0, 0.35, 0))
-            dn = norm(-v3(0, 1, 0) * 0.9 + out * 0.3)
-            ln = 0.20 + 0.06 * rng.uniform(0, 1)
-            add(Ellipsoid(q, (0.13 * s, ln * s, 0.016 * s), R_from(dn, nrm)), 'cape', 0.0)
-    # --- staff hung with a dozen small skins
-    butt, tip = lying_pole(P, 1.3, 0.80)
+    Rt = B['chest_R']
+    rt, up, fw = Rt[:, 0], Rt[:, 1], Rt[:, 2]
+    C = P['chest']
+    sw = np.sin(2 * np.pi * P['tell']) * 0.06 + 0.03 * P['breathe']
+    # --- cape of old skins: long strips from behind the shoulders, a short tier over the upper arms
+    fall = P['fall'] + dr
+    for j, (x, ln, w, spl, tier, shade) in enumerate(CAPE):
+        mat = 'skin_a' if shade == 0 else 'skin_b'
+        if tier == 0:
+            top = C + (rt * x * 0.19 + up * 0.15 - fw * (0.08 + 0.02 * abs(x))) * s
+            dn = norm(-up * 1.0 - fw * 0.30 + rt * x * spl * 0.45)
+        else:      # short skins draped over the shoulder caps, in front of the long ones
+            top = C + (rt * x * 0.21 + up * 0.17 + fw * 0.04) * s
+            dn = norm(-up * 1.0 + fw * 0.05 + rt * np.sign(x) * spl)
+        out = rt * np.sign(x) if abs(x) > 0.05 else -fw
+        L = ln * s * (1 - 0.55 * min(dr, 1.0))
+        if dr > 0:   # death: the strips spill flat over the coil
+            dn = norm(lerp(dn, rt * np.sign(x + 1e-3) * 0.8 - fw * 0.5 + v3(0, -0.15, 0), min(dr, 1.0)))
+        strip(add, top, dn, out, L, w * s * 1.05, mat, sway=sw * (1 if j % 2 else -1))
+    # --- the crook-staff hung with three long skins
+    butt, tip = lying_pole(P, 1.20, 0.90)
     d = norm(tip - butt)
-    _shaft(add, butt, tip, 'staff', d, P, 'haft', 'fang', 'glaze')
-    add(Torus(tip - d * 0.05, d, 0.07 * s, 0.014 * s), 'lash', 0.0)
-    add(Sphere(tip + d * 0.03, 0.04 * s), 'glaze', 0.0)
-    sw = np.sin(2 * np.pi * P['tell']) * 0.15
-    sv = _side(d)
-    for j in range(12):
-        a = 2 * np.pi * j / 12
-        o = (sv * np.cos(a) + np.cross(d, sv) * np.sin(a))
-        top = tip - d * (0.06 + 0.03 * (j % 3)) * s + o * 0.05 * s
-        dn = norm(v3(0, -1, 0) + o * 0.30 + E1 * sw)
-        ln = (0.30 + 0.12 * ((j * 5) % 3)) * s
+    add(Capsule(butt, tip, 0.026 * s), 'staffwood', 0.0)
+    sv = norm(E1 - d * (E1 @ d))
+    hook_c = tip + d * 0.07 * s - sv * 0.07 * s
+    ax = norm(np.cross(d, sv))
+    add(Torus(hook_c, ax, 0.075 * s, 0.022 * s), 'staffwood', 0.0)               # the crook
+    add(Capsule(hook_c - sv * 0.075 * s, hook_c - sv * 0.075 * s - d * 0.07 * s, 0.022 * s, 0.012 * s), 'staffwood', 0.0)
+    bar = tip - d * 0.10 * s
+    add(Capsule(bar - sv * 0.22 * s, bar + sv * 0.22 * s, 0.020 * s), 'staffwood', 0.0)
+    add(Capsule(bar - d * 0.05 * s, bar + d * 0.02 * s, 0.034 * s), 'glaze', 0.0)  # chartreuse knot
+    for j, (off, ln, w) in enumerate(STAFF_SKINS):
+        top = bar + sv * off * s * 1.2
+        dn = norm(v3(0, -1, 0) + sv * (sw * 1.5 + 0.12 * off))
+        L = ln * s
         if dr > 0:
-            top = lerp(top, v3(top[0] * 0.6, 0.06, -0.15) + E1 * (j - 6) * 0.04, dr)
-            dn = norm(lerp(dn, E1 * (1 if j % 2 else -1) + v3(0, 0.05, 0), dr))
-        add(Ellipsoid(top + dn * ln * 0.5, (0.04 * s, ln * 0.5, 0.010 * s), R_from(dn, E2)), 'cape', 0.0)
-    # --- free hand: fingers spread, raised as if reading
+            dn = norm(lerp(dn, E1 * (1 if off >= 0 else -1) + v3(0, 0.05, 0), dr))
+            top = lerp(top, scr(-0.20 + off * 1.2, 0.05, -0.14), dr)
+            L = L * (1 - 0.6 * dr)
+        strip(add, top, dn, E1, L, w * s, 'skin_a' if j != 1 else 'skin_b', sway=0.0)
+        add(Capsule(top - dn * 0.01, top + dn * 0.05 * s, 0.017 * s), 'glaze' if j != 1 else 'goldring', 0.0)
+    add(Torus(bar + sv * 0.02 * s + v3(0, -0.07, 0) * s, v3(0, 1, 0), 0.05 * s, 0.010 * s), 'goldring', 0.0)
+    # --- bright chartreuse throat ring
+    nk0 = C + up * 0.15 * s
+    hd = P['head'] - up * 0.05 * s
+    ring_c = lerp(nk0, hd, 0.42)
+    add(Torus(ring_c, norm(hd - nk0), 0.090 * s, 0.036 * s), 'throatring', 0.0)
+    # --- free hand raised, fingers spread
     h = P['hd_l']
     a = norm(h - P['sh_l'])
     sv2 = _side(a)
     for k in range(4):
         f = k - 1.5
-        add(Capsule(h + a * 0.02, h + (a + sv2 * f * 0.40) * 0.13 * s, 0.015 * s, 0.006), 'hand', 0.0)
-    # --- skin sash: pale first skin over the shoulder
-    Rt = B['chest_R']
-    return naga_finish(P, N, parts, {'cape': Material(lambda p, n: _arr(HUSK, len(p)) * (0.97 + 0.08 * fbm(p, 8.0, 2)[:, None])
-                                                       * (0.95 + 0.05 * np.sin(p[:, 1] * 38.0)[:, None]),
-                                                       spec=0.05, gloss=10, sss=0.7, brush=0.05)})
+        add(Capsule(h + a * 0.02, h + (a + sv2 * f * 0.40) * 0.13 * s, 0.016 * s, 0.006), 'hand', 0.0)
+
+    def skin_alb(base):
+        def fn(p, n):
+            a = _arr(base, len(p)) * (0.95 + 0.08 * fbm(p, 9.0, 2)[:, None])
+            ghost = np.mod(p[:, 1] / 0.20 + 0.3 * p[:, 0], 1.0) < 0.30
+            return np.where(ghost[:, None], a * 0.82, a)
+        return fn
+    glow_k = 0.16 * (1 - P['end'])            # thin old skin lets the light through: stays pale even in shadow
+    mats = {'skin_a': Material(skin_alb(SKIN_OLD), spec=0.05, gloss=10, sss=0.9, brush=0.04,
+                               emissive=tuple(np.array(SKIN_OLD) * glow_k)),
+            'skin_b': Material(skin_alb(SKIN_OLDER), spec=0.05, gloss=10, sss=0.9, brush=0.04,
+                               emissive=tuple(np.array(SKIN_OLDER) * glow_k)),
+            'staffwood': Material(_hex('#4a3b2a'), spec=0.2, gloss=20, brush=0.05),
+            'goldring': Material(GOLD_HERO, spec=0.9, gloss=60, metal=0.7),
+            'throatring': Material(CHART, spec=0.7, gloss=50, emissive=tuple(np.array(CHART) * 0.55 * max(P['glow'], 0.6) * (1 - P['end'])))}
+    return naga_finish(P, N, parts, mats)
 
 
 def _fit(row, i, P):
@@ -91,18 +141,21 @@ def _fit(row, i, P):
     if row == 'cast':
         P['hd_r'] = P0['hd_r']
         P['item_r'] = v3(0, 1, 0)
-        P['hd_l'] = P0['hd_l'] + v3(0, [0.1, 0.30, 0.1][i], 0.0) * s
-        P['hood'] = min(P['hood'], 1.2)
+        P['hd_l'] = P0['hd_l'] + v3(0, [0.1, 0.24, 0.1][i], 0.0) * s
+        P['hood'] = min(P['hood'], 1.15)
+        slide(P, v3(0, -0.07, 0) * s)
     if row == 'attack':
         P['hd_r'] = P0['hd_r'] + E2 * [-0.04, 0, 0.12, 0.04][i]
-        a = [-0.10, 0.0, 0.50, 0.15][i]
+        a = [-0.10, 0.0, 0.40, 0.15][i]
         P['item_r'] = norm(rot_x(a) @ v3(0, 1, 0))
-        P['hood'] = min(P['hood'], 1.2)
+        P['hood'] = min(P['hood'], 1.25)
+        if i == 2:
+            slide(P, -E1 * 0.10 * s - E2 * 0.04 * s)
     if row in ('idle', 'move', 'hit', 'death'):
         P['item_r'] = v3(0, 1, 0) if row != 'death' else norm(lerp(v3(0, 1, 0), E1, [0, 0.3, 1, 1][i]))
         if row != 'death':
             P['hd_r'] = P0['hd_r'] + (P['waist'] - P0['waist']) * 0.8
-    P['hood'] = min(P['hood'], 1.0 if row in ('attack', 'cast') else 1.1)
+    P['hood'] = min(P['hood'], 1.1 if row in ('attack', 'cast') else 1.15)
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='bite', cast='raise', hook=_fit)

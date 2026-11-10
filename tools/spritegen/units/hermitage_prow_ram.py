@@ -14,9 +14,9 @@ CAMERA = Camera(ppm=44)
 HL = 0.54          # half length of the bow section (stern cut at -z, stem at +z)
 W0 = 0.30          # half beam at the cut stern
 RAKE = 0.42        # the stem rakes forward going up
-TIMBER = _hex('#b3aa9a')
+TIMBER = _hex('#d2c8b4')
 TIMBER_DK = _hex('#6f665c')
-PAINT = _hex('#4f7d92')      # faded blue-grey paint strake
+PAINT = _hex('#5a8ea6')      # faded blue-grey paint strake
 KEEL = _hex('#3a2e2a')       # tarred oak keel, stem and rail
 DECK = _hex('#5a4c3e')
 IRON_DK = _hex('#3a3436')
@@ -46,11 +46,20 @@ def _uvt(q):
     return u, t, yd, yb, ze
 
 
+def _hw(q):
+    u, t, yd, yb, ze = _uvt(q)
+    return _half_w(u) * np.clip(1.0 - t ** 4.0, 0, 1) ** 0.45 + 0.01
+
+
 def _hull_sdf(q):
     x, y, z = q[:, 0], q[:, 1], q[:, 2]
     u, t, yd, yb, ze = _uvt(q)
-    hw = _half_w(u) * np.clip(1.0 - t ** 2.6, 0, 1) ** 0.5 + 0.01
-    d = (np.abs(x) - hw) * 0.62
+    hw = _hw(q)
+    e = 0.01
+    gz = (_hw(q + v3(0, 0, e)) - _hw(q - v3(0, 0, e))) / (2 * e)
+    gy = (_hw(q + v3(0, e, 0)) - _hw(q - v3(0, e, 0))) / (2 * e)
+    side = (np.abs(x) - hw) / np.sqrt(1.0 + gz ** 2 + gy ** 2)       # normalised: no soft-shadow smudge
+    d = side * 0.95
     d = np.maximum(d, (y - yd) * 0.9)
     d = np.maximum(d, (yb - y) * 0.9)
     d = np.maximum(d, (ze - HL) * 0.8)
@@ -58,7 +67,7 @@ def _hull_sdf(q):
     jag = 0.05 * np.sin(y * 17.0 + 0.7) + 0.035 * np.sin(x * 23.0 + y * 9.0) + 0.04 * (y - 0.1)
     d = np.maximum(d, (-(z + HL) + jag) * 0.8)
     # the aft half is an open, smashed hold: hollow it out behind the forecastle deck
-    cav = np.maximum((np.abs(x) - hw) * 0.62 + WALL, (yb - y) * 0.9 + 0.07)
+    cav = np.maximum(side * 0.95 + WALL, (yb - y) * 0.9 + 0.07)
     cav = np.maximum(cav, (ze - ZFC + 0.04 * np.sin(x * 19.0)) * 0.8)
     return np.maximum(d, -cav)
 
@@ -66,8 +75,8 @@ def _hull_sdf(q):
 def _cav_d(q):
     x, y, z = q[:, 0], q[:, 1], q[:, 2]
     u, t, yd, yb, ze = _uvt(q)
-    hw = _half_w(u) * np.clip(1.0 - t ** 2.6, 0, 1) ** 0.5 + 0.01
-    return (np.abs(x) - hw) * 0.62 + WALL, ze
+    hw = _half_w(u) * np.clip(1.0 - t ** 4.0, 0, 1) ** 0.45 + 0.01
+    return np.abs(x) - hw, ze, y - yb
 
 
 def _keel_pts():
@@ -105,7 +114,7 @@ def prow_shell():
             for tt in np.linspace(0.0, 0.92, 5):
                 yd, yb = _deck_y(uu), _bot_y(uu)
                 y = yd - (yd - yb) * tt
-                hw = _half_w(uu) * (1.0 - tt ** 2.6) ** 0.5
+                hw = _half_w(uu) * (1.0 - tt ** 4.0) ** 0.45
                 pts.append((hw - 0.045, y, -HL + 2 * HL * uu + RAKE * y))
             for sx in (-1, 1):
                 for a, b in zip(pts[:-1], pts[1:]):
@@ -164,8 +173,8 @@ def prow_shell():
             a = np.where(top[:, None], deck, a)
             # the smashed stern face is dark inside
             cut = (q[:, 2] + HL) < 0.05
-            cd, ze2 = _cav_d(q)
-            hold = (cd < 0.014) & (ze2 < ZFC + 0.03) & (q[:, 1] < yd - 0.01)
+            sd, ze2, hb = _cav_d(q)
+            hold = (sd < -0.035) & (hb > 0.05) & (ze2 < ZFC + 0.03) & (q[:, 1] < yd - 0.01)
             a = np.where((cut | hold)[:, None] & ~top[:, None], np.array(TAR)[None, :] * 1.5, a)
             return a
 
@@ -198,7 +207,7 @@ def _eyes():
 
 SHELL = Shell(
     build=prow_shell(),
-    ride=0.98, tilt=0.0, crab_at=(0, -0.38, 0.22), crab_pitch=0.10, z0=-0.36, x0=0.01, yaw=0.62,
+    ride=0.98, tilt=0.0, crab_at=(0, -0.38, 0.22), crab_pitch=0.10, z0=-0.40, x0=0.04, yaw=0.62,
     feet=((-0.40, 0.36), (0.42, 0.34), (-0.42, -0.34), (0.46, -0.38)),
     leg_roots=((-0.14, -0.40, 0.20), (0.14, -0.40, 0.20), (-0.17, -0.40, -0.20), (0.17, -0.40, -0.20)),
     eyes=_eyes(), eye_bead=0.055, antennae=False,
@@ -222,8 +231,9 @@ def _rows(R):
         P['snap'] *= 0.4
     for P, o in R['death']:
         P['yaw'] = 0.25 * P['tip']           # keels over turning side-on, so the long hull stays in frame
-        P['slide'] = 0.32 * P['tip']
-        P['recoil'] = 0.22 * P['tip']
+        k = min(1.0, 1.6 * P['tip'])
+        P['slide'] = 0.42 * k
+        P['recoil'] = 0.30 * k
     for row in ('hit', 'death', 'cast'):
         for P, o in R[row]:
             P['snap'] *= 0.6

@@ -2,7 +2,7 @@
 // node tools/cardkit/motif_raster.cjs <out_dir>
 const { chromium } = require('playwright');
 const fs = require('fs'); const path = require('path');
-const dir = path.join(__dirname, 'motifs');
+const dir = process.argv[3] || path.join(__dirname, 'motifs');  // optional 2nd arg: another svg folder
 const out = process.argv[2]; fs.mkdirSync(out, { recursive: true });
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage();
