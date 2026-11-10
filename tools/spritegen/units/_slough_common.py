@@ -708,8 +708,8 @@ def _drop(P, butt, tip):
     hd = tip - butt
     hd[1] = 0
     hd = norm(hd) if np.linalg.norm(hd) > 1e-3 else v3(1, 0, 0)
-    gm = v3(mid[0] * 0.6, 0.03, mid[2] * 0.6 + 0.05)
-    Lg = min(L, 1.5)
+    gm = v3(mid[0] * 0.4, 0.03, -0.12)        # lies across the coil, back from the frame bottom
+    Lg = min(L, 1.2)
     hd = norm(hd * 0.3 + E1)
     b2, t2 = gm - hd * Lg / 2, gm + hd * Lg / 2
     return lerp(butt, b2, k), lerp(tip, t2, k)
@@ -1034,7 +1034,7 @@ def naga_finish(P, N, parts, mats=None, lights=(), B=None, world=None):
     e = P['end']
     fl = P['flat']
     if fl > 0:
-        parts[:] = [Part(Squash(pt.prim, 1 - 0.75 * fl, 1.0, tuple(-E2 * 0.35)), pt.mat, pt.k) for pt in parts]
+        parts[:] = [Part(Squash(pt.prim, 1 - 0.75 * fl, 1 - 0.10 * fl, tuple(-E2 * 0.45)), pt.mat, pt.k) for pt in parts]
     m = husked(m, e)
     lights = [Light(L.pos, L.color, L.intensity * (1 - e), L.radius) for L in lights]
     return Scene(parts=parts, materials=m, lights=lights, ground_clip=True)
@@ -1244,7 +1244,7 @@ def death_pose(base, i):
     # hands go limp, lying on the ground beside the body
     for k, sd in enumerate([x[3:] for x in P if x.startswith('hd_')]):
         sx = -1 if sd[0] == 'r' else 1
-        lim = P['waist'] + v3(sx * 0.25 + 0.15, -0.25, 0.25 + 0.08 * k) * s
+        lim = P['waist'] + v3(sx * 0.28 + 0.10, -0.25, 0.02 + 0.05 * k) * s
         lim[1] = max(lim[1], 0.12 * s)
         P['hd_' + sd] = lerp(P['hd_' + sd], lim, min(1.0, f * 1.2))
     return P, {}
