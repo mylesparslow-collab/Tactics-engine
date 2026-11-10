@@ -14,8 +14,8 @@ CAMERA = naga_camera(N)
 def neutral_pose():
     P = naga_pose(N, v_shield=norm(v3(-0.30, 0.10, 1.0)))
     s = P['s']
-    reach(P, 'r', v3(-0.36, 1.06 * s, 0.30))
-    reach(P, 'l', v3(0.26, 1.10 * s, 0.36))
+    reach(P, 'r', v3(-0.38, 0.94 * s, 0.30))
+    reach(P, 'l', v3(0.24, 0.98 * s, 0.36))
     return P
 
 
@@ -28,13 +28,19 @@ def build(P):
     up = norm(v3(0, 1, 0) - nz * nz[1])
     if P['drop'] > 0:      # death: the scale falls flat in front of the coil
         k = min(1.0, P['drop'] * 2.5)
-        c = lerp(c, scr(0.05, 0.05, -0.30), k)
+        c = lerp(c, scr(0.02, 0.10, -0.50), k)
         nz = norm(lerp(nz, v3(0, 1, 0.05), k))
         up = norm(lerp(up, E1, k))
-    scale_shield(add, c, nz, up, w=0.42 * s, h=0.62 * s)
+    scale_shield(add, c, nz, up, w=0.42 * s, h=0.56 * s)
     pauldron(add, P, B, N, 'r', plates=3, size=1.1)
     pauldron(add, P, B, N, 'l', plates=2, size=1.1)
     return naga_finish(P, N, parts)
 
 
-ROWS, frames = naga_rows(neutral_pose, attack='bash')
+def _fit(row, i, P):
+    """The bash drives the door-sized scale forward: keep its leading edge inside the frame."""
+    if row == 'attack':
+        move_hands(P, -E1 * 0.07 * P['s'] * (i == 2))
+
+
+ROWS, frames = naga_rows(neutral_pose, attack='bash', hook=_fit)

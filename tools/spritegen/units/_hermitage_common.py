@@ -486,10 +486,10 @@ def cheliped(add, P, C, side, size, big=True, barn=0, seed=3, guard=None, arm=1.
     if big and P['fx'] > 0.5 and P['snap'] > 0.6:
         # snap accent: three short bright strokes off the shut tips (not a burst, not smoke)
         Z, Y = Rc[:, 2], Rc[:, 1]
-        for k, (a, b) in enumerate(((0.9, 0.7), (1.0, 0.0), (0.85, -0.65))):
+        for k, (a, b) in enumerate(((0.35, 1.0), (0.8, 0.35), (0.45, -0.9))):
             dir_ = norm(Z * a + Y * b)
-            p0 = mouth + dir_ * 0.07 * cs
-            add(Capsule(p0, p0 + dir_ * (0.10 + 0.03 * (k == 1)) * cs, 0.014 * cs, 0.006 * cs), 'streak', 0.0)
+            p0 = mouth + dir_ * 0.05 * cs - Z * 0.03 * cs
+            add(Capsule(p0, p0 + dir_ * 0.08 * cs, 0.014 * cs, 0.006 * cs), 'streak', 0.0)
     return ww, dw
 
 

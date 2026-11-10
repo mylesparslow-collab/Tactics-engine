@@ -14,7 +14,7 @@ CAMERA = naga_camera(N)
 def neutral_pose():
     P = naga_pose(N)
     s = P['s']
-    hold_pole(P, 'r', 'l', grip=scr(-0.40, 1.00, 0.30), direction=sdir(0.62, 0.78, 0.0), spacing=0.46)
+    hold_pole(P, 'r', 'l', grip=scr(-0.40, 1.00, 0.30), direction=sdir(0.78, 0.62, 0.0), spacing=0.46)
     return P
 
 
@@ -42,6 +42,9 @@ def _fit(row, i, P):
                  (scr(-0.34, 1.02, 0.36), sdir(0.70, 0.55, 0.2))][i]
         P['hd_r'] = g
         P['hd_l'] = g + dr * 0.46
+    if row == 'cast':            # the guard stays put (the glaive would leave the top of the frame)
+        s = P['s']
+        move_hands(P, -v3(0, [0.12, 0.28, 0.10][i], [0.02, 0.06, 0.12][i]) * s, ('r', 'l'))
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='thrust', hook=_fit)

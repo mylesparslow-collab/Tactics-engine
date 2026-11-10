@@ -61,8 +61,8 @@ def jug_shell():
 
 SHELL = Shell(
     build=jug_shell(),
-    ride=0.40, tilt=-0.12, crab_at=(0, -0.14, 0.40), crab_upright=1.0, z0=-0.70, x0=0.34, yaw=0.15,
-    eye_len=0.32, eye_bead=0.066, span=0.46, big=1.35, small=0.65, side_r=0.40, tip_angle=1.35, tip_dir=-1.0,
+    ride=0.40, tilt=-0.12, crab_at=(0, -0.14, 0.40), crab_upright=1.0, z0=-0.74, x0=0.305, yaw=0.15,
+    eye_len=0.32, eye_bead=0.066, span=0.46, big=1.35, small=0.65, side_r=0.40, tip_angle=0.30, tip_dir=-1.0, lie=-1.2,
     guard=((0.20, -0.02, 0.17), (-0.40, 0.25, 0.85)))
 
 
@@ -79,8 +79,8 @@ def build(P):
         held, dw = claw_grip(P, SHELL, SIZE, True)
         F = shell_frame(P, SHELL)
         t = P['throw']
-        fly = held + F.v((0.0, 0.10, 1.0)) * 0.55 * t + v3(0, -0.10 * max(t - 1, 0), 0)
-        ground = v3(held[0], STONE_R * s, held[2]) + v3(0.1, 0, 0.06)
+        fly = held + F.v((-0.25, 1.0, -0.25)) * 0.36 * t     # released overhand: it leaves up and away + v3(0, -0.10 * max(t - 1, 0), 0)
+        ground = v3(held[0], STONE_R * s, held[2]) + v3(-0.08, 0, 0.08)
         pos = lerp(fly, ground, min(P['drop'], 1.0))
         r = STONE_R * (1.0 + 0.25 * (SHELL.big - 1)) * P['stone']
         add(Ellipsoid(pos, (r, r * 0.92, r * 0.97), rot_y(0.6)), 'stone', 0.0)
@@ -93,12 +93,15 @@ def _rows(R):
     # attack = overhand throw: the stone is drawn back (cock), released on the hit frame, gone after
     for i, (P, o) in enumerate(R['attack']):
         P['throw'] = [0, 0, 1, 2][i]
-        P['stone'] = 1.0
+        P['stone'] = [1.0, 1.0, 1.0, 0.0][i]
         P['open'] = [0.45, 0.35, 0.8, 0.5][i]
+    for row in R.values():
+        for P, o in row:
+            P['snap'] *= 0.65
     # death: the stone falls out of the claw and stays on the salt
     for i, (P, o) in enumerate(R['death']):
         P['drop'] = [0, 0.4, 1, 1][i]
-        P['slide'] = [0, 0.0, -0.02, -0.02][i]
+        P['slide'] = [0, 0.03, 0.12, 0.14][i]
         P['limp'] *= 0.5
     return R
 

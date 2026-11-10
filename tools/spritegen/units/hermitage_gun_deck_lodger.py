@@ -11,7 +11,7 @@ GUN_L = 1.30
 
 SHELL = Shell(
     build=long_gun_shell(length=GUN_L, r_breech=0.27, r_muzzle=0.14, open_breech=True, bore=0.075),
-    ride=0.50, tilt=-0.24, crab_at=(0, -0.30, 0.16), crab_upright=1.0, z0=-0.62, x0=0.34, yaw=0.50,
+    ride=0.50, tilt=-0.24, crab_at=(0, -0.30, 0.16), crab_upright=1.0, z0=-0.68, x0=0.36, yaw=0.50,
     eye_len=0.30, eye_bead=0.060, span=0.50, duck_dir=(0, 0.6, -1.0), duck_depth=0.18,
     big=1.35, small=0.85, side_r=0.30, tip_angle=0.9, lie=-0.05, leg_r=1.1)
 
@@ -40,7 +40,7 @@ def _rows(R):
         P['snap'] = 0.0
         P['open'] = [0.3, 0.2, 0.5, 0.3][i]
         P['lean'] = [-0.03, -0.07, -0.13, -0.05][i]
-        P['recoil'] = [0.0, 0.0, 0.16, 0.12][i]
+        P['recoil'] = [0.0, 0.0, 0.11, 0.08][i]
         P['fire'] = [0.0, 0.0, 1.0, 0.0][i]
         P['fx'] = [0.0, 0.0, 1.0, 0.4][i]
         P['lift_a'] = [0, 0, 0.6, 0][i]

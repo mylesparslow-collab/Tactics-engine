@@ -16,7 +16,7 @@ SHELL = Shell(
     build=diving_bell_shell(h=H, r_bot=RB, r_top=RT, ports=PORTS, port_y=PORT_Y, eyes_in=()),
     ride=0.60, tilt=-0.36, crab_at=(0, -0.50, 0.46), crab_upright=1.0, z0=-0.98, x0=0.36,
     eye_len=0.30, eye_bead=0.064, span=0.48, duck_dir=(0, 1.0, -0.25), duck_depth=0.24,
-    big=1.40, small=0.70, side_r=0.50, tip_angle=1.25, tip_dir=-1.0)
+    big=1.40, small=0.70, side_r=0.46, tip_angle=0.30, tip_dir=-1.0, lie=-1.25)
 
 
 def neutral_pose():
@@ -32,7 +32,7 @@ def _fit(R):
         for P, o in row:
             P['snap'] *= 0.6
     for i, (P, o) in enumerate(R['death']):      # the bell rolls to its right: slide it back into frame
-        P['slide'] = [0, -0.08, -0.28, -0.32][i]
+        P['slide'] = [0, 0.03, 0.17, 0.18][i]
     return R
 
 

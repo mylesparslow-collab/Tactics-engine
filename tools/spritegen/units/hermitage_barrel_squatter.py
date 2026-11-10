@@ -9,7 +9,7 @@ CAMERA = size_camera('small')
 
 SHELL = Shell(
     build=barrel_shell(length=0.80, r_mid=0.32, r_end=0.265),
-    ride=0.31, tilt=-0.06, crab_at=(0, -0.10, 0.53), crab_upright=0.8, z0=-0.92, x0=0.30, yaw=0.15, shield=1.15,
+    ride=0.31, tilt=-0.06, crab_at=(0, -0.10, 0.53), crab_upright=0.8, z0=-0.98, x0=0.30, yaw=0.15, shield=1.15,
     eye_len=0.32, span=0.46,
     extra_eyes=(((0.0, 0.25, -0.02), (0.05, 1.0, -0.05), 0.24),),       # the bung-hole eye
     big=1.35, small=0.70, side_r=0.30)

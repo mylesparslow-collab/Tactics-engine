@@ -6,7 +6,7 @@ from _slough_common import *
 
 UNIT_ID = 'slough_spitting_olive'
 DK_OLIVE = _hex('#2f3619')
-N = Naga(**SKINS['olive'], height=2.0, girth=0.90, tube=0.14, coil_r=0.46, loops=1.7, hood='flat', hood_w=1.15,
+N = Naga(**SKINS['olive'], height=2.0, girth=0.90, tube=0.14, coil_r=0.46, loops=1.7, hood='flat', hood_w=1.0,
          pattern='saddles', band_len=0.22, band_dark=0.45, accent=(), hood_mark='ocelli', hood_mark_col=_hex('#e8e07a'),
          tail_side=-1, bracer=_hex('#8a8550'), head_w=1.1)
 CAMERA = naga_camera(N)
@@ -42,4 +42,11 @@ def build(P):
     return naga_finish(P, N, parts, mats, lights, world=world)
 
 
-ROWS, frames = naga_rows(neutral_pose, attack='spit', cast='spit')
+def _fit(row, i, P):
+    """The flat hood is the widest thing on the board: keep it (and the lunging head) inside the frame."""
+    P['hood'] = min(P['hood'], 1.12)
+    if row == 'attack':
+        P['head'] = P['head'] - E1 * 0.10 * P['s'] * (i >= 1)
+
+
+ROWS, frames = naga_rows(neutral_pose, attack='spit', cast='spit', hook=_fit)
