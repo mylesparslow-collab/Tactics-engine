@@ -1,26 +1,23 @@
-"""Gun-Deck Lodger (Hermitage long ranged). A horse-sized crab living in a Concord naval long gun with no carriage:
-the crab braced on four legs under the breech end, the barrel pointing forward over its head, claws out under
-the gun either side, eyestalks up either side of the barrel. ~1.8 m, ppm 48.
+"""Gun-Deck Lodger (Hermitage long ranged). A horse-sized crab wearing a Concord naval long gun with no carriage:
+the breech end rests on the salt behind it, the barrel rides on the crab's back and points forward and up over its
+head, and the crab's face, eyestalks, claws and legs spill out from under the trunnions. ~1.8 m, ppm 48.
 Defining detail: the muzzle ring and the recoil (the whole crab skids back a step on the hit frame)."""
 from _hermitage_common import *
 
 UNIT_ID = 'hermitage_gun_deck_lodger'
 SIZE = 'large'
 CAMERA = size_camera(SIZE)
-GUN_L = 1.45
+GUN_L = 1.30
 
 SHELL = Shell(
     build=long_gun_shell(length=GUN_L, r_breech=0.27, r_muzzle=0.14, open_breech=True, bore=0.075),
-    ride=1.08, tilt=-0.10, crab_at=(0, -0.30, -0.22), crab_pitch=0.05, z0=-0.24, x0=0.18, yaw=0.62,
-    feet=((-0.52, 0.30), (0.58, 0.26), (-0.60, -0.55), (0.64, -0.60)),
-    eyes=(((-0.20, -0.18, 0.02), (-0.30, 1.0, 0.55), 0.44),
-          ((0.20, -0.18, 0.02), (0.30, 1.0, 0.55), 0.44)),
-    guard=((0.20, -0.04, 0.30), (-0.25, 0.70, 0.65)),
-    big=1.25, small=0.6, side_r=0.26, tip_angle=0.0, lie=0.0, leg_len=1.15, leg_r=1.1)
+    ride=0.50, tilt=-0.24, crab_at=(0, -0.30, 0.16), crab_upright=1.0, z0=-0.62, x0=0.34, yaw=0.50,
+    eye_len=0.30, eye_bead=0.060, span=0.50, duck_dir=(0, 0.6, -1.0), duck_depth=0.18,
+    big=1.35, small=0.85, side_r=0.30, tip_angle=0.9, lie=-0.05, leg_r=1.1)
 
 
 def neutral_pose():
-    return hermit_pose(open=0.3, spread=0.5)
+    return hermit_pose(open=0.35, spread=0.3)
 
 
 def build(P):
@@ -50,13 +47,13 @@ def _rows(R):
         P['squash'] = [1.0, 0.97, 1.02, 1.0][i]
     for P, o in R['cast']:
         P['drum'] *= 0.6
-    # death: the gun is too long to roll; it slumps nose-down onto the salt
+    for row in R.values():
+        for P, o in row:
+            P['snap'] *= 0.7
+    # death: the gun slumps level and rolls part-way onto its side, one claw lolling out from under it
     for i, (P, o) in enumerate(R['death']):
-        P['tip'] = 0.0
-        P['fold'] = [0.0, 0.5, 0.9, 1.0][i]
-        P['lean'] = [-0.10, 0.06, 0.16, 0.18][i]
-        P['bob'] = [0.0, -0.25, -0.50, -0.55][i]
-        P['sway'] = [0.04, 0.10, 0.20, 0.22][i]
+        P['tip'] = min(P['tip'], 0.75)
+        P['limp'] *= 0.45
     return R
 
 

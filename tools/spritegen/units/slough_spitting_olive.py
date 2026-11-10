@@ -6,10 +6,9 @@ from _slough_common import *
 
 UNIT_ID = 'slough_spitting_olive'
 DK_OLIVE = _hex('#2f3619')
-N = Naga(height=2.0, girth=0.88, tube=0.135, coil_r=0.46, loops=1.7, hood='flat', hood_w=1.12,
-         dark=DK_OLIVE, light=OLIVE, band_len=0.26, band_dark=0.38, accent=(), belly=GOLD,
-         skin=_hex('#6d7a3a'), mantle=_hex('#3b4422'), hood_face=_hex('#4a5428'), hood_rim=_hex('#c9c48e'),
-         lip=_hex('#e0c060'), tail_side=-1)
+N = Naga(**SKINS['olive'], height=2.0, girth=0.90, tube=0.14, coil_r=0.46, loops=1.7, hood='flat', hood_w=1.15,
+         pattern='saddles', band_len=0.22, band_dark=0.45, accent=(), hood_mark='ocelli', hood_mark_col=_hex('#e8e07a'),
+         tail_side=-1, bracer=_hex('#8a8550'), head_w=1.1)
 CAMERA = naga_camera(N)
 
 

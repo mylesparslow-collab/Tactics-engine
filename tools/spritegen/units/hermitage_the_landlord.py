@@ -1,19 +1,19 @@
 """The Landlord (Hermitage exotic big body). A wagon-sized crab wearing the lamp-room of a fallen lighthouse: glass
 cylinder with four thick mullions, verdigris copper dome with a ball finial, a solid gallery band (four posts)
-round the base, walking on four legs as thick as posts, the big claw out of the gallery door. ~2.5 m, ppm 44.
-Defining detail: the lit lamp turning inside (a bright face sweeps round the glass), the crab's dark eyes pressed
-against the glass beside it."""
+round the base, worn tipped back on the crab's shoulders, the iron lantern deck resting on the salt behind; the crab's face, eyestalks
+and boxer's claws spill out from under the deck door, on four legs as thick as posts. ~2.5 m, ppm 44.
+Defining detail: the lit lamp turning inside (a bright face sweeps round the glass), lighting the crab's head below."""
 from _hermitage_common import *
 
 UNIT_ID = 'hermitage_the_landlord'
-SIZE = 'great'
-CAMERA = size_camera(SIZE)
+SIZE = 1.30            # 'great' class, trimmed so lamp-room, claws and legs fit at ppm 44
+CAMERA = size_camera('great')
 GR, GH = 0.50, 0.78          # glass radius / height (shell-local y 0.10 .. 0.88)
 G0 = 0.10
 EYE_AZ = (-0.62, -0.22)
 
 
-ROOM_S = 0.80                # the lamp-room's own scale inside the frame
+ROOM_S = 0.70                # the lamp-room's own scale inside the frame
 
 
 def lamp_room(add, P, F):
@@ -81,12 +81,9 @@ def _eyes():
 
 
 SHELL = Shell(
-    build=lamp_room, ride=0.98, tilt=0.06, crab_at=(0, -0.20, 0.24), crab_pitch=0.0, z0=-0.46, x0=0.20,
-    feet=((-0.46, 0.22), (0.50, 0.18), (-0.50, -0.38), (0.54, -0.40)),
-    leg_roots=((-0.24, -0.29, 0.18), (0.24, -0.29, 0.18), (-0.27, -0.29, -0.18), (0.27, -0.29, -0.18)),
-    eyes=_eyes(), eye_bead=0.05, antennae=False,
-    guard=((0.14, 0.02, 0.36), (-0.35, 0.70, 0.60)),
-    big=0.95, small=0.45, side_r=0.50, tip_angle=1.30, leg_len=0.82, leg_r=1.35)
+    build=lamp_room, ride=0.44, tilt=-0.20, crab_at=(0, -0.26, 0.34), crab_upright=1.0, z0=-0.78, x0=0.36,
+    eye_len=0.26, eye_bead=0.058, span=0.46, duck_dir=(0, 0.7, -1.0), duck_depth=0.16,
+    big=1.30, small=0.70, side_r=0.62, tip_angle=0.60, tip_dir=-1.0, leg_r=1.30, shield=1.1)
 
 
 def neutral_pose():
@@ -118,6 +115,9 @@ def _rows(R):
             P['snap'] *= 0.55
             P['drum'] *= 0.5
             P['limp'] *= 0.4
+    for i, (P, o) in enumerate(R['death']):
+        P['slide'] = [0, 0.0, -0.02, -0.02][i]
+        P['duck'] = [0.6, 0.5, 0.7, 0.75][i]
     for i, (P, o) in enumerate(R['cast']):
         P['ring'] = [0.6, 1.0, 1.0, 0.7][i]
         P['tell'] = [0.10, 0.22, 0.34, 0.46][i]

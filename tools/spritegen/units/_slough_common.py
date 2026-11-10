@@ -110,9 +110,11 @@ GOURD = _hex('#b89a5e')
 SLATE = _hex('#4a4f52')
 TONGUE = _hex('#e8607e')
 FANG = _hex('#f4eedc')
-EYE = _hex('#efc94a')
+EYE = _hex('#dcf03c')        # venom-yellow eye (part of the 5% accent)
 MOUTH = _hex('#6e2632')
 SILT = _hex('#6f6a58')
+HORN = _hex('#6a5236')       # dark core of fang blades
+EDGE = _hex('#fffbea')       # bright cutting edge
 
 LOOK = dataclasses.replace(
     Look(), sky=(0.63, 0.66, 0.62), sky_int=0.34, bounce=(0.80, 0.76, 0.58), bounce_int=0.22,
@@ -229,7 +231,7 @@ class Naga:
     hood_w: float = 1.0
     hood_h: float = 1.0
     head_len: float = 1.2
-    hood_yaw: float = -0.40      # hood fan turned toward the camera (rad)
+    hood_yaw: float = -0.55      # hood fan turned toward the camera (rad)
     lean: float = 0.0            # forward lean of the reared body (rad)
     dark: tuple = BLACK          # krait band colours
     light: tuple = BONE
@@ -250,6 +252,19 @@ class Naga:
     grey: float = 0.0            # greying (old): mixes grey into the dark bands and mantle
     arm_len: float = 1.0
     body_r: float = None         # rising-body radius at the waist (None = from girth)
+    # --- v2 (art-direction pass) ---
+    pattern: str = 'rings'       # rings | saddles (dark on the back only) | checker (offset half rings) | edged
+    band_grow: float = 0.35      # bands widen with body thickness (0 = even rings like a tyre)
+    taper: float = 1.0           # how strongly the coil thins toward the paddle tail
+    tail_out: float = 0.8        # length of the tail that trails out of the coil to the paddle (0 = none)
+    hood_mark: str = 'ocelli'    # ocelli (two false eyes) | chevron | bars | stripe | plain
+    hood_mark_col: tuple = None  # None = the light band colour
+    head_w: float = 1.0          # wedge width of the head
+    shoulders: float = 1.0       # shoulder breadth
+    bracer: tuple = LACQUER      # forearm bracers of lacquered skin (None = bare forearms)
+    snout: tuple = None          # pale snout band (None = light band colour)
+    scute: tuple = None          # belly plates colour (None = belly)
+    claw: tuple = None           # hand colour (None = skin, a shade lighter)
 
 
 def _phase(P):
@@ -271,7 +286,27 @@ def naga_camera(N):
 
 
 def _skin(N):
-    return N.skin if N.skin is not None else tuple(np.array(N.belly) * 0.62 + np.array(N.mantle) * 0.28)
+    """Arms / torso sides: a muted scaled neutral between the band colours (never the saturated belly)."""
+    if N.skin is not None:
+        return N.skin
+    return tuple(np.array(N.dark) * 0.50 + np.array(N.light) * 0.22 + np.array(N.belly) * 0.22)
+
+
+# Banding presets: Naga(**SKINS['slate'], ...) . Keep units visibly different at board scale.
+SKINS = dict(
+    krait=dict(dark=BLACK, light=BONE, belly=GOLD, mantle=_hex('#202326'), hood_face=_hex('#7d7a6c'),
+               hood_rim=BONE, lip=BONE),
+    yellow=dict(dark=_hex('#1d2023'), light=_hex('#e0ad35'), belly=_hex('#f0cf6a'), mantle=_hex('#1d2023'),
+                hood_face=_hex('#b88a34'), hood_rim=_hex('#f0cf6a'), lip=_hex('#f3e2a0'), skin=_hex('#5b5136')),
+    olive=dict(dark=_hex('#2c3317'), light=_hex('#8d9a44'), belly=_hex('#d8c460'), mantle=_hex('#323a1b'),
+               hood_face=_hex('#7f8c46'), hood_rim=_hex('#dcd690'), lip=_hex('#e6d98e'), skin=_hex('#55602e')),
+    slate=dict(dark=_hex('#384350'), light=_hex('#dcd8c2'), belly=_hex('#c8c09a'), mantle=_hex('#2e3640'),
+               hood_face=_hex('#8a96a0'), hood_rim=_hex('#ece6cc'), lip=_hex('#ece6cc'), skin=_hex('#5d6670')),
+    rust=dict(dark=_hex('#7c3820'), light=_hex('#cfb488'), belly=_hex('#e3b452'), mantle=_hex('#4c2a1c'),
+              hood_face=_hex('#b89670'), hood_rim=_hex('#ead6a8'), lip=_hex('#ecdcb4'), skin=_hex('#7a5a3e')),
+    ash=dict(dark=_hex('#45474a'), light=_hex('#d9d4bf'), belly=_hex('#b9a46a'), mantle=_hex('#2e3134'),
+             hood_face=_hex('#8a877a'), hood_rim=_hex('#f1ead0'), lip=_hex('#ddd4b0'), skin=_hex('#55564e')),
+)
 
 
 # ------------------------------------------------------------------ pose
@@ -294,16 +329,16 @@ def naga_pose(N, **kw):
         chest=v3(0.0, h(1.38), 0.03),
         neck=v3(0.0, h(1.68), 0.05),
         head=v3(0.0, h(1.93), 0.12),
-        head_yaw=np.radians(22), head_pitch=np.radians(4), head_roll=0.0,
+        head_yaw=np.radians(12), head_pitch=np.radians(0), head_roll=0.0,
         hood=1.0, jaw=0.0, tongue=0.0, venom=0.0,
-        sh_r=v3(-0.20 * g * s, h(1.54), 0.0), sh_l=v3(0.20 * g * s, h(1.54), 0.0),
+        sh_r=v3(-0.235 * g * N.shoulders * s, h(1.53), 0.0), sh_l=v3(0.235 * g * N.shoulders * s, h(1.53), 0.0),
         hd_r=v3(-0.28 * s, h(1.08), 0.20), hd_l=v3(0.28 * s, h(1.08), 0.20),
         item_r=None, item_l=None,
         breathe=0.0, tell=0.0, glow=1.0, cast_glow=0.0, fx=0.0, spit=0.0, flakes=0.0,
         fall=0.0, drop=0.0, end=0.0, flat=0.0, sink=0.0, throw=0.0,
     )
     if N.arms == 4:
-        P.update(sh_r2=v3(-0.19 * g * s, h(1.30), 0.02), sh_l2=v3(0.19 * g * s, h(1.30), 0.02),
+        P.update(sh_r2=v3(-0.21 * g * N.shoulders * s, h(1.30), 0.02), sh_l2=v3(0.21 * g * N.shoulders * s, h(1.30), 0.02),
                  hd_r2=v3(-0.45 * s, h(1.0), 0.15), hd_l2=v3(0.45 * s, h(1.0), 0.15), item_r2=None, item_l2=None)
     if N.lean:
         bend(P, N.lean)
@@ -398,23 +433,58 @@ def body_path(P, N):
     nc = int(28 * L) + 4
     pts, rad, bel = [], [], []
     roll = _phase(P)
+    lo = 1.0 - 0.60 * N.taper
     for i in range(nc):
         u = i / (nc - 1)
         th = th0 + sgn * 2 * np.pi * L * u
         R = lerp(R0, R1, smooth(0.25, 0.95, u))
-        wob = 1.0 + 0.04 * np.sin(th * 2 + roll * 2 * np.pi)
-        y = r * (0.93 + 1.25 * N.coil_lift * smooth(0.40, 0.85, u)) * sq
-        p = c + E1 * np.cos(th) * R * wob + E2 * np.sin(th) * R * N.coil_depth * wob + v3(0, y, 0)
+        wob = 1.0 + 0.05 * np.sin(th * 2 + roll * 2 * np.pi) + 0.03 * np.sin(th * 3.0 + 1.1)
+        # the inner loop climbs onto the outer one (a heavy pile, not a flat tyre); slight off-centre spiral
+        rr = r * (lo + (1 - lo) * smooth(0.0, 0.70, u)) * (1 + 0.10 * smooth(0.75, 1.0, u))
+        y = (rr * 0.92 + r * 1.30 * N.coil_lift * smooth(0.40, 0.88, u)) * sq
+        cu = c - E2 * 0.06 * smooth(0.35, 1.0, u) * N.coil_r
+        p = cu + E1 * np.cos(th) * R * wob + E2 * np.sin(th) * R * N.coil_depth * wob + v3(0, y, 0)
         pts.append(p)
-        rad.append(r * (0.42 + 0.58 * smooth(0.0, 0.30, u)) * (1 + (1 - sq) * 0.5))
-        bel.append(v3(0, -1, 0))
+        rad.append(rr * (1 + (1 - sq) * 0.5))
+        ro = norm(np.cos(th) * E1 + np.sin(th) * E2)
+        bel.append(norm(v3(0, -1, 0) + ro * 0.85))
+    # the tail trails out of the outer loop, backward and outward, to the paddle (lying on the ground)
+    if N.tail_out > 0:
+        p0, t0 = pts[0], norm(pts[1] - pts[0])
+        ro = p0 - c
+        ro[1] = 0
+        ro = norm(ro)
+        t0h = t0.copy()
+        t0h[1] = 0
+        t0h = norm(t0h)
+        tail, trad, tbel = [], [], []
+        for k in (4, 3, 2, 1):
+            D = norm(ro * 0.30 - E2 * 1.0 - t0h * 0.10)
+            q = p0 + D * 0.085 * k * N.tail_out * s + ro * 0.008 * k * k * N.tail_out * s
+            rk = rad[0] * (1 - 0.13 * k)
+            q[1] = rk * 0.92 * sq
+            tail.append(q)
+            trad.append(rk)
+            tbel.append(norm(v3(0, -1, 0) + ro * 0.85))
+        # keep the tail and its paddle inside the frame (2 px clear; the cel outline wraps edge pixels)
+        ppm = naga_camera(N).ppm
+        lim = (44.0 - 4.0) / ppm - 0.20 * N.paddle * s
+        for q in tail:
+            x = q @ E1
+            if abs(x) > lim:
+                q -= E1 * (x - np.sign(x) * lim)
+        pts = tail + pts
+        rad = trad + rad
+        bel = tbel + bel
+        nc += len(tail)
     # exit tangent
     tg = norm(pts[-1] - pts[-2])
     E = pts[-1]
     wr = N.body_r if N.body_r else 0.13 * N.girth * s
     ctrl = [pts[-2], E, E + tg * 0.10 + v3(0, 0.10, 0), P['mid'], P['waist']]
     up = spline(ctrl, 17)[5:]
-    rr = np.interp(np.linspace(0, 1, len(up)), [0, 0.45, 1.0], [r, (r + wr) * 0.5 * 1.04, wr])
+    r_e = rad[-1]
+    rr = np.interp(np.linspace(0, 1, len(up)), [0, 0.45, 1.0], [r_e, (r_e + wr) * 0.5 * 1.04, wr])
     for i, q in enumerate(up):
         # keep the S off the frame bottom: limit how far toward the camera a low point may sit
         dep = q @ E2 - P['coil_c'] @ E2 * 0.0
@@ -449,38 +519,58 @@ def _nearest(pts, p, chunk=40000):
     return seg, tt, cl
 
 
-def band_albedo(N, path, svals, bel, P, accents, husk=False):
-    """Krait rings by arc length, gold belly where the surface faces the belly direction."""
+def band_albedo(N, path, svals, bel, P, accents, husk=False, rad=None):
+    """Krait rings by arc length (pattern per N.pattern), belly colour with transverse plates where the surface
+    faces the belly direction. Rings widen with the body (N.band_grow), so the tail bands bunch up."""
     dark = np.array(N.dark) * (1 - N.grey) + np.array(_hex('#7a7c7a')) * N.grey
     light = np.array(N.light)
     fade = N.band_fade
     period = N.band_len
     ph = _phase(P) * period
     belly = np.array(N.belly)
+    scute = np.array(N.scute if N.scute is not None else N.belly)
+    accent_band = np.array(N.accent_col)
+    nb = len(bel)
+    bth = np.where(bel[:, 1] < -0.6, 0.80, 0.80)
+    if rad is not None and N.band_grow > 0:
+        rr = np.asarray(rad, dtype=np.float64)
+        pscale = 1 - N.band_grow + N.band_grow * rr / rr.max()
+    else:
+        pscale = np.ones(nb)
+    tang = np.diff(path, axis=0)
+    tang = np.concatenate([tang, tang[-1:]], 0)
+    tang = tang / (np.linalg.norm(tang, axis=1, keepdims=True) + 1e-9)
 
     def fn(p, n):
         seg, t, cl = _nearest(path, p)
         sv = svals[seg] + (svals[seg + 1] - svals[seg]) * t
-        u = np.mod((sv - ph) / period, 1.0)
+        u = np.mod((sv - ph) / (period * pscale[seg]), 1.0)
+        off = p - cl
+        off = off / (np.linalg.norm(off, axis=1, keepdims=True) + 1e-9)
+        b = bel[seg]
+        bm = (off * b).sum(1)
+        if N.pattern == 'checker':
+            lat = np.cross(tang[seg], np.array([0.0, 1.0, 0.0]))
+            u = np.mod(u + 0.5 * ((off * lat).sum(1) > 0), 1.0)
         dk = u < N.band_dark
+        if N.pattern == 'saddles':
+            dk = dk & (bm < -0.15)
         col = np.where(dk[:, None], dark[None, :], light[None, :])
+        if N.pattern == 'edged':
+            ground = light * 0.72 + dark * 0.18 + belly * 0.10
+            edge = (~dk) & ((u < N.band_dark + 0.09) | (u > 0.93))
+            col = np.where(dk[:, None], dark[None, :], np.where(edge[:, None], light[None, :], ground[None, :]))
         mixc = dark * (1 - 0.5) + light * 0.5
         col = col * (1 - fade) + mixc[None, :] * fade
         for a in accents:
-            m = np.abs(sv - a) < period * 0.32
+            m = np.abs(sv - a) < period * 0.30
             col[m] = accent_band
-        b = bel[seg]
-        off = p - cl
-        off = off / (np.linalg.norm(off, axis=1, keepdims=True) + 1e-9)
-        bm = (off * b).sum(1)
         th = bth[seg]
-        bw = smooth(th, th + 0.12, bm)[:, None]
-        col = col * (1 - bw) + belly[None, :] * bw
+        bw = smooth(th, th + 0.10, bm)[:, None]
+        plate = (np.mod(sv / 0.062, 1.0) < 0.20)[:, None]
+        bcol = np.where(plate, scute[None, :] * 0.70, scute[None, :])
+        col = col * (1 - bw) + bcol * bw
         return col
-    accent_band = np.array(N.accent_col)
-    # narrow gold underside on the coil, a broad gold front on the rising S so it reads as the torso's stem
-    nb = len(bel)
-    bth = np.where(np.abs(bel[:, 1]) > 0.5, 0.80, 0.30)
     return fn
 
 
@@ -502,74 +592,105 @@ def accent_positions(N, svals, nc):
 
 # ------------------------------------------------------------------ hood
 
-def hood_sdf(P, N, F):
-    """Cobra hood: a thin curved fan in frame F (x across, y up, z = facing). Width flares with P['hood']."""
+def _hood_dims(P, N):
+    """Half width W and half height H of the hood fan for the current flare."""
     s = P['s']
     fl = P['hood']
-    shape = N.hood
-    W = 0.27 * s * N.hood_w * (0.35 + 0.65 * fl)
-    H = 0.22 * s * N.hood_h
-    yc = 0.0
-    if shape == 'broad':
+    W = 0.40 * s * N.hood_w * (0.30 + 0.70 * fl)
+    H = 0.25 * s * N.hood_h
+    sh = N.hood
+    if sh == 'broad':
         W *= 1.15
-    elif shape == 'flat':
-        W *= 1.30
-        H *= 0.78
-    elif shape == 'narrow':
-        W *= 0.78
-        H *= 1.18
-    elif shape == 'spade':
+    elif sh == 'flat':
+        W *= 1.28
+        H *= 0.80
+    elif sh == 'narrow':
+        W *= 0.80
+        H *= 1.15
+    elif sh == 'spade':
         W *= 1.05
-    th = 0.018 * s
-    bendk = 1.1 / max(W, 0.05) * (0.5 + 0.5 * fl)
+        H *= 1.08
+    return W, H
+
+
+def _hood_prof(yy, shape):
+    """Half-width profile (0..1) over yy in -1 (neck) .. 1 (top): pinched at the neck, widest above the middle."""
+    top = np.sqrt(np.clip(1 - (np.clip(yy - 0.15, 0, None) / 0.85) ** 2, 0, 1))
+    if shape == 'spade':
+        top = np.clip(1 - np.clip(yy - 0.15, 0, None) / 0.85, 0, 1) ** 0.75
+    low = 0.34 + 0.66 * smooth(-1.0, 0.15, yy) ** 0.5
+    return np.where(yy > 0.15, top, low)
+
+
+def hood_sdf(P, N, F):
+    """Cobra hood: a thin fan cupped slightly forward round the neck, in frame F (x across, y up, z = facing).
+    The head sits in front of its upper half, so the hood frames the face instead of capping it like a hat."""
+    s = P['s']
+    W, H = _hood_dims(P, N)
+    shape = N.hood
+    th = 0.020 * s
 
     def f(p):
         q = (p - F.o) @ F.R
         x, y, z = q[:, 0], q[:, 1], q[:, 2]
-        yy = (y - yc) / H                    # -1 bottom .. 1 top
-        # half-width profile: pinched at the neck, widest above the middle, round top
-        prof = np.sqrt(np.clip(1 - np.clip(yy - 0.15, 0, None) ** 2 / 0.85 ** 2, 0, 1))
-        pinch = 0.32 + 0.68 * smooth(-1.05, 0.1, yy)
-        if shape == 'spade':
-            prof = prof * (1 - 0.25 * smooth(0.4, 1.0, yy))
-        wy = W * prof * pinch
+        yy = y / H
+        wy = W * _hood_prof(yy, shape)
         if shape == 'ragged':
             ang = np.arctan2(y, x)
-            wy = wy * (1 - 0.13 * (np.sin(ang * 9 + 1.3) > 0.3) - 0.06 * np.sin(ang * 23))
+            wy = wy * (1 - 0.14 * (np.sin(ang * 9 + 1.3) > 0.3) - 0.06 * np.sin(ang * 23))
         dx = np.abs(x) - wy
         dy = np.maximum(-1.0 - yy, yy - 1.0) * H
         d2 = np.maximum(dx, dy)
-        zc = -bendk * x * x * 0.5 - 0.02 * s * yy
-        dz = np.abs(z - zc) - th * (1.0 - 0.4 * np.clip(np.abs(x) / (W + 1e-6), 0, 1))
+        zc = 0.10 * x * x / max(W, 1e-3) - 0.03 * s * yy
+        dz = np.abs(z - zc) - th * (1.0 - 0.45 * np.clip(np.abs(x) / (W + 1e-6), 0, 1))
         return np.maximum(d2 * 0.9, dz)
-    return Func(f, F.o, max(W, H) * 1.15 + 0.05)
+    return Func(f, F.o, max(W, H) * 1.2 + 0.05)
 
 
 # ------------------------------------------------------------------ the body
 
-def _arm(add, sh, hd, l1, l2, pole, r_up, r_lo, mat, hand_mat, hand_r):
+def _arm(add, sh, hd, l1, l2, pole, r_up, r_lo, mat, hand_mat, hand_r, bracer=True, lower=False):
+    """Shoulder -> elbow -> fist. Upper arm with a biceps swell, forearm with a lacquered bracer, a fist that
+    closes round whatever passes through the grip point."""
     el = rig.two_bone(sh, hd, l1, l2, pole)
     d = hd - el
     ln = np.linalg.norm(d)
-    # if the hand is out of reach the forearm stretches (never detaches)
-    wr = hd - norm(d) * min(hand_r * 0.9, ln * 0.4)
-    add(Capsule(sh, el, r_up, r_lo * 1.05), mat, 0.03)
-    add(Capsule(el, wr, r_lo, r_lo * 0.82), mat, 0.02)
-    Rh = basis_from(norm(d), (0, 1, 0))
-    add(Ellipsoid(hd, (hand_r * 0.95, hand_r * 1.15, hand_r * 0.85), Rh), hand_mat, 0.015)
+    dn = norm(d)
+    wr = hd - dn * min(hand_r * 0.85, ln * 0.4)
+    add(Capsule(sh, el, r_up, r_lo * 1.02), mat, 0.03)
+    ua = norm(el - sh)
+    add(Ellipsoid(lerp(sh, el, 0.45), (r_up * 1.12, np.linalg.norm(el - sh) * 0.32, r_up * 1.08),
+                  basis_from(ua, (0, 1, 0))), mat, 0.03)
+    add(Capsule(el, wr, r_lo * 1.04, r_lo * 0.78), mat, 0.02)
+    if bracer:
+        b0, b1 = lerp(el, wr, 0.30), lerp(el, wr, 0.93)
+        add(Capsule(b0, b1, r_lo * 1.22, r_lo * 1.02), 'bracer', 0.0)
+        add(Torus(lerp(el, wr, 0.30), norm(wr - el), r_lo * 1.2, r_lo * 0.32), 'bracer_lt', 0.0)
+        add(Torus(lerp(el, wr, 0.92), norm(wr - el), r_lo * 1.02, r_lo * 0.30), 'bracer_lt', 0.0)
+    Rh = basis_from(dn, (0, 1, 0))
+    add(Ellipsoid(hd, (hand_r * 1.05, hand_r * 1.15, hand_r * 0.95), Rh), hand_mat, 0.015)
+    # thumb over the grip
+    tb = hd + Rh[:, 0] * hand_r * 0.7 + dn * hand_r * 0.2
+    add(Capsule(hd - dn * hand_r * 0.3 + Rh[:, 0] * hand_r * 0.5, tb, hand_r * 0.42, hand_r * 0.32), hand_mat, 0.01)
     return el
+
+
+HEAD_K = 1.55     # v2: heads are bigger than the old rig's (units keep their head_len ratios)
 
 
 def head_frame(P, N):
     s = P['s']
     R = rot_y(P['head_yaw']) @ rot_x(P['head_pitch']) @ rot_z(P['head_roll'])
-    return Frame(P['head'], R, s * N.head_len)
+    return Frame(P['head'], R, s * N.head_len * HEAD_K)
 
 
 def naga_body(P, add, N, arms=True, head=True):
     """Sculpt the whole serpent body for pose P. Returns B (anchors for props, fx and materials)."""
+    global _XMATS
+    _XMATS = {}
     s = P['s']
     g = N.girth
+    shb = N.shoulders
     B = {}
     # --- coil + rising body
     pts, rad, bel, nc = body_path(P, N)
@@ -584,24 +705,31 @@ def naga_body(P, add, N, arms=True, head=True):
     tg = norm(pts[0] - pts[2])
     sw = P['tail_sw']
     tg = norm(rot_y(sw * 0.6) @ tg)
+    tg[1] = 0
+    tg = norm(tg)
     side = norm(np.cross(tg, v3(0, 1, 0)))
-    pc = t0 + tg * 0.13 * N.paddle * s + v3(0, 0.10 * N.paddle * s, 0)
+    pz = N.paddle * s
+    pc = t0 + tg * 0.12 * pz + v3(0, 0.11 * pz, 0)
     Rp = np.stack([side, v3(0, 1, 0), tg], axis=1)
-    add(Ellipsoid(pc, (0.024 * s, 0.15 * N.paddle * s, 0.21 * N.paddle * s), Rp), 'paddle', 0.03)
+    add(Ellipsoid(pc, (0.026 * s, 0.16 * pz, 0.20 * pz), Rp @ rot_x(-0.35)), 'paddle', 0.04)
     B['tail'] = pc
-    # --- torso
+    B['tail_d'] = tg
+    # --- torso: ribcage, pectorals, narrow scaled waist, trapezius mantle
     W, C, Nk = P['waist'], P['chest'], P['neck']
     up = norm(Nk - W)
     fwd = norm(v3(0, 0, 1) - up * up[2])
     Rt = R_from(up, fwd)
+    rt = Rt[:, 0]
     B['chest_R'] = Rt
-    ab = (W + C) * 0.5
-    add(Ellipsoid(ab, (0.15 * g * s, 0.24 * s, 0.12 * g * s), R_from(norm(C - W), fwd)), 'torso', 0.07)
-    add(Ellipsoid(C, (0.205 * g * s, 0.20 * s, 0.135 * g * s), Rt), 'torso', 0.06)
-    # shoulder mantle (band black, continues into the hood)
-    add(Ellipsoid(C + up * 0.13 * s - fwd * 0.03 * s, (0.215 * g * s, 0.10 * s, 0.135 * g * s), Rt), 'mantle', 0.05)
-    # neck
-    add(Capsule(C + up * 0.15 * s, P['head'] - up * 0.05 * s, 0.085 * s * g ** 0.5, 0.068 * s), 'neck', 0.05)
+    ab = lerp(W, C, 0.42)
+    add(Ellipsoid(ab, (0.150 * g * s, 0.24 * s, 0.122 * g * s), R_from(norm(C - W), fwd)), 'torso', 0.07)
+    add(Ellipsoid(C, (0.215 * g * shb * s, 0.20 * s, 0.140 * g * s), Rt), 'torso', 0.06)
+    for sx in (-1, 1):
+        add(Ellipsoid(C + (rt * sx * 0.092 * g * shb + up * 0.055 + fwd * 0.075 * g) * s,
+                      (0.105 * g * s, 0.078 * s, 0.065 * g * s), Rt), 'torso', 0.04)
+    add(Ellipsoid(C + up * 0.135 * s - fwd * 0.035 * s, (0.205 * g * shb * s, 0.095 * s, 0.13 * g * s), Rt), 'mantle', 0.06)
+    # neck (thick, krait-like)
+    add(Capsule(C + up * 0.15 * s, P['head'] - up * 0.08 * s, 0.090 * s * g ** 0.5, 0.064 * s), 'neck', 0.05)
     B['throat'] = lerp(Nk, P['head'], 0.35) + fwd * 0.07 * s
     # --- arms
     l1, l2 = arm_lengths(P, N)
@@ -613,10 +741,11 @@ def naga_body(P, add, N, arms=True, head=True):
             sx = -1 if sd[0] == 'r' else 1
             lower = sd.endswith('2')
             sh = P['sh_' + sd]
-            add(Sphere(sh, 0.085 * g * s * (0.85 if lower else 1.0)), 'mantle' if not lower else 'torso', 0.05)
+            add(Sphere(sh, 0.098 * g * s * (0.85 if lower else 1.0)), 'limb', 0.05)
             pole_v = v3(sx * 1.0, -0.6, -0.7) if not lower else v3(sx * 1.0, -0.2, -0.4)
-            ru = 0.068 * g * s * (0.9 if lower else 1.0)
-            _arm(add, sh, P['hd_' + sd], l1, l2, pole_v, ru, ru * 0.82, 'limb', 'hand', 0.05 * s * g ** 0.5)
+            ru = 0.074 * g * s * (0.9 if lower else 1.0)
+            _arm(add, sh, P['hd_' + sd], l1, l2, pole_v, ru, ru * 0.84, 'limb', 'hand', 0.060 * s * g ** 0.5,
+                 bracer=N.bracer is not None, lower=lower)
             B['hand'][sd] = P['hd_' + sd]
     # --- head
     if head:
@@ -624,11 +753,12 @@ def naga_body(P, add, N, arms=True, head=True):
         B['head'] = F
         _snake_head(P, add, N, F)
         B['mouth'] = F.p((0, -0.035, 0.17))
-        B['fang_tips'] = [F.p((sx * 0.032, -0.10 * N.fang - 0.02 * P['jaw'], 0.14)) for sx in (-1, 1)]
-        # hood: centred behind the head, facing forward (follows the head yaw half way)
-        yaw = N.hood_yaw + P['head_yaw'] * 0.3      # turned toward the camera so the fan reads open
+        B['fang_tips'] = [F.p((sx * 0.034 * N.head_w, -0.13 * N.fang - 0.03 * P['jaw'], 0.14)) for sx in (-1, 1)]
+        # hood: a fan behind the head and upper neck, turned toward the camera so it reads open
+        yaw = N.hood_yaw + P['head_yaw'] * 0.3
         Rh = R_from(up, rot_y(yaw) @ fwd)
-        hc = P['head'] - Rh[:, 2] * 0.10 * s - up * 0.07 * s
+        Wd, Hd = _hood_dims(P, N)
+        hc = P['head'] - Rh[:, 2] * 0.11 * s - up * (Hd - 0.035 * s * N.head_len)
         HF = Frame(hc, Rh, 1.0)
         B['hood_c'] = hc
         B['hood_F'] = HF
@@ -638,40 +768,41 @@ def naga_body(P, add, N, arms=True, head=True):
 
 
 def _snake_head(P, add, N, F):
-    """Wedge-shaped krait head: flat skull, blunt snout, hinged lower jaw, two big fangs, gold eyes."""
+    """Wedge krait head: broad jaw-muscled back, flat crown, blunt snout, pale lip line, a bright slit eye,
+    a hinged lower jaw and two big uneven fangs (no rows of teeth)."""
     j = P['jaw']
-    F.ell(add, (0, 0.010, -0.01), (0.076, 0.056, 0.115), 'head', 0.0)
-    F.ell(add, (0, -0.002, 0.10), (0.052, 0.040, 0.115), 'head', 0.035)
-    # brow scales (give the head a hard, mean read)
-    for sx in (-1, 1):
-        F.ell(add, (sx * 0.048, 0.043, 0.045), (0.032, 0.017, 0.05), 'head', 0.02)
+    w = N.head_w
+    F.ell(add, (0, 0.012, -0.015), (0.080 * w, 0.050, 0.105), 'head', 0.0)
+    for sx in (-1, 1):       # jaw muscles: the wide back of the wedge
+        F.ell(add, (sx * 0.050 * w, -0.008, -0.045), (0.050 * w, 0.048, 0.070), 'head', 0.03)
+    F.ell(add, (0, -0.002, 0.100), (0.049 * w, 0.034, 0.100), 'head', 0.04)
+    for sx in (-1, 1):       # supraocular plate slanting down to the front over the eye: a hard, mean brow
+        F.ell(add, (sx * 0.060 * w, 0.030, 0.018), (0.026 * w, 0.010, 0.030), 'head', 0.012, R2=rot_x(0.25))
     # lower jaw hinged at the back of the head
-    J = F.child((0, -0.03, -0.06), rot_x(0.55 * j))
-    J.ell(add, (0, -0.012, 0.115), (0.066, 0.026, 0.115), 'jaw', 0.02)
+    J = F.child((0, -0.030, -0.07), rot_x(0.78 * j))
+    J.ell(add, (0, -0.012, 0.105), (0.066 * w, 0.024, 0.115), 'jaw', 0.02)
     if j > 0.05:
-        # open mouth: dark pink inside, lit with venom when P['venom']
-        M = F.child((0, -0.035, -0.06), rot_x(0.27 * j))
-        M.ell(add, (0, 0.0, 0.11), (0.055, 0.02 + 0.02 * j, 0.10), 'mouth', 0.0)
-    # eyes
+        M = F.child((0, -0.032, -0.07), rot_x(0.39 * j))
+        M.ell(add, (0, 0.0, 0.105), (0.056 * w, 0.02 + 0.026 * j, 0.10), 'mouth', 0.0)
+    # eyes: big, bright, set on the side of the wedge, vertical slit pupil
     for sx in (-1, 1):
-        F.sph(add, (sx * 0.058, 0.022, 0.060), 0.024, 'eye')
-        F.sph(add, (sx * 0.068, 0.022, 0.070), 0.011, 'pupil')
-    # two big fangs at the front of the upper jaw, slightly uneven, curving back
-    fl = 0.090 * N.fang
-    for sx, k in ((-1, 1.0), (1, 0.86)):
-        a = (sx * 0.032, -0.030, 0.150)
-        m = (sx * 0.031, -0.030 - fl * k * 0.6, 0.152)
-        b = (sx * 0.028, -0.030 - fl * k, 0.135)
-        F.cap(add, a, m, 0.016, 0.011, 'fang')
-        F.cap(add, m, b, 0.011, 0.003, 'fang')
-    # forked tongue
+        F.sph(add, (sx * 0.062 * w, 0.024, 0.052), 0.029, 'eye')
+        F.ell(add, (sx * (0.062 * w + 0.022), 0.030, 0.062), (0.006, 0.019, 0.008), 'pupil', 0.0, R2=rot_z(-sx * 0.6))
+    # two big fangs at the front of the upper jaw, uneven, curving back; longer when the mouth opens
+    fl = 0.125 * N.fang * (0.55 + 0.45 * min(1.0, j * 1.3))
+    for sx, k in ((-1, 1.0), (1, 0.84)):
+        a = (sx * 0.034 * w, -0.024, 0.150)
+        m = (sx * 0.034 * w, -0.024 - fl * k * 0.6, 0.158)
+        b = (sx * 0.030 * w, -0.024 - fl * k, 0.140)
+        F.cap(add, a, m, 0.015, 0.010, 'fang')
+        F.cap(add, m, b, 0.010, 0.003, 'fang_tip')
     t = P['tongue']
     if t > 0.05:
         a = (0, -0.035, 0.16)
         b = (0, -0.05 - 0.03 * t, 0.16 + 0.12 * t)
-        F.cap(add, a, b, 0.009, 0.007, 'tongue')
+        F.cap(add, a, b, 0.010, 0.008, 'tongue')
         for sx in (-1, 1):
-            F.cap(add, b, (sx * 0.025 * t, -0.07 - 0.04 * t, 0.17 + 0.17 * t), 0.006, 0.003, 'tongue')
+            F.cap(add, b, (sx * 0.028 * t, -0.07 - 0.04 * t, 0.17 + 0.17 * t), 0.007, 0.003, 'tongue')
 
 
 # ------------------------------------------------------------------ props
@@ -727,64 +858,99 @@ def _side(d):
     return norm(c)
 
 
+def fang_blade(add, base, d, bn, L, Wd, bow=0.5, back=0.45, th=0.017, glaze_from=0.80, name=None):
+    """One great curved fang as a blade: a flat crescent from base along d, bowed toward bn (the cutting edge).
+    Painted bone with a dark horn core (fuller), a bright cutting edge and a chartreuse venom-glazed tip.
+    L = length, Wd = half width at the base, bow = sideways sweep as a fraction of L."""
+    d = norm(d)
+    bn = norm(bn - d * (bn @ d))
+    nz = np.cross(d, bn)
+    R = np.stack([d, bn, nz], axis=1)          # local x = along, y = edge side, z = flat normal
+
+    def frame(p):
+        q = (p - base) @ R
+        u, v, w = q[:, 0], q[:, 1], q[:, 2]
+        t = np.clip(u / L, 0, 1)
+        vc = bow * L * np.sin(np.pi * t * 0.82) * (1 - 0.3 * t)
+        hw = Wd * (1 - t) ** 0.75 * (0.65 + 0.35 * smooth(0.0, 0.12, t)) + 0.004
+        return u, v - vc, w, t, hw
+
+    def f(p):
+        u, v, w, t, hw = frame(p)
+        d2 = np.maximum(np.maximum(v - hw, -v - hw * back), np.maximum(-u, u - L))
+        dz = np.abs(w) - th * (1 - 0.55 * t) * (1 - 0.6 * smooth(0.3, 1.0, v / (hw + 1e-6)))
+        return np.maximum(d2 * 0.85, dz)
+    key = name or 'blade%d' % len(_XMATS)
+
+    def alb(p, n):
+        u, v, w, t, hw = frame(p)
+        e = v / (hw + 1e-6)
+        col = _arr(FANG, len(p))
+        core = (e > -0.25) & (e < 0.30) & (t < 0.72)
+        col[core] = HORN
+        edge = e > 0.55
+        col[edge] = EDGE
+        col[t > glaze_from] = CHART
+        return col
+
+    def emis(p, n):
+        u, v, w, t, hw = frame(p)
+        out = np.zeros((len(p), 3))
+        out[t > glaze_from] = np.array(CHART) * 0.45
+        out[(v / (hw + 1e-6)) > 0.55] = np.array(EDGE) * 0.12
+        return out
+    _XMATS[key] = Material(alb, spec=0.7, gloss=60, emissive=emis, brush=0.02)
+    add(Func(f, base + d * L * 0.5, L * 0.6 + Wd * 2 + bow * L), key, 0.0)
+    return key
+
+
 def _shaft(add, butt, tip, kind, d, P, shaft, head, glaze):
+    """Chunky PoxNora props: thick hafts with reed bindings, oversized fang blades with a bright edge."""
     L = np.linalg.norm(tip - butt)
     sv = _side(d)
-    # blades curve in the plane most visible to the camera
     cam = v3(-0.53, 0.5, 0.68)
     bn = cam - d * (cam @ d)
     bn = norm(np.cross(d, norm(bn)))       # in-screen perpendicular to the shaft
     s = P['s']
+    sr = 0.032 * s
     if kind in ('lance', 'glaive', 'staff', 'gaff', 'trident'):
-        hl = dict(lance=0.40, glaive=0.34, staff=0.0, gaff=0.0, trident=0.14)[kind] * s
-        add(Capsule(butt, tip - d * hl * 0.85, 0.023 * s), shaft, 0.0)
+        hl = dict(lance=0.46, glaive=0.52, staff=0.0, gaff=0.0, trident=0.20)[kind] * s
+        add(Capsule(butt, tip - d * hl * 0.9, sr), shaft, 0.0)
+        add(Sphere(butt, sr * 1.35), 'lash', 0.0)                       # butt knob
     if kind in ('lance', 'glaive'):
-        base = tip - d * dict(lance=0.40, glaive=0.34)[kind] * s
-        # reed lashing (chartreuse cord)
-        add(Capsule(base - d * 0.06 * s, base + d * 0.03 * s, 0.028 * s), glaze if kind == 'lance' else 'lash', 0.0)
-        # one great curved fang: a tapered crescent
-        n = 6
-        w0 = 0.050 if kind == 'glaive' else 0.046
-        bow = 0.10 if kind == 'glaive' else 0.06
-        prev = None
-        for i in range(n + 1):
-            t = i / n
-            q = base + d * (((tip - base) @ d) * t) + bn * bow * s * np.sin(np.pi * t * 0.9) * (1 if kind == 'glaive' else 0.7)
-            if prev is not None:
-                ra = w0 * s * (1 - (i - 1) / n) ** 0.8 + 0.004
-                rb = w0 * s * (1 - i / n) ** 0.8 + 0.003
-                add(Capsule(prev, q, ra, rb), head if t < (0.7 if kind == 'lance' else 0.45) else glaze, 0.012)
-            prev = q
+        hl = dict(lance=0.46, glaive=0.52)[kind] * s
+        base = tip - d * hl
+        add(Capsule(base - d * 0.10 * s, base + d * 0.03 * s, sr * 1.45), 'glaze', 0.0)   # chartreuse lashing
+        add(Capsule(base - d * 0.14 * s, base - d * 0.11 * s, sr * 1.3), 'lash', 0.0)
+        if kind == 'lance':
+            fang_blade(add, base - d * 0.02 * s, d, bn, hl + 0.04 * s, 0.075 * s, bow=0.10, back=0.9, th=0.020 * s)
+        else:
+            fang_blade(add, base - d * 0.02 * s, d, bn, hl + 0.06 * s, 0.085 * s, bow=0.26, back=0.35, th=0.018 * s)
     elif kind == 'gaff':
-        add(Capsule(tip - d * 0.03 * s, tip + d * 0.05 * s, 0.026 * s), 'lash', 0.0)
-        c = tip + d * 0.03 * s + bn * 0.075 * s
+        add(Capsule(tip - d * 0.05 * s, tip + d * 0.05 * s, sr * 1.35), 'glaze', 0.0)
+        c = tip + d * 0.05 * s + bn * 0.10 * s
         ax = norm(np.cross(d, bn))
-        add(Torus(c, ax, 0.075 * s, 0.014 * s), 'hook', 0.0)
-        # cut the hook ring open on the far side with a small barb
-        add(Capsule(c + bn * 0.075 * s, c + bn * 0.075 * s - d * 0.06 * s, 0.013 * s, 0.004), 'hook', 0.0)
+        add(Torus(c, ax, 0.10 * s, 0.022 * s), 'hook', 0.0)
+        add(Capsule(c + bn * 0.10 * s, c + bn * 0.10 * s - d * 0.09 * s, 0.020 * s, 0.005), 'hook', 0.0)
+        add(Capsule(tip, tip + d * 0.16 * s, sr * 0.8, 0.006), 'hook', 0.0)
     elif kind == 'trident':
-        base = tip - d * 0.16 * s
-        add(Capsule(base - bn * 0.13 * s, base + bn * 0.13 * s, 0.017 * s), 'rust', 0.01)
+        base = tip - d * 0.20 * s
+        add(Capsule(base - bn * 0.17 * s, base + bn * 0.17 * s, 0.026 * s), 'rust', 0.01)
+        add(Capsule(base - d * 0.08 * s, base, sr * 1.4), 'glaze', 0.0)
         for k in (-1, 0, 1):
-            a = base + bn * 0.12 * k * s
-            t = a + d * (0.26 if k == 0 else 0.20) * s
-            add(Capsule(a, t, 0.015 * s, 0.004), 'rust', 0.0)
+            a = base + bn * 0.16 * k * s
+            t = a + d * (0.34 if k == 0 else 0.26) * s
+            add(Capsule(a, t, 0.024 * s, 0.005), 'rust', 0.0)
             if k:
-                add(Capsule(t, t - d * 0.07 * s - bn * 0.04 * k * s, 0.010 * s, 0.003), 'rust', 0.0)
+                add(Capsule(t, t - d * 0.10 * s - bn * 0.06 * k * s, 0.016 * s, 0.004), 'rust', 0.0)
     elif kind == 'staff':
-        add(Sphere(tip, 0.03 * s), 'lash', 0.0)
+        add(Sphere(tip, 0.045 * s), 'glaze', 0.0)
     elif kind in ('sabre', 'knife'):
-        r = (0.030 if kind == 'sabre' else 0.022) * s
-        add(Capsule(butt, butt + d * 0.14 * s, 0.017 * s), shaft, 0.0)
-        add(Capsule(butt + d * 0.12 * s - bn * 0.05 * s, butt + d * 0.12 * s + bn * 0.05 * s, 0.012 * s), 'lash', 0.0)
+        add(Capsule(butt, butt + d * 0.15 * s, 0.024 * s), shaft, 0.0)
+        add(Capsule(butt + d * 0.13 * s - bn * 0.07 * s, butt + d * 0.13 * s + bn * 0.07 * s, 0.018 * s), 'glaze', 0.0)
         base = butt + d * 0.14 * s
-        n = 6
-        prev = base
-        for i in range(1, n + 1):
-            t = i / n
-            q = base + (tip - base) * t - bn * 0.09 * s * t * t
-            add(Capsule(prev, q, r * (1 - (i - 1) / n * 0.8), r * (1 - i / n * 0.8) + 0.002), head if t < 0.75 else glaze, 0.01)
-            prev = q
+        Lb = max(np.linalg.norm(tip - base), 0.1 * s)
+        fang_blade(add, base, d, -bn, Lb, (0.070 if kind == 'sabre' else 0.050) * s, bow=0.16, back=0.5, th=0.016 * s)
     return butt, tip
 
 
@@ -889,79 +1055,152 @@ def lacquer_coat(add, P, B, N, rows=4, per_row=7, coil=True, mat='lacquer', edge
                 add(Ellipsoid(q + nrm * 0.012 - R[:, 1] * 0.02, (rad[i] * 0.5, rad[i] * 0.48, 0.016 * s), R), mat, 0.0)
 
 
+def pauldron(add, P, B, N, side='r', plates=3, size=1.0, mat='lacquer', edge='lacquer_lt'):
+    """Shoulder guard of lacquered shed skin: 2-4 translucent amber plates overlapping down the deltoid,
+    each showing a lighter edge below the one above (layered paper, not paint)."""
+    s = P['s'] * size * N.girth ** 0.5
+    sh = P['sh_' + side]
+    Rt = B['chest_R']
+    rt, up, fw = Rt[:, 0], Rt[:, 1], Rt[:, 2]
+    sx = -1 if side[0] == 'r' else 1
+    out = rt * sx
+    for k in range(plates):
+        c = sh + up * (0.075 - 0.055 * k) * s + out * (0.035 + 0.030 * k) * s
+        nrm = norm(out * (0.45 + 0.22 * k) + up * (0.9 - 0.25 * k))
+        dn = norm(-up + out * 0.6)
+        R = R_from(norm(dn - nrm * (dn @ nrm)), nrm)
+        add(Ellipsoid(c + R[:, 1] * 0.014 * s - nrm * 0.004 * s, (0.125 * s, 0.085 * s, 0.020 * s), R), edge, 0.0)
+        add(Ellipsoid(c, (0.118 * s, 0.078 * s, 0.024 * s), R), mat, 0.0)
+
+
 # ------------------------------------------------------------------ materials
 
 def naga_mats(P, N, B):
     s = P['s']
     gl = N.gloss
     mats = {}
-    mats['band'] = Material(band_albedo(N, B['path'], B['svals'], B['bel'], P, B['accents']),
-                            spec=0.45 * gl, gloss=46, brush=0.03)
-    mats['paddle'] = mats['band']
+    mats['band'] = Material(band_albedo(N, B['path'], B['svals'], B['bel'], P, B['accents'], rad=B.get('rad')),
+                            spec=0.50 * gl, gloss=46, brush=0.03)
+    tl, tgp = B['tail'], B['tail_d']
+
+    def paddle_alb(p, n):
+        u = np.mod(((p - tl) @ tgp) / (N.band_len * 0.42) + 0.25, 1.0)
+        col = np.where((u < 0.5)[:, None], np.array(N.dark)[None, :], np.array(N.light)[None, :])
+        rimp = (p[:, 1] - tl[1]) > 0.12 * N.paddle * s
+        col[rimp] = np.array(N.light) * 0.9 + np.array(N.accent_col) * 0.1
+        return col
+    mats['paddle'] = Material(paddle_alb, spec=0.5 * gl, gloss=46, brush=0.03)
     skin = np.array(_skin(N))
     belly = np.array(N.belly)
+    scute = np.array(N.scute if N.scute is not None else N.belly)
+    light = np.array(N.light)
+    dark = np.array(N.dark)
     mantle = np.array(N.mantle) * (1 - N.grey) + np.array(_hex('#8a8c88')) * N.grey
     W, C = P['waist'], P['chest']
     Rt = B['chest_R']
+    g = N.girth
+    chestc = skin * 0.55 + belly * 0.45
 
     def torso_alb(p, n):
         q = (p - C) @ Rt / s
-        col = _arr(skin, len(p))
-        front = (q[:, 2] > 0.02) & (np.abs(q[:, 0]) < 0.115 + 0.03 * np.clip(-q[:, 1] / 0.3, 0, 1))
-        plate = np.mod(q[:, 1] / 0.075, 1.0) < 0.16
-        col[front] = belly
-        col[front & plate] = belly * 0.78
+        col = _arr(skin, len(p)) * (0.90 + 0.18 * fbm(p, 22.0, 2)[:, None])
+        chest = (q[:, 2] > 0.0) & (q[:, 1] > -0.06)
+        col[chest] = chestc
+        front = (q[:, 2] > 0.02) & (np.abs(q[:, 0]) < 0.058 * g + 0.030 * np.clip(-q[:, 1] / 0.3, 0, 1)) & (q[:, 1] < 0.03)
+        plate = np.mod(q[:, 1] / 0.058, 1.0) < 0.20
+        col[front] = scute
+        col[front & plate] = scute * 0.70
         back = q[:, 2] < -0.06
-        col[back] = mantle * 0.9 + skin * 0.1
+        col[back] = mantle * 0.85 + skin * 0.15
         return col
-    mats['torso'] = Material(torso_alb, spec=0.30 * gl, gloss=30, brush=0.04)
-    mats['mantle'] = Material(tuple(mantle), spec=0.4 * gl, gloss=40, brush=0.03)
+    mats['torso'] = Material(torso_alb, spec=0.35 * gl, gloss=34, brush=0.04)
+    mats['mantle'] = Material(tuple(mantle * 1.05 + light * 0.04), spec=0.5 * gl, gloss=44, brush=0.03)
     Rn = Rt
 
     def neck_alb(p, n):
         q = (p - C) @ Rn
         col = _arr(mantle, len(p))
-        fr = q[:, 2] > 0.01
-        col[fr] = belly
+        fr = q[:, 2] > 0.045 * s
+        col[fr] = scute
+        plate = fr & (np.mod(q[:, 1] / (0.058 * s), 1.0) < 0.2)
+        col[plate] = scute * 0.72
         return col
-    mats['neck'] = Material(neck_alb, spec=0.35 * gl, gloss=36, brush=0.03)
-    mats['limb'] = Material(tuple(skin), spec=0.25 * gl, gloss=26, brush=0.04)
-    mats['hand'] = Material(tuple(skin * 0.82), spec=0.2, gloss=20, brush=0.03)
+    mats['neck'] = Material(neck_alb, spec=0.4 * gl, gloss=36, brush=0.03)
+    mats['limb'] = Material(lambda p, n: _arr(skin, len(p)) * (0.92 + 0.16 * fbm(p, 22.0, 2)[:, None]),
+                            spec=0.3 * gl, gloss=28, brush=0.04)
+    handc = np.array(N.claw) if N.claw is not None else skin * 0.85 + light * 0.15
+    mats['hand'] = Material(tuple(handc), spec=0.25, gloss=22, brush=0.03)
+    brc = np.array(N.bracer if N.bracer is not None else LACQUER)
+    mats['bracer'] = Material(tuple(brc), spec=0.8, gloss=56, sss=0.6, brush=0.02, emissive=tuple(brc * 0.10))
+    mats['bracer_lt'] = Material(tuple(np.clip(brc * 1.45 + 0.08, 0, 1)), spec=0.8, gloss=56, sss=0.5)
     if 'head' in B:
         F = B['head']
         lip = np.array(N.lip)
+        snout = np.array(N.snout if N.snout is not None else N.light)
+        crown = dark * 0.80 + mantle * 0.12 + light * 0.08
+        wv = N.head_w
 
         def head_alb(p, n):
             q = (p - F.o) @ F.R / F.s
-            col = _arr(mantle, len(p))
-            low = q[:, 1] < -0.012 + 0.12 * np.clip(q[:, 2] - 0.13, 0, 1)
+            x, y, z = q[:, 0], q[:, 1], q[:, 2]
+            col = _arr(crown, len(p))
+            # pale upper lip: the jaw line reads as a bright stripe along the whole side of the wedge
+            low = (y < 0.004 + 0.04 * np.clip(z - 0.10, 0, 1)) | ((y < 0.012) & (np.abs(x) > 0.040 * wv) & (z > -0.06))
             col[low] = lip
+            # pale band across the snout tip
+            col[z > 0.112] = snout
+            # pale ring round the eye and a stripe from the eye back to the jaw hinge
+            ex = 0.064 * wv
+            tq = np.clip((0.050 - z) / 0.14, 0, 1)
+            ly = 0.024 - 0.040 * tq
+            stripe = (z < 0.052) & (z > -0.09) & (np.abs(y - ly) < 0.0095) & (np.abs(x) > 0.035)
+            col[stripe] = snout
             return col
-        mats['head'] = Material(head_alb, spec=0.45 * gl, gloss=44, brush=0.03)
-        mats['jaw'] = Material(tuple(lip), spec=0.3, gloss=30, brush=0.02)
+        mats['head'] = Material(head_alb, spec=0.22 * gl, gloss=30, brush=0.02)
+        mats['jaw'] = Material(tuple(lip), spec=0.35, gloss=30, brush=0.02)
         HF = B['hood_F']
-        hface = np.array(N.hood_face if N.hood_face is not None else mantle * 0.45 + belly * 0.35 + np.array(N.light) * 0.2)
+        Wd, Hd = _hood_dims(P, N)
+        hface = np.array(N.hood_face if N.hood_face is not None else mantle * 0.7 + belly * 0.15 + light * 0.15)
         rimc = np.array(N.hood_rim)
+        markc = np.array(N.hood_mark_col if N.hood_mark_col is not None else N.light)
+        mk = N.hood_mark
 
         def hood_alb(p, n):
-            q = (p - HF.o) @ HF.R / s
-            col = _arr(mantle, len(p))
-            front = (n @ HF.R[:, 2]) > 0.0
-            col[front] = hface
-            # pale rim round the front edge, and the gold throat stripe up the middle
-            r2 = np.sqrt((q[:, 0] / 0.2) ** 2 + ((q[:, 1] - 0.03) / 0.25) ** 2)
-            rim_m = front & (r2 > 0.86 - 0.12 * (1 - P['hood']))
-            col[rim_m] = rimc
-            mid = front & (np.abs(q[:, 0]) < 0.035) & (q[:, 1] < 0.02)
-            col[mid] = belly
+            q = (p - HF.o) @ HF.R
+            X = q[:, 0] / Wd
+            Y = q[:, 1] / Hd
+            col = _arr(mantle * 0.95, len(p))
+            front = q[:, 2] > 0.10 * q[:, 0] ** 2 / max(Wd, 1e-3) - 0.03 * s * Y
+            fc = _arr(hface, len(p))
+            prof = _hood_prof(Y, N.hood)
+            inner = (np.abs(X) < prof * 0.78) & (Y < 0.84)
+            fc[~inner] = rimc
+            if mk == 'ocelli':
+                for sx in (-1, 1):
+                    dd = np.sqrt(((X - sx * 0.58) / 0.17) ** 2 + ((Y - 0.12) / 0.17) ** 2)
+                    fc[inner & (dd < 1.0)] = dark * 0.75
+                    fc[inner & (dd < 0.62)] = markc
+            elif mk == 'chevron':
+                vv = np.abs(Y - (0.62 - 1.0 * np.abs(X)))
+                fc[inner & (vv < 0.13)] = markc
+            elif mk == 'bars':
+                bb = (np.mod((Y + 1.0) / 0.34, 1.0) < 0.42) & (Y < 0.45) & (Y > -0.75) & (np.abs(X) > 0.30)
+                fc[inner & bb] = markc
+            elif mk == 'stripe':
+                fc[inner & (np.abs(X) < 0.13)] = markc
+            # the belly colour runs up the throat into the bottom of the hood
+            fc[inner & (np.abs(X) < 0.16) & (Y < -0.35)] = scute
+            col[front] = fc[front]
             return col
         mats['hood'] = Material(hood_alb, spec=0.35 * gl, gloss=36, brush=0.03)
     v = max(P['venom'], 0.0)
-    mats['fang'] = Material(FANG, spec=0.6, gloss=60, emissive=tuple(np.array(VENOM) * 0.9 * v) if v > 0.05 else None)
-    mats['mouth'] = Material(MOUTH, spec=0.4, gloss=30, emissive=tuple(np.array(VENOM) * 0.55 * v) if v > 0.05 else None,
+    mats['fang'] = Material(FANG, spec=0.7, gloss=60, emissive=tuple(np.array(FANG) * 0.12))
+    mats['fang_tip'] = Material(tuple(lerp(np.array(FANG), np.array(VENOM), 0.5 + 0.5 * min(v, 1))), spec=0.7, gloss=60,
+                                emissive=tuple(np.array(VENOM) * (0.25 + 0.75 * min(v, 1))))
+    mats['mouth'] = Material(MOUTH, spec=0.4, gloss=30, emissive=tuple(np.array(VENOM) * 0.20 * v) if v > 0.05 else None,
                              rim=0.2)
     mats['tongue'] = Material(TONGUE, spec=0.5, gloss=40, emissive=tuple(np.array(TONGUE) * 0.25))
-    mats['eye'] = Material(N.eye, spec=0.9, gloss=80, emissive=tuple(np.array(N.eye) * 0.25))
+    mats['eye'] = Material(N.eye, spec=0.9, gloss=80, emissive=tuple(np.array(N.eye) * 0.55 * min(1.0, max(P['glow'], 0.6))))
     mats['pupil'] = Material(INK, spec=0.9, gloss=90, rim=0.0)
     # props
     mats['haft'] = Material(_hex('#6b5638'), spec=0.2, gloss=20, brush=0.05)
@@ -976,9 +1215,9 @@ def naga_mats(P, N, B):
                                spec=0.25, gloss=30, sss=0.5, brush=0.03)
     mats['scale'] = Material(lambda p, n: _arr(SCALE_GREY, len(p)) * (0.88 + 0.2 * fbm(p, 6.0, 2)[:, None]),
                              spec=0.5, gloss=40, brush=0.04)
-    mats['lacquer'] = Material(lambda p, n: _arr(LACQUER, len(p)) * (0.85 + 0.3 * fbm(p, 9.0, 2)[:, None]),
-                               spec=0.7, gloss=50, sss=0.3, brush=0.03)
-    mats['lacquer_lt'] = Material(_hex('#e8c27a'), spec=0.7, gloss=50, sss=0.3)
+    mats['lacquer'] = Material(lambda p, n: _arr(LACQUER, len(p)) * (0.88 + 0.26 * fbm(p, 9.0, 2)[:, None]),
+                               spec=0.85, gloss=60, sss=0.7, brush=0.02, emissive=tuple(np.array(LACQUER) * 0.12))
+    mats['lacquer_lt'] = Material(_hex('#f0cf86'), spec=0.8, gloss=56, sss=0.6, emissive=tuple(np.array(_hex('#f0cf86')) * 0.18))
     mats['gourd'] = Material(lambda p, n: _arr(GOURD, len(p)) * (0.85 + 0.25 * fbm(p, 10.0, 2)[:, None]),
                              spec=0.25, gloss=24, brush=0.05)
     mats['venom'] = Material(VENOM, spec=0.8, gloss=70, emissive=tuple(np.array(VENOM) * 0.85), rim=0.3)
@@ -1021,6 +1260,7 @@ def naga_finish(P, N, parts, mats=None, lights=(), B=None, world=None):
     (husk colour + flatten to a skin), and return the Scene. B is found automatically from naga_body."""
     B = B if B is not None else _LAST_B.get('B')
     m = naga_mats(P, N, B)
+    m.update(_XMATS)
     if mats:
         m.update(mats)
     add = lambda prim, mat, k=0.0: parts.append(Part(prim, mat, k))
@@ -1046,6 +1286,7 @@ def naga_finish(P, N, parts, mats=None, lights=(), B=None, world=None):
 
 
 _LAST_B = {}
+_XMATS = {}
 _naga_body = naga_body
 
 
@@ -1133,7 +1374,7 @@ def _attack_pose(base, i, style):
         slide(P, v3(0, -0.14, -0.10) * s, mid=0.8)
         bend(P, fwd=np.radians(-8))
         P['coil_sq'] = 0.88
-        P['coil_w'] = 1.04
+        P['coil_w'] = 1.0
         P['hood'] = 0.55
     elif ph == 'rise':
         slide(P, v3(0, -0.04, 0.02) * s, mid=0.6)
@@ -1210,7 +1451,7 @@ def hit_pose(base, i):
         bend(P, fwd=np.radians(-10), side=np.radians(-3))
         P['hood'] = 0.2
         P['coil_sq'] = 0.9
-        P['coil_w'] = 1.04
+        P['coil_w'] = 1.0
         P['flakes'] = 1.0
         P['jaw'] = 0.5
         P['tail_sw'] = 0.8

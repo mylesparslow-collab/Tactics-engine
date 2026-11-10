@@ -53,7 +53,7 @@
   "name": "Surveyor",
   "role": "Ranged Spotter",
   "faction": "salt_concord",
-  "cost": 35,
+  "cost": 40,
   "stats": {
    "hp": 15,
    "ap": 6,

@@ -4,11 +4,11 @@ loose in each. One bright chartreuse champion band high on the neck. Defining de
 from _slough_common import *
 
 UNIT_ID = 'slough_kesh'
-N = Naga(height=2.54, arms=4, girth=1.50, tube=0.225, coil_r=0.60, loops=1.8, coil_back=0.38, coil_depth=0.62,
-         hood='flat', hood_w=1.25, hood_h=1.0, head_len=1.4, band_len=0.22, band_dark=0.5, accent=('neck',),
-         body_r=0.20, belly=_hex('#e6b238'), skin=_hex('#5e4a24'), mantle=_hex('#1c1f21'), dark=_hex('#1c1f21'),
-         light=_hex('#efe8d0'), hood_face=_hex('#e6d98c'), hood_rim=_hex('#f7f2dc'), lip=_hex('#f2d57a'),
-         paddle=1.5, lean=0.10, tail_side=-1)
+N = Naga(**dict(SKINS['krait'], hood_face=_hex('#8c8676'), hood_mark_col=_hex('#f1ead0'), skin=_hex('#6e6a5e'),
+                dark=_hex('#1c1f21'), light=_hex('#efe8d0'), belly=_hex('#e6b238')),
+         height=2.54, arms=4, girth=1.65, tube=0.27, coil_r=0.66, loops=1.8, coil_back=0.38, coil_depth=0.62,
+         hood='cobra', hood_w=1.05, hood_h=1.05, hood_mark='chevron', head_len=1.35, head_w=1.2, band_len=0.42,
+         band_dark=0.5, accent=('neck',), body_r=0.22, paddle=1.5, lean=0.10, tail_side=-1, shoulders=1.12)
 CAMERA = Camera(ppm=44.0)
 
 # (side, hand, glaive direction, glaive length)

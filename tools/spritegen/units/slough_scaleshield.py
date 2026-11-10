@@ -4,8 +4,10 @@ ridges and a lacquer-amber rim, covering most of the torso. Band black dominant.
 from _slough_common import *
 
 UNIT_ID = 'slough_scaleshield'
-N = Naga(height=2.0, girth=1.28, tube=0.20, coil_r=0.50, loops=1.6, coil_depth=0.64, coil_back=0.30,
-         hood='broad', hood_w=1.08, band_dark=0.64, band_len=0.30, accent=(), body_r=0.17, tail_side=-1)
+N = Naga(**dict(SKINS['krait'], hood_face=_hex('#8f8a78'), skin=_hex('#4a4a44')),
+         height=2.0, girth=1.40, tube=0.215, coil_r=0.52, loops=1.6, coil_depth=0.64, coil_back=0.30,
+         hood='broad', hood_w=1.0, hood_h=0.9, hood_mark='chevron', band_dark=0.68, band_len=0.36, pattern='edged',
+         accent=('tail',), body_r=0.18, tail_side=-1, shoulders=1.12, head_w=1.15, lean=0.05)
 CAMERA = naga_camera(N)
 
 
@@ -29,7 +31,9 @@ def build(P):
         c = lerp(c, scr(0.05, 0.05, -0.30), k)
         nz = norm(lerp(nz, v3(0, 1, 0.05), k))
         up = norm(lerp(up, E1, k))
-    scale_shield(add, c, nz, up, w=0.40 * s, h=0.60 * s)
+    scale_shield(add, c, nz, up, w=0.42 * s, h=0.62 * s)
+    pauldron(add, P, B, N, 'r', plates=3, size=1.1)
+    pauldron(add, P, B, N, 'l', plates=2, size=1.1)
     return naga_finish(P, N, parts)
 
 

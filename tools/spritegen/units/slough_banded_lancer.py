@@ -4,8 +4,8 @@ with chartreuse reed. Crisp black-and-bone banding. Defining detail: the fang la
 from _slough_common import *
 
 UNIT_ID = 'slough_banded_lancer'
-N = Naga(height=2.1, tube=0.155, coil_r=0.48, loops=1.85, coil_lift=1.1, hood='cobra', accent=(),
-         band_len=0.24)
+N = Naga(**SKINS['yellow'], height=2.1, tube=0.165, coil_r=0.48, loops=1.85, coil_lift=1.1, hood='cobra',
+         hood_mark='bars', hood_mark_col=_hex('#1d2023'), accent=(), band_len=0.34, band_dark=0.5, lean=0.10, shoulders=1.08, girth=1.05)
 CAMERA = naga_camera(N)
 
 
@@ -18,7 +18,8 @@ def neutral_pose():
 def build(P):
     parts, add = new_parts()
     B = naga_body(P, add, N)
-    pole(add, P, "r", "l", "lance", below=0.40, above=0.50)
+    pole(add, P, "r", "l", "lance", below=0.40, above=0.44)
+    pauldron(add, P, B, N, 'l', plates=3)
     return naga_finish(P, N, parts)
 
 

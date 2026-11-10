@@ -5,9 +5,10 @@ stretched on a reed hoop. Defining detail: the buckler. Chartreuse band at the n
 from _slough_common import *
 
 UNIT_ID = 'slough_brinkling'
-N = Naga(height=1.9, girth=0.74, tube=0.12, coil_r=0.40, loops=1.5, coil_back=0.18, hood='narrow', hood_w=1.1,
-         accent=('neck',), arm_len=0.95, lean=-0.06, band_len=0.20, band_dark=0.36, fang=1.1,
-         belly=_hex('#e8cf7c'), skin=_hex('#7a6638'), hood_face=_hex('#8a7a52'))   # young: paler, more bone than black
+N = Naga(**dict(SKINS['rust'], light=_hex('#d9c49a'), hood_face=_hex('#d9c49a'), skin=_hex('#8a6a4a')),
+         height=1.95, girth=0.80, tube=0.125, coil_r=0.40, loops=1.5, coil_back=0.18, hood='narrow', hood_w=1.05,
+         hood_mark='stripe', hood_mark_col=CHART, accent=('neck',), arm_len=0.98, lean=-0.06, band_len=0.22,
+         band_dark=0.36, fang=1.1, head_len=1.15, bracer=None, tail_out=0.8)   # young: pale, thin black rings
 CAMERA = naga_camera(N)
 
 

@@ -1,34 +1,22 @@
-"""Diving-Bell Hermit (Hermitage tank). A tarnished brass diving bell with three big round portholes, planted wide
-on four violet legs, the big claw guarding the open bottom. Pony-sized, ~1.4 m. Defining detail: the crab's
-eyes pressed up behind two of the porthole glasses."""
+"""Diving-Bell Hermit (Hermitage tank). A tarnished brass diving bell with three big round portholes, worn tipped
+back like a hood, its heavy rim resting on the salt behind; the crab's face, eyestalks and big guarding claw spill
+out from under the front rim, legs planted wide. Pony-sized, ~1.4 m. Batten Down (hit): the crab pulls up into the
+bell and lays its claw across the gap. Defining detail: the round portholes over the crab's head."""
 from _hermitage_common import *
 
 UNIT_ID = 'hermitage_diving_bell_hermit'
-SIZE = 'medium'
-CAMERA = size_camera(SIZE)
+SIZE = 1.12            # 'medium' class; crab scaled so its front fills the gap under the rim
+CAMERA = size_camera('medium')
 H, RB, RT = 0.92, 0.50, 0.36
 PORTS = ((-0.62, 1.0), (0.42, 1.0), (2.7, 1.0))
 PORT_Y = 0.06
 
 
-def _eyes():
-    out = []
-    for az, sc in PORTS[:2]:
-        c, nrm = bell_port(H, RB, RT, az, PORT_Y)
-        base = c - nrm * 0.30 + v3(0, -0.26, 0)
-        d = c + nrm * 0.005 - base
-        out.append((tuple(base), tuple(norm(d)), float(np.linalg.norm(d)) - 0.03))
-    return tuple(out)
-
-
 SHELL = Shell(
-    build=diving_bell_shell(h=H, r_bot=RB, r_top=RT, ports=PORTS, port_y=PORT_Y, eyes_in=(0, 1)),
-    ride=0.80, tilt=-0.16, crab_at=(0, -0.42, 0.14), crab_pitch=0.16, z0=-0.50, x0=0.02,
-    feet=((-0.50, 0.40), (0.56, 0.36), (-0.60, -0.22), (0.62, -0.26)),
-    leg_roots=((-0.20, -0.46, 0.18), (0.20, -0.46, 0.18), (-0.30, -0.47, -0.10), (0.30, -0.47, -0.10)),
-    eyes=_eyes(), eye_bead=0.05, antennae=True,
-    guard=((0.12, -0.02, 0.44), (-0.6, 0.30, 0.75)),
-    big=1.3, small=0.55, side_r=0.50, tip_angle=1.25, tip_dir=-1.0, leg_len=1.1)
+    build=diving_bell_shell(h=H, r_bot=RB, r_top=RT, ports=PORTS, port_y=PORT_Y, eyes_in=()),
+    ride=0.60, tilt=-0.36, crab_at=(0, -0.50, 0.46), crab_upright=1.0, z0=-0.98, x0=0.36,
+    eye_len=0.30, eye_bead=0.064, span=0.48, duck_dir=(0, 1.0, -0.25), duck_depth=0.24,
+    big=1.40, small=0.70, side_r=0.50, tip_angle=1.25, tip_dir=-1.0)
 
 
 def neutral_pose():
@@ -39,4 +27,13 @@ def build(P):
     return shelled(P, SIZE, SHELL)
 
 
-ROWS, frames = hermit_rows(neutral_pose, 'shell')
+def _fit(R):
+    for row in R.values():
+        for P, o in row:
+            P['snap'] *= 0.6
+    for i, (P, o) in enumerate(R['death']):      # the bell rolls to its right: slide it back into frame
+        P['slide'] = [0, -0.08, -0.28, -0.32][i]
+    return R
+
+
+ROWS, frames = hermit_rows(neutral_pose, 'shell', extra=_fit)

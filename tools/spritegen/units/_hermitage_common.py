@@ -1,52 +1,71 @@
 """The Hermitage: shared hermit-crab rig, shell library and animation rows.
 
 Shape language (world/factions/hermitage/ART.md): "a thing on legs with one claw out". A shelled unit is a
-plainly human-made object (60-70% of the silhouette) carried tilted back, mouth forward-down toward the
-camera, with ONE big violet orange-tipped claw (crab's right, -x), one small claw, two eyestalks with dark
-bead eyes and orange tips, and FOUR thick banded walking legs set wide like a table. A bare (evicted) crab is
-a raised violet claw over a fat pale spiral tail. Palette: VIOLET / ORANGE crab, TAIL pink-grey (bare only),
-object colours RUST, VERDI, TAR, BONE, OAK; LAMP amber only for real lights.
+plainly human-made object (60-70% of the silhouette) WORN on the crab's rear half: tipped so its back end rests on
+or near the salt, its mouth facing forward, and the crab's front spilling out of the mouth. The crab (rebuilt after
+the owner's "a lot of the crabs look weird" review) must read as a crab at 48 px:
+  * two PINCERS in a boxer's guard: fat rounded violet palms, a fixed lower finger and a hinged thumb in hot orange
+    with pale tips, the right one (-x, toward the camera) much bigger. Brightest, most saturated shapes.
+  * a HEAD: a domed pale-lilac shield with a darker rim, orange mouthparts, two thick pale-orange eyestalks ending
+    in big glossy black eyes (pale cup + fixed highlight), short flicking antennae. Eyestalks are kept side-on to
+    the camera so neither one vanishes end-on.
+  * four short, thick, ARCHED walking legs (dark plum, ochre joint bands, pale pointed tips) growing from the crab's
+    body and planted wide around it (auto_feet), splayed across the screen so every leg shows its arch.
+  * bare (evicted) forms: a soft pink, segmented abdomen that droops and curls UNDER the body and off to one side
+    (never a spiral shell). Each size class differs in proportion through Bare(...) fields, not only scale.
+Palette roles: CLAW / FINGER / NAIL (claws), SHIELD (head), LEG / LEG_BAND (legs), STALK (eyestalks), FLESH (bare
+abdomen); object colours RUST, VERDI, TAR, BONE, OAK; LAMP amber only for real lights.
 
-Coordinates: metres, y up, the unit faces +z (lower right on screen), its right hand is -x.
+Coordinates: metres, y up, the unit faces +z (lower right on screen), its right hand is -x. The crab is built in
+its own frame C (origin = head-shield centre, scale s).
 
 API (everything below is exported by `from _hermitage_common import *`)
 -------------------------------------------------------------------------
-  SIZES / size_camera(size)  'small' | 'medium' | 'large' | 'great' -> crab scale s and Camera(ppm)
+  SIZES / size_camera(size)  'small' | 'medium' | 'large' | 'great' -> crab scale s and Camera(ppm). A unit may
+                             pass a float scale as `size` (crab scale) and keep the class camera.
   hermit_pose(**channels)    neutral pose dict (all animation channels, see CHANNELS below)
   Shell(build=fn, ride=..., crab_at=..., ...)
                              how a crab wears an object. fn(add, P, F) adds parts in SHELL-LOCAL coords
                              (origin = object centre, +z = the mouth / forward, +y = up) using F.put(add,
                              prim, mat) or the F.ell/cap/cyl/... helpers, and returns a dict of materials
                              (F.inv(p) maps world->local inside material functions, see local_albedo()).
+                             Key fit fields: ride, tilt (- = back end down), crab_at (head-shield centre, put it
+                             a little OUTSIDE the mouth), crab_upright (1 = face stays level), span (leg reach),
+                             eye_len / eye_bead, big / small, duck_dir / duck_depth, extra_eyes, yaw, x0 / z0.
   shelled(P, size, SHELL, mats=None, lights=(), world=None) -> Scene      crab wearing the shell
-  Bare(...) + bare(P, size, BARE, mats=None, world=None) -> Scene        evicted crab, spiral tail
+  crab_frame(P, SHELL, size) -> Frame C;  claw_grip(P, SHELL, size) -> (world point between the claw tips, dir)
+  Bare(...) + bare(P, size, BARE, mats=None, world=None) -> Scene        evicted crab, soft abdomen
   empty(P, SHELL, place=(o, R), rag=(local pt, local axis, radius), mats=None) -> Scene   vacant shell
   hermit_rows(neutral_pose, kind='shell'|'bare', extra=None) -> (ROWS, frames)
   structure_rows(neutral_pose) -> (ROWS, frames)   idle(2) / hit(2) / death(3, cracks) for empty shells
   Shell library (reuse these, do not redraw them): barrel_shell, diving_bell_shell, chapel_bell_shell,
-  boiler_shell, long_gun_shell; helpers Frame, barnacles(), rag(), chela(), eyestalk(), cracked().
+  boiler_shell, long_gun_shell; helpers Frame, barnacles(), rag(), chela(), cheliped_grip(), eyestalk(),
+  crab_eyes(), walking_leg(), abdomen(), cracked().
   world(add) callbacks add world-space extras: kit.fx emit(add, pos, 'steam'|'smoke'|'embers', s), flashes.
+  Legacy fields still accepted: Shell.feet / leg_roots (only with auto_feet=False), Shell.eyes (REPLACES the face's
+  eyestalks: prefer extra_eyes), Bare.feet, spiral_tail() (now draws abdomen()).
 
 CHANNELS (pose dict, all floats, tween-safe): bob lean squash stride lift_a lift_b sway rock yaw slide recoil
   | eye_l eye_r dip_l dip_r (eyestalk swivel rad / dip 0..1) | raise cock snap drum limp spread open (claw)
-  | duck (pull into shell) tip (shell falls on its side) fold (legs curl) flip (bare: on its back)
-  | rear (bare: body pitched up) curl (tail tighter) drain (colour to grey) | fx end tell glow cast_glow
-  | free unit channels: spin door fire ring ... (add with hermit_pose(spin=0.0)).
+  | duck (pull into shell, claw across the mouth) tip (shell falls on its side) fold (legs curl)
+  | flip (bare: on its back) rear (bare: body pitched up) curl (abdomen tighter) drain (colour to grey)
+  | fx end tell (antenna flick phase) glow cast_glow | free unit channels: spin door fire ring stone ...
 
 Worked example (a complete unit, see hermitage_barrel_squatter.py):
 
     from _hermitage_common import *
-    UNIT_ID, SIZE = 'hermitage_barrel_squatter', 'small'
-    CAMERA = size_camera(SIZE)
-    SHELL = Shell(build=barrel_shell(length=0.86, r_mid=0.34), ride=0.50, crab_at=(0, -0.02, 0.30),
-                  feet=((-0.40, 0.38), (0.40, 0.38), (-0.46, -0.20), (0.46, -0.20)), side_r=0.33)
-    def neutral_pose(): return hermit_pose()
+    UNIT_ID, SIZE = 'hermitage_barrel_squatter', 1.0
+    CAMERA = size_camera('small')
+    SHELL = Shell(build=barrel_shell(length=0.80, r_mid=0.32, r_end=0.265), ride=0.31, tilt=-0.06,
+                  crab_at=(0, -0.10, 0.53), crab_upright=0.8, z0=-0.84, x0=0.32, yaw=0.15, span=0.46,
+                  eye_len=0.32, big=1.35, small=0.70, side_r=0.30)
+    def neutral_pose(): return hermit_pose(open=0.35)
     def build(P): return shelled(P, SIZE, SHELL)
     ROWS, frames = hermit_rows(neutral_pose, 'shell')
 
 Per-unit shell abilities go in `extra(rows)` (e.g. set rows['attack'][i][0]['recoil'] and 'fx') and are read
 by your shell builder / world() callback. Keep the object nameable at 64 px, no combs (max 3 hoops, 3-5
-rivet bosses, 4 posts), smoke only via kit.fx emit().
+rivet bosses, 4 posts), smoke only via kit.fx emit(). Check every frame keeps 2 px clear of the frame edges.
 """
 import dataclasses
 from dataclasses import dataclass, field
@@ -216,18 +235,43 @@ def chitin(base, dark=None, speck=None, freq=9.0, amt=0.10):
     return fn
 
 
+# crab colour roles: claws are the brightest, most saturated shapes; the head shield is a lighter, duller mauve so
+# the face separates from the claws; legs are a dark plum with ochre joint bands; the bare abdomen is soft pink.
+CLAW = _hex('#9050b8')          # chela palm and arm: vivid violet
+CLAW_DK = _hex('#5e2f7c')
+FINGER = _hex('#ea8a2e')        # fingers: hot orange
+NAIL = _hex('#f6e2c4')          # pale finger tips
+SHIELD = _hex('#a99cc6')        # head shield: cool pale lilac, lighter and duller than the claw
+SHIELD_DK = _hex('#6a5c8c')
+STALK = _hex('#e8b36e')         # eyestalks and antennae: pale orange
+LEG = _hex('#553a69')           # walking legs: dark plum
+LEG_BAND = _hex('#d79a4a')      # leg joint bands: ochre
+FLESH = _hex('#e6aaa2')         # bare abdomen: soft pink
+FLESH_DK = _hex('#b4706f')
+
+
 def crab_mats(P):
     return {
-        'carapace': Material(chitin(VIOLET, speck=ORANGE), spec=0.3, gloss=24, brush=0.05),
-        'claw': Material(chitin(VIOLET, amt=0.06), spec=0.55, gloss=34, brush=0.04),
-        'leg': Material(chitin(_hex('#6f4583'), amt=0.08), spec=0.3, gloss=24, brush=0.05),
-        'tip': Material(ORANGE, spec=0.45, gloss=30, brush=0.03),
-        'joint': Material(ORANGE_DK, spec=0.35, gloss=24, brush=0.03),
-        'eye': Material(TAR, spec=1.0, gloss=90, rim=0.6),
-        'tail': Material(chitin(TAIL, dark=TAIL_DK, amt=0.12, freq=6.0), spec=0.35, gloss=30, sss=0.6, brush=0.04),
-        'tailband': Material(TAIL_DK, spec=0.3, gloss=24, sss=0.4),
+        'carapace': Material(chitin(SHIELD, dark=SHIELD_DK, speck=_hex('#cfc4e4'), freq=8.0, amt=0.12), spec=0.35,
+                             gloss=26, brush=0.04),
+        'shieldrim': Material(SHIELD_DK, spec=0.3, gloss=20, brush=0.02),
+        'body': Material(chitin(_hex('#6a4a72'), dark=_hex('#3c2846'), amt=0.2), spec=0.15, gloss=14, brush=0.04),
+        'mouth': Material(_hex('#c46a3a'), spec=0.3, gloss=20, brush=0.02),
+        'claw': Material(chitin(CLAW, dark=CLAW_DK, amt=0.06, freq=6.0), spec=0.30, gloss=30, brush=0.02),
+        'tip': Material(FINGER, spec=0.55, gloss=36, brush=0.02),
+        'nail': Material(NAIL, spec=0.5, gloss=40, brush=0.0),
+        'leg': Material(chitin(LEG, dark=_hex('#3a2448'), amt=0.10), spec=0.3, gloss=22, brush=0.04),
+        'joint': Material(LEG_BAND, spec=0.35, gloss=24, brush=0.02),
+        'legtip': Material(_hex('#f0c88c'), spec=0.4, gloss=30, brush=0.0),
+        'stalk': Material(STALK, spec=0.35, gloss=26, brush=0.02),
+        'eye': Material(_hex('#120c12'), spec=1.0, gloss=110, rim=0.4),
+        'glint': Material(_hex('#ffffff'), emissive=(0.85, 0.85, 0.85), rim=0.0),
+        'streak': Material(_hex('#fff6dc'), spec=0.0, rim=0.0, brush=0.0),
+        'tail': Material(FLESH, spec=0.30, gloss=28, sss=0.6, brush=0.0),
+        'tailband': Material(FLESH_DK, spec=0.3, gloss=24, sss=0.5),
         'dark': Material(_hex('#140f12'), spec=0.05, gloss=8, rim=0.0, brush=0.0),
         'barn': Material(BONE, spec=0.1, gloss=10, brush=0.06),
+        'scar': Material(_hex('#d9c3c9'), spec=0.2, gloss=16, brush=0.0),
         'rag': Material(RAG, spec=0.08, gloss=8, brush=0.06),
         'flash': Material(_hex('#fff2c0'), emissive=_hex('#fff2c0'), rim=0.0),
         'flame': Material(_hex('#ffb347'), emissive=_hex('#ffb347'), rim=0.0),
@@ -235,7 +279,8 @@ def crab_mats(P):
     }
 
 
-CRAB_MATS = ('carapace', 'claw', 'leg', 'tip', 'joint', 'eye', 'tail', 'tailband')
+CRAB_MATS = ('carapace', 'shieldrim', 'body', 'mouth', 'claw', 'tip', 'nail', 'leg', 'joint', 'legtip', 'stalk',
+             'eye', 'tail', 'tailband', 'scar')
 
 
 def drained(mats, amt, names=CRAB_MATS, to=GREY_VIOLET):
@@ -319,30 +364,37 @@ def rag(add, knot, axis, r, P, length=0.34, width=0.10, mat='rag'):
 
 
 # ------------------------------------------------------------------ crab anatomy (crab-local units, s = 1 medium)
+#
+# The crab is built in a frame C (origin = centre of the head shield, +z forward, +y up, right = -x, scale s).
+# Reading order at board scale: two fat pincers in a boxer's guard (brightest), a mauve head shield with two thick
+# orange eyestalks ending in big glossy black eyes, two pairs of short, arched, banded legs planted wide, and (bare
+# only) a soft pink abdomen curled under and to the side.
 
-# claw key poses: (wrist, direction) with x OUTWARD (multiplied by the claw's side)
+# claw key poses: (wrist, pointing direction), x OUTWARD (multiplied by the claw's side)
 CLAW_KEYS = {
-    'fwd': ((0.14, -0.06, 0.40), (0.12, 0.10, 1.0)),
-    'up': ((0.24, 0.26, 0.44), (0.12, 0.62, 0.78)),
-    'cock': ((0.26, 0.38, 0.04), (0.20, 0.80, -0.45)),
-    'snap': ((0.10, 0.04, 0.50), (-0.08, -0.05, 1.0)),
-    'drum': ((0.16, -0.02, 0.30), (0.08, -0.70, 0.60)),
-    'tuck': ((0.09, -0.10, 0.22), (-0.15, -0.25, 1.0)),
-    'limp': ((0.16, -0.22, 0.32), (0.10, -0.45, 1.0)),
-    'spread': ((0.36, 0.06, 0.26), (0.65, 0.25, 0.75)),
+    'fwd': ((0.20, -0.16, 0.18), (-0.50, 0.05, 0.86)),       # big claw rest: boxer's guard in front of the face
+    'small': ((0.17, -0.12, 0.19), (-0.35, -0.15, 0.95)),     # small claw rest: tucked under the big one
+    'up': ((0.27, 0.26, 0.14), (0.15, 0.95, 0.30)),          # held over the head (bare medium, cast)
+    'cock': ((0.22, 0.20, -0.02), (0.10, 0.95, -0.25)),       # drawn up and back, wide open
+    'snap': ((0.06, -0.05, 0.31), (-0.60, -0.12, 0.80)),       # thrown forward, shut
+    'drum': ((0.16, -0.10, 0.26), (-0.10, -0.65, 0.75)),      # hammered down on the rim
+    'tuck': ((0.03, -0.03, 0.14), (-1.0, -0.05, 0.30)),       # laid across the mouth like a door (duck)
+    'limp': ((0.16, -0.26, 0.34), (0.10, -0.70, 1.0)),
+    'spread': ((0.30, -0.04, 0.20), (0.60, -0.05, 0.85)),
 }
-SHOULDER = (0.13, -0.03, 0.15)
+SHOULDER = (0.11, -0.06, 0.10)
 
 
 def _claw_target(P, big=True, guard=None):
+    """Crab-local (wrist, direction) of a claw for this pose, x outward. guard = the big claw's rest key."""
     if big:
         w, d = [np.array(x, dtype=np.float64) for x in (guard or CLAW_KEYS['fwd'])]
         seq = (('up', P['raise_']), ('cock', P['cock']), ('snap', P['snap']), ('drum', P['drum']),
                ('tuck', max(P['duck'], P['fold'])), ('limp', P['limp']))
     else:
-        w, d = [np.array(x, dtype=np.float64) for x in CLAW_KEYS['tuck']]
-        seq = (('spread', P['spread']), ('fwd', 0.35 * P['snap']), ('up', 0.25 * P['cock']),
-               ('tuck', max(P['duck'], P['fold'])))
+        w, d = [np.array(x, dtype=np.float64) for x in CLAW_KEYS['small']]
+        seq = (('spread', P['spread']), ('fwd', 0.30 * P['snap']), ('up', 0.25 * P['cock']),
+               ('tuck', 0.6 * max(P['duck'], P['fold'])))
     for key, t in seq:
         if t <= 0:
             continue
@@ -352,64 +404,124 @@ def _claw_target(P, big=True, guard=None):
     return w, norm(d)
 
 
-def chela(add, w, d, up, cs, open_, mat='claw', tip='tip', bumps=True):
-    """A hermit-crab claw: thick wedge palm, lower fixed finger, hinged upper dactyl, orange tips.
-    w wrist (world), d pointing direction, up = which way the dactyl opens, cs = size in metres-ish."""
+def chela(add, w, d, up, cs, open_, mat='claw', tip='tip', bumps=True, nail='nail', fat=1.0):
+    """A pincer: fat rounded palm (violet), a fixed lower finger and a hinged upper thumb (orange, pale tips).
+    w wrist (world), d pointing direction, up = the side the thumb opens toward, cs = size in metres.
+    Returns (palm centre, frame, point between the finger tips)."""
     Rc = R_from(d, up)
     X, Y, Z = Rc[:, 0], Rc[:, 1], Rc[:, 2]
-    palm = w + Z * 0.13 * cs
-    add(Ellipsoid(palm, (0.090 * cs, 0.115 * cs, 0.155 * cs), Rc), mat, 0.03 * cs)
-    add(Ellipsoid(palm + Z * 0.06 * cs - Y * 0.02 * cs, (0.075 * cs, 0.095 * cs, 0.11 * cs), Rc), mat, 0.02 * cs)
+    f = fat
+    add(Ellipsoid(w + Z * 0.02 * cs, (0.06 * cs * f, 0.07 * cs * f, 0.07 * cs), Rc), mat, 0.02 * cs)    # carpus knuckle
+    palm = w + Z * 0.15 * cs
+    add(Ellipsoid(palm, (0.090 * cs * f, 0.128 * cs * f, 0.135 * cs), Rc), mat, 0.03 * cs)
+    add(Ellipsoid(palm + Y * 0.035 * cs - Z * 0.03 * cs, (0.078 * cs * f, 0.095 * cs * f, 0.105 * cs), Rc),
+        mat, 0.03 * cs)                                                                             # meaty heel
     if bumps:
-        for j, (a, b) in enumerate(((0.06, 0.03), (0.02, -0.05), (0.07, -0.08))):
-            add(Sphere(palm + Y * 0.10 * cs + X * a * cs * 0.6 + Z * b * cs, 0.024 * cs), 'tip' if j == 0 else mat,
-                0.01 * cs)
-    base = palm + Z * 0.12 * cs - Y * 0.04 * cs
-    fd = norm(Z + Y * 0.10)
-    Rf = R_from(fd, Y)
-    add(Ellipsoid(base + fd * 0.08 * cs, (0.062 * cs, 0.048 * cs, 0.115 * cs), Rf), mat, 0.02 * cs)
-    add(Ellipsoid(base + fd * 0.20 * cs + Y * 0.008 * cs, (0.042 * cs, 0.034 * cs, 0.07 * cs), Rf), tip, 0.012 * cs)
-    a = 0.05 + 0.8 * open_
-    h = palm + Z * 0.10 * cs + Y * 0.055 * cs
+        for a, b, rr in ((0.02, 0.0, 0.026), (-0.03, 0.07, 0.020)):
+            add(Sphere(palm + Y * 0.115 * cs * f + X * a * cs + Z * b * cs, rr * cs), tip, 0.012 * cs)
+    # fixed finger: lower front of the palm, a tapering hook that curves up to meet the thumb
+    f0 = palm + Z * 0.115 * cs - Y * 0.050 * cs * f
+    f1 = f0 + Z * 0.095 * cs + Y * 0.004 * cs
+    f2 = f1 + Z * 0.065 * cs + Y * 0.050 * cs
+    add(Capsule(f0, f1, 0.058 * cs * f, 0.040 * cs), tip, 0.022 * cs)
+    add(Capsule(f1, f2, 0.040 * cs, 0.011 * cs), nail, 0.008 * cs)
+    # moving thumb (dactyl), hinged at the upper front, a heavier hook curving down onto the fixed finger
+    a = 0.10 + 0.95 * float(np.clip(open_, 0, 1.2))
+    h = palm + Z * 0.095 * cs + Y * 0.066 * cs * f
     dd = norm(Z * np.cos(a) + Y * np.sin(a))
-    Rd = R_from(dd, Y)
-    add(Ellipsoid(h + dd * 0.09 * cs, (0.058 * cs, 0.044 * cs, 0.115 * cs), Rd), mat, 0.015 * cs)
-    add(Ellipsoid(h + dd * 0.205 * cs - Y * 0.006 * cs, (0.04 * cs, 0.032 * cs, 0.066 * cs), Rd), tip, 0.012 * cs)
-    return palm, Rc
+    nd = norm(np.cross(X, dd))
+    d1 = h + dd * 0.105 * cs + nd * 0.004 * cs
+    d2 = d1 + dd * 0.065 * cs + nd * 0.058 * cs
+    add(Sphere(h, 0.050 * cs * f), mat, 0.02 * cs)
+    add(Capsule(h, d1, 0.052 * cs * f, 0.038 * cs), tip, 0.020 * cs)
+    add(Capsule(d1, d2, 0.038 * cs, 0.011 * cs), nail, 0.008 * cs)
+    mouth = (f2 + d2) * 0.5
+    return palm, Rc, mouth
 
 
-def cheliped(add, P, C, side, size, big=True, barn=0, seed=3, guard=None):
-    """Arm + claw in crab frame C. side -1 = crab's right (the big claw). guard = rest (wrist, dir) key."""
+def _claw_up(C, d, side, P, big):
+    """Which way the thumb opens: up in the guard, back when cocked, forward when drumming."""
+    u0 = C.v((side * -0.25, 1.0, -0.05)) if big else C.v((side * -0.5, 1.0, 0.0))
+    u1 = C.v((side * 0.10, 0.25, -1.0))
+    t = min(1.0, max(P['cock'], P['raise_'] * 0.8)) if big else 0.0
+    u = norm(lerp(u0, u1, t))
+    if abs(float(u @ d)) > 0.92:
+        u = C.v((0, 0, -1)) if d[1] > 0 else C.v((0, 0, 1))
+    return u
+
+
+def cheliped(add, P, C, side, size, big=True, barn=0, seed=3, guard=None, arm=1.0, scar=False, fat=1.0):
+    """Arm + pincer in crab frame C. side -1 = crab's right (the big claw). guard = rest (wrist, dir) key.
+    Returns (wrist, direction) in world; the gripping point is cheliped_grip()."""
     w, d = _claw_target(P, big, guard)
     w = w * v3(side, 1, 1)
     d = d * v3(side, 1, 1)
+    s = C.s
     sh = C.p(v3(SHOULDER[0] * side, SHOULDER[1], SHOULDER[2]))
     ww = C.p(w)
-    s = C.s
-    l1, l2 = 0.25 * s, 0.24 * s
-    el = rig.two_bone(sh, ww, l1, l2, C.v((side * 1.0, -0.35, -0.2)))
-    r0 = (0.062 if big else 0.042) * s * max(size, 0.6)
-    add(Capsule(sh, el, r0, r0 * 0.9), 'claw', 0.0)
-    add(Sphere(el, r0 * 0.95), 'joint', 0.01 * s)
-    add(Capsule(el, ww, r0 * 0.9, r0 * 1.05), 'claw', 0.01 * s)
-    dw = C.v(d)
-    up = C.v((side * -0.35, 1.0, 0.0)) if big else C.v((side * -0.6, 1.0, 0.0))
-    palm, Rc = chela(add, ww, dw, up, size * s, P['open'] if big else 0.3 + 0.3 * P['spread'], bumps=big)
+    g = max(size, 0.6) ** 0.5
+    l1, l2 = 0.15 * s * g, 0.13 * s * g
+    el = rig.two_bone(sh, ww, l1, l2, C.v((side * 1.0, -0.6, 0.1)))
+    r0 = (0.050 if big else 0.036) * s * max(size, 0.6) ** 0.7 * arm
+    add(Capsule(sh, el, r0 * 0.9, r0), 'claw', 0.0)
+    add(Sphere(el, r0 * 0.95), 'joint', 0.008 * s)
+    add(Capsule(el, ww, r0, r0 * 1.12), 'claw', 0.01 * s)
+    dw = norm(C.v(d))
+    up = _claw_up(C, dw, side, P, big)
+    op = P['open'] if big else 0.25 + 0.35 * P['spread'] + 0.15 * P['open']
+    palm, Rc, mouth = chela(add, ww, dw, up, size * s, op, bumps=big, fat=fat)
+    cs = size * s
+    if scar:
+        X, Y, Z = Rc[:, 0], Rc[:, 1], Rc[:, 2]
+        out = X * (-side)
+        for a, b in ((0.03, -0.02), (-0.04, 0.05)):
+            c = palm + out * 0.082 * cs + Y * a * cs + Z * b * cs
+            add(Capsule(c - Y * 0.045 * cs + Z * 0.03 * cs, c + Y * 0.045 * cs - Z * 0.03 * cs, 0.011 * cs),
+                'scar', 0.0)
     if barn:
         for i in range(barn):
-            nrm = norm(Rc[:, 1] * 0.8 + Rc[:, 0] * side * (0.6 - 0.6 * i) + Rc[:, 2] * (0.2 * i - 0.2))
-            barnacles(add, palm + nrm * 0.09 * size * s + Rc[:, 2] * (0.05 - 0.07 * i) * size * s, nrm,
-                      size=0.028 * size * s, n=3 + (i % 2), seed=seed + i)
+            nrm = norm(Rc[:, 1] * 0.8 + Rc[:, 0] * (-side) * (0.7 - 0.9 * i) + Rc[:, 2] * (0.2 * i - 0.25))
+            barnacles(add, palm + nrm * 0.10 * cs + Rc[:, 2] * (0.03 - 0.08 * i) * cs, nrm,
+                      size=0.026 * cs, n=3 + (i % 2), seed=seed + i)
+    if big and P['fx'] > 0.5 and P['snap'] > 0.6:
+        # snap accent: three short bright strokes off the shut tips (not a burst, not smoke)
+        Z, Y = Rc[:, 2], Rc[:, 1]
+        for k, (a, b) in enumerate(((0.9, 0.7), (1.0, 0.0), (0.85, -0.65))):
+            dir_ = norm(Z * a + Y * b)
+            p0 = mouth + dir_ * 0.07 * cs
+            add(Capsule(p0, p0 + dir_ * (0.10 + 0.03 * (k == 1)) * cs, 0.014 * cs, 0.006 * cs), 'streak', 0.0)
     return ww, dw
 
 
-def eyestalk(add, base, d, L, s, bead=0.046, mat='claw', r=1.0):
+def cheliped_grip(P, C, size, big=True, guard=None, side=None):
+    """World point between the claw's finger tips and the claw direction, for units that hold props."""
+    side = (-1 if big else 1) if side is None else side
+    w, d = _claw_target(P, big, guard)
+    ww = C.p(w * v3(side, 1, 1))
+    dw = norm(C.v(d * v3(side, 1, 1)))
+    up = _claw_up(C, dw, side, P, big)
+    Rc = R_from(dw, up)
+    cs = size * C.s
+    return ww + Rc[:, 2] * 0.40 * cs + Rc[:, 1] * 0.02 * cs, dw
+
+
+_CAM = Camera().basis()
+_VIEW = norm(-_CAM[0])
+_GLINT = norm(-_CAM[0] * 1.0 + _CAM[2] * 0.75 - _CAM[1] * 0.55)
+
+
+def eyestalk(add, base, d, L, s, bead=0.056, mat='stalk', r=1.0, glint=True):
+    """Thick pale-orange stalk ending in a big glossy black eye with a fixed highlight."""
     tip = base + d * L
     mid = base + d * L * 0.55
-    add(Capsule(base, mid, 0.030 * s * r, 0.025 * s * r), mat, 0.0)
-    add(Capsule(mid, tip, 0.025 * s * r, 0.024 * s * r), 'tip', 0.004 * s)
-    add(Ellipsoid(tip + d * bead * 0.6 * s, (bead * s, bead * 1.15 * s, bead * s), R_from(v3(0, 0, 1) + d * 0.0, d)),
-        'eye', 0.0)
+    add(Capsule(base, mid, 0.042 * s * r, 0.036 * s * r), mat, 0.0)
+    add(Capsule(mid, tip, 0.036 * s * r, 0.033 * s * r), mat, 0.004 * s)
+    rb = bead * s
+    ec = tip + d * rb * 0.7
+    add(Torus(tip + d * rb * 0.25, d, rb * 0.78, rb * 0.34), mat, 0.0)        # pale cup round the eye
+    add(Ellipsoid(ec, (rb, rb, rb * 1.18), R_from(d)), 'eye', 0.0)
+    if glint:
+        add(Sphere(ec + _GLINT * rb * 0.80, rb * 0.34), 'glint', 0.0)
     return tip
 
 
@@ -421,63 +533,102 @@ def _eye_dir(P, C, d_local, side, extra_dip=0.0):
     return d, dip
 
 
-def walking_leg(add, root, foot, s, outward, leg_len=1.0, r=1.0):
-    """Thick banded walking leg from root (world) to foot (world): violet segments, orange joints."""
-    l1, l2, l3 = 0.33 * s * leg_len, 0.34 * s * leg_len, 0.15 * s * leg_len
-    out = norm(v3(outward[0], 0, outward[2])) if np.linalg.norm(v3(outward[0], 0, outward[2])) > 1e-6 else v3(1, 0, 0)
-    ankle = foot + v3(0, l3 * 0.9, 0) + out * 0.035 * s
-    knee = rig.two_bone(root, ankle, l1, l2, v3(0, 1.0, 0) + out * 0.7)
+def walking_leg(add, root, foot, s, outward, leg_len=1.0, r=1.0, arch=1.0):
+    """Short, thick, arched walking leg from root to foot (world): the thigh climbs up and out to a high knee,
+    the shin drops steeply, and a dark pointed dactyl plants the tip. Plum segments, ochre joint bands."""
+    o = v3(outward[0], 0, outward[2])
+    out = norm(o) if np.linalg.norm(o) > 1e-6 else v3(1, 0, 0)
+    hz = v3(foot[0] - root[0], 0, foot[2] - root[2])
+    reach = float(np.linalg.norm(hz))
+    hd = hz / reach if reach > 1e-6 else out
     rr = r * s
-    add(Capsule(root, knee, 0.066 * rr, 0.056 * rr), 'leg', 0.0)
-    add(Sphere(knee, 0.058 * rr), 'joint', 0.008 * s)
-    mid = lerp(knee, ankle, 0.5)
-    add(Capsule(knee, mid, 0.052 * rr, 0.048 * rr), 'leg', 0.006 * s)
-    add(Capsule(mid, ankle, 0.048 * rr, 0.042 * rr), 'leg', 0.006 * s)
-    add(Sphere(ankle, 0.045 * rr), 'joint', 0.006 * s)
-    add(Capsule(ankle, foot + v3(0, 0.012 * s, 0), 0.040 * rr, 0.012 * rr), 'tip', 0.004 * s)
+    # knee: 45% of the way out, raised above the root (the arch), never below it
+    kh = (0.08 + 0.05 * leg_len) * s * arch
+    knee = root + hd * reach * 0.42 + v3(0, kh, 0)
+    # ankle: just inside and above the foot, so the dactyl stabs down and slightly out
+    dl = 0.11 * s * leg_len
+    ankle = foot - hd * dl * 0.35 + v3(0, dl * 0.95, 0)
+    add(Capsule(root, knee, 0.060 * rr, 0.054 * rr), 'leg', 0.0)
+    add(Sphere(knee, 0.058 * rr), 'joint', 0.006 * s)
+    mid = lerp(knee, ankle, 0.50) + hd * 0.012 * s + v3(0, 0.01 * s, 0)
+    add(Capsule(knee, mid, 0.050 * rr, 0.046 * rr), 'leg', 0.004 * s)
+    add(Capsule(mid, ankle, 0.046 * rr, 0.038 * rr), 'leg', 0.004 * s)
+    add(Sphere(ankle, 0.043 * rr), 'joint', 0.004 * s)
+    tipm = lerp(ankle, foot, 0.55)
+    add(Capsule(ankle, tipm, 0.036 * rr, 0.024 * rr), 'leg', 0.002 * s)
+    add(Capsule(tipm, foot + v3(0, 0.006 * s, 0), 0.024 * rr, 0.006 * rr), 'legtip', 0.002 * s)
+    return knee
 
 
-def carapace(add, C, s_big=1.0, antennae=True):
-    """Shield-shaped violet front body in crab frame C (centre at origin)."""
-    C.ell(add, (0, 0, 0), (0.21, 0.135, 0.23), 'carapace', 0.0)
-    C.ell(add, (0, 0.035, 0.11), (0.165, 0.11, 0.13), 'carapace', 0.03)
-    C.ell(add, (0, -0.07, 0.17), (0.09, 0.05, 0.05), 'joint', 0.01)          # mouthparts
+def carapace(add, C, s_big=1.0, antennae=True, P=None, wide=1.0, thorax=True, rim=True):
+    """Head and front body in crab frame C: a domed mauve shield with a darker rim, a short rostrum, orange
+    mouthparts, the soft thorax running back into the shell, and two long flicking antennae."""
+    w = s_big * wide
+    if thorax:
+        C.ell(add, (0, -0.035, -0.17), (0.145 * w, 0.105, 0.18), 'body', 0.0)
+    if rim:
+        C.ell(add, (0, -0.012, -0.005), (0.180 * w, 0.090, 0.172), 'shieldrim', 0.02)
+    C.ell(add, (0, 0.006, 0.0), (0.172 * w, 0.102, 0.165), 'carapace', 0.02)
+    C.ell(add, (0, 0.035, 0.07), (0.125 * w, 0.075, 0.095), 'carapace', 0.03)      # brow
+    C.ell(add, (0, 0.035, 0.155), (0.034, 0.028, 0.045), 'carapace', 0.015)        # rostrum
+    for sx in (-1, 1):
+        C.ell(add, (sx * 0.042, -0.075, 0.13), (0.036, 0.055, 0.03), 'mouth', 0.012)   # mouthparts
     if antennae:
+        ph = 0.0 if P is None else P.get('tell', 0.0)
+        fl = 0.0 if P is None else (P.get('fx', 0.0) * 0.0)
         for sx in (-1, 1):
-            a = (sx * 0.035, 0.03, 0.20)
-            b = (sx * 0.15, 0.20, 0.42)
-            c = (sx * 0.30, 0.18, 0.62)
-            C.cap(add, a, b, 0.016, 0.011, 'tip')
-            C.cap(add, b, c, 0.011, 0.006, 'tip')
+            sw = 0.22 * np.sin(2 * np.pi * (ph + (0.0 if sx < 0 else 0.37))) + fl
+            a = v3(sx * 0.035, 0.0, 0.165)
+            b = a + v3(sx * (0.06 + sw * 0.3), 0.08 + 0.04 * sw, 0.10)
+            c = b + v3(sx * (0.10 + sw * 0.6), 0.03 - 0.06 * sw, 0.07)
+            C.cap(add, a, b, 0.014, 0.011, 'stalk')
+            C.cap(add, b, c, 0.011, 0.006, 'stalk')
+
+
+def abdomen(add, C, curl=0.0, size=1.0, thick=(0.15, 0.05), side=-0.6, drop=0.0, sag=0.0, segs=4, start=None,
+            **_ignored):
+    """The bare crab's soft abdomen: a pale, segmented, slightly sagging sac that leaves the back of the thorax,
+    droops and curls UNDER the body and off to one side (never a spiral shell above it). curl 0..1 tightens it.
+    Extra spiral_tail kwargs (center, r0, turns, helix...) are accepted and ignored."""
+    sz = size
+    st = v3(0, -0.04, -0.24) if start is None else v3(*start)
+    k = 1.0 - 0.22 * curl
+    R0 = 0.20 * sz * k
+    cz, cy = st[2] - 0.05 * sz, st[1] - R0 - drop
+    phi0, phi1 = 0.15, np.pi * (1.10 + 0.22 * curl)
+    n = segs * 2 + 1
+    pts, rad = [], []
+    for i in range(n):
+        t = i / (n - 1)
+        phi = phi0 + (phi1 - phi0) * t
+        R = R0 * (1.0 - 0.45 * t)
+        q = v3(side * 0.18 * sz * t ** 1.2, cy + R * np.cos(phi) - sag * np.sin(np.pi * t) * 0.10 * sz,
+               cz - R * np.sin(phi) * 1.25)
+        pts.append(C.p(q))
+        bulge = np.sin(np.pi * min(t * 1.4, 1.0)) * 0.35 + 0.65
+        rad.append((thick[0] * bulge * (1 - t) + thick[1] * t) * sz * C.s)
+    # neck from the thorax into the sac
+    add(Capsule(C.p(st), pts[0], 0.11 * sz * C.s, rad[0]), 'tail', 0.03 * C.s)
+    for j in range(segs):
+        a, b = pts[2 * j], pts[2 * j + 2]
+        m = pts[2 * j + 1]
+        ax = norm(b - a)
+        ln = float(np.linalg.norm(b - a))
+        r = rad[2 * j + 1]
+        add(Ellipsoid(m, (r * 1.10, r, ln * 0.62), R_from(ax, C.v((0, 1, 0)))), 'tail', 0.035 * C.s)
+        if j < segs - 1:
+            add(Torus(b, ax, rad[2 * j + 2] * 0.90, 0.028 * C.s * sz), 'tailband', 0.0)
+    tipp = pts[-1]
+    tdir = norm(pts[-1] - pts[-2])
+    add(Ellipsoid(tipp + tdir * rad[-1] * 0.8, (rad[-1] * 1.5, rad[-1] * 0.5, rad[-1] * 1.0),
+                  R_from(tdir, C.v((0, 1, 0)))), 'tailband', 0.01 * C.s)
+    return pts
 
 
 def spiral_tail(add, C, curl=0.0, size=1.0, center=(0, 0.30, -0.40), r0=0.27, r1=0.07, thick=(0.15, 0.035),
                 turns=1.05, bounce=0.0, helix=-0.10, bands=3):
-    """The bare crab's soft abdomen: a fat pink-grey spiral comma behind and above the body (crab-local)."""
-    cz = v3(center[0], center[1] * size + bounce, center[2] * size)
-    k = 1 - 0.20 * curl
-    n = 22
-    phi0 = np.radians(-62)
-    span = 2 * np.pi * (turns + 0.10 * curl)
-    pts, rad = [C.p((0, -0.01, -0.12))], [thick[0] * size * 0.95 * C.s]
-    for i in range(n):
-        t = i / (n - 1)
-        phi = phi0 + span * t
-        r = (r0 + (r1 - r0) * t ** 0.85) * size * k
-        q = v3(helix * t * size, cz[1] + r * np.sin(phi), cz[2] + r * np.cos(phi))
-        pts.append(C.p(q))
-        rad.append((thick[0] + (thick[1] - thick[0]) * t ** 0.9) * size * C.s)
-    tube(add, pts, rad, 'tail', 0.03 * C.s)
-    # a few soft segment creases (painted rings, not ridges)
-    for j in range(bands):
-        i = 4 + j * 4
-        if i + 1 < len(pts):
-            ax = norm(pts[i + 1] - pts[i - 1])
-            add(Torus(pts[i], ax, rad[i] * 0.93, 0.012 * C.s), 'tailband', 0.004 * C.s)
-    # tail fan at the inner tip
-    tipp = pts[-1]
-    add(Sphere(tipp, rad[-1] * 1.2), 'tailband', 0.01 * C.s)
-    return pts
+    """Deprecated (it read as a snail shell). Kept so old unit files still run; it now draws abdomen()."""
+    return abdomen(add, C, curl=curl, size=size, thick=(thick[0], max(thick[1], 0.045)))
 
 
 def _gait_feet(P, feet, fwd, s, step=0.16):
@@ -486,9 +637,57 @@ def _gait_feet(P, feet, fwd, s, step=0.16):
     for i, f in enumerate(feet):
         a = i in (0, 3)
         dz = P['stride'] * step * s * (1 if a else -1)
-        lift = (P['lift_a'] if a else P['lift_b']) * 0.13 * s
+        lift = (P['lift_a'] if a else P['lift_b']) * 0.11 * s
         out.append(f + fwd * dz + v3(0, lift, 0))
     return out
+
+
+# leg roots on the crab body (FR, FL, BR, BL), crab-local; and the default splay of each foot
+LEG_ROOTS = ((-0.14, -0.075, 0.05), (0.14, -0.075, 0.05), (-0.15, -0.085, -0.07), (0.15, -0.085, -0.07))
+LEG_SPLAY = ((-1.0, 0.40), (1.0, 0.40), (-1.0, -0.50), (1.0, -0.50))
+
+
+def _auto_feet(C, roots_w, span, s, spread=1.0):
+    feet = []
+    for i, rt in enumerate(roots_w):
+        sx, sz = LEG_SPLAY[i]
+        dv = C.v((sx * spread, 0, sz))
+        dv = norm(v3(dv[0], 0, dv[2]))
+        vh = norm(v3(_VIEW[0], 0, _VIEW[2]))
+        dv = norm(dv - vh * (dv @ vh) * 0.55)          # splay across the screen, so every leg shows its arch
+        reach = span * s * (1.0 if i < 2 else 0.92)
+        feet.append(v3(rt[0], 0, rt[2]) + dv * reach)
+    return feet
+
+
+def crab_legs(add, P, C, roots_w, feet_w, s, leg_len=1.0, leg_r=1.0, fold=0.0, tuck_y=-0.16, skip=()):
+    for i, (rt, ft) in enumerate(zip(roots_w, feet_w)):
+        if i in skip:
+            continue
+        side = -1 if i % 2 == 0 else 1
+        tuck = C.p((side * 0.24, tuck_y, 0.10 if i < 2 else -0.06))
+        ft = lerp(ft, tuck, fold)
+        o = C.v((side, 0, LEG_SPLAY[i][1]))
+        walking_leg(add, rt, ft, s, o, leg_len * (1 - 0.25 * fold), leg_r)
+
+
+def crab_eyes(add, P, C, s, eye_len=0.22, bead=0.056, droop=0.0, splay=0.36, base=(0.066, 0.05, 0.13), r=1.0,
+              duck_keep=0.45, fwd=0.22):
+    """Two eyestalks from the front of the shield. Swivel = eye_l / eye_r, dip_l / dip_r pull one down."""
+    tips = []
+    for side in (-1, 1):
+        yaw = P['eye_r'] if side < 0 else P['eye_l']
+        dip = max(P['dip_r'] if side < 0 else P['dip_l'], droop)
+        dl = norm(v3(side * splay, 1.0, fwd))
+        dl = axis_rot(v3(0, 1, 0), yaw) @ dl
+        dl = norm(lerp(dl, v3(side * 0.25, -0.15, 1.0), min(dip, 1.0) * 0.8))
+        if P.get('flip', 0.0) > 0:      # upside down: the stalks flop out sideways, never into the ground
+            dl = norm(lerp(dl, v3(side * 0.8, 0.05, 0.6), min(P['flip'], 1.0)))
+        L = eye_len * s * (1 - 0.45 * min(dip, 1.0)) * (1 - (1 - duck_keep) * P['duck'])
+        dw = C.v(dl)
+        dw = norm(dw - _VIEW * (dw @ _VIEW) * 0.6)      # keep both stalks side-on to the camera, never end-on
+        tips.append(eyestalk(add, C.p(v3(side * base[0], base[1], base[2])), dw, L, s, bead=bead, r=r))
+    return tips
 
 
 # ------------------------------------------------------------------ shelled crab
@@ -500,14 +699,20 @@ class Shell:
     build      fn(add, P, F) -> materials dict. Adds the object in shell-local coords (origin = object centre,
                +z = mouth/forward, +y = up). The rig places F; use F.put / F.cyl / F.ell / ... to add parts.
     ride       height of the shell origin above the ground when standing
-    crab_at    shell-local point of the crab's carapace centre (just inside the mouth)
-    feet       4 world (x, z) foot spots: front-right, front-left, back-right, back-left (right = -x)
-    tilt       rest pitch (+ = back end raised, mouth toward the ground); ART asks for ~20 degrees
-    crab_pitch extra pitch of the crab inside the shell (+ = nose down)
-    leg_roots  optional 4 shell-local leg roots (FR, FL, BR, BL); default = on the carapace
-    eyes       optional [(shell-local base, shell-local dir, length)]; default = two from the carapace
-    eye_len    default eyestalk length (crab units) so the beads clear the rim
+    crab_at    shell-local point of the crab's head-shield centre (at the mouth, so the face looks out of it)
+    tilt       rest pitch (+ = back end raised, mouth toward the ground; - = back end down on the ground, the worn
+               look: the object sits on the crab's rear half and drags)
+    crab_pitch extra pitch of the crab inside the shell (+ = nose down); set it so the face looks level
+    feet       legacy 4 world (x, z) foot spots; only used when auto_feet=False
+    auto_feet  True: feet are planted wide around the crab's own leg roots (span, spread) - the default
+    span       horizontal reach of each leg in crab units; spread = sideways bias of the splay
+    leg_roots  legacy shell-local leg roots; ignored unless auto_feet=False (legs grow from the crab body)
+    eyes       legacy eyestalk override [(shell-local base, shell-local dir, length)]: REPLACES the face's eyes.
+               Prefer extra_eyes (added to the two face eyes, e.g. the barrel's bung-hole eye).
+    eye_len    face eyestalk length (crab units); eye_bead = eye radius (crab units)
     big, small chela scales; barn = barnacle clusters on the big claw
+    duck_dir   shell-local direction the crab pulls into on hit (default straight back into the mouth)
+    duck_depth how far it pulls in (crab units)
     side_r     how high the origin sits when the object lies on its side (death); tip_dir +1/-1 roll side
     lie        rest pitch when lying (death); z0 world z of the origin; leg_len leg length factor
     """
@@ -519,9 +724,9 @@ class Shell:
     crab_pitch: float = 0.0
     leg_roots: Optional[tuple] = None
     eyes: Optional[tuple] = None
-    eye_len: float = 0.24
-    big: float = 1.1
-    small: float = 0.5
+    eye_len: float = 0.22
+    big: float = 1.25
+    small: float = 0.65
     barn: int = 0
     side_r: float = 0.35
     tip_dir: float = 1.0
@@ -533,21 +738,48 @@ class Shell:
     tip_angle: float = 1.35
     x0: float = 0.0
     eye_bead: float = 0.056
-    guard: Optional[tuple] = ((0.14, 0.10, 0.42), (-0.55, 0.45, 0.70))   # claw rest: across the mouth, up
+    guard: Optional[tuple] = None   # big claw rest (wrist, dir); None = CLAW_KEYS['fwd'] (boxer's guard)
     yaw: float = 0.0           # turn the whole unit (+ = toward screen-right, side-on); feet turn with it
+    auto_feet: bool = True
+    span: float = 0.40
+    spread: float = 1.0
+    extra_eyes: Optional[tuple] = None
+    duck_dir: tuple = (0.0, 0.05, -1.0)
+    duck_depth: float = 0.20
+    crab_upright: float = 0.0  # 0..1: keep the crab's up axis toward world up regardless of the shell's tilt
+    shield: float = 1.0        # head-shield width factor
+    hide_legs: tuple = ()      # leg indices (FR, FL, BR, BL) that the object hides anyway
 
 
 def shell_frame(P, sh):
     """World frame of the shell for this pose: ride height, tilt, rock, sway, duck, recoil and the death tip."""
     tip = P['tip']
     duck = P['duck']
-    ride = sh.ride * (1 - 0.14 * duck - 0.25 * P['fold'] * (1 - tip)) + P['bob']
+    ride = sh.ride * (1 - 0.08 * duck - 0.20 * P['fold'] * (1 - tip)) + P['bob']
     y = lerp(ride, sh.side_r, tip)
     pitch = lerp(sh.tilt + P['lean'] + P['rock'], sh.lie, tip)
     roll = -sh.tip_dir * tip * sh.tip_angle + P['sway']
     R = rot_y(sh.yaw + P['yaw']) @ rot_z(roll) @ rot_x(pitch)
     o = v3(sh.x0 + P['slide'] + P['shake'] * 0.02, y, sh.z0) + rot_y(sh.yaw + P['yaw']) @ v3(0, 0, -P['recoil'])
     return Frame(o, R, 1.0)
+
+
+def crab_frame(P, sh, size):
+    """The crab's frame C inside shell sh for pose P (what shelled() builds the crab in)."""
+    s = SIZES[size]['s'] if isinstance(size, str) else float(size)
+    F = shell_frame(P, sh)
+    dd = norm(v3(*sh.duck_dir)) * sh.duck_depth * s * P['duck']
+    Rl = rot_x(sh.crab_pitch)
+    if sh.crab_upright > 0:
+        # partly undo the shell's tilt and rock so the face stays level
+        Rl = rot_x(-(sh.tilt + P['rock']) * sh.crab_upright * (1 - P['tip'])) @ Rl
+    return F.child(v3(*sh.crab_at) + dd, Rl, s)
+
+
+def claw_grip(P, sh, size, big=True):
+    """World point held between the claw tips (and the claw's direction) for a shelled crab."""
+    C = crab_frame(P, sh, size)
+    return cheliped_grip(P, C, sh.big if big else sh.small, big, sh.guard if big else None)
 
 
 def shelled(P, size, sh, mats=None, lights=(), world=None):
@@ -559,42 +791,46 @@ def shelled(P, size, sh, mats=None, lights=(), world=None):
     sm = sh.build(add, P, F)
     if sm:
         m.update(sm)
-    C = F.child(v3(*sh.crab_at) + v3(0, -0.02 * P['duck'], -0.10 * P['duck'] * s), rot_x(sh.crab_pitch), s)
-    carapace(add, C, antennae=sh.antennae and P['duck'] < 0.5)
-    # claws (right = -x is the big one)
+    C = crab_frame(P, sh, size)
+    carapace(add, C, antennae=sh.antennae and P['duck'] < 0.5, P=P, wide=sh.shield)
+    # claws (right = -x is the big one, toward the camera)
     cheliped(add, P, C, -1, sh.big, True, barn=sh.barn, guard=sh.guard)
     cheliped(add, P, C, 1, sh.small, False)
-    # eyes
+    droop = P['end'] * 0.9
     if sh.eyes is None:
-        eyes = [(C.p((-0.065, 0.08, 0.16)), C.v((-0.14, 1.0, 0.28)), sh.eye_len * s),
-                (C.p((0.065, 0.08, 0.16)), C.v((0.14, 1.0, 0.28)), sh.eye_len * s)]
+        crab_eyes(add, P, C, s, sh.eye_len, sh.eye_bead, droop=droop, r=1.0)
     else:
-        eyes = [(F.p(b), F.v(d), L) for b, d, L in sh.eyes]
-    droop = P['end'] * 0.8
-    for i, (b, d, L) in enumerate(eyes):
-        side = -1 if i % 2 == 0 else 1
-        # swivel about the crab's up axis
-        yaw = (P['eye_r'] if side < 0 else P['eye_l']) * (1.0 if i < 2 else -0.7)
-        dip = max(P['dip_r'] if side < 0 else P['dip_l'], P['duck'], droop) if i < 2 else max(P['dip_r'], P['duck'], droop)
-        dd = axis_rot(C.v((0, 1, 0)), yaw) @ norm(d)
-        dd = norm(lerp(dd, C.v((side * 0.15, -0.30, 1.0)), min(dip, 1.0) * 0.7))
-        eyestalk(add, b, dd, L * (1 - 0.6 * min(dip, 1.0)), s, bead=sh.eye_bead, r=1.3)
+        for i, (b, d, L) in enumerate(sh.eyes):
+            side = -1 if i % 2 == 0 else 1
+            yaw = (P['eye_r'] if side < 0 else P['eye_l']) * (1.0 if i < 2 else -0.7)
+            dip = max(P['dip_r'] if side < 0 else P['dip_l'], P['duck'], droop)
+            dd = axis_rot(C.v((0, 1, 0)), yaw) @ norm(F.v(d))
+            dd = norm(lerp(dd, C.v((side * 0.15, -0.30, 1.0)), min(dip, 1.0) * 0.7))
+            eyestalk(add, F.p(b), dd, L * (1 - 0.6 * min(dip, 1.0)), s, bead=sh.eye_bead)
+    for b, d, L in (sh.extra_eyes or ()):
+        dip = max(P['dip_l'] * 0.5, P['duck'], droop)
+        dd = axis_rot(F.v((0, 1, 0)), -0.7 * P['eye_l']) @ norm(F.v(d))
+        dd = norm(lerp(dd, F.v((0.1, -0.2, 1.0)), min(dip, 1.0) * 0.6))
+        eyestalk(add, F.p(b), dd, L * (1 - 0.6 * min(dip, 1.0)), s, bead=sh.eye_bead * 0.9)
     # legs
     Ry = rot_y(sh.yaw + P['yaw'])
     fwd = Ry @ v3(0, 0, 1)
-    base = [v3(sh.x0 + P['slide'], 0, sh.z0) + Ry @ v3(fx, 0, fz - P['recoil']) for fx, fz in sh.feet]
-    feet = _gait_feet(P, base, fwd, s)
-    if sh.leg_roots is None:
-        roots = [C.p((-0.17, -0.07, 0.07)), C.p((0.17, -0.07, 0.07)), C.p((-0.18, -0.08, -0.06)),
-                 C.p((0.18, -0.08, -0.06))]
+    if sh.auto_feet or sh.leg_roots is None:
+        roots = [C.p(r) for r in LEG_ROOTS]
     else:
         roots = [F.p(r) for r in sh.leg_roots]
+    if sh.auto_feet:
+        # plant from the standing pose so ducking and rocking do not drag the feet
+        P0 = dict(P)
+        P0.update(duck=0.0, rock=0.0, sway=0.0, bob=0.0, lean=0.0, recoil=0.0, slide=0.0, shake=0.0)
+        C0 = crab_frame(P0, sh, size)
+        base = _auto_feet(C0, [C0.p(r) for r in LEG_ROOTS], sh.span, s, sh.spread)
+        base = [b + v3(P['slide'], 0, 0) - fwd * P['recoil'] for b in base]
+    else:
+        base = [v3(sh.x0 + P['slide'], 0, sh.z0) + Ry @ v3(fx, 0, fz - P['recoil']) for fx, fz in sh.feet]
+    feet = _gait_feet(P, base, fwd, s)
     fold = max(P['fold'], P['tip'])
-    for i, (rt, ft) in enumerate(zip(roots, feet)):
-        side = -1 if i % 2 == 0 else 1
-        tuck = C.p((side * 0.30, -0.16, 0.12 if i < 2 else -0.04))
-        ft = lerp(ft, tuck, fold)
-        walking_leg(add, rt, ft, s, v3(side, 0, 0.35 if i < 2 else -0.25), sh.leg_len * (1 - 0.25 * fold), sh.leg_r)
+    crab_legs(add, P, C, roots, feet, s, sh.leg_len, sh.leg_r, fold, skip=sh.hide_legs)
     if world:
         world(add)
     if abs(P['squash'] - 1) > 1e-3:
@@ -610,60 +846,83 @@ def shelled(P, size, sh, mats=None, lights=(), world=None):
 @dataclass
 class Bare:
     """An evicted crab. Lengths in crab units (multiplied by the size's s).
-    h        carapace centre height        feet   4 (x, z) foot spots FR, FL, BR, BL
-    yaw      turn toward side-on (+ shows the left flank, - the right)
-    tail     spiral_tail kwargs (size, center, r0, r1, thick, turns, helix)
-    big/small chela scales; barn = barnacle clusters on the big claw; eye_len; leg_len"""
+    h        head-shield centre height      yaw   turn toward side-on (+ shows the left flank, - the right)
+    tail     abdomen kwargs: size, thick (fat, tip), side (-x = toward the camera), drop, sag, segs
+    big/small chela scales; barn = barnacle clusters on the big claw; scar = scarred big claw
+    eye_len / eye_bead   eyestalk length and eye radius (small crabs: big eyes)
+    span / spread        leg reach and sideways splay; leg_len / leg_r leg length and thickness
+    shield   head-shield width factor; arm = claw-arm thickness factor; fat = pincer bulk factor
+    pitch    rest pitch of the body (+ nose down); feet = legacy, ignored unless auto_feet=False"""
     h: float = 0.40
     feet: tuple = ((-0.48, 0.40), (0.56, 0.36), (-0.52, -0.30), (0.60, -0.26))
     yaw: float = 0.65
     tail: dict = field(default_factory=dict)
-    big: float = 1.15
-    small: float = 0.55
+    big: float = 1.3
+    small: float = 0.65
     barn: int = 0
-    eye_len: float = 0.26
+    eye_len: float = 0.28
     leg_len: float = 1.0
-    leg_r: float = 1.25
+    leg_r: float = 1.1
     z0: float = 0.0
     x0: float = 0.0
+    eye_bead: float = 0.068
+    span: float = 0.36
+    spread: float = 1.0
+    shield: float = 1.0
+    arm: float = 1.0
+    fat: float = 1.0
+    scar: bool = False
+    pitch: float = 0.0
+    auto_feet: bool = True
+    shield_barn: int = 0
 
 
 def bare_frame(P, b, s):
     fl = P['flip']
-    h = lerp(b.h + P['bob'] / s, 0.15, fl)
-    R = rot_y(b.yaw + P['yaw']) @ rot_z(-np.pi * 0.96 * fl + P['sway']) @ rot_x(P['lean'] - P['rear'] * (1 - fl))
+    h = lerp(b.h + P['bob'] / s, 0.12 + 0.11 * b.big, fl)
+    R = rot_y(b.yaw + P['yaw']) @ rot_z(-np.pi * 0.96 * fl + P['sway']) @ rot_x(b.pitch + P['lean'] - P['rear'] * (1 - fl))
     o = v3(b.x0 + P['slide'], h * s, b.z0 - P['recoil'])
     return Frame(o, R, s)
 
 
 def bare(P, size, b, mats=None, lights=(), world=None):
-    """Scene: the evicted crab (spiral tail, raised claw)."""
+    """Scene: the evicted crab (soft abdomen curled under, pincers up)."""
     s = SIZES[size]['s'] if isinstance(size, str) else float(size)
     parts, add = new_parts()
     C = bare_frame(P, b, s)
-    carapace(add, C)
+    carapace(add, C, P=P, wide=b.shield)
+    if b.shield_barn:
+        for i in range(b.shield_barn):
+            nrm = norm(C.v((0.5 - 0.9 * i, 1.0, -0.4 + 0.2 * i)))
+            barnacles(add, C.p((0.07 - 0.13 * i, 0.07, -0.06 + 0.03 * i)) + nrm * 0.03 * s, nrm, size=0.035 * s,
+                      n=3 + i % 2, seed=11 + i)
     tk = dict(b.tail)
-    tk.setdefault('bounce', 0.0)
-    tk['bounce'] = tk['bounce'] + P['ring'] * 0.0
-    spiral_tail(add, C, curl=P['curl'], **tk)
-    cheliped(add, P, C, -1, b.big, True, barn=b.barn)
-    cheliped(add, P, C, 1, b.small, False)
-    droop = P['end'] * 0.7
-    for side in (-1, 1):
-        d, dip = _eye_dir(P, C, (side * 0.22, 1.0, 0.05), side, droop)
-        eyestalk(add, C.p((side * 0.065, 0.09, 0.16)), C.v(d), b.eye_len * s * (1 - 0.5 * dip), s)
+    if P['flip'] > 0:      # on its back the soft abdomen flops over sideways onto the salt
+        tk['side'] = tk.get('side', -0.6) - 1.6 * P['flip']
+        tk['drop'] = tk.get('drop', 0.0) - 0.10 * P['flip']
+    abdomen(add, C, curl=P['curl'] * (1 - 0.6 * P['flip']), **tk)
+    cheliped(add, P, C, -1, b.big, True, barn=b.barn, arm=b.arm, scar=b.scar, fat=b.fat)
+    cheliped(add, P, C, 1, b.small, False, arm=b.arm)
+    droop = P['end'] * 0.8 * (1 - P['flip'])
+    crab_eyes(add, P, C, s, b.eye_len * (1 - 0.3 * P['flip']), b.eye_bead, droop=droop, duck_keep=1.0)
     fwd = rot_y(b.yaw + P['yaw']) @ v3(0, 0, 1)
     Ry = rot_y(b.yaw + P['yaw'])
-    base = [v3(b.x0 + P['slide'], 0, b.z0 - P['recoil']) + Ry @ v3(fx * s, 0, fz * s) for fx, fz in b.feet]
+    roots = [C.p(r) for r in LEG_ROOTS]
+    if b.auto_feet:
+        P0 = dict(P)
+        P0.update(rear=0.0, lean=0.0, bob=0.0, sway=0.0, flip=0.0, recoil=0.0, slide=0.0)
+        C0 = bare_frame(P0, b, s)
+        base = _auto_feet(C0, [C0.p(r) for r in LEG_ROOTS], b.span, s, b.spread)
+        base = [q + v3(P['slide'], 0, 0) - v3(0, 0, P['recoil']) for q in base]
+    else:
+        base = [v3(b.x0 + P['slide'], 0, b.z0 - P['recoil']) + Ry @ v3(fx * s, 0, fz * s) for fx, fz in b.feet]
     feet = _gait_feet(P, base, fwd, s, step=0.20)
-    roots = [C.p((-0.17, -0.06, 0.08)), C.p((0.17, -0.06, 0.08)), C.p((-0.18, -0.07, -0.06)),
-             C.p((0.18, -0.07, -0.06))]
-    fold = P['fold']
-    for i, (rt, ft) in enumerate(zip(roots, feet)):
-        side = -1 if i % 2 == 0 else 1
-        tuck = C.p((side * 0.30, -0.24, 0.10 if i < 2 else -0.06))
-        ft = lerp(ft, tuck, fold)
-        walking_leg(add, rt, ft, s, C.v((side, 0, 0.35 if i < 2 else -0.3)), b.leg_len * (1 - 0.3 * fold), b.leg_r)
+    fold = max(P['fold'], P['flip'] * 0.6)
+    if P['flip'] > 0:
+        # on its back the legs paddle in the air: feet rise with the body
+        feet = [lerp(f, C.p((LEG_ROOTS[i][0] * 1.9, -0.17, LEG_ROOTS[i][2] * 1.3 + 0.04)), min(P['flip'], 1.0))
+                for i, f in enumerate(feet)]
+    crab_legs(add, P, C, roots, feet, s, b.leg_len, b.leg_r, fold * 0.7, tuck_y=-0.22)
     if world:
         world(add)
     if abs(P['squash'] - 1) > 1e-3:
@@ -984,61 +1243,71 @@ def _set(P, **kw):
 
 
 def hermit_rows(base, kind='shell', extra=None):
-    """Standard Hermitage rows. kind 'shell': eyestalk tell, slow lurch, claw snap, duck on hit, tip-over
-    death with a limp claw, rear-and-drum cast. kind 'bare': twitchy shuffle, fast scuttle with tail bounce,
-    flinch + tail clamp, flip-on-back death with colour drain. extra(rows) may edit the poses in place."""
+    """Standard Hermitage rows.
+    kind 'shell': idle = eyestalks swivel on their own, one dips below the rim and pops back, claws work open and
+    shut, antennae flick; move = alternating leg pairs with the object rocking and swaying; attack = the big claw
+    cocks up and back wide open, then snaps forward shut (hitFrame 2, three bright strokes off the tips); hit = the
+    crab yanks into the object, big claw laid across the mouth like a door, only eyes and claw tips out; death =
+    slump, the object tips onto its side, one claw lolls out, eyestalks droop; cast = rear and drum the big claw
+    twice on the rim.
+    kind 'bare': twitchy sideways shuffle, fast scuttle with the abdomen bouncing, cock-and-snap from a rear,
+    flinch with the abdomen clamped tight, flip onto its back with legs curling and colour draining, cast = rear
+    and drum. extra(rows) may edit the poses in place."""
     def frames():
         b = base
         R = {}
         if kind == 'shell':
-            R['idle'] = [(_set(b(), rock=[0, .035, 0, -.03][i], sway=[0, .025, 0, -.02][i],
-                               eye_l=[.25, .5, .15, -.2][i], eye_r=[-.2, -.05, -.4, -.15][i],
-                               dip_l=[0, 0, 1, 0][i], dip_r=[0, 0, 0, .15][i], open=[.15, .25, .15, .1][i],
+            R['idle'] = [(_set(b(), rock=[0, .03, 0, -.025][i], sway=[0, .02, 0, -.015][i],
+                               eye_l=b()['eye_l'] + [.30, .55, .10, -.25][i],
+                               eye_r=b()['eye_r'] + [-.25, -.05, -.45, -.20][i],
+                               dip_l=[0, 0, 0, .0][i], dip_r=[0, 0, 1, .2][i],
+                               open=b()['open'] + [0, .25, -.15, .1][i], spread=b()['spread'] + [0, .15, 0, .08][i],
                                tell=i / 4), {}) for i in range(4)]
             R['move'] = [(_set(b(), stride=[1, 0, -1, 0][i], lift_a=[0, 0, 0, 1][i], lift_b=[0, 1, 0, 0][i],
-                               sway=[.07, 0, -.07, 0][i], bob=[-.015, .02, -.015, .02][i],
-                               rock=[.03, -.01, .03, -.01][i], eye_l=.2, eye_r=-.2, tell=i / 4), {})
-                         for i in range(4)]
-            R['attack'] = [(_set(b(), cock=[.7, 1, 0, 0][i], snap=[0, 0, 1, .35][i], open=[.6, .95, .0, .2][i],
-                                 lean=[-.06, -.10, .08, .02][i], fx=[0, 0, 1, .2][i], strike=[0, .3, 1, .3][i]), {})
+                               sway=[.06, 0, -.06, 0][i], bob=[-.012, .015, -.012, .015][i],
+                               rock=[.035, -.01, .035, -.01][i], eye_l=b()['eye_l'] + .2, eye_r=b()['eye_r'] - .2,
+                               tell=i / 4), {}) for i in range(4)]
+            R['attack'] = [(_set(b(), cock=[.65, 1, 0, 0][i], snap=[0, 0, 1, .35][i], open=[.75, 1.05, .0, .25][i],
+                                 lean=[-.05, -.09, .07, .02][i], fx=[0, 0, 1, .2][i], strike=[0, .3, 1, .3][i],
+                                 eye_l=b()['eye_l'] + .15, eye_r=b()['eye_r'] - .15), {})
                            for i in range(4)]
-            R['hit'] = [(_set(b(), duck=1.0, lean=-.12, sway=.05, shake=1), dict(exposure=1.25, flash=0.22)),
-                        (_set(b(), duck=.45, lean=-.04, sway=-.02), {})]
-            R['death'] = [(_set(b(), duck=.8, lean=-.12, sway=.06), {}),
-                          (_set(b(), duck=.6, fold=.55, tip=.22, bob=-.04, end=.2), {}),
-                          (_set(b(), tip=.92, fold=.9, squash=.94, limp=.6, end=.6), {}),
-                          (_set(b(), tip=1.0, fold=1.0, limp=1.0, end=1.0, open=.35), {})]
-            R['cast'] = [(_set(b(), lean=-.13, raise_=1.0, open=.3, eye_l=.3, eye_r=-.3, cast_glow=.5), {}),
-                         (_set(b(), lean=-.04, drum=1.0, open=.1, bob=-.015, cast_glow=1.0), {}),
-                         (_set(b(), lean=-.13, raise_=1.0, open=.3, cast_glow=.6), {}),
-                         (_set(b(), lean=-.04, drum=1.0, open=.1, bob=-.015, cast_glow=.3), {})]
+            R['hit'] = [(_set(b(), duck=1.0, lean=-.10, sway=.05, shake=1, open=0.0), dict(exposure=1.25, flash=0.22)),
+                        (_set(b(), duck=.55, lean=-.03, sway=-.02, open=.1), {})]
+            R['death'] = [(_set(b(), duck=.6, lean=-.10, sway=.05, open=.1), {}),
+                          (_set(b(), duck=.2, fold=.5, tip=.25, bob=-.03, end=.25, limp=.3), {}),
+                          (_set(b(), tip=.92, fold=.9, squash=.95, limp=.8, end=.65, open=.5), {}),
+                          (_set(b(), tip=1.0, fold=1.0, limp=1.0, end=1.0, open=.4), {})]
+            R['cast'] = [(_set(b(), lean=-.14, raise_=1.0, open=.55, eye_l=.3, eye_r=-.3, cast_glow=.5), {}),
+                         (_set(b(), lean=-.03, drum=1.0, open=.05, bob=-.015, cast_glow=1.0), {}),
+                         (_set(b(), lean=-.14, raise_=1.0, open=.55, cast_glow=.6), {}),
+                         (_set(b(), lean=-.03, drum=1.0, open=.05, bob=-.015, cast_glow=.3), {})]
         else:
             def rel(P, **kw):
                 for k, v in kw.items():
                     P[k] = P[k] + v
                 return P
-            R['idle'] = [(rel(_set(b(), tell=i / 4, curl=[0, .5, 1, .4][i], open=[.2, .35, .2, .1][i],
-                                   eye_l=[.2, .45, .1, -.2][i], eye_r=[-.25, -.1, -.4, -.1][i],
-                                   lift_a=[0, .7, 0, 0][i], lift_b=[0, 0, 0, .6][i]),
-                              slide=[0, .05, .07, .02][i], bob=[0, .015, 0, .01][i]), {}) for i in range(4)]
+            R['idle'] = [(rel(_set(b(), tell=i / 4, curl=[0, .5, 1, .4][i]),
+                              open=[0, .25, -.1, .15][i], eye_l=[.25, .5, .05, -.25][i], eye_r=[-.25, -.05, -.45, -.1][i],
+                              lift_a=[0, .7, 0, 0][i], lift_b=[0, 0, 0, .6][i],
+                              slide=[0, .05, .07, .02][i], bob=[0, .012, 0, .008][i]), {}) for i in range(4)]
             R['move'] = [(rel(_set(b(), stride=[1, 0, -1, 0][i], lift_a=[0, 0, 0, 1][i], lift_b=[0, 1, 0, 0][i],
-                                   tell=i / 4, eye_l=.15, eye_r=-.15),
-                              bob=[0, .035, 0, .035][i], sway=[.05, 0, -.05, 0][i], curl=[0, .5, 0, .5][i],
-                              lean=[.04, .04, .04, .04][i]), {}) for i in range(4)]
-            R['attack'] = [(rel(_set(b(), cock=[.75, 1, 0, 0][i], snap=[0, 0, 1, .35][i],
-                                     open=[.6, .95, .0, .2][i], fx=[0, 0, 1, .2][i]),
-                                lean=[-.08, -.12, .14, .04][i], rear=[.1, .15, -.1, 0][i]), {}) for i in range(4)]
-            R['hit'] = [(rel(_set(b(), curl=1.0, open=.6, shake=1), lean=-.18, raise_=-.5, bob=-.02),
+                                   tell=i / 4),
+                              eye_l=.15, eye_r=-.15, bob=[0, .03, 0, .03][i], sway=[.05, 0, -.05, 0][i],
+                              curl=[0, .5, 0, .5][i], lean=[.04, .04, .04, .04][i]), {}) for i in range(4)]
+            R['attack'] = [(rel(_set(b(), cock=[.7, 1, 0, 0][i], snap=[0, 0, 1, .35][i],
+                                     open=[.75, 1.05, .0, .25][i], fx=[0, 0, 1, .2][i]),
+                                lean=[-.06, -.10, .10, .03][i], rear=[.1, .15, -.1, 0][i]), {}) for i in range(4)]
+            R['hit'] = [(rel(_set(b(), curl=1.0, open=.0, shake=1, duck=.75), lean=-.16, bob=-.02),
                          dict(exposure=1.25, flash=0.22)),
-                        (rel(_set(b(), curl=.5), lean=-.06, raise_=-.2), {})]
-            R['death'] = [(rel(_set(b(), curl=1.0, open=.7), lean=-.2, raise_=-.3), {}),
+                        (rel(_set(b(), curl=.6, duck=.35), lean=-.05), {})]
+            R['death'] = [(rel(_set(b(), curl=1.0, open=.7, duck=.5), lean=-.2), {}),
                           (_set(b(), flip=.35, fold=.45, curl=1.0, raise_=.3, drain=.3, end=.25), {}),
-                          (_set(b(), flip=.85, fold=.85, curl=1.0, raise_=0.0, drain=.7, end=.6, squash=.95), {}),
-                          (_set(b(), flip=1.0, fold=1.0, curl=1.0, raise_=0.0, drain=1.0, end=1.0, open=.1), {})]
-            R['cast'] = [(rel(_set(b(), raise_=1.0, open=.35, cast_glow=.5), rear=.18, bob=.02), {}),
-                         (rel(_set(b(), drum=1.0, open=.1, cast_glow=1.0), rear=-.05, bob=-.01), {}),
-                         (rel(_set(b(), raise_=1.0, open=.35, cast_glow=.6), rear=.18, bob=.02), {}),
-                         (rel(_set(b(), drum=1.0, open=.1, cast_glow=.3), rear=-.05, bob=-.01), {})]
+                          (_set(b(), flip=.85, fold=.85, curl=1.0, raise_=0.0, drain=.55, end=.6, squash=.95), {}),
+                          (_set(b(), flip=1.0, fold=1.0, curl=1.0, raise_=0.0, drain=.75, end=1.0, open=.1, duck=.6), {})]
+            R['cast'] = [(rel(_set(b(), raise_=1.0, open=.55, cast_glow=.5), rear=.18, bob=.02), {}),
+                         (rel(_set(b(), drum=1.0, open=.05, cast_glow=1.0), rear=-.05, bob=-.01), {}),
+                         (rel(_set(b(), raise_=1.0, open=.55, cast_glow=.6), rear=.18, bob=.02), {}),
+                         (rel(_set(b(), drum=1.0, open=.05, cast_glow=.3), rear=-.05, bob=-.01), {})]
         if extra:
             extra(R)
         return R

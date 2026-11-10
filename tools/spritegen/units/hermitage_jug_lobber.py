@@ -3,11 +3,11 @@ chunk broken out of the front (the crab's door), a short flared neck pointing ba
 glaze drips on grey-cream. The big claw holds a round ballast stone; the attack winds it back and throws it overhand.
 ~1.1 m. Defining detail: the stone in the claw."""
 from _hermitage_common import *
-from _hermitage_common import _claw_target, _arr
+from _hermitage_common import _arr
 
 UNIT_ID = 'hermitage_jug_lobber'
-SIZE = 'small'
-CAMERA = size_camera(SIZE)
+SIZE = 0.95            # 'small' class, crab scaled so its front fills the broken door
+CAMERA = size_camera('small')
 RX, RY, RZ = 0.40, 0.38, 0.42          # belly radii
 WALL = 0.045
 STONE_R = 0.115
@@ -61,11 +61,9 @@ def jug_shell():
 
 SHELL = Shell(
     build=jug_shell(),
-    ride=0.50, tilt=0.30, crab_at=(0, -0.05, 0.30), crab_pitch=-0.30, z0=-0.34, x0=0.05,
-    feet=((-0.42, 0.32), (0.40, 0.30), (-0.50, -0.22), (0.48, -0.22)),
-    leg_roots=((-0.15, -0.17, 0.32), (0.15, -0.17, 0.32), (-0.25, -0.20, 0.0), (0.25, -0.20, 0.0)),
-    eye_len=0.50, eye_bead=0.065, big=1.3, small=0.5, side_r=0.38, tip_angle=1.35,
-    guard=((0.16, 0.22, 0.42), (-0.40, 0.55, 0.8)))
+    ride=0.40, tilt=-0.12, crab_at=(0, -0.14, 0.40), crab_upright=1.0, z0=-0.70, x0=0.34, yaw=0.15,
+    eye_len=0.32, eye_bead=0.066, span=0.46, big=1.35, small=0.65, side_r=0.40, tip_angle=1.35, tip_dir=-1.0,
+    guard=((0.20, -0.02, 0.17), (-0.40, 0.25, 0.85)))
 
 
 def neutral_pose():
@@ -73,18 +71,13 @@ def neutral_pose():
 
 
 def build(P):
-    F = shell_frame(P, SHELL)
-    s = SIZES[SIZE]['s']
-    C = F.child(v3(*SHELL.crab_at) + v3(0, -0.02 * P['duck'], -0.10 * P['duck'] * s), rot_x(SHELL.crab_pitch), s)
+    s = SIZES[SIZE]['s'] if isinstance(SIZE, str) else float(SIZE)
 
     def world(add):
         if P['stone'] <= 0.02:
             return
-        w, d = _claw_target(P, True, SHELL.guard)
-        ww, dw = C.p(w * v3(-1, 1, 1)), C.v(d * v3(-1, 1, 1))
-        cs = SHELL.big * s
-        up = C.v((0.35, 1.0, 0.0))
-        held = ww + dw * 0.46 * cs + norm(up) * 0.03 * cs
+        held, dw = claw_grip(P, SHELL, SIZE, True)
+        F = shell_frame(P, SHELL)
         t = P['throw']
         fly = held + F.v((0.0, 0.10, 1.0)) * 0.55 * t + v3(0, -0.10 * max(t - 1, 0), 0)
         ground = v3(held[0], STONE_R * s, held[2]) + v3(0.1, 0, 0.06)
@@ -105,6 +98,8 @@ def _rows(R):
     # death: the stone falls out of the claw and stays on the salt
     for i, (P, o) in enumerate(R['death']):
         P['drop'] = [0, 0.4, 1, 1][i]
+        P['slide'] = [0, 0.0, -0.02, -0.02][i]
+        P['limp'] *= 0.5
     return R
 
 
