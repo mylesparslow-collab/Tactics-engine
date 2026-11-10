@@ -11,7 +11,7 @@ BARE = Bare(h=0.50, yaw=0.65, leg_len=1.12, z0=-0.38, x0=0.20, big=1.4, small=0.
 
 
 def neutral_pose():
-    return hermit_pose(raise_=1.05, rear=0.32, open=0.25)
+    return hermit_pose(raise_=1.15, rear=0.45, open=0.25)
 
 
 def build(P):

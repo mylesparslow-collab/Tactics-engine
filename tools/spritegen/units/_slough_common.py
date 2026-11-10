@@ -31,6 +31,7 @@ Pose (a dict; numbers / numpy arrays only, so tween.py can in-between it)
           slide(P, d)                 move upper body + waist (the S stretches)
           move_hands(P, d, sides)     shift grips; hold_pole(P, 'r', 'l', grip, direction, spacing)
           aim(P, side, direction)     set item_<side>
+          scr(x, y, d) / sdir(x, y, d)  points / directions authored in screen terms (x right, y up, d to camera)
 
 Build (inside build(P))
   parts, add = new_parts()
@@ -41,7 +42,8 @@ Build (inside build(P))
          blade(add, P, 'r', kind, length)               one-handed along item_r: glaive | sabre | knife | trident
          buckler(add, P, 'l'), scale_shield(add, c, normal, up, w, h), gourd(add, c, r), lacquer_coat(add, P, B, N)
   return naga_finish(P, N, parts, mats={...extra unit materials...}, lights=[])
-         (merges the faction materials, applies the death husk + flatten, emits venom drips via kit.fx)
+         (merges the faction materials, adds hit flakes, applies the death husk colour + flatten to a skin;
+          pass world=fn(add) for extras such as spit_stream(add, P, B['mouth'], dir) or venom_drip(add, P, at))
 
 Rows
   ROWS, frames = naga_rows(neutral_pose, attack='thrust'|'swing'|'bite'|'spit'|'bash'|'quad', cast='raise'|'spit'|'throw',
@@ -51,21 +53,28 @@ Rows
   hitFrame 2), hit 2, death 4 (slump, hood folds, bands dull, flat empty skin), cast 3.  Tween-friendly.
   token_rows(neutral_pose) for husks and tail segments (idle 2, hit 2, death 3).
 
+Gotchas
+  * Keep everything inside the 96x112 frame in EVERY row (styles.py cel outline wraps across frame edges, so a
+    weapon touching the right edge leaves a stray pixel on the left). Check attack strike + death frames.
+  * The figure's left (+x) projects up-right on screen; author wide arm poses with scr()/sdir().
+  * Structures (husks, tail segments) are drawn 150/112 larger by the engine: their ppm is the unit ppm / 1.34.
+  * Below ~0.9 m the coil fills the background, so the rising S shows mainly through its gold front.
+
 ------------------------------------------------------------------------------------------- example
     from _slough_common import *
     UNIT_ID = 'slough_banded_lancer'
-    N = Naga(height=2.1, tube=0.16, loops=2.0, accent=('waist',))
+    N = Naga(height=2.1, tube=0.155, loops=1.85, accent=())
     CAMERA = naga_camera(N)
 
     def neutral_pose():
         P = naga_pose(N)
-        hold_pole(P, 'r', 'l', grip=v3(-0.20, 1.10, 0.20), direction=v3(0.75, -0.25, 0.45), spacing=0.45)
+        hold_pole(P, 'r', 'l', grip=v3(-0.22, 1.18, 0.10), direction=v3(0.62, -0.30, 0.55), spacing=0.42)
         return P
 
     def build(P):
         parts, add = new_parts()
         B = naga_body(P, add, N)
-        pole(add, P, 'r', 'l', 'lance', below=0.7, above=1.0)
+        pole(add, P, 'r', 'l', 'lance', below=0.45, above=0.60)
         return naga_finish(P, N, parts)
 
     ROWS, frames = naga_rows(neutral_pose, attack='thrust')
@@ -106,12 +115,24 @@ MOUTH = _hex('#6e2632')
 SILT = _hex('#6f6a58')
 
 LOOK = dataclasses.replace(
-    Look(), sky=(0.62, 0.68, 0.58), sky_int=0.34, bounce=(0.80, 0.76, 0.56), bounce_int=0.22,
-    rim_color=(0.80, 0.92, 0.58), rim_int=0.6, shadow_tint=(0.70, 0.82, 0.86))
+    Look(), sky=(0.63, 0.66, 0.62), sky_int=0.34, bounce=(0.80, 0.76, 0.58), bounce_int=0.22,
+    rim_color=(0.80, 0.90, 0.66), rim_int=0.6, shadow_tint=(0.70, 0.82, 0.86))
 
 E1 = v3(0.788, 0.0, 0.616)     # screen-right along the ground
 E2 = v3(-0.616, 0.0, 0.788)    # toward the camera along the ground (down on screen)
 GRID = norm(v3(0.12, 0.0, 0.99))  # a board grid axis (screen slope 1:2 down-right)
+
+
+def scr(x, y, d=0.0):
+    """World point authored in screen terms: x metres to screen-right, y metres high, d metres toward the camera
+    (which moves it down the screen by d/2). The figure's left (+x) runs screen-right AND up, so author wide
+    poses with this instead of raw world x/z."""
+    return E1 * x + E2 * d + v3(0, y, 0)
+
+
+def sdir(x, y, d=0.0):
+    """Unit direction in screen terms (see scr)."""
+    return norm(E1 * x + E2 * d + v3(0, y, 0))
 
 
 def _arr(c, n):
@@ -268,12 +289,12 @@ def naga_pose(N, **kw):
         s=s,
         coil_c=v3(0, 0, 0) - E2 * N.coil_back * max(1.0, N.coil_r / 0.5),
         coil_sq=1.0, coil_w=1.0, band_rot=v3(1.0, 0.0, 0.0), tail_sw=0.0,
-        mid=v3(-0.02, 0.58 * max(s, 0.95) * 0.9 + 0.05, 0.16),
-        waist=v3(0.0, h(0.98), 0.04),
+        mid=v3(-0.10, 0.62 * max(s, 0.95), 0.36),
+        waist=v3(0.0, h(1.02), 0.08),
         chest=v3(0.0, h(1.38), 0.03),
         neck=v3(0.0, h(1.68), 0.05),
         head=v3(0.0, h(1.93), 0.12),
-        head_yaw=np.radians(-14), head_pitch=np.radians(6), head_roll=0.0,
+        head_yaw=np.radians(22), head_pitch=np.radians(4), head_roll=0.0,
         hood=1.0, jaw=0.0, tongue=0.0, venom=0.0,
         sh_r=v3(-0.20 * g * s, h(1.54), 0.0), sh_l=v3(0.20 * g * s, h(1.54), 0.0),
         hd_r=v3(-0.28 * s, h(1.08), 0.20), hd_l=v3(0.28 * s, h(1.08), 0.20),
@@ -398,7 +419,7 @@ def body_path(P, N):
         pts.append(q)
         rad.append(rr[i])
         t = i / (len(up) - 1)
-        fw = v3(0, 0, 1) * smooth(0.0, 0.35, t) + v3(0, -1, 0) * (1 - smooth(0.0, 0.35, t))
+        fw = norm(v3(-0.15, 0, 1)) * smooth(0.0, 0.35, t) + v3(0, -1, 0) * (1 - smooth(0.0, 0.35, t))
         bel.append(norm(fw))
     return np.array(pts), np.array(rad), np.array(bel), nc
 
@@ -447,10 +468,14 @@ def band_albedo(N, path, svals, bel, P, accents, husk=False):
         off = p - cl
         off = off / (np.linalg.norm(off, axis=1, keepdims=True) + 1e-9)
         bm = (off * b).sum(1)
-        bw = smooth(0.62, 0.78, bm)[:, None]
+        th = bth[seg]
+        bw = smooth(th, th + 0.12, bm)[:, None]
         col = col * (1 - bw) + belly[None, :] * bw
         return col
     accent_band = np.array(N.accent_col)
+    # narrow gold underside on the coil, a broad gold front on the rising S so it reads as the torso's stem
+    nb = len(bel)
+    bth = np.where(np.abs(bel[:, 1]) > 0.5, 0.80, 0.30)
     return fn
 
 
@@ -477,8 +502,8 @@ def hood_sdf(P, N, F):
     s = P['s']
     fl = P['hood']
     shape = N.hood
-    W = 0.20 * s * N.hood_w * (0.42 + 0.58 * fl)
-    H = 0.25 * s * N.hood_h
+    W = 0.27 * s * N.hood_w * (0.35 + 0.65 * fl)
+    H = 0.22 * s * N.hood_h
     yc = 0.0
     if shape == 'broad':
         W *= 1.15
@@ -555,9 +580,9 @@ def naga_body(P, add, N, arms=True, head=True):
     sw = P['tail_sw']
     tg = norm(rot_y(sw * 0.6) @ tg)
     side = norm(np.cross(tg, v3(0, 1, 0)))
-    pc = t0 + tg * 0.11 * N.paddle * s + v3(0, 0.07 * N.paddle * s, 0)
+    pc = t0 + tg * 0.13 * N.paddle * s + v3(0, 0.10 * N.paddle * s, 0)
     Rp = np.stack([side, v3(0, 1, 0), tg], axis=1)
-    add(Ellipsoid(pc, (0.022 * s, 0.11 * N.paddle * s, 0.17 * N.paddle * s), Rp), 'paddle', 0.03)
+    add(Ellipsoid(pc, (0.024 * s, 0.15 * N.paddle * s, 0.21 * N.paddle * s), Rp), 'paddle', 0.03)
     B['tail'] = pc
     # --- torso
     W, C, Nk = P['waist'], P['chest'], P['neck']
@@ -567,7 +592,7 @@ def naga_body(P, add, N, arms=True, head=True):
     B['chest_R'] = Rt
     ab = (W + C) * 0.5
     add(Ellipsoid(ab, (0.15 * g * s, 0.24 * s, 0.12 * g * s), R_from(norm(C - W), fwd)), 'torso', 0.07)
-    add(Ellipsoid(C, (0.19 * g * s, 0.20 * s, 0.13 * g * s), Rt), 'torso', 0.06)
+    add(Ellipsoid(C, (0.205 * g * s, 0.20 * s, 0.135 * g * s), Rt), 'torso', 0.06)
     # shoulder mantle (band black, continues into the hood)
     add(Ellipsoid(C + up * 0.13 * s - fwd * 0.03 * s, (0.215 * g * s, 0.10 * s, 0.135 * g * s), Rt), 'mantle', 0.05)
     # neck
@@ -585,7 +610,7 @@ def naga_body(P, add, N, arms=True, head=True):
             sh = P['sh_' + sd]
             add(Sphere(sh, 0.085 * g * s * (0.85 if lower else 1.0)), 'mantle' if not lower else 'torso', 0.05)
             pole_v = v3(sx * 1.0, -0.6, -0.7) if not lower else v3(sx * 1.0, -0.2, -0.4)
-            ru = 0.062 * g * s * (0.9 if lower else 1.0)
+            ru = 0.068 * g * s * (0.9 if lower else 1.0)
             _arm(add, sh, P['hd_' + sd], l1, l2, pole_v, ru, ru * 0.82, 'limb', 'hand', 0.05 * s * g ** 0.5)
             B['hand'][sd] = P['hd_' + sd]
     # --- head
@@ -596,9 +621,9 @@ def naga_body(P, add, N, arms=True, head=True):
         B['mouth'] = F.p((0, -0.035, 0.17))
         B['fang_tips'] = [F.p((sx * 0.032, -0.10 * N.fang - 0.02 * P['jaw'], 0.14)) for sx in (-1, 1)]
         # hood: centred behind the head, facing forward (follows the head yaw half way)
-        yaw = N.hood_yaw + P['head_yaw'] * 0.5      # turned toward the camera so the fan reads open
+        yaw = N.hood_yaw + P['head_yaw'] * 0.3      # turned toward the camera so the fan reads open
         Rh = R_from(up, rot_y(yaw) @ fwd)
-        hc = P['head'] - Rh[:, 2] * 0.09 * s - up * 0.05 * s
+        hc = P['head'] - Rh[:, 2] * 0.10 * s - up * 0.07 * s
         HF = Frame(hc, Rh, 1.0)
         B['hood_c'] = hc
         B['hood_F'] = HF
@@ -610,11 +635,11 @@ def naga_body(P, add, N, arms=True, head=True):
 def _snake_head(P, add, N, F):
     """Wedge-shaped krait head: flat skull, blunt snout, hinged lower jaw, two big fangs, gold eyes."""
     j = P['jaw']
-    F.ell(add, (0, 0.012, -0.01), (0.088, 0.062, 0.12), 'head', 0.0)
-    F.ell(add, (0, 0.0, 0.085), (0.068, 0.046, 0.10), 'head', 0.035)
+    F.ell(add, (0, 0.010, -0.01), (0.076, 0.056, 0.115), 'head', 0.0)
+    F.ell(add, (0, -0.002, 0.10), (0.052, 0.040, 0.115), 'head', 0.035)
     # brow scales (give the head a hard, mean read)
     for sx in (-1, 1):
-        F.ell(add, (sx * 0.055, 0.045, 0.045), (0.035, 0.018, 0.05), 'head', 0.02)
+        F.ell(add, (sx * 0.048, 0.043, 0.045), (0.032, 0.017, 0.05), 'head', 0.02)
     # lower jaw hinged at the back of the head
     J = F.child((0, -0.03, -0.06), rot_x(0.55 * j))
     J.ell(add, (0, -0.012, 0.115), (0.066, 0.026, 0.115), 'jaw', 0.02)
@@ -624,8 +649,8 @@ def _snake_head(P, add, N, F):
         M.ell(add, (0, 0.0, 0.11), (0.055, 0.02 + 0.02 * j, 0.10), 'mouth', 0.0)
     # eyes
     for sx in (-1, 1):
-        F.sph(add, (sx * 0.068, 0.025, 0.065), 0.024, 'eye')
-        F.sph(add, (sx * 0.078, 0.025, 0.075), 0.011, 'pupil')
+        F.sph(add, (sx * 0.058, 0.022, 0.060), 0.024, 'eye')
+        F.sph(add, (sx * 0.068, 0.022, 0.070), 0.011, 'pupil')
     # two big fangs at the front of the upper jaw, slightly uneven, curving back
     fl = 0.090 * N.fang
     for sx, k in ((-1, 1.0), (1, 0.86)):
@@ -683,8 +708,10 @@ def _drop(P, butt, tip):
     hd = tip - butt
     hd[1] = 0
     hd = norm(hd) if np.linalg.norm(hd) > 1e-3 else v3(1, 0, 0)
-    gm = v3(mid[0] * 1.1, 0.03, mid[2] * 1.1 + 0.05)
-    b2, t2 = gm - hd * L / 2, gm + hd * L / 2
+    gm = v3(mid[0] * 0.6, 0.03, mid[2] * 0.6 + 0.05)
+    Lg = min(L, 1.5)
+    hd = norm(hd * 0.3 + E1)
+    b2, t2 = gm - hd * Lg / 2, gm + hd * Lg / 2
     return lerp(butt, b2, k), lerp(tip, t2, k)
 
 
@@ -704,24 +731,24 @@ def _shaft(add, butt, tip, kind, d, P, shaft, head, glaze):
     bn = norm(np.cross(d, norm(bn)))       # in-screen perpendicular to the shaft
     s = P['s']
     if kind in ('lance', 'glaive', 'staff', 'gaff', 'trident'):
-        hl = dict(lance=0.30, glaive=0.40, staff=0.0, gaff=0.0, trident=0.14)[kind] * s
-        add(Capsule(butt, tip - d * hl * 0.85, 0.019 * s), shaft, 0.0)
+        hl = dict(lance=0.40, glaive=0.34, staff=0.0, gaff=0.0, trident=0.14)[kind] * s
+        add(Capsule(butt, tip - d * hl * 0.85, 0.023 * s), shaft, 0.0)
     if kind in ('lance', 'glaive'):
-        base = tip - d * dict(lance=0.30, glaive=0.40)[kind] * s
+        base = tip - d * dict(lance=0.40, glaive=0.34)[kind] * s
         # reed lashing (chartreuse cord)
         add(Capsule(base - d * 0.06 * s, base + d * 0.03 * s, 0.028 * s), glaze if kind == 'lance' else 'lash', 0.0)
         # one great curved fang: a tapered crescent
         n = 6
-        w0 = 0.042 if kind == 'glaive' else 0.034
+        w0 = 0.050 if kind == 'glaive' else 0.046
         bow = 0.10 if kind == 'glaive' else 0.06
         prev = None
         for i in range(n + 1):
             t = i / n
-            q = base + d * (tip - base) @ d * t + bn * bow * s * np.sin(np.pi * t * 0.9) * (1 if kind == 'glaive' else 0.7)
+            q = base + d * (((tip - base) @ d) * t) + bn * bow * s * np.sin(np.pi * t * 0.9) * (1 if kind == 'glaive' else 0.7)
             if prev is not None:
                 ra = w0 * s * (1 - (i - 1) / n) ** 0.8 + 0.004
                 rb = w0 * s * (1 - i / n) ** 0.8 + 0.003
-                add(Capsule(prev, q, ra, rb), head if t < 0.7 else glaze, 0.012)
+                add(Capsule(prev, q, ra, rb), head if t < (0.7 if kind == 'lance' else 0.45) else glaze, 0.012)
             prev = q
     elif kind == 'gaff':
         add(Capsule(tip - d * 0.03 * s, tip + d * 0.05 * s, 0.026 * s), 'lash', 0.0)
@@ -814,45 +841,47 @@ def gourd(add, c, r=0.11, mat='gourd', seal='glaze', neck=v3(0, 1, 0)):
     return c + nk * r * 1.85
 
 
-def lacquer_coat(add, P, B, N, rows=4, coil=True, mat='lacquer'):
-    """Shingled armour of lacquered shed skins: overlapping amber bands down the torso (and on the coil top).
-    Each row is a short flared shell; the lower edge of every row overlaps the next (roof tiles)."""
+def lacquer_coat(add, P, B, N, rows=4, per_row=7, coil=True, mat='lacquer', edge='lacquer_lt'):
+    """Shingled armour of lacquered shed skins: rows of overlapping amber plates (roof tiles) over the torso
+    front and sides, each plate showing a lighter edge below it; with coil=True a run of plates on the top loop."""
     s = P['s']
     g = N.girth
     W, C = P['waist'], P['chest']
     Rt = B['chest_R']
-    up = Rt[:, 1]
-    top = C + up * 0.16 * s
-    bot = W - up * 0.08 * s
+    up, fw = Rt[:, 1], Rt[:, 2]
+    rt = Rt[:, 0]
+    top = C + up * 0.17 * s
+    bot = W - up * 0.02 * s
     for i in range(rows):
         t = i / max(rows - 1, 1)
         c = lerp(top, bot, t)
-        rx = (0.20 + 0.03 * np.sin(t * 3)) * g * s * (1.08 - 0.12 * t)
-        rz = 0.145 * g * s * (1.06 - 0.10 * t)
-        hgt = 0.11 * s
-        add(_shingle_shell(c, Rt, rx, rz, hgt, seed=i), mat, 0.0)
+        rx = 0.215 * g * s * (1.0 - 0.18 * t)
+        rz = 0.142 * g * s * (1.0 - 0.10 * t)
+        off = 0.5 * (i % 2)
+        for j in range(per_row):
+            a = np.radians(-112 + 224 * (j + off) / per_row)
+            if abs(a) > np.radians(118):
+                continue
+            nrm = norm(rt * np.sin(a) / rx + fw * np.cos(a) / rz)
+            q = c + rt * np.sin(a) * rx + fw * np.cos(a) * rz
+            # plate tilted out at the bottom: local y runs down-and-out along the surface
+            dn = norm(-up + nrm * 0.35)
+            R = R_from(dn, nrm)
+            pc = q + nrm * 0.012 * s + dn * 0.04 * s
+            add(Ellipsoid(pc + dn * 0.020 * s - nrm * 0.006 * s, (0.095 * s * g, 0.088 * s, 0.014 * s), R), edge, 0.0)
+            add(Ellipsoid(pc, (0.090 * s * g, 0.080 * s, 0.017 * s), R), mat, 0.0)
     if coil:
         pts, rad, nc = B['path'], B['rad'], B['nc']
-        for i in range(int(nc * 0.55), nc - 2, 3):
-            a, b = pts[i], pts[i + 2]
-            mid = (a + b) / 2 + v3(0, rad[i] * 0.55, 0)
+        for i in range(int(nc * 0.50), nc - 1, 2):
+            a, b = pts[i], pts[min(i + 2, len(pts) - 1)]
             tg = norm(b - a)
-            Rs = np.stack([np.cross(v3(0, 1, 0), tg), v3(0, 1, 0), tg], axis=1)
-            add(Ellipsoid(mid, (rad[i] * 1.05, rad[i] * 0.45, np.linalg.norm(b - a) * 0.75), Rs), mat, 0.0)
-
-
-def _shingle_shell(c, R, rx, rz, hgt, seed=0):
-    def f(p):
-        q = (p - c) @ R
-        x, y, z = q[:, 0], q[:, 1], q[:, 2]
-        t = np.clip(-y / hgt, 0, 1)           # 0 at the top of the row, 1 at its lower edge (flares out)
-        ang = np.arctan2(x, z)
-        edge = 1 + 0.05 * np.sin(ang * 7 + seed * 1.7)
-        rad = np.sqrt((x / (rx * (1 + 0.12 * t))) ** 2 + (z / (rz * (1 + 0.14 * t))) ** 2)
-        d = (rad - edge) * min(rx, rz) * 0.8
-        d = np.maximum(d, np.maximum(y - 0.0, -hgt * (1 + 0.08 * np.sin(ang * 5 + seed)) - y))
-        return np.abs(d + 0.006) - 0.010
-    return Func(f, c - R[:, 1] * hgt * 0.5, max(rx, rz) * 1.25 + hgt)
+            for side in (-1, 1):
+                sd = norm(np.cross(tg, v3(0, 1, 0))) * side
+                nrm = norm(v3(0, 1, 0) + sd * 0.8)
+                q = a + nrm * rad[i] * 0.95
+                R = R_from(norm(-tg * 0.3 + sd - v3(0, 0.6, 0)), nrm)
+                add(Ellipsoid(q + nrm * 0.004, (rad[i] * 0.55, rad[i] * 0.55, 0.016 * s), R), edge, 0.0)
+                add(Ellipsoid(q + nrm * 0.012 - R[:, 1] * 0.02, (rad[i] * 0.5, rad[i] * 0.48, 0.016 * s), R), mat, 0.0)
 
 
 # ------------------------------------------------------------------ materials
@@ -906,7 +935,7 @@ def naga_mats(P, N, B):
         mats['head'] = Material(head_alb, spec=0.45 * gl, gloss=44, brush=0.03)
         mats['jaw'] = Material(tuple(lip), spec=0.3, gloss=30, brush=0.02)
         HF = B['hood_F']
-        hface = np.array(N.hood_face if N.hood_face is not None else mantle)
+        hface = np.array(N.hood_face if N.hood_face is not None else mantle * 0.45 + belly * 0.35 + np.array(N.light) * 0.2)
         rimc = np.array(N.hood_rim)
 
         def hood_alb(p, n):
@@ -916,7 +945,7 @@ def naga_mats(P, N, B):
             col[front] = hface
             # pale rim round the front edge, and the gold throat stripe up the middle
             r2 = np.sqrt((q[:, 0] / 0.2) ** 2 + ((q[:, 1] - 0.03) / 0.25) ** 2)
-            rim_m = front & (r2 > 0.80 - 0.15 * (1 - P['hood']))
+            rim_m = front & (r2 > 0.86 - 0.12 * (1 - P['hood']))
             col[rim_m] = rimc
             mid = front & (np.abs(q[:, 0]) < 0.035) & (q[:, 1] < 0.02)
             col[mid] = belly
@@ -930,7 +959,7 @@ def naga_mats(P, N, B):
     mats['eye'] = Material(N.eye, spec=0.9, gloss=80, emissive=tuple(np.array(N.eye) * 0.25))
     mats['pupil'] = Material(INK, spec=0.9, gloss=90, rim=0.0)
     # props
-    mats['haft'] = Material(_hex('#2c2a26'), spec=0.2, gloss=20, brush=0.05)
+    mats['haft'] = Material(_hex('#6b5638'), spec=0.2, gloss=20, brush=0.05)
     mats['fang_w'] = Material(FANG, spec=0.5, gloss=50)
     mats['bone'] = Material(_hex('#e9e1c9'), spec=0.4, gloss=40, brush=0.03)
     mats['glaze'] = Material(CHART, spec=0.8, gloss=60, emissive=tuple(np.array(CHART) * (0.18 + 0.5 * v)))
@@ -944,7 +973,7 @@ def naga_mats(P, N, B):
                              spec=0.5, gloss=40, brush=0.04)
     mats['lacquer'] = Material(lambda p, n: _arr(LACQUER, len(p)) * (0.85 + 0.3 * fbm(p, 9.0, 2)[:, None]),
                                spec=0.7, gloss=50, sss=0.3, brush=0.03)
-    mats['lacquer_lt'] = Material(LACQUER_LT, spec=0.7, gloss=50, sss=0.3)
+    mats['lacquer_lt'] = Material(_hex('#e8c27a'), spec=0.7, gloss=50, sss=0.3)
     mats['gourd'] = Material(lambda p, n: _arr(GOURD, len(p)) * (0.85 + 0.25 * fbm(p, 10.0, 2)[:, None]),
                              spec=0.25, gloss=24, brush=0.05)
     mats['venom'] = Material(VENOM, spec=0.8, gloss=70, emissive=tuple(np.array(VENOM) * 0.85), rim=0.3)
@@ -1005,7 +1034,7 @@ def naga_finish(P, N, parts, mats=None, lights=(), B=None, world=None):
     e = P['end']
     fl = P['flat']
     if fl > 0:
-        parts[:] = [Part(Squash(pt.prim, 1 - 0.75 * fl, 1 + 0.08 * fl, (0, 0, 0)), pt.mat, pt.k) for pt in parts]
+        parts[:] = [Part(Squash(pt.prim, 1 - 0.75 * fl, 1.0, tuple(-E2 * 0.35)), pt.mat, pt.k) for pt in parts]
     m = husked(m, e)
     lights = [Light(L.pos, L.color, L.intensity * (1 - e), L.radius) for L in lights]
     return Scene(parts=parts, materials=m, lights=lights, ground_clip=True)
@@ -1126,7 +1155,7 @@ def _attack_pose(base, i, style):
     sides = [k[3:] for k in P if k.startswith('hd_')]
     if style == 'thrust':      # two-handed pole: pull back along the shaft, then drive it forward
         d = _pole_dir(P)
-        k = {'wind': -0.22, 'rise': -0.05, 'strike': 0.30, 'recover': 0.10}[ph] * s
+        k = {'wind': -0.22, 'rise': -0.05, 'strike': 0.16, 'recover': 0.06}[ph] * s
         move_hands(P, d * k + v3(0, 0.0, 0), sides)
     elif style == 'swing':     # one-handed weapon in the right hand: raise high back, cut down across
         R = {'wind': rot_x(-1.9) @ rot_z(-0.2), 'rise': rot_x(-1.3), 'strike': rot_x(0.35) @ rot_z(0.15),
@@ -1146,8 +1175,10 @@ def _attack_pose(base, i, style):
             P['hd_' + sd] = sh + Ru @ (P['hd_' + sd] - sh)
             if P.get('item_' + sd) is not None:
                 P['item_' + sd] = Ru @ P['item_' + sd]
-        k = {'wind': -0.15, 'rise': 0.0, 'strike': 0.25, 'recover': 0.08}[ph] * s
-        move_hands(P, v3(0, 0, 1) * k, ('r2', 'l2'))
+        k = {'wind': -0.12, 'rise': 0.0, 'strike': 0.10, 'recover': 0.04}[ph] * s
+        move_hands(P, v3(-0.3, 0, 1) * k, ('r2', 'l2'))
+        if ph == 'strike':
+            slide(P, v3(-0.10, 0, -0.12) * s, mid=0.5)   # giants lunge less: keep the blades in frame
     elif style in ('bite', 'spit'):   # head-first: neck and head reach further than the body
         k = {'wind': -0.06, 'rise': 0.0, 'strike': 0.16, 'recover': 0.04}[ph] * s
         P['head'] = P['head'] + v3(0, -0.4 * k, 1) * k
@@ -1197,15 +1228,15 @@ def death_pose(base, i):
         return P, dict(exposure=1.15, flash=0.12)
     f = [0, 0.55, 1.0, 1.0][i]
     # sink the waist toward the top of the coil and fall toward the figure's left (screen right)
-    slide(P, v3(0.08, -0.48 * f, 0.02) * s, mid=0.75)
-    bend(P, side=np.radians(78) * f, fwd=np.radians(10) * f)
+    slide(P, v3(-0.02, -0.50 * f, -0.06) * s, mid=0.75)
+    bend(P, side=np.radians(28) * f, fwd=np.radians(-72) * f)
     P['mid'] = P['mid'] + v3(0.05, -0.18, -0.02) * f * s
     P['head_pitch'] = P['head_pitch'] + np.radians(30) * f
     P['head_roll'] = np.radians(-40) * f
     P['hood'] = [0.35, 0.3, 0.15, 0.1][i]
     P['jaw'] = [0.6, 0.4, 0.1, 0.0][i]
     P['coil_sq'] = [0.92, 0.9, 0.85, 0.85][i]
-    P['coil_w'] = [1.0, 1.04, 1.08, 1.1][i]
+    P['coil_w'] = [1.0, 1.02, 1.03, 1.03][i]
     P['drop'] = [0, 0.3, 1.0, 1.0][i]
     P['end'] = [0, 0.3, 0.65, 1.0][i]
     P['flat'] = [0, 0, 0.25, 1.0][i]

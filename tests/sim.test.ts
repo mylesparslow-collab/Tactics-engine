@@ -7,6 +7,7 @@
 //   SIM_OUT    path to append JSONL results (default: print to stdout)
 //   SIM_CARDS  1 to add per-card tallies (deploys/casts, damage dealt and taken, kills, deaths)
 //   SIM_FACTIONS / SIM_MAPS / SIM_MISSIONS  comma lists to restrict the run
+//   SIM_FOCUS  a faction id: only skirmish pairings that include it (one faction vs the field)
 import { it } from 'vitest';
 // @ts-expect-error node builtin; the project has no @types/node
 import { appendFileSync, readFileSync } from 'node:fs';
@@ -81,8 +82,9 @@ it.skipIf(!env.SIM)('simulate', () => {
   if ((env.SIM_MODE ?? 'skirmish') === 'skirmish') {
     const fs = list(env.SIM_FACTIONS) ?? playableFactions(c);
     const maps = list(env.SIM_MAPS) ?? Object.keys(c.maps);
+    const focus = env.SIM_FOCUS;
     for (const a of fs) for (const b of fs) {
-      if (a === b) continue;
+      if (a === b || (focus && a !== focus && b !== focus)) continue;
       for (const map of maps) for (let s = 0; s < seeds; s++) {
         if (!mine()) continue;
         const m = buildSkirmish(c, map, [a, b], ['ai', 'ai']);

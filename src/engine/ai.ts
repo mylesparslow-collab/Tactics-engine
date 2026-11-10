@@ -260,10 +260,23 @@ function summonValue(g: Game, team: number, unitId: string, at: Pos | undefined,
     const od = g.def(o);
     if (od.structure || od.shell || o.summonedThisTurn || g.hasFlag(o, 'preventsAction')) continue;
     const rh = g.abilitiesOf(o).find(id => g.ability(id)?.effects.some(e => e.type === 'rehouse'));
-    if (!rh || (o.cooldowns[rh] ?? 0) > 0 || manhattan(o, at) > o.ap - g.ability(rh).apCost + 1) continue;
+    if (!rh || (o.cooldowns[rh] ?? 0) > 0) continue;
+    const walk = o.ap - g.ability(rh).apCost;
+    if (manhattan(o, at) > walk + 1) continue;
+    // Already has a shell in reach (a dropped one or shell-source ground): a new one adds nothing.
+    if (hasShellNear(g, o, walk + 1)) continue;
     best = Math.max(best, rehouseValue(g, o, d.emptyShell.becomes, d.stats.hp));
   }
   return best > 0 ? best * 0.8 : 0.5;
+}
+
+/** True if a friendly empty shell or a free shell-source tile lies within `r` steps of `u`. */
+function hasShellNear(g: Game, u: Unit, r: number): boolean {
+  for (let y = u.y - r; y <= u.y + r; y++) for (let x = u.x - r; x <= u.x + r; x++) {
+    if (!g.inBounds(x, y) || Math.abs(x - u.x) + Math.abs(y - u.y) > r || (x === u.x && y === u.y)) continue;
+    if (g.rehouseOk(u, x, y)) return true;
+  }
+  return false;
 }
 
 function scoreEffects(g: Game, team: number, effects: Effect[], hit: Unit[],

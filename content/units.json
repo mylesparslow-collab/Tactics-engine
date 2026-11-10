@@ -4315,7 +4315,7 @@
   "faction": "hermitage",
   "cost": 30,
   "stats": {
-   "hp": 9,
+   "hp": 11,
    "ap": 5,
    "attack": 6,
    "defense": 1,
@@ -4324,7 +4324,13 @@
   "shell": {
    "hp": 9,
    "evicted": "hermitage_bare_small",
-   "leaves": "hermitage_empty_barrel"
+   "leaves": "hermitage_empty_barrel",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "abilities": [
    "hm_barrel_bash",
@@ -4343,7 +4349,7 @@
   "faction": "hermitage",
   "cost": 35,
   "stats": {
-   "hp": 9,
+   "hp": 11,
    "ap": 5,
    "attack": 6,
    "defense": 0,
@@ -4351,7 +4357,13 @@
   },
   "shell": {
    "hp": 8,
-   "evicted": "hermitage_bare_small"
+   "evicted": "hermitage_bare_small",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "abilities": [
    "hm_jug_lob",
@@ -4367,9 +4379,9 @@
   "name": "Lobster-Pot Lurker",
   "role": "Controller",
   "faction": "hermitage",
-  "cost": 35,
+  "cost": 30,
   "stats": {
-   "hp": 9,
+   "hp": 11,
    "ap": 5,
    "attack": 6,
    "defense": 1,
@@ -4377,7 +4389,13 @@
   },
   "shell": {
    "hp": 9,
-   "evicted": "hermitage_bare_small"
+   "evicted": "hermitage_bare_small",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "abilities": [
    "hm_pot_pinch",
@@ -4393,10 +4411,10 @@
   "name": "Diving-Bell Hermit",
   "role": "Tank",
   "faction": "hermitage",
-  "cost": 40,
+  "cost": 35,
   "stats": {
-   "hp": 12,
-   "ap": 4,
+   "hp": 15,
+   "ap": 5,
    "attack": 6,
    "defense": 3,
    "jump": 1
@@ -4404,7 +4422,13 @@
   "shell": {
    "hp": 14,
    "evicted": "hermitage_bare_medium",
-   "leaves": "hermitage_empty_diving_bell"
+   "leaves": "hermitage_empty_diving_bell",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "resist": {
    "salt": -1
@@ -4424,10 +4448,10 @@
   "name": "Bell Tenant",
   "role": "Controller",
   "faction": "hermitage",
-  "cost": 45,
+  "cost": 40,
   "stats": {
-   "hp": 11,
-   "ap": 4,
+   "hp": 14,
+   "ap": 5,
    "attack": 7,
    "defense": 2,
    "jump": 1
@@ -4435,7 +4459,13 @@
   "shell": {
    "hp": 12,
    "evicted": "hermitage_bare_medium",
-   "leaves": "hermitage_empty_bell"
+   "leaves": "hermitage_empty_bell",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "abilities": [
    "hm_bell_swing",
@@ -4455,8 +4485,8 @@
   "faction": "hermitage",
   "cost": 45,
   "stats": {
-   "hp": 11,
-   "ap": 4,
+   "hp": 14,
+   "ap": 5,
    "attack": 7,
    "defense": 2,
    "jump": 1
@@ -4464,7 +4494,13 @@
   "shell": {
    "hp": 12,
    "evicted": "hermitage_bare_medium",
-   "leaves": "hermitage_empty_boiler"
+   "leaves": "hermitage_empty_boiler",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "resist": {
    "fire": 2,
@@ -4485,9 +4521,9 @@
   "name": "Tool-Chest Tinker",
   "role": "Support / Healer",
   "faction": "hermitage",
-  "cost": 40,
+  "cost": 35,
   "stats": {
-   "hp": 9,
+   "hp": 11,
    "ap": 5,
    "attack": 5,
    "defense": 1,
@@ -4495,7 +4531,13 @@
   },
   "shell": {
    "hp": 10,
-   "evicted": "hermitage_bare_small"
+   "evicted": "hermitage_bare_small",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "abilities": [
    "hm_tinker_tap",
@@ -4512,9 +4554,9 @@
   "name": "Lifeboat Skimmer",
   "role": "Mobile",
   "faction": "hermitage",
-  "cost": 45,
+  "cost": 40,
   "stats": {
-   "hp": 11,
+   "hp": 14,
    "ap": 6,
    "attack": 7,
    "defense": 1,
@@ -4522,7 +4564,13 @@
   },
   "shell": {
    "hp": 10,
-   "evicted": "hermitage_bare_medium"
+   "evicted": "hermitage_bare_medium",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "ignoresEngagement": true,
   "abilities": [
@@ -4540,9 +4588,9 @@
   "name": "Strongbox Bailiff",
   "role": "Disruptor",
   "faction": "hermitage",
-  "cost": 45,
+  "cost": 40,
   "stats": {
-   "hp": 11,
+   "hp": 14,
    "ap": 5,
    "attack": 7,
    "defense": 2,
@@ -4550,7 +4598,13 @@
   },
   "shell": {
    "hp": 11,
-   "evicted": "hermitage_bare_medium"
+   "evicted": "hermitage_bare_medium",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "resist": {
    "salt": -1
@@ -4572,8 +4626,8 @@
   "faction": "hermitage",
   "cost": 60,
   "stats": {
-   "hp": 14,
-   "ap": 4,
+   "hp": 18,
+   "ap": 5,
    "attack": 8,
    "defense": 2,
    "jump": 1
@@ -4581,7 +4635,13 @@
   "shell": {
    "hp": 16,
    "evicted": "hermitage_bare_large",
-   "leaves": "hermitage_empty_cannon"
+   "leaves": "hermitage_empty_cannon",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "resist": {
    "salt": -1
@@ -4601,9 +4661,9 @@
   "name": "Prow Ram",
   "role": "Bruiser",
   "faction": "hermitage",
-  "cost": 55,
+  "cost": 50,
   "stats": {
-   "hp": 14,
+   "hp": 18,
    "ap": 5,
    "attack": 9,
    "defense": 2,
@@ -4611,7 +4671,13 @@
   },
   "shell": {
    "hp": 15,
-   "evicted": "hermitage_bare_large"
+   "evicted": "hermitage_bare_large",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "abilities": [
    "hm_prow_gore",
@@ -4628,9 +4694,9 @@
   "name": "Wheelhouse Warden",
   "role": "Commander",
   "faction": "hermitage",
-  "cost": 55,
+  "cost": 50,
   "stats": {
-   "hp": 13,
+   "hp": 17,
    "ap": 5,
    "attack": 7,
    "defense": 2,
@@ -4638,7 +4704,13 @@
   },
   "shell": {
    "hp": 14,
-   "evicted": "hermitage_bare_large"
+   "evicted": "hermitage_bare_large",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "abilities": [
    "hm_warden_cuff",
@@ -4682,15 +4754,21 @@
   "faction": "hermitage",
   "cost": 70,
   "stats": {
-   "hp": 16,
-   "ap": 4,
+   "hp": 22,
+   "ap": 5,
    "attack": 8,
    "defense": 2,
    "jump": 1
   },
   "shell": {
    "hp": 22,
-   "evicted": "hermitage_bare_great"
+   "evicted": "hermitage_bare_great",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "resist": {
    "light": 1
@@ -4714,15 +4792,21 @@
   "title": "the Stern Tenant",
   "hero": true,
   "stats": {
-   "hp": 20,
-   "ap": 4,
+   "hp": 24,
+   "ap": 5,
    "attack": 9,
    "defense": 3,
    "jump": 1
   },
   "shell": {
    "hp": 20,
-   "evicted": "hermitage_duchess_bare"
+   "evicted": "hermitage_duchess_bare",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "abilities": [
    "hm_duchess_rudder",
@@ -4770,7 +4854,7 @@
   "title": "the Queue-Jumper",
   "hero": true,
   "stats": {
-   "hp": 14,
+   "hp": 16,
    "ap": 6,
    "attack": 9,
    "defense": 1,
@@ -4779,7 +4863,13 @@
   "shell": {
    "hp": 10,
    "evicted": "hermitage_sixpence_bare",
-   "leaves": "hermitage_empty_barrel"
+   "leaves": "hermitage_empty_barrel",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "ignoresEngagement": true,
   "abilities": [
@@ -4802,15 +4892,21 @@
   "title": "the Grudge-Bell",
   "hero": true,
   "stats": {
-   "hp": 18,
-   "ap": 4,
+   "hp": 21,
+   "ap": 5,
    "attack": 8,
    "defense": 3,
    "jump": 1
   },
   "shell": {
    "hp": 18,
-   "evicted": "hermitage_knell_bare"
+   "evicted": "hermitage_knell_bare",
+   "onBreak": [
+    {
+     "type": "essence",
+     "amount": 2
+    }
+   ]
   },
   "resist": {
    "pressure": 1

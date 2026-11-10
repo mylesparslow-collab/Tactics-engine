@@ -1633,7 +1633,7 @@
  },
  "hm_spell_long_memory": {
   "name": "Long Memory",
-  "description": "Deal 3 physical damage to an enemy within 4 of a friendly unit and give it 2 stacks of Grudge (-1 defense per stack) for 3 turns.",
+  "description": "Deal 4 physical damage to an enemy within 4 of a friendly unit and give it 2 stacks of Grudge (-1 defense per stack) for 3 turns.",
   "faction": "hermitage",
   "rarity": "common",
   "cost": 20,
@@ -1642,7 +1642,7 @@
   "effects": [
    {
     "type": "damage",
-    "amount": 3,
+    "amount": 4,
     "damageType": "physical",
     "ignoreAttack": true
    },

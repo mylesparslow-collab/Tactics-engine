@@ -876,7 +876,7 @@ def chapel_bell_shell(h=0.95, r_bot=0.50, r_top=0.26, crack=True, clapper_tied=T
     return build
 
 
-def boiler_shell(length=1.3, r=0.42, door=0.0, glow=1.0, funnel=True, bosses=4):
+def boiler_shell(length=1.3, r=0.42, door=0.0, glow=1.0, funnel=True, bosses=4, funnel_h=0.20):
     """Rust-brown riveted ship's boiler (horizontal capsule along z), round firebox door on the front
     (+z end). door 0 shut .. 1 hanging open; glow = firebox amber (cooling embers when low)."""
     hl = length / 2 - r * 0.5
@@ -884,7 +884,7 @@ def boiler_shell(length=1.3, r=0.42, door=0.0, glow=1.0, funnel=True, bosses=4):
     def build(add, P, F):
         fz = hl + r * 0.55
         F.put(add, Subtract(Capsule(v3(0, 0, -hl), v3(0, 0, fz + r), r),
-                            Cylinder(v3(0, 0, fz), v3(0, 0, fz + 2 * r), r * 1.5)), 'boil')     # flat front plate
+                            Cylinder(v3(0, 0, fz), v3(0, 0, fz + 3 * r), r * 1.5)), 'boil')     # flat front plate
         F.put(add, Torus(v3(0, 0, fz - 0.03), v3(0, 0, 1), r - 0.01, 0.03), 'boilband')
         for z in (-hl * 0.55, hl * 0.35):
             F.put(add, Torus(v3(0, 0, z), v3(0, 0, 1), r + 0.004, 0.02), 'boilband')
@@ -900,10 +900,11 @@ def boiler_shell(length=1.3, r=0.42, door=0.0, glow=1.0, funnel=True, bosses=4):
         Rd = rot_y(-ang)
         dc = hinge + Rd @ v3(0.22, 0, 0.0)
         F.put(add, Cylinder(dc - Rd @ v3(0, 0, 0.02), dc + Rd @ v3(0, 0, 0.02), 0.20, 0.01), 'door')
-        F.put(add, Sphere(dc + Rd @ v3(0.12, 0, 0.03), 0.03), 'boilband')
+        F.put(add, Sphere(dc + Rd @ v3(0.0, 0.10, 0.03), 0.03), 'boilband')
         if funnel:
-            F.cyl(add, (0, r - 0.05, -hl * 0.5), (0, r + 0.20, -hl * 0.5), 0.10, 'boil', 0.03, 0.02)
-            F.put(add, Torus(v3(0, r + 0.20, -hl * 0.5), v3(0, 1, 0), 0.10, 0.025), 'boilband')
+            F.cyl(add, (0, r - 0.05, -hl * 0.5), (0, r + funnel_h, -hl * 0.5), 0.11, 'boil', 0.03, 0.02)
+            F.put(add, Torus(v3(0, r + funnel_h, -hl * 0.5), v3(0, 1, 0), 0.11, 0.03), 'boilband')
+            F.cyl(add, (0, r + funnel_h - 0.02, -hl * 0.5), (0, r + funnel_h + 0.01, -hl * 0.5), 0.085, 'dark')
         g = max(glow, 0.0)
 
         def alb(q, n):
