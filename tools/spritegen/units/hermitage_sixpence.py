@@ -31,7 +31,7 @@ def keg(add, P, F):
 
 
 SHELL = Shell(
-    build=keg, ride=0.84, tilt=0.30, crab_at=(0, -0.03, 0.20), crab_pitch=-0.30, z0=-0.30, x0=0.06, yaw=0.30,
+    build=keg, ride=0.84, tilt=0.30, crab_at=(0, -0.03, 0.20), crab_pitch=-0.30, z0=-0.57, x0=0.27, yaw=0.30,
     feet=((-0.40, 0.40), (0.44, 0.36), (-0.46, -0.20), (0.50, -0.22)),
     leg_roots=((-0.14, -0.16, 0.24), (0.14, -0.16, 0.24), (-0.22, -0.20, -0.04), (0.22, -0.20, -0.04)),
     eyes=(((-0.09, 0.10, 0.30), (-0.30, 1.0, 0.20), 0.46),
@@ -79,7 +79,7 @@ def _rows(R):
         P['raise_'] = 1.1
     for row in ('attack', 'death', 'cast', 'hit'):
         for P, o in R[row]:
-            P['snap'] *= 0.7
+            P['snap'] *= 0.35
     return R
 
 
