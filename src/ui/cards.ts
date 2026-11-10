@@ -8,7 +8,7 @@ import { hashStr, mix, rgba, shade } from '../render/iso';
 import { crestSvg, kit } from './art';
 import { h } from './dom';
 import { label } from '../engine/content';
-import { effectText, traitLine } from './text';
+import { effectText, traitLine, traitRules } from './text';
 
 const FRAMES = import.meta.glob('./kit/card/*.webp', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
 const frameUrl = (fid: string | undefined, hero: boolean) =>
@@ -59,11 +59,11 @@ export function emblemSvg(id: string, kind: string, color: string, accent: strin
 }
 
 /** Ability text block for full cards and panels. */
-export function abilityLines(c: Content, ids: string[]): HTMLElement[] {
+export function abilityLines(c: Content, ids: string[], reactionIds: string[] = []): HTMLElement[] {
   const out: HTMLElement[] = [];
-  for (const id of ids) {
+  for (const id of [...ids, ...reactionIds]) {
     const a = c.abilities[id]; if (!a) continue;
-    const range = a.passive ? 'Passive' : `${a.apCost} AP · range ${a.range.min === a.range.max ? a.range.max : a.range.min + '-' + a.range.max}${a.area ? ` · area ${a.area.size}` : ''}${a.cooldown ? ` · cd ${a.cooldown}` : ''}`;
+    const range = reactionIds.includes(id) ? 'Reaction' : a.passive ? 'Passive' : `${a.apCost} AP · range ${a.range.min === a.range.max ? a.range.max : a.range.min + '-' + a.range.max}${a.area ? ` · area ${a.area.size}` : ''}${a.cooldown ? ` · cd ${a.cooldown}` : ''}`;
     out.push(h('div', { class: 'abl' + (a.passive ? ' passive' : '') }, h('b', null, a.name), h('span', { class: 'meta' }, range),
       h('div', { class: 'adesc' }, a.description ?? a.effects.map(e => effectText(c, e)).join('. '))));
   }
@@ -150,14 +150,19 @@ function rulesFor(c: Content, id: string, full: boolean): HTMLElement[] {
   if (ud) {
     if (full) {
       ud.abilities.forEach(abl);
+      if (ud.coiled) {
+        const a = c.abilities[ud.coiled.ability];
+        if (a) rule(a.name, a.description ?? a.effects.map(e => effectText(c, e)).join('. '), 'Reaction');
+      }
       if (ud.resist && Object.keys(ud.resist).length) rule(null, 'Resist ' + Object.entries(ud.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', '));
       if (ud.revive) rule(null, `Rises once on death (${Math.round(ud.revive.hpFraction * 100)}% HP).`);
       if (ud.flying) rule('Flying', 'Every tile costs 1 AP; ignores height and crosses impassable ground. Holds no Wells.');
       if (ud.skyfall) rule('Skyfall', `May drop onto any open tile beyond 2 of the enemy ${label(c, 'keystone')}; lands next turn for ${ud.skyfall.impact} damage to adjacent enemies.`);
       if (ud.dries) rule('Dries', `Loses ${ud.dries} HP each turn unless on wet ground or Wet.`);
+      traitRules(c, ud).forEach(t => rule(t.name, t.text));
       if (ud.description) out.push(h('p', { class: 'r fl' }, ud.description));
     } else {
-      const names = ud.abilities.map(a => c.abilities[a]?.name).filter(Boolean);
+      const names = [...ud.abilities.map(a => c.abilities[a]?.name), ud.coiled ? c.abilities[ud.coiled.ability]?.name : undefined].filter(Boolean);
       out.push(h('p', { class: 'r' }, h('b', null, names.join(' · '))));
       if (traitLine(ud)) out.push(h('p', { class: 'r' }, traitLine(ud)));
     }

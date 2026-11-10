@@ -67,6 +67,7 @@ const CREST: Record<string, CrestStyle> = {
   overcurrent: { field: ['#8cc7e8', '#14243a'], ink: '#f4f0ff', hi: '#9ff3ff', glow: '#9ff3ff' },
   gyre: { field: ['#6f7a86', '#1f252c'], ink: '#efe9df', hi: '#e8892f' },
   hermitage: { field: ['#7b4f8f', '#241530'], ink: '#d9822b', hi: '#f3c58a' },
+  slough: { field: ['#b5c934', '#16181a'], ink: '#16181a', hi: '#e6dfc8' },
 };
 
 function charge(fid: string, s: CrestStyle, g: string): string {
@@ -122,6 +123,14 @@ function charge(fid: string, s: CrestStyle, g: string): string {
         <path d="M52 62 C62 56 78 62 78 76 C78 86 68 92 60 88 C54 84 56 76 62 76 C66 76 66 70 60 70" fill="none" stroke="#241530" stroke-width="2"/>
         <path d="M44 100 C34 90 30 78 34 66 L24 52 L38 54 L40 42 L44 56 C50 62 50 90 44 100 Z" fill="${s.hi}" stroke="#241530" stroke-width="1.6"/>
         <path d="M38 36 V28 M46 38 V30" stroke="${s.hi}" stroke-width="2.4"/><circle cx="38" cy="26" r="2.6" fill="${s.hi}"/><circle cx="46" cy="28" r="2.6" fill="${s.hi}"/>`;
+    }
+    case 'slough': {
+      // a hooded cobra-style snake head, front on: flared hood banded in bone, two slit eyes, a pair of fangs
+      return `<path d="M60 30 C38 30 22 52 26 82 C30 104 46 118 60 124 C74 118 90 104 94 82 C98 52 82 30 60 30 Z" fill="${ink}" stroke="${s.hi}" stroke-width="2"/>
+        <path d="M32 70 Q60 82 88 70 M30 88 Q60 100 90 88 M38 106 Q60 114 82 106" fill="none" stroke="${s.hi}" stroke-width="3" opacity=".75"/>
+        <path d="M60 36 C48 36 42 48 44 60 C46 72 54 78 60 80 C66 78 74 72 76 60 C78 48 72 36 60 36 Z" fill="${s.field[0]}" stroke="${s.hi}" stroke-width="1.6"/>
+        <path d="M49 54 L58 58 L50 60 Z M71 54 L62 58 L70 60 Z" fill="${ink}"/>
+        <path d="M54 72 L55 84 L57 72 M66 72 L65 84 L63 72" fill="none" stroke="${s.hi}" stroke-width="2.2" stroke-linecap="round"/>`;
     }
     case 'lanternkeepers': {
       const lenses = Array.from({ length: 7 }, (_, i) => { const a = i / 7 * Math.PI * 2 - Math.PI / 2, x = 60 + Math.cos(a) * 36, y = 70 + Math.sin(a) * 36;

@@ -1,5 +1,5 @@
 """Procedural interim card art for a faction that has no model renders or hand-drawn motifs yet.
-Draws a simple figure (units: a crab-in-a-shell silhouette; spells: a radiant burst; equipment: a plate) with PIL,
+Draws a simple figure (units: a crab-in-a-shell silhouette, or a rearing armed serpent for the Slough; spells: a radiant burst; equipment: a plate) with PIL,
 then sets it into the faction's painted scene exactly like interim_art.py / motif_art.py do, writing
 content/cards/<id>.webp (2:3, 512x768). Real art (ChatGPT paintings, or interim_art.py once sprites exist) overwrites
 the same path later. Tokens and structures get no card.
@@ -12,6 +12,9 @@ import interim_art, motif_art
 from interim_art import ROOT, OUT, PAL
 
 S = 512  # figure canvas, supersampled 2x while drawing
+
+COLS = {'hermitage': ((217, 130, 43), (123, 79, 143)), 'slough': ((181, 201, 52), (92, 106, 49))}  # (accent, secondary) per faction
+p_fid = 'hermitage'
 
 def _h(s):  # stable small int per id
     return int(hashlib.md5(s.encode()).hexdigest()[:8], 16)
@@ -53,9 +56,55 @@ def crab(cid, d, p):
     if d.get('hero'): dr.ellipse([*P(60, 240), *P(100, 212)], fill=rust)  # a small crown-light so heroes read
     return im.resize((S, S), Image.LANCZOS)
 
+def serpent(cid, d, p):
+    """A rearing, armed sea-krait: banded coils, a scaled torso with arms and a weapon, a flared hood and head. Size from cost."""
+    k = 2
+    im = Image.new('RGBA', (S * k, S * k), (0, 0, 0, 0)); dr = ImageDraw.Draw(im)
+    r = _h(cid); name = (d.get('name', '') + cid).lower()
+    black, bone, gold, olive, venom = (30, 32, 34), (230, 223, 200), (217, 169, 58), (92, 106, 49), (181, 201, 52)
+    sc = 0.62 + min(d.get('cost', 40), 90) / 90 * 0.38
+    cx, base = S * k // 2, int(S * k * 0.95)
+    def P(x, y): return (cx + x * sc * k, base - y * sc * k)
+    # coils: stacked banded rings that read as a krait
+    for i, (w, h_, dx) in enumerate([(150, 46, -14), (125, 44, 18), (100, 42, -8)]):
+        y0 = i * 40
+        dr.ellipse([*P(dx - w, y0 + h_), *P(dx + w, y0)], fill=black)
+        dr.ellipse([*P(dx - w + 14, y0 + h_ - 6), *P(dx + w - 14, y0 + 12)], fill=_mix(black, olive, 0.25))
+        for b in range(-3, 4):
+            x = dx + b * w / 3.6
+            dr.line([P(x, y0 + 4), P(x * 0.97, y0 + h_ - 4)], fill=bone, width=int(6 * sc * k))
+    # the tail paddle curling out to one side
+    dr.polygon([P(130, 14), P(205, 44), P(230, 22), P(190, 6)], fill=black)
+    # torso rising from the top coil: tapered, gold belly stripe
+    top = 120
+    dr.polygon([P(-46, top), P(46, top), P(34, top + 120), P(-34, top + 120)], fill=_mix(olive, black, 0.35))
+    dr.polygon([P(-10, top), P(10, top), P(8, top + 118), P(-8, top + 118)], fill=gold)
+    for yy_ in range(top + 14, top + 112, 18): dr.line([P(-38, yy_), P(38, yy_)], fill=_mix(olive, black, 0.6), width=int(3 * sc * k))
+    # arms and weapon: a long fang-glaive on the right, a shield of scale on the left (heroes and big units get a second pair)
+    wy = top + 78
+    dr.line([P(60, 10), P(60, top + 215)], fill=(120, 92, 60), width=int(8 * sc * k))
+    if r % 2: dr.polygon([P(60, top + 215), P(44, top + 180), P(76, top + 180)], fill=bone)
+    else: dr.polygon([P(60, top + 250), P(46, top + 205), P(60, top + 220), P(74, top + 205)], fill=bone)
+    dr.line([P(30, wy), P(52, wy + 6)], fill=_mix(olive, black, 0.2), width=int(14 * sc * k))
+    dr.ellipse([*P(-100, wy + 44), *P(-34, wy - 40)], fill=_mix(olive, bone, 0.15), outline=black, width=int(4 * sc * k))
+    dr.line([P(-34, wy), P(-60, wy + 2)], fill=_mix(olive, black, 0.2), width=int(14 * sc * k))
+    if d.get('hero') or d.get('cost', 0) >= 60:
+        dr.line([P(34, wy - 28), P(58, wy - 40)], fill=_mix(olive, black, 0.2), width=int(13 * sc * k))
+        dr.line([P(-34, wy - 28), P(-58, wy - 38)], fill=_mix(olive, black, 0.2), width=int(13 * sc * k))
+    # head: flared hood and a narrow face
+    hy = top + 150
+    dr.ellipse([*P(-70, hy + 66), *P(70, hy - 34)], fill=black)
+    dr.ellipse([*P(-54, hy + 56), *P(54, hy - 26)], fill=_mix(olive, black, 0.3))
+    dr.ellipse([*P(-30, hy + 54), *P(30, hy - 10)], fill=_mix(olive, bone, 0.1))
+    for ex in (-13, 13):
+        dr.ellipse([*P(ex - 6, hy + 28), *P(ex + 6, hy + 18)], fill=venom)
+    dr.line([P(-6, hy - 4), P(-7, hy - 18)], fill=bone, width=int(3 * sc * k)); dr.line([P(6, hy - 4), P(7, hy - 18)], fill=bone, width=int(3 * sc * k))
+    if d.get('hero'): dr.arc([*P(-60, hy + 90), *P(60, hy + 30)], 200, 340, fill=venom, width=int(6 * sc * k))  # a crest-light so heroes read
+    return im.resize((S, S), Image.LANCZOS)
+
 def burst(cid, d, p):
     k = 2; im = Image.new('RGBA', (S * k, S * k), (0, 0, 0, 0)); dr = ImageDraw.Draw(im); c = S * k // 2
-    r = _h(cid); n = 8 + r % 5; col = (217, 130, 43); vio = (123, 79, 143)
+    r = _h(cid); n = 8 + r % 5; col, vio = COLS.get(p_fid, COLS['hermitage'])
     for i in range(n):
         a = i / n * math.tau + (r % 7) * 0.2; L = (0.42 + 0.06 * ((i + r) % 3)) * S * k
         dr.polygon([(c + math.cos(a - .09) * 0.14 * S * k, c + math.sin(a - .09) * 0.14 * S * k), (c + math.cos(a) * L, c + math.sin(a) * L),
@@ -66,19 +115,20 @@ def burst(cid, d, p):
 
 def plate(cid, d, p):
     k = 2; im = Image.new('RGBA', (S * k, S * k), (0, 0, 0, 0)); dr = ImageDraw.Draw(im); c = S * k // 2
-    r = _h(cid); metal = _mix((150, 140, 130), (217, 130, 43), (r % 4) / 6)
+    r = _h(cid); metal = _mix((150, 140, 130), COLS.get(p_fid, COLS['hermitage'])[0], (r % 4) / 6)
     w = 0.34 * S * k
     dr.polygon([(c - w, c - w * .9), (c + w, c - w * .9), (c + w, c + w * .2), (c, c + w * 1.1), (c - w, c + w * .2)], fill=metal, outline=(60, 40, 30))
     dr.polygon([(c - w * .75, c - w * .7), (c + w * .75, c - w * .7), (c + w * .75, c + w * .12), (c, c + w * .85), (c - w * .75, c + w * .12)], fill=_mix(metal, (255, 255, 255), .15))
     for dx, dy in ((-.55, -.5), (.55, -.5), (-.55, .02), (.55, .02)):
         dr.ellipse([c + dx * w - 10, c + dy * w - 10, c + dx * w + 10, c + dy * w + 10], fill=(70, 50, 40))
-    dr.line([(c - w * .4, c - w * .1), (c + w * .4, c - w * .1)], fill=(123, 79, 143), width=int(0.03 * S * k))
+    dr.line([(c - w * .4, c - w * .1), (c + w * .4, c - w * .1)], fill=COLS.get(p_fid, COLS['hermitage'])[1], width=int(0.03 * S * k))
     return im.resize((S, S), Image.LANCZOS)
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]; force = '--force' in sys.argv
     if not args: raise SystemExit(__doc__)
-    fid, only = args[0], set(args[1:])
+    global p_fid
+    fid, only = args[0], set(args[1:]); p_fid = fid
     load = lambda f: json.load(open(os.path.join(ROOT, 'content', f + '.json')))
     units, spells, equip = load('units'), load('spells'), load('equipment')
     nonCard = lambda u: u.get('structure') or u.get('token')
@@ -90,7 +140,7 @@ def main():
         if only and cid not in only: continue
         if not force and os.path.exists(os.path.join(OUT, cid + '.webp')): continue
         seed = _h(cid) % 1000
-        if kind == 'unit': interim_art.compose(cid, fid, crab(cid, d, PAL[fid]), idx * 7 + 3, d.get('hero'))
+        if kind == 'unit': interim_art.compose(cid, fid, (serpent if fid == 'slough' else crab)(cid, d, PAL[fid]), idx * 7 + 3, d.get('hero'))
         else: motif_art.compose(cid, fid, burst(cid, d, PAL[fid]) if kind == 'spell' else plate(cid, d, PAL[fid]), seed, kind)
         n += 1
     print(f'wrote {n} card images for {fid}')

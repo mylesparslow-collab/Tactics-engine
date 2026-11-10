@@ -10,7 +10,7 @@ import { mix, shade } from '../render/iso';
 import { abilityLines, buildCard, cardColors, figureImg } from './cards';
 import { crestSvg, glyph } from './art';
 import { clear, h } from './dom';
-import { effectText, traitLine } from './text';
+import { effectText, traitLine, traitRules } from './text';
 import { ProvingGround } from './proving';
 
 interface TemperRank { xpRequired: number; statMods?: Record<string, number>; addAbility?: string; label: string }
@@ -197,8 +197,9 @@ function detailBody(c: Content, id: string, r: RelicDef | undefined): HTMLElemen
     if (ud.resist && Object.keys(ud.resist).length) extra.push('Resist ' + Object.entries(ud.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', '));
     if (ud.revive) extra.push(`Rises once on death at ${Math.round(ud.revive.hpFraction * 100)}% health`);
     if (traitLine(ud)) extra.push(traitLine(ud));
+    traitRules(c, ud).forEach(t => extra.push(`${t.name}: ${t.text}`));
     if (extra.length) out.push(h('p', { class: 'cl-tags' }, extra.join(' · ')));
-    out.push(h('div', { class: 'cl-sec' }, h('h3', null, 'Abilities'), h('div', { class: 'cl-abl' }, ...abilityLines(c, ud.abilities))));
+    out.push(h('div', { class: 'cl-sec' }, h('h3', null, 'Abilities'), h('div', { class: 'cl-abl' }, ...abilityLines(c, ud.abilities, ud.coiled ? [ud.coiled.ability] : []))));
     if (ud.description) out.push(h('p', { class: 'cl-flavor' }, ud.description));
   } else if (sd) {
     const range = sd.castRange === undefined ? 'Anywhere' : typeof sd.castRange === 'number' ? `Within ${sd.castRange} of an ally` : `Within ${sd.castRange.nearKeystone} of your ${label(c, 'keystone')}`;

@@ -4,10 +4,10 @@ funnel. ~1.6 m long."""
 from _hermitage_common import *
 
 UNIT_ID = 'hermitage_empty_boiler'
-CAMERA = Camera(ppm=50)
+CAMERA = Camera(ppm=46)
 R = 0.42
-SHELL = Shell(build=boiler_shell(length=1.45, r=R, door=0.85, glow=0.08), ride=R, crab_at=(0, 0, 0))
-PLACE = (v3(-0.05, R, -0.40), rot_y(0.45) @ rot_z(0.35))
+SHELL = Shell(build=boiler_shell(length=1.35, r=R, door=0.85, glow=0.16), ride=R, crab_at=(0, 0, 0))
+PLACE = (v3(0.36, R, -0.42), rot_y(0.45) @ rot_z(0.35))
 
 
 def neutral_pose():

@@ -18,4 +18,13 @@ def build(P):
     return bare(P, SIZE, BARE)
 
 
-ROWS, frames = hermit_rows(neutral_pose, 'bare')
+def _fit(R):
+    for row in R.values():
+        for P, o in row:
+            P['snap'] *= 0.7       # keep the lunge inside the 96 px frame
+    for P, o in R['death']:
+        P['raise_'] = max(P['raise_'], 0.0) * 0.5
+    return R
+
+
+ROWS, frames = hermit_rows(neutral_pose, 'bare', extra=_fit)

@@ -4,9 +4,9 @@ eyestalks swivelled round at the viewer. Something this big should never be this
 from _hermitage_common import *
 
 UNIT_ID = 'hermitage_bare_great'
-SIZE = 1.40   # 'great' class, trimmed so the coil and claw fit at ppm 44
+SIZE = 1.30   # 'great' class, trimmed so the coil and claw fit at ppm 44
 CAMERA = size_camera('great')
-BARE = Bare(h=0.50, yaw=0.35, leg_len=1.1, z0=-0.32, x0=0.18, big=1.3, small=0.6, eye_len=0.36,
+BARE = Bare(h=0.50, yaw=0.35, leg_len=1.1, z0=-0.30, x0=0.20, big=1.3, small=0.6, eye_len=0.36,
             feet=((-0.42, 0.32), (0.52, 0.30), (-0.46, -0.24), (0.54, -0.22)),
             tail=dict(size=1.32, center=(0, 0.30, -0.30), r0=0.25, r1=0.06, thick=(0.165, 0.04), turns=1.1))
 
@@ -31,6 +31,8 @@ def _eyes(R):
         for P, o in row:
             P['eye_l'] -= 0.6
             P['eye_r'] -= 0.8
+            P['snap'] *= 0.4          # keep the lunge inside the frame at this size
+            P['drum'] *= 0.7
     return R
 
 

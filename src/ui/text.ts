@@ -7,6 +7,18 @@ export function traitLine(d: UnitDef): string {
     d.shell ? `Shell ${d.shell.hp}` : '', d.shed ? 'Shed' : '', d.coiled ? 'Coiled' : '', d.tail ? `Long body (${d.tail.length})` : ''].filter(Boolean).join(' \u00B7 ');
 }
 
+/** One-line explanations for the Shed / Long body / Shell keywords (Flying, Skyfall and Dries are explained in cards.ts). */
+export function traitRules(c: Content, d: UnitDef): { name: string; text: string }[] {
+  const out: { name: string; text: string }[] = [];
+  if (d.shell) {
+    const ev = c.units[d.shell.evicted]?.name;
+    out.push({ name: `Shell ${d.shell.hp}`, text: `Soaks damage before health${ev ? `; when it breaks the unit becomes ${ev}` : ''}.` });
+  }
+  if (d.shed) out.push({ name: 'Shed', text: 'Once per battle, below half HP it sheds, cleanses and slips away, leaving a husk.' });
+  if (d.tail) out.push({ name: 'Long', text: `Trails ${d.tail.length} tail segment${d.tail.length === 1 ? '' : 's'}.` });
+  return out;
+}
+
 export function effectText(c: Content, e: Effect): string {
   switch (e.type) {
     case 'damage': return (e.ignoreAttack ? `${e.amount} ${e.damageType ?? ''} damage (ignores attack)`.replace('  ', ' ')

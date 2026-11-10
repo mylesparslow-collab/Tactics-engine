@@ -23,12 +23,12 @@ def _eyes():
 
 SHELL = Shell(
     build=diving_bell_shell(h=H, r_bot=RB, r_top=RT, ports=PORTS, port_y=PORT_Y, eyes_in=(0, 1)),
-    ride=0.80, tilt=-0.16, crab_at=(0, -0.42, 0.14), crab_pitch=0.16, z0=-0.30, x0=0.08,
+    ride=0.80, tilt=-0.16, crab_at=(0, -0.42, 0.14), crab_pitch=0.16, z0=-0.50, x0=0.02,
     feet=((-0.50, 0.40), (0.56, 0.36), (-0.60, -0.22), (0.62, -0.26)),
     leg_roots=((-0.20, -0.46, 0.18), (0.20, -0.46, 0.18), (-0.30, -0.47, -0.10), (0.30, -0.47, -0.10)),
     eyes=_eyes(), eye_bead=0.05, antennae=True,
     guard=((0.12, -0.02, 0.44), (-0.6, 0.30, 0.75)),
-    big=1.3, small=0.55, side_r=0.42, tip_angle=1.25, leg_len=1.1)
+    big=1.3, small=0.55, side_r=0.50, tip_angle=1.25, tip_dir=-1.0, leg_len=1.1)
 
 
 def neutral_pose():

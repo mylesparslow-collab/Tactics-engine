@@ -14,7 +14,7 @@ import { isMuted, playCard, playCardPlay, playCue, playEnd, playTurnBell, playTu
 import { onSettingsChange } from '../audio/engine';
 import { playError } from '../audio/ui';
 import { openSoundPanel } from './soundpanel';
-import { effectText, traitLine } from './text';
+import { effectText, traitLine, traitRules } from './text';
 
 export interface SessionOpts {
   content: Content;
@@ -662,6 +662,7 @@ export class GameSession {
           return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
         })) : null,
         traitLine(d) ? h('div', { class: 'line' }, traitLine(d)) : null,
+        ...(full ? traitRules(this.content, d).map(t => h('div', { class: 'line' }, `${t.name}: ${t.text}`)) : []),
         g.equipmentOf(u) ? h('div', { class: 'line equip', title: g.equipmentOf(u)!.description ?? '' }, h('b', null, g.equipmentOf(u)!.name)) : null));
     return box;
   }
@@ -675,7 +676,8 @@ export class GameSession {
       const card = h('div', { class: 'ucard' });
       card.append(h('button', { class: 'iconbtn close', title: 'Close (Esc)', onclick: () => this.cancel() }, glyph('close')), this.unitPanel(u, true));
       const abs = g.abilitiesOf(u);
-      if (abs.length) {
+      const coil = g.def(u).coiled ? g.ability(g.def(u).coiled!.ability) : undefined;
+      if (abs.length || coil) {
         const list = h('div', { class: 'abar' });
         let n = 0;
         abs.forEach(id => {
@@ -699,6 +701,11 @@ export class GameSession {
             h('span', { class: 'ab-txt' }, h('span', { class: 'ab-name' }, a.name), h('span', { class: 'ab-meta' }, cd > 0 ? `Ready in ${cd}` : meta)),
             h('span', { class: 'ab-ap hc-num', title: `${a.apCost} AP` }, String(a.apCost), h('small', null, 'AP')), tipEl));
         });
+        if (coil) {
+          const tipEl = h('div', { class: 'abtip' }, h('b', null, coil.name), h('span', { class: 'abmeta' }, 'Reaction'),
+            h('p', null, coil.description ?? coil.effects.map(e => effectText(this.content, e)).join('. ')));
+          list.append(h('div', { class: 'abtn passive', tabindex: '0' }, h('span', { class: 'ab-ic' }, glyph(abilityGlyph(coil))), h('span', { class: 'ab-txt' }, h('span', { class: 'ab-name' }, coil.name), h('span', { class: 'ab-meta' }, 'Reaction')), tipEl));
+        }
         card.append(list);
       }
       this.right.append(card);
