@@ -16,6 +16,18 @@ Spec (static, per unit)
       height = top of the reared head (m). 1.9 thin young, 2.1 standard, 2.3-2.4 big, 2.7-2.8 giant (CAMERA ppm 44).
       hood: 'cobra' | 'broad' | 'flat' (wide + short) | 'narrow' (tall) | 'ragged' (torn edge) | 'spade'
       accent: where the chartreuse band(s) go: 'neck' | 'waist' | 'tail' | a float 0..1 along the coil.
+  v2 parameters (all defaulted, so old unit files still run):
+      palette = 'krait' | 'yellow' | 'olive' | 'slate' | 'rust' | 'teal' | 'violet' | 'ash'   (SKINS presets; fills
+                every colour field the unit did not set itself. Give every unit its OWN colourway.)
+      trim    = LACQUER_RED | BRONZE | any rgb: hero / exotic accent on lacquer plates and bracers
+      pattern = 'rings' | 'saddles' (dark on the back only) | 'checker' (half-ring offset) | 'edged'
+      band_len / band_dark: ring period and dark fraction (vary them per unit); band_grow: rings widen with girth
+      hood_mark = 'ocelli' | 'chevron' | 'bars' | 'stripe' | 'plain', hood_mark_col (None = light band colour)
+      head_w (wedge width), shoulders (breadth), bracer (forearm lacquer colour or None), taper, tail_out
+      (tail trailing from the coil to the paddle, clamped inside the frame), scute, snout, claw
+  Head is drawn HEAD_K (1.55) times the old size: dark crown, pale lip / snout / post-ocular stripe, bright
+  chartreuse-yellow slit eyes (emissive) set above the brow line so they read from the 30-degree camera.
+  Keep the hood face a different VALUE from the crown or the head disappears into it.
   naga_camera(N) -> Camera  (52 ppm up to 2.2 m, 48 to 2.45 m, 44 for giants)
 
 Pose (a dict; numbers / numpy arrays only, so tween.py can in-between it)
@@ -41,6 +53,9 @@ Build (inside build(P))
              kinds: lance | glaive | gaff | trident | staff
          blade(add, P, 'r', kind, length)               one-handed along item_r: glaive | sabre | knife | trident
          buckler(add, P, 'l'), scale_shield(add, c, normal, up, w, h), gourd(add, c, r), lacquer_coat(add, P, B, N)
+         pauldron(add, P, B, N, side, plates, size)     layered translucent lacquer shoulder plates
+         fang_blade(add, base, d, bn, L, Wd, bow)       oversized fang blade: dark horn core, bright edge, chartreuse tip
+         (hafts are 0.032*s thick with a butt knob and chartreuse lashing; arms have fists + lacquer bracers)
   return naga_finish(P, N, parts, mats={...extra unit materials...}, lights=[])
          (merges the faction materials, adds hit flakes, applies the death husk colour + flatten to a skin;
           pass world=fn(add) for extras such as spit_stream(add, P, B['mouth'], dir) or venom_drip(add, P, at))
@@ -100,6 +115,8 @@ GOLD = _hex('#d9a93a')        # yellowbelly gold: bellies, throats, coil undersi
 OLIVE = _hex('#5c6a31')
 LACQUER = _hex('#a8743a')     # lacquered shed-skin armour
 LACQUER_LT = _hex('#d6a35e')
+LACQUER_RED = _hex('#86301f')  # hero accent: red-lacquered skins
+BRONZE = _hex('#a8742e')       # hero / exotic accent: bronzed lacquer
 HUSK = _hex('#d8d1ae')
 VENOM = _hex('#e4ff5a')       # the 5% light: fang tips, open mouth, gourd mouths, drips
 SCALE_GREY = _hex('#7d8a72')  # leviathan scale
@@ -265,6 +282,18 @@ class Naga:
     snout: tuple = None          # pale snout band (None = light band colour)
     scute: tuple = None          # belly plates colour (None = belly)
     claw: tuple = None           # hand colour (None = skin, a shade lighter)
+    palette: str = None          # colourway preset from SKINS (krait, yellow, olive, slate, rust, teal, violet, ash);
+                                 # it fills every colour field the unit did not set explicitly
+    trim: tuple = None           # hero / exotic accent for lacquer plates, bracers and lashing (LACQUER_RED, BRONZE)
+
+    def __post_init__(self):
+        if self.palette:
+            base = Naga.__dataclass_fields__
+            for k, v in SKINS[self.palette].items():
+                if getattr(self, k) == base[k].default:
+                    setattr(self, k, v)
+        if self.trim is not None and self.bracer == LACQUER:
+            self.bracer = self.trim
 
 
 def _phase(P):
@@ -304,6 +333,10 @@ SKINS = dict(
                hood_face=_hex('#8a96a0'), hood_rim=_hex('#ece6cc'), lip=_hex('#ece6cc'), skin=_hex('#5d6670')),
     rust=dict(dark=_hex('#7c3820'), light=_hex('#cfb488'), belly=_hex('#e3b452'), mantle=_hex('#4c2a1c'),
               hood_face=_hex('#b89670'), hood_rim=_hex('#ead6a8'), lip=_hex('#ecdcb4'), skin=_hex('#7a5a3e')),
+    teal=dict(dark=_hex('#1f4a4c'), light=_hex('#cfe0d4'), belly=_hex('#d6c27a'), mantle=_hex('#1c3a3c'),
+              hood_face=_hex('#5f8f88'), hood_rim=_hex('#e4efe6'), lip=_hex('#e4efe6'), skin=_hex('#3f6462')),
+    violet=dict(dark=_hex('#3e2f4a'), light=_hex('#d8cfd8'), belly=_hex('#c9a86a'), mantle=_hex('#2f2438'),
+                hood_face=_hex('#7d6a88'), hood_rim=_hex('#efe6ee'), lip=_hex('#e8dfe6'), skin=_hex('#5a4a62')),
     ash=dict(dark=_hex('#45474a'), light=_hex('#d9d4bf'), belly=_hex('#b9a46a'), mantle=_hex('#2e3134'),
              hood_face=_hex('#8a877a'), hood_rim=_hex('#f1ead0'), lip=_hex('#ddd4b0'), skin=_hex('#55564e')),
 )
@@ -1215,9 +1248,11 @@ def naga_mats(P, N, B):
                                spec=0.25, gloss=30, sss=0.5, brush=0.03)
     mats['scale'] = Material(lambda p, n: _arr(SCALE_GREY, len(p)) * (0.88 + 0.2 * fbm(p, 6.0, 2)[:, None]),
                              spec=0.5, gloss=40, brush=0.04)
-    mats['lacquer'] = Material(lambda p, n: _arr(LACQUER, len(p)) * (0.88 + 0.26 * fbm(p, 9.0, 2)[:, None]),
-                               spec=0.85, gloss=60, sss=0.7, brush=0.02, emissive=tuple(np.array(LACQUER) * 0.12))
-    mats['lacquer_lt'] = Material(_hex('#f0cf86'), spec=0.8, gloss=56, sss=0.6, emissive=tuple(np.array(_hex('#f0cf86')) * 0.18))
+    lq = np.array(N.trim if N.trim is not None else LACQUER)
+    lql = np.clip(lq * 1.45 + 0.10, 0, 1)
+    mats['lacquer'] = Material(lambda p, n: _arr(lq, len(p)) * (0.88 + 0.26 * fbm(p, 9.0, 2)[:, None]),
+                               spec=0.85, gloss=60, sss=0.7, brush=0.02, emissive=tuple(lq * 0.12))
+    mats['lacquer_lt'] = Material(tuple(lql), spec=0.8, gloss=56, sss=0.6, emissive=tuple(lql * 0.18))
     mats['gourd'] = Material(lambda p, n: _arr(GOURD, len(p)) * (0.85 + 0.25 * fbm(p, 10.0, 2)[:, None]),
                              spec=0.25, gloss=24, brush=0.05)
     mats['venom'] = Material(VENOM, spec=0.8, gloss=70, emissive=tuple(np.array(VENOM) * 0.85), rim=0.3)

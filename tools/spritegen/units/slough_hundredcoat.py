@@ -5,8 +5,8 @@ four blades. Bone bands only show on the coil. Defining detail: the shingled amb
 from _slough_common import *
 
 UNIT_ID = 'slough_hundredcoat'
-N = Naga(**SKINS['slate'], height=2.62, arms=4, girth=1.55, tube=0.26, coil_r=0.64, loops=1.75, coil_back=0.27,
-         hood='broad', hood_w=1.12, hood_h=0.95, hood_mark='bars', hood_mark_col=_hex('#e0b04a'), band_len=0.40, band_dark=0.5, accent=(),
+N = Naga(palette='teal', trim=LACQUER_RED, height=2.62, arms=4, girth=1.55, tube=0.26, coil_r=0.64, loops=1.75, coil_back=0.27,
+         hood='broad', hood_w=1.12, hood_h=0.95, hood_mark='bars', hood_mark_col=CHART, band_len=0.46, band_dark=0.34, accent=(),
          body_r=0.21, head_len=1.35, shoulders=1.1, head_w=1.15, paddle=1.3)
 CAMERA = naga_camera(N)
 

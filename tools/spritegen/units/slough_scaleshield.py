@@ -4,7 +4,7 @@ ridges and a lacquer-amber rim, covering most of the torso. Band black dominant.
 from _slough_common import *
 
 UNIT_ID = 'slough_scaleshield'
-N = Naga(**dict(SKINS['krait'], hood_face=_hex('#8f8a78'), skin=_hex('#4a4a44')),
+N = Naga(palette='krait', hood_face=_hex('#8f8a78'), skin=_hex('#4a4a44'),
          height=2.0, girth=1.40, tube=0.215, coil_r=0.52, loops=1.6, coil_depth=0.64, coil_back=0.30,
          hood='broad', hood_w=1.0, hood_h=0.9, hood_mark='chevron', band_dark=0.68, band_len=0.36, pattern='edged',
          accent=('tail',), body_r=0.18, tail_side=-1, shoulders=1.12, head_w=1.15, lean=0.05)

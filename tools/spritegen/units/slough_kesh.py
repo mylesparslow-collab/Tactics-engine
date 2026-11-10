@@ -4,8 +4,8 @@ loose in each. One bright chartreuse champion band high on the neck. Defining de
 from _slough_common import *
 
 UNIT_ID = 'slough_kesh'
-N = Naga(**dict(SKINS['krait'], hood_face=_hex('#8c8676'), hood_mark_col=_hex('#f1ead0'), skin=_hex('#6e6a5e'),
-                dark=_hex('#1c1f21'), light=_hex('#efe8d0'), belly=_hex('#e6b238')),
+N = Naga(palette='krait', trim=LACQUER_RED, hood_face=_hex('#8c8676'), hood_mark_col=_hex('#f1ead0'),
+         skin=_hex('#6e6a5e'), dark=_hex('#1c1f21'), light=_hex('#efe8d0'), belly=_hex('#e6b238'),
          height=2.54, arms=4, girth=1.65, tube=0.27, coil_r=0.66, loops=1.8, coil_back=0.38, coil_depth=0.62,
          hood='cobra', hood_w=1.05, hood_h=1.05, hood_mark='chevron', head_len=1.35, head_w=1.2, band_len=0.42,
          band_dark=0.5, accent=('neck',), body_r=0.22, paddle=1.5, lean=0.10, tail_side=-1, shoulders=1.12)
@@ -30,6 +30,8 @@ def build(P):
     parts, add = new_parts()
     B = naga_body(P, add, N)
     s = P['s']
+    pauldron(add, P, B, N, 'r', plates=3, size=1.1)      # red-lacquered champion's shoulder skins
+    pauldron(add, P, B, N, 'l', plates=3, size=1.1)
     for sd, h, d, L in ARMS:
         blade(add, P, sd, 'glaive', length=L, below=0.30)
         # open fingers (catching)

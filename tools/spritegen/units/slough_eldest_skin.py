@@ -7,9 +7,9 @@ skins, a thin gold ring on the oldest. Left hand raised, fingers spread. Definin
 from _slough_common import *
 
 UNIT_ID = 'slough_eldest_skin'
-N = Naga(**dict(SKINS['ash'], dark=_hex('#2b2e31'), skin=_hex('#4a4b45')), height=2.32, girth=1.12, tube=0.19, coil_r=0.56, loops=1.8, coil_back=0.30, hood='ragged',
-         hood_w=1.35, hood_h=1.25, hood_mark='ocelli', hood_mark_col=_hex('#e8e2c8'), head_len=1.35, band_len=0.30,
-         band_dark=0.5, band_fade=0.0, grey=0.0, accent=(), lean=0.08, tail_side=-1, bracer=None)
+N = Naga(palette='violet', trim=BRONZE, height=2.32, girth=1.12, tube=0.19, coil_r=0.56, loops=1.8, coil_back=0.30, hood='ragged',
+         hood_w=1.35, hood_h=1.25, hood_mark='ocelli', hood_mark_col=_hex('#e8e2c8'), head_len=1.35, band_len=0.24,
+         band_dark=0.32, band_fade=0.0, grey=0.0, accent=(), lean=0.08, tail_side=-1)
 CAMERA = naga_camera(N)
 
 GOLD_HERO = _hex('#e0b84a')

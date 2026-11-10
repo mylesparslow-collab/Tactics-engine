@@ -5,9 +5,9 @@ guard and the long glaive."""
 from _slough_common import *
 
 UNIT_ID = 'slough_glaive_sister'
-N = Naga(**dict(SKINS['krait'], hood_face=_hex('#9a978a')), height=2.2, girth=0.86, tube=0.135, coil_r=0.42, coil_back=0.32, loops=1.7, hood='spade',
+N = Naga(palette='slate', height=2.2, girth=0.86, tube=0.135, coil_r=0.42, coil_back=0.32, loops=1.7, hood='spade',
          hood_w=0.95, hood_h=1.1, hood_mark='chevron', hood_mark_col=CHART, pattern='checker',
-         accent=('neck',), band_len=0.26, band_dark=0.5, head_len=1.25, tail_side=1, lean=-0.03, bracer=_hex('#d6a35e'))
+         accent=('neck',), band_len=0.20, band_dark=0.42, head_len=1.25, tail_side=1, lean=-0.03, bracer=_hex('#d6a35e'))
 CAMERA = naga_camera(N)
 
 
