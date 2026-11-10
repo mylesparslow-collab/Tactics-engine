@@ -17,16 +17,16 @@ def neutral_pose():
     s = P['s']
     reach(P, 'r', scr(-0.36, 1.00 * s, 0.30))
     reach(P, 'l', scr(0.38, 1.12 * s, -0.20))
-    aim(P, 'r', sdir(-0.70, 0.30, -0.55))
-    aim(P, 'l', sdir(-0.70, 0.25, -0.40))
+    aim(P, 'r', sdir(-0.55, 0.30, -0.65))
+    aim(P, 'l', sdir(-0.55, 0.25, -0.50))
     return P
 
 
 def build(P):
     parts, add = new_parts()
     B = naga_body(P, add, N)
-    blade(add, P, 'r', 'sabre', length=0.62, below=0.10)
-    blade(add, P, 'l', 'sabre', length=0.62, below=0.10)
+    blade(add, P, 'r', 'sabre', length=0.52, below=0.10)
+    blade(add, P, 'l', 'sabre', length=0.52, below=0.10)
     return naga_finish(P, N, parts)
 
 

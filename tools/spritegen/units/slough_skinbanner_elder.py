@@ -56,7 +56,8 @@ def build(P):
         dn = norm(v3(0, -1, 0) + sv * (sw + 0.15 * off))
         if drop > 0:
             dn = norm(lerp(dn, E1 * (1 if off >= 0 else -1) + v3(0, 0.05, 0), drop))
-            top = lerp(top, v3(top[0] * 0.5, 0.06, -0.2) + E1 * off * 0.8, drop)
+            top = lerp(top, scr(-0.15 + off * 1.2, 0.05, -0.12), drop)
+            ln = ln * (1 - 0.62 * drop)
         c = top + dn * ln * 0.5 * s
         add(Ellipsoid(c, (0.095 * s, ln * 0.5 * s, 0.014 * s), R_from(dn, E2 + v3(0, 0.2, 0))), 'banner', 0.0)
         add(Capsule(top + dn * 0.02, top + dn * 0.07 * s, 0.015 * s), 'glaze', 0.0)
