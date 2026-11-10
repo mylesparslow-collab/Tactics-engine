@@ -6,8 +6,8 @@ from _slough_common import *
 
 UNIT_ID = 'slough_teshk'
 SLATE_D = _hex('#3a3f43')
-N = Naga(height=2.2, girth=0.92, tube=0.145, coil_r=0.42, loops=1.5, coil_back=0.22, coil_depth=0.78, hood='spade',
-         hood_w=1.2, hood_h=1.2, head_len=1.5, band_len=0.24, band_dark=0.5, accent=(), gloss=1.7, body_r=0.125,
+N = Naga(height=2.12, girth=0.92, tube=0.145, coil_r=0.42, loops=1.5, coil_back=0.22, coil_depth=0.78, hood='spade',
+         hood_w=1.1, hood_h=1.15, head_len=1.5, band_len=0.24, band_dark=0.5, accent=(), gloss=1.7, body_r=0.125,
          dark=_hex('#4a4f52'), light=_hex('#e9e4d0'), belly=_hex('#e0b440'), skin=_hex('#8a8f86'),
          mantle=_hex('#33383b'), hood_face=_hex('#c8cdc2'), hood_rim=_hex('#e8c860'), lip=_hex('#f2e6b0'),
          tail_side=1, lean=0.06)
@@ -17,8 +17,8 @@ CAMERA = naga_camera(N)
 def neutral_pose():
     P = naga_pose(N)
     s = P['s']
-    reach(P, 'r', scr(-0.50, 1.34 * s, 0.30))
-    aim(P, 'r', sdir(-0.15, -0.25, 1.0))
+    reach(P, 'r', scr(-0.40, 1.34 * s, 0.30))
+    aim(P, 'r', sdir(0.78, -0.30, 0.30))
     P['hd_l'] = P['waist'] + v3(0.06, 0.12, -0.20) * s
     return P
 
@@ -64,13 +64,19 @@ def _fit(row, i, P):
     P0 = neutral_pose()
     if row == 'attack':           # draw back low, then one clean lunging cut across
         k = [-0.5, 0.0, 1.0, 0.3][i]
-        P['hd_r'] = P0['hd_r'] + E2 * 0.22 * k + E1 * (-0.06 * k) + v3(0, 0.12 * (1 if i == 1 else 0) + 0.04 * k, 0) * s
-        P['item_r'] = [sdir(-0.55, 0.25, 0.25), sdir(-0.4, 0.8, 0.2), sdir(0.35, 0.05, 1.0), sdir(0.1, -0.3, 1.0)][i]
+        P['hd_r'] = P0['hd_r'] + E2 * 0.10 * k + E1 * (0.10 * k) + v3(0, 0.12 * (1 if i == 1 else 0) + 0.04 * k, 0) * s
+        if i >= 2:
+            slide(P, -E1 * [0, 0, 0.12, 0.06][i])
+            P['hd_r'] = P['hd_r'] - E1 * [0, 0, 0.12, 0.06][i]
+        P['item_r'] = [sdir(-0.22, 0.55, -0.1), sdir(-0.12, 0.65, 0.0), sdir(0.95, 0.0, 0.30), sdir(0.75, -0.3, 0.3)][i]
     if row == 'cast':
-        P['hd_r'] = P0['hd_r'] + v3(0, [0.1, 0.3, 0.1][i], 0) * s
-        P['item_r'] = sdir(-0.3, 0.9, 0.3)
+        P['hd_r'] = P0['hd_r'] + v3(0, [0.04, 0.12, 0.04][i], 0) * s + E1 * 0.08
+        P['item_r'] = sdir(0.65, 0.75, 0.1)
     if row in ('idle', 'move', 'hit'):
         P['item_r'] = norm(P['item_r'] if P['item_r'] is not None else P0['item_r'])
+    P['hood'] = min(P['hood'], 1.0 if row in ('attack', 'cast') else 1.1)
+    if row == 'cast':
+        slide(P, v3(0, -[0.03, 0.07, 0.0][i], 0) * s)
     P['hd_l'] = P['waist'] + v3(0.06, 0.12, -0.20) * s if row != 'death' else P['hd_l']
 
 

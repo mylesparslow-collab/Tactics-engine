@@ -16,9 +16,9 @@ POUR = 0.5
 def neutral_pose():
     P = naga_pose(N)
     s = P['s']
-    reach(P, 'r', scr(-0.50, 1.28 * s, 0.30))
-    aim(P, 'r', sdir(-0.55, -0.35, 0.45))
-    reach(P, 'l', scr(0.52, 1.80 * s, 0.12))
+    reach(P, 'r', scr(-0.40, 1.28 * s, 0.30))
+    aim(P, 'r', sdir(-0.30, -0.70, 0.45))
+    reach(P, 'l', scr(0.40, 1.80 * s, 0.12))
     return P
 
 
@@ -54,7 +54,7 @@ def build(P):
         add(Sphere(gp + v3(0, 0.10, 0) * s, 0.05 * s), 'glaze', 0.0)
     # --- raised gourd, mouth open, pouring a thin venom stream
     h = P['hd_l']
-    nk = norm(sdir(0.80, -0.30, 0.10) if dr == 0 else v3(0, 1, 0))
+    nk = norm(sdir(0.55, -0.55, 0.20) if dr == 0 else v3(0, 1, 0))
     gc = h + v3(0, 0.05 * s, 0) - nk * 0.10 * s
     gt = gourd_open(add, gc, 0.15 * s, nk)
     lights = []
@@ -62,11 +62,11 @@ def build(P):
         d2 = norm(v3(0.10, -1.0, 0.06))
         strength = 0.6 + 0.8 * P['cast_glow']
         L = (0.55 + 0.35 * P['cast_glow']) * s * alive
-        n = 12
+        n = 18
         for i in range(n):
             t = (i + 0.5) / n
             q = gt + d2 * L * t + v3(0.02 * t * t, -0.05 * t * t, 0) * s
-            add(Sphere(q, 0.021 * s * (1.0 - 0.35 * t)), 'venom', 0.0)
+            add(Sphere(q, 0.017 * s * (1.0 - 0.35 * t)), 'venom', 0.0)
         emit(add, gt + d2 * L, 'spray', 0.7)
         lights = [Light(gt + v3(0, -0.1, 0.1), CHART, 0.4 + 0.5 * P['cast_glow'], 0.4)]
     return naga_finish(P, N, parts, {}, lights)
@@ -101,11 +101,13 @@ def _fit(row, i, P):
         P['hd_r'] = P0['hd_r']
         P['item_r'] = P0['item_r']
         P['throw'] = 0.0
+        slide(P, v3(0, -[0.03, 0.07, 0.0][i], 0) * s)
+        P['hd_l'] = P['hd_l'] + v3(0, -0.04, 0) * s
     if row in ('idle', 'move', 'hit', 'death'):
-        P['item_r'] = sdir(-0.55, -0.35, 0.45) if row != 'death' else sdir(-0.3, -0.9, 0.2)
+        P['item_r'] = sdir(-0.30, -0.70, 0.45) if row != 'death' else sdir(-0.3, -0.9, 0.2)
         if row in ('idle', 'move'):
             P['throw'] = 0.0
-    P['hood'] = min(P['hood'], 1.3)
+    P['hood'] = min(P['hood'], 1.15)
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='swing', cast='raise', hook=_fit)

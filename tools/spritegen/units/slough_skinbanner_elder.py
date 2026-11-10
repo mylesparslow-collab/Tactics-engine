@@ -16,10 +16,22 @@ BAR_Y = 1.95         # crossbar height above the hand's pole point (m above grou
 def neutral_pose():
     P = naga_pose(N)
     s = P['s']
-    reach(P, 'r', scr(-0.40, 1.22 * s, 0.22))
+    reach(P, 'r', scr(-0.50, 1.22 * s, 0.22))
     aim(P, 'r', v3(0, 1, 0))
-    reach(P, 'l', scr(0.52, 1.78 * s, 0.05))
+    reach(P, 'l', scr(0.42, 1.74 * s, 0.05))
     return P
+
+
+def lying_pole(P, below, length):
+    """Pole through the right hand, or (death) lying on the ground beside the coil, kept inside the frame."""
+    g, d = P['hd_r'], norm(P['item_r'])
+    b0, t0 = g - d * below, g + d * length
+    k = P['drop']
+    if k <= 0:
+        return b0, t0
+    b2 = scr(-0.50, 0.05, -0.10)
+    t2 = b2 + E1 * 1.0
+    return lerp(b0, b2, k), lerp(t0, t2, k)
 
 
 def build(P):
@@ -29,23 +41,24 @@ def build(P):
     g = P['hd_r']
     d = norm(P['item_r'])
     drop = P['drop']
-    butt, tip = blade(add, P, 'r', 'gaff', length=0.98, below=1.10)
+    butt, tip = lying_pole(P, 1.10, 0.98)
     d = norm(tip - butt)
+    _shaft(add, butt, tip, 'gaff', d, P, 'haft', 'fang', 'glaze')
     bar = lerp(butt + d * 1.95 * s, butt + d * 0.5 * s, drop)
     sv = E1
-    add(Capsule(bar - sv * 0.31, bar + sv * 0.31, 0.022 * s), 'haft', 0.0)
+    add(Capsule(bar - sv * 0.30, bar + sv * 0.27, 0.022 * s), 'haft', 0.0)
     for k in (-1, 1):
-        add(Sphere(bar + sv * 0.32 * k, 0.034 * s), 'glaze', 0.0)
-    add(Capsule(bar - sv * 0.30, bar + sv * 0.30, 0.014 * s, 0.014 * s), 'glaze', 0.0)
+        add(Sphere(bar + sv * 0.28 * k, 0.034 * s), 'glaze', 0.0)
+    add(Capsule(bar - sv * 0.27, bar + sv * 0.27, 0.014 * s, 0.014 * s), 'glaze', 0.0)
     sw = np.sin(2 * np.pi * P['tell']) * 0.12 + 0.06 * P['breathe']
-    for off, ln in ((-0.25, 0.95), (0.0, 1.20), (0.25, 0.85)):
+    for off, ln in ((-0.18, 0.95), (0.0, 1.20), (0.18, 0.85)):
         top = bar + sv * off * s - d * 0.02 * s
         dn = norm(v3(0, -1, 0) + sv * (sw + 0.15 * off))
         if drop > 0:
-            dn = norm(lerp(dn, E2 + E1 * off, drop))
-            top = lerp(top, v3(top[0] * 0.5, 0.08, -0.1) + E1 * off * 0.5, drop)
+            dn = norm(lerp(dn, E1 * (1 if off >= 0 else -1) + v3(0, 0.05, 0), drop))
+            top = lerp(top, v3(top[0] * 0.5, 0.06, -0.2) + E1 * off * 0.8, drop)
         c = top + dn * ln * 0.5 * s
-        add(Ellipsoid(c, (0.115 * s, ln * 0.5 * s, 0.014 * s), R_from(dn, E2 + v3(0, 0.2, 0))), 'banner', 0.0)
+        add(Ellipsoid(c, (0.095 * s, ln * 0.5 * s, 0.014 * s), R_from(dn, E2 + v3(0, 0.2, 0))), 'banner', 0.0)
         add(Capsule(top + dn * 0.02, top + dn * 0.07 * s, 0.015 * s), 'glaze', 0.0)
     # raised left hand: spread fingers
     h = P['hd_l']
@@ -67,6 +80,7 @@ def build(P):
 
 def _fit(row, i, P):
     s = P['s']
+    P['hood'] = min(P['hood'], 1.0 if row in ('attack', 'cast') else 1.1)
     if row == 'cast':               # only the free hand rises; the pole stays planted
         P['hd_r'] = P['hd_r'] - v3(0, [0.12, 0.28, 0.10][i], [0.02, 0.06, 0.12][i]) * s
         P['hd_l'] = P['hd_l'] + v3(0, 0.0, 0.0)
@@ -74,6 +88,8 @@ def _fit(row, i, P):
         a = [-0.10, 0.0, 0.62, 0.22][i]
         P['item_r'] = norm(rot_x(a) @ v3(0, 1, 0))
         P['hd_r'] = P['hd_r'] + v3(0, 0, [-0.02, 0.0, 0.12, 0.05][i]) * s
+        if i >= 2:
+            slide(P, -E1 * [0, 0, 0.09, 0.04][i])
     if row in ('idle', 'move', 'hit', 'death'):
         P['item_r'] = norm(v3(0, 1, 0) + v3(0, 0, 0.0))
 

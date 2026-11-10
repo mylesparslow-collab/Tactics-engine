@@ -4,18 +4,18 @@ loose in each. One bright chartreuse champion band high on the neck. Defining de
 from _slough_common import *
 
 UNIT_ID = 'slough_kesh'
-N = Naga(height=2.7, arms=4, girth=1.50, tube=0.225, coil_r=0.60, loops=1.8, coil_back=0.26, coil_depth=0.70,
-         hood='flat', hood_w=1.45, hood_h=1.15, head_len=1.4, band_len=0.22, band_dark=0.5, accent=('neck',),
+N = Naga(height=2.54, arms=4, girth=1.50, tube=0.225, coil_r=0.60, loops=1.8, coil_back=0.38, coil_depth=0.62,
+         hood='flat', hood_w=1.25, hood_h=1.0, head_len=1.4, band_len=0.22, band_dark=0.5, accent=('neck',),
          body_r=0.20, belly=_hex('#e6b238'), skin=_hex('#5e4a24'), mantle=_hex('#1c1f21'), dark=_hex('#1c1f21'),
          light=_hex('#efe8d0'), hood_face=_hex('#e6d98c'), hood_rim=_hex('#f7f2dc'), lip=_hex('#f2d57a'),
          paddle=1.5, lean=0.10, tail_side=-1)
-CAMERA = naga_camera(N)
+CAMERA = Camera(ppm=44.0)
 
 # (side, hand, glaive direction, glaive length)
-ARMS = (('r', scr(-0.46, 1.38, 0.14), sdir(-0.62, 0.80, 0.25), 0.78),
-        ('l', scr(0.50, 1.42, -0.04), sdir(0.62, 0.80, -0.05), 0.78),
-        ('r2', scr(-0.52, 0.92, 0.50), sdir(-0.55, 0.15, 0.85), 0.68),
-        ('l2', scr(0.52, 0.94, 0.30), sdir(0.55, 0.15, 0.80), 0.68))
+ARMS = (('r', scr(-0.44, 1.30, 0.14), sdir(-0.35, 0.9, 0.25), 0.9),
+        ('l', scr(0.42, 1.34, -0.04), sdir(0.35, 0.9, -0.05), 0.9),
+        ('r2', scr(-0.46, 0.88, 0.50), sdir(-0.32, 0.25, 0.85), 0.85),
+        ('l2', scr(0.44, 0.90, 0.30), sdir(0.30, 0.25, 0.80), 0.85))
 
 
 def neutral_pose():
@@ -57,10 +57,10 @@ def _fit(row, i, P):
         for sd, h, d, L in ARMS:
             sx = -1 if sd[0] == 'r' else 1
             kk = [0.3, 1.0, 0.4][i]
-            P['hd_' + sd] = P0['hd_' + sd] + E1 * sx * 0.03 * kk + v3(0, 0.06 * kk, 0)
+            P['hd_' + sd] = P0['hd_' + sd] + E1 * sx * -0.02 * kk + v3(0, 0.06 * kk, 0)
             P['item_' + sd] = norm(lerp(d, sdir(sx * 0.2, 1.0, 0.0), kk * 0.7))
-        slide(P, v3(0, -[0.03, 0.06, 0.0][i] * s, 0))
-        P['hood'] = min(P['hood'], 1.25)
+        slide(P, v3(0, -[0.06, 0.12, 0.04][i] * s, 0))
+        P['hood'] = min(P['hood'], 1.05)
     P['coil_sq'] = max(P['coil_sq'], 0.95)
     P['coil_w'] = min(P['coil_w'], 1.0)
 

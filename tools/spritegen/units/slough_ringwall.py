@@ -4,7 +4,7 @@ like a wall; the lower arms hold short rusted hooked tridents forward. Defining 
 from _slough_common import *
 
 UNIT_ID = 'slough_ringwall'
-N = Naga(height=2.7, arms=4, girth=1.35, tube=0.235, coil_r=0.62, loops=2.0, coil_back=0.26, coil_depth=0.70,
+N = Naga(height=2.62, arms=4, girth=1.35, tube=0.235, coil_r=0.62, loops=2.0, coil_back=0.38, coil_depth=0.62,
          hood='broad', hood_w=1.0, hood_h=0.95, head_len=1.4, band_len=0.34, band_dark=0.62, accent=(),
          body_r=0.20, dark=_hex('#2a2f2c'), light=_hex('#cfd0b6'), skin=_hex('#6e6a46'), belly=_hex('#a89a4e'),
          hood_face=_hex('#c8c08a'), tail_side=-1)

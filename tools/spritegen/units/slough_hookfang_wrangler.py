@@ -15,7 +15,7 @@ def neutral_pose():
     s = P['s']
     bend(P, side=np.radians(-9), fwd=0.0)          # braced over to its right (screen-left)
     P['coil_c'] = P['coil_c'] + E1 * 0.06
-    hold_pole(P, 'r', 'l', grip=scr(-0.48, 1.00, 0.34), direction=sdir(0.55, 0.65, 0.30), spacing=0.40)
+    hold_pole(P, 'r', 'l', grip=scr(-0.40, 1.00, 0.34), direction=sdir(0.55, 0.65, 0.30), spacing=0.40)
     return P
 
 
@@ -48,7 +48,7 @@ def build(P):
     s = P['s']
     ha, hb = P['hd_r'], P['hd_l']
     d = norm(hb - ha)
-    butt, tip = ha - d * 0.55 * s, hb + d * 0.95 * s
+    butt, tip = ha - d * 0.30 * s, hb + d * 0.95 * s
     butt, tip = _drop(P, butt, tip)
     d = norm(tip - butt)
     big_trident(add, butt, tip, d, s, 1.35)

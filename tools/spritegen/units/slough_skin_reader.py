@@ -16,7 +16,7 @@ CAMERA = naga_camera(N)
 def neutral_pose():
     P = naga_pose(N)
     s = P['s']
-    reach(P, 'r', scr(-0.55, 1.15, 0.22))
+    reach(P, 'r', scr(-0.46, 1.05, 0.22))
     P['item_r'] = norm(v3(0.0, 1.0, 0.0))
     reach(P, 'l', scr(0.38, 1.22, 0.38))
     return P
@@ -59,14 +59,14 @@ def _hang_off(d):
 
 def _fit(row, i, P):
     if row == 'attack':      # staff: raise, then bring the hook down and forward
-        P['hd_r'] = [scr(-0.58, 1.20, 0.10), scr(-0.50, 1.40, 0.20), scr(-0.10, 1.30, 0.55), scr(-0.30, 1.20, 0.35)][i]
-        P['item_r'] = [sdir(-0.35, 1.0, -0.1), sdir(-0.1, 1.0, 0.2), sdir(0.75, 0.65, 0.35), sdir(0.3, 1.0, 0.2)][i]
+        P['hd_r'] = [scr(-0.46, 1.08, 0.12), scr(-0.42, 1.25, 0.20), scr(-0.10, 1.25, 0.55), scr(-0.30, 1.10, 0.35)][i]
+        P['item_r'] = [sdir(-0.15, 1.0, -0.1), sdir(0.0, 1.0, 0.2), sdir(0.75, 0.65, 0.35), sdir(0.3, 1.0, 0.2)][i]
 
 
 def _fit2(row, i, P):
     _fit(row, i, P)
     if row == 'cast':      # staff stays put; only the reading hand rises, hood flares
-        P['hd_r'] = scr(-0.55, 1.15, 0.22)
+        P['hd_r'] = scr(-0.46, 1.05, 0.22)
         P['hd_l'] = scr(0.38, 1.22 + [0.0, 0.2, 0.1][i], 0.38)
         P['item_r'] = norm(v3(0, 1, 0))
 

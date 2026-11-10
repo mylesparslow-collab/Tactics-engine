@@ -5,7 +5,7 @@ guard and the long glaive."""
 from _slough_common import *
 
 UNIT_ID = 'slough_glaive_sister'
-N = Naga(height=2.2, girth=0.84, tube=0.135, coil_r=0.44, loops=1.7, hood='narrow', hood_w=1.0, hood_h=1.15,
+N = Naga(height=2.1, girth=0.84, tube=0.135, coil_r=0.42, coil_back=0.32, loops=1.7, hood='narrow', hood_w=1.0, hood_h=1.05,
          accent=('waist',), band_len=0.23, band_dark=0.5, head_len=1.4, hood_face=_hex('#e8dfb8'), tail_side=1,
          lean=-0.03)
 CAMERA = naga_camera(N)
