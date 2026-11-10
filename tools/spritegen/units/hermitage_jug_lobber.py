@@ -101,7 +101,8 @@ def _rows(R):
     # death: the stone falls out of the claw and stays on the salt
     for i, (P, o) in enumerate(R['death']):
         P['drop'] = [0, 0.4, 1, 1][i]
-        P['slide'] = [0, 0.03, 0.12, 0.14][i]
+        P['slide'] = [0, 0.0, 0.0, 0.0][i]
+        P['recoil'] = [0, -0.10, -0.28, -0.30][i]   # it topples forward onto its own shadow, not behind it
         P['limp'] *= 0.5
     return R
 

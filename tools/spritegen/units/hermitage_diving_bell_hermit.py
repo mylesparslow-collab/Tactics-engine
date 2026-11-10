@@ -33,6 +33,9 @@ def _fit(R):
             P['snap'] *= 0.6
     for i, (P, o) in enumerate(R['death']):      # the bell rolls to its right: slide it back into frame
         P['slide'] = [0, 0.03, 0.17, 0.18][i]
+        k = [0, 0.3, 0.85, 1.0][i]  # topple forward onto the shadow, not behind it
+        P['slide'] += -0.285 * k
+        P['recoil'] += -0.42 * k
     return R
 
 

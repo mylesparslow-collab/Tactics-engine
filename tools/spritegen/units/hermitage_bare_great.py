@@ -7,7 +7,7 @@ from _hermitage_common import *
 UNIT_ID = 'hermitage_bare_great'
 SIZE = 1.34   # 'great' class at ppm 44: fills the frame
 CAMERA = size_camera('great')
-BARE = Bare(h=0.40, yaw=0.10, pitch=0.02, z0=-0.56, x0=0.44, big=1.70, small=0.90, eye_len=0.30, eye_bead=0.060,
+BARE = Bare(h=0.40, yaw=0.10, pitch=0.02, z0=-0.46, x0=0.35, big=1.70, small=0.90, eye_len=0.30, eye_bead=0.060,
             span=0.46, spread=1.2, leg_len=1.05, leg_r=1.45, shield=1.45, arm=1.6, fat=1.15, barn=2, scar=True,
             shield_barn=2, tail=dict(size=1.30, thick=(0.18, 0.06), side=-0.8, drop=0.02, sag=0.8))
 
@@ -28,8 +28,8 @@ def _eyes(R):
             P['eye_r'] -= 0.6
             P['snap'] *= 0.45          # keep the lunge inside the frame at this size
             P['drum'] *= 0.45
-    for i, (P, o) in enumerate(R['death']):
-        P['slide'] += [0, 0.05, 0.03, 0.02][i]     # the roll-over swings left: keep it in frame
+    for i, (P, o) in enumerate(R['death']):     # the collapse spreads toward the viewer: keep it off the edge
+        P['recoil'] += [0, 0.08, 0.11, 0.11][i]
     return R
 
 

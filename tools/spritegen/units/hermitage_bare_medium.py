@@ -6,13 +6,13 @@ from _hermitage_common import *
 UNIT_ID = 'hermitage_bare_medium'
 SIZE = 'medium'
 CAMERA = size_camera(SIZE)
-BARE = Bare(h=0.36, yaw=0.30, z0=-0.58, x0=0.40, big=1.55, small=0.70, eye_len=0.30, eye_bead=0.068,
+BARE = Bare(h=0.36, yaw=0.30, z0=-0.40, x0=0.19, big=1.55, small=0.70, eye_len=0.36, eye_bead=0.072,
             span=0.42, leg_len=1.0, leg_r=1.05,
             tail=dict(size=1.05, thick=(0.15, 0.05), side=-0.6, drop=0.02))
 
 
 def neutral_pose():
-    return hermit_pose(raise_=1.0, rear=0.32, open=0.35)
+    return hermit_pose(raise_=0.15, rear=0.18, open=0.5)
 
 
 def build(P):
@@ -22,7 +22,7 @@ def build(P):
 def _fit(R):
     for row in R.values():
         for P, o in row:
-            P['snap'] *= 0.75      # keep the lunge inside the 96 px frame
+            P['snap'] *= 0.62      # keep the lunge inside the 96 px frame
             P['drum'] *= 0.6
     for P, o in R['death']:
         P['raise_'] = max(P['raise_'], 0.0) * 0.4

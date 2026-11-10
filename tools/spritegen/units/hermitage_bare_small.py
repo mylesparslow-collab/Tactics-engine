@@ -6,7 +6,7 @@ from _hermitage_common import *
 UNIT_ID = 'hermitage_bare_small'
 SIZE = 1.0            # a touch over the 'small' scale: dog-to-pony, never tiny
 CAMERA = size_camera('small')
-BARE = Bare(h=0.34, yaw=0.10, pitch=-0.06, z0=-0.56, x0=0.34, big=1.75, small=0.72, eye_len=0.34, eye_bead=0.088,
+BARE = Bare(h=0.34, yaw=0.10, pitch=-0.06, z0=-0.38, x0=0.20, big=1.75, small=0.72, eye_len=0.34, eye_bead=0.088,
             span=0.40, leg_len=1.0, leg_r=0.95, shield=0.95, arm=0.9,
             tail=dict(size=0.95, thick=(0.16, 0.05), side=-0.7))
 
@@ -28,6 +28,8 @@ def _fit(R):
         for P, o in row:
             P['snap'] *= 0.6
             P['drum'] *= 0.5
+    for i, (P, o) in enumerate(R['death']):         # the collapse spreads toward the viewer: keep it off the edge
+        P['recoil'] += [0, 0.03, 0.07, 0.07][i]
     return R
 
 

@@ -7,7 +7,7 @@ skins, a thin gold ring on the oldest. Left hand raised, fingers spread. Definin
 from _slough_common import *
 
 UNIT_ID = 'slough_eldest_skin'
-N = Naga(palette='violet', trim=BRONZE, height=2.32, girth=1.12, tube=0.19, coil_r=0.56, loops=1.8, coil_back=0.30, hood='ragged',
+N = Naga(palette='violet', trim=LACQUER_RED, height=2.32, girth=1.12, tube=0.19, coil_r=0.56, loops=1.8, coil_back=0.30, hood='ragged',
          hood_w=1.35, hood_h=1.25, hood_mark='ocelli', hood_mark_col=_hex('#e8e2c8'), head_len=1.35, band_len=0.24,
          band_dark=0.32, band_fade=0.0, grey=0.0, accent=(), lean=0.08, tail_side=-1)
 CAMERA = naga_camera(N)
@@ -149,6 +149,8 @@ def _fit(row, i, P):
         P['hood'] = min(P['hood'], 1.25)
         if i == 2:
             slide(P, -E1 * 0.10 * s - E2 * 0.04 * s)
+        if i >= 1:               # the ragged hood is huge: the bite stays inside the frame
+            P['head'] = P['head'] - E1 * 0.12 * s
     if row in ('idle', 'move', 'hit', 'death'):
         P['item_r'] = v3(0, 1, 0) if row != 'death' else norm(lerp(v3(0, 1, 0), E1, [0, 0.3, 1, 1][i]))
         if row != 'death':

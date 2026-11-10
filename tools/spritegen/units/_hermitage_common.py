@@ -586,16 +586,17 @@ def carapace(add, C, s_big=1.0, antennae=True, P=None, wide=1.0, thorax=True, ri
 
 
 def abdomen(add, C, curl=0.0, size=1.0, thick=(0.15, 0.05), side=-0.6, drop=0.0, sag=0.0, segs=4, start=None,
-            **_ignored):
+            limp=0.0, **_ignored):
     """The bare crab's soft abdomen: a pale, segmented, slightly sagging sac that leaves the back of the thorax,
     droops and curls UNDER the body and off to one side (never a spiral shell above it). curl 0..1 tightens it.
     Extra spiral_tail kwargs (center, r0, turns, helix...) are accepted and ignored."""
     sz = size
     st = v3(0, -0.04, -0.24) if start is None else v3(*start)
     k = 1.0 - 0.22 * curl
-    R0 = 0.20 * sz * k
+    R0 = 0.20 * sz * k * (1.0 + 0.9 * limp)  # limp: the curl lets go and the sac trails out straight
     cz, cy = st[2] - 0.05 * sz, st[1] - R0 - drop
     phi0, phi1 = 0.15, np.pi * (1.10 + 0.22 * curl)
+    phi1 = phi1 + (1.05 - phi1) * limp
     n = segs * 2 + 1
     pts, rad = [], []
     for i in range(n):
@@ -900,7 +901,7 @@ def bare(P, size, b, mats=None, lights=(), world=None):
     if P['flip'] > 0:      # on its back the soft abdomen flops over sideways onto the salt
         tk['side'] = tk.get('side', -0.6) - 1.6 * P['flip']
         tk['drop'] = tk.get('drop', 0.0) - 0.10 * P['flip']
-    abdomen(add, C, curl=P['curl'] * (1 - 0.6 * P['flip']), **tk)
+    abdomen(add, C, curl=P['curl'] * (1 - 0.6 * P['flip']), limp=P['flip'], **tk)
     cheliped(add, P, C, -1, b.big, True, barn=b.barn, arm=b.arm, scar=b.scar, fat=b.fat)
     cheliped(add, P, C, 1, b.small, False, arm=b.arm)
     droop = P['end'] * 0.8 * (1 - P['flip'])
@@ -1251,7 +1252,7 @@ def hermit_rows(base, kind='shell', extra=None):
     slump, the object tips onto its side, one claw lolls out, eyestalks droop; cast = rear and drum the big claw
     twice on the rim.
     kind 'bare': twitchy sideways shuffle, fast scuttle with the abdomen bouncing, cock-and-snap from a rear,
-    flinch with the abdomen clamped tight, flip onto its back with legs curling and colour draining, cast = rear
+    flinch with the abdomen clamped tight, collapse flat with legs buckling and colour draining, cast = rear
     and drum. extra(rows) may edit the poses in place."""
     def frames():
         b = base
@@ -1300,10 +1301,15 @@ def hermit_rows(base, kind='shell', extra=None):
             R['hit'] = [(rel(_set(b(), curl=1.0, open=.0, shake=1, duck=.75), lean=-.16, bob=-.02),
                          dict(exposure=1.25, flash=0.22)),
                         (rel(_set(b(), curl=.6, duck=.35), lean=-.05), {})]
+            # collapse flat, belly to the salt: legs buckle outward, claws flop, stalks droop, colour drains.
+            # (a full flip onto the back read as a clenched hand at this size, so it is not used.)
             R['death'] = [(rel(_set(b(), curl=1.0, open=.7, duck=.5), lean=-.2), {}),
-                          (_set(b(), flip=.35, fold=.45, curl=1.0, raise_=.3, drain=.3, end=.25), {}),
-                          (_set(b(), flip=.85, fold=.85, curl=1.0, raise_=0.0, drain=.55, end=.6, squash=.95), {}),
-                          (_set(b(), flip=1.0, fold=1.0, curl=1.0, raise_=0.0, drain=.75, end=1.0, open=.1, duck=.6), {})]
+                          (_set(b(), bob=-.10, fold=.25, limp=.45, curl=.7, raise_=.15, drain=.3, end=.3, sway=.10,
+                                lean=.08), {}),
+                          (_set(b(), bob=-.19, fold=.45, limp=.85, curl=.4, raise_=0.0, drain=.55, end=.7, sway=.20,
+                                lean=.10, squash=.95), {}),
+                          (_set(b(), bob=-.22, fold=.5, limp=1.0, curl=.3, raise_=0.0, drain=.75, end=1.0, sway=.22,
+                                lean=.10, open=.15), {})]
             R['cast'] = [(rel(_set(b(), raise_=1.0, open=.55, cast_glow=.5), rear=.18, bob=.02), {}),
                          (rel(_set(b(), drum=1.0, open=.05, cast_glow=1.0), rear=-.05, bob=-.01), {}),
                          (rel(_set(b(), raise_=1.0, open=.55, cast_glow=.6), rear=.18, bob=.02), {}),

@@ -5,7 +5,7 @@ four blades. Bone bands only show on the coil. Defining detail: the shingled amb
 from _slough_common import *
 
 UNIT_ID = 'slough_hundredcoat'
-N = Naga(palette='teal', trim=LACQUER_RED, height=2.62, arms=4, girth=1.55, tube=0.26, coil_r=0.64, loops=1.75, coil_back=0.27,
+N = Naga(palette='teal', trim=BRONZE, height=2.62, arms=4, girth=1.48, tube=0.25, coil_r=0.58, loops=1.75, coil_back=0.27,
          hood='broad', hood_w=1.12, hood_h=0.95, hood_mark='bars', hood_mark_col=CHART, band_len=0.46, band_dark=0.34, accent=(),
          body_r=0.21, head_len=1.35, shoulders=1.1, head_w=1.15, paddle=1.3)
 CAMERA = naga_camera(N)
@@ -31,7 +31,7 @@ def build(P):
     lacquer_coat(add, P, B, N, rows=3, per_row=4, coil=False)
     pauldron(add, P, B, N, 'r', plates=3, size=1.2)
     pauldron(add, P, B, N, 'l', plates=3, size=1.2)
-    for sd, L, bl in (('r', 0.80, 0.30), ('l', 0.80, 0.30), ('r2', 0.62, 0.22), ('l2', 0.62, 0.22)):
+    for sd, L, bl in (('r', 0.68, 0.26), ('l', 0.68, 0.26), ('r2', 0.54, 0.20), ('l2', 0.54, 0.20)):
         blade(add, P, sd, 'glaive', length=L, below=bl)
     return naga_finish(P, N, parts)
 

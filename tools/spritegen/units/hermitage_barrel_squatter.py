@@ -27,6 +27,10 @@ def _fit(R):
     for row in R.values():
         for P, o in row:
             P['snap'] *= 0.7       # keep the snap (and its strokes) inside the frame
+    for i, (P, o) in enumerate(R['death']):  # topple forward onto the shadow, not behind it
+        k = [0, 0.0, 0.1, 1.0][i]                  # (frame 2 has the claw lolling right at the bottom edge)
+        P['slide'] += -0.10 * k
+        P['recoil'] += -0.25 * k
     return R
 
 

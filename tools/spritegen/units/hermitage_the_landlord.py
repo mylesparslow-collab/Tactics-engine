@@ -83,7 +83,7 @@ def _eyes():
 SHELL = Shell(
     build=lamp_room, ride=0.44, tilt=-0.20, crab_at=(0, -0.26, 0.34), crab_upright=1.0, z0=-0.78, x0=0.36,
     eye_len=0.26, eye_bead=0.058, span=0.46, duck_dir=(0, 0.7, -1.0), duck_depth=0.16,
-    big=1.30, small=0.70, side_r=0.62, tip_angle=0.60, tip_dir=-1.0, leg_r=1.30, shield=1.1)
+    big=1.30, small=0.70, side_r=0.54, tip_angle=0.60, tip_dir=-1.0, leg_r=1.30, shield=1.1)
 
 
 def neutral_pose():
@@ -116,7 +116,9 @@ def _rows(R):
             P['drum'] *= 0.5
             P['limp'] *= 0.4
     for i, (P, o) in enumerate(R['death']):
-        P['slide'] = [0, 0.0, -0.02, -0.02][i]
+        k = [0, 0.3, 0.85, 1.0][i]  # topple forward onto the shadow, not behind it
+        P['slide'] = [0, 0.0, -0.02, -0.02][i] - 0.165 * k
+        P['recoil'] += -0.36 * k
         P['duck'] = [0.6, 0.5, 0.7, 0.75][i]
     for i, (P, o) in enumerate(R['cast']):
         P['ring'] = [0.6, 1.0, 1.0, 0.7][i]
