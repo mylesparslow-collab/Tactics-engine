@@ -348,7 +348,7 @@ function bestPlan(g: Game, u: Unit, th: Threat, it: Intel): Plan | undefined {
     // A drying unit left off wet ground loses HP next turn.
     const risk = danger(g, th, u, from, vip) + g.dryingLoss(u, from) * 1.3;
     // Venom bites after every action: a walk and an ability are two bites. Never act into a Venom death.
-    const bites = tick * ((x !== u.x || y !== u.y) ? 2 : 1);
+    const bites = tick * ((x !== u.x || y !== u.y) && !g.def(u).flying ? 2 : 1); // a flyer's walk does not bite
     if (tick > 0 && bites >= u.hp) continue;
     for (const ab of g.abilitiesOf(u)) {
       const a = g.ability(ab);
@@ -380,7 +380,7 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
   const goal = it.goals.find(gl => gl.tag === '*' || gl.tag === u.tag);
   const enemies = g.aliveUnits().filter(o => o.team !== u.team && !isDecoy(g, o));
   // Walking under Venom costs HP: never walk into a Venom death, and only walk when it is worth the bite.
-  const tick = actTick(g, u);
+  const tick = g.def(u).flying ? 0 : actTick(g, u); // a flyer's walk does not bite
   if (tick > 0 && tick >= u.hp) return;
   if (!enemies.length && !goal) return;
   const want = desiredRange(g, u);

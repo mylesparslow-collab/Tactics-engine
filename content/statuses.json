@@ -389,7 +389,7 @@
  },
  "sl_venom": {
   "name": "Venom",
-  "description": "Krait venom in the blood. Each time the carrier walks or uses an ability it takes 1 venom damage per stack (ignores defense). Ending its own turn without acting sheds one stack. Stacks to 5.",
+  "description": "Krait venom in the blood. Each time the carrier walks or uses an ability it takes 1 venom damage per stack (ignores defense); a flyer is not bitten for flying. Ending its own turn without acting sheds one stack, and ending it wet washes out one more. Stacks to 5.",
   "stacks": true,
   "maxStacks": 5,
   "shedsWhenIdle": true,

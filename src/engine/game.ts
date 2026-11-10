@@ -663,7 +663,7 @@ export class Game {
     const last = walked[walked.length - 1];
     if (u.alive && (last.x !== x || last.y !== y)) u.ap += Math.max(0, node.cost - (raw.get(key(last.x, last.y))?.cost ?? node.cost));
     if (u.alive && u.x === last.x && u.y === last.y) this.layTail(u, walked);
-    this.afterUnitAct(u);
+    this.afterUnitAct(u, true);
     this.afterAction();
     return true;
   }
@@ -716,9 +716,11 @@ export class Game {
     return struck;
   }
 
-  /** After a unit's own action (one walk or one ability use): mark it as having acted, then Venom-like onAct effects bite. */
-  private afterUnitAct(u: Unit) {
+  /** After a unit's own action (one walk or one ability use): mark it as having acted, then Venom-like onAct effects bite.
+   *  A flyer's walk is on the wing and does not work the venom through: only its ability uses bite. */
+  private afterUnitAct(u: Unit, walk = false) {
     u.acted = true;
+    if (walk && this.def(u).flying) return;
     for (const s of [...u.statuses]) {
       const sd = this.content.statuses[s.id];
       for (const e of sd?.onAct ?? []) {
@@ -755,9 +757,10 @@ export class Game {
     if (this.phase !== 'playing') return;
     // Statuses on the team that just acted tick down.
     for (const u of this.aliveUnits(this.current)) {
-      // Venom-like statuses lose a stack on a turn the carrier stayed idle.
-      if (!u.acted) for (const s of u.statuses) if (this.content.statuses[s.id]?.shedsWhenIdle) {
-        s.stacks = (s.stacks ?? 1) - 1;
+      // Venom-like statuses lose a stack on a turn the carrier stayed idle, and one more if it is wet (brine washes it out).
+      const washed = (u.acted ? 0 : 1) + (this.isWetFor(u) ? 1 : 0);
+      if (washed) for (const s of u.statuses) if (this.content.statuses[s.id]?.shedsWhenIdle) {
+        s.stacks = (s.stacks ?? 1) - washed;
         if (s.stacks <= 0) s.remaining = 0;
       }
       // Coiled for the enemy turns ahead if it used no ability this turn.
@@ -954,7 +957,8 @@ export class Game {
     this.landings = this.landings.filter(l => l.team !== this.current);
     for (const l of mine) {
       const impact = this.content.units[l.defId].skyfall?.impact ?? 0;
-      const hit = (o: Unit, amount: number) => { const n = Math.max(0, amount - this.resistOf(o, 'physical')); if (n > 0) this.damage(o, n, 'physical'); };
+      // Impact skips shells: the shock of a drop goes straight through a borrowed house to the crab inside.
+      const hit = (o: Unit, amount: number) => { const n = Math.max(0, amount - this.resistOf(o, 'physical')); if (n > 0) this.damage(o, n, 'physical', true); };
       let at: Pos | undefined = { x: l.x, y: l.y };
       const occ = this.unitAt(l.x, l.y);
       if (occ) {

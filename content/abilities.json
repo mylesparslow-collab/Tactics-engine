@@ -35,11 +35,11 @@
  },
  "sc_survey_shot": {
   "name": "Survey Shot",
-  "description": "Deal attack physical damage at range 2-5.",
+  "description": "Deal attack physical damage at range 2-4.",
   "apCost": 2,
   "range": {
    "min": 2,
-   "max": 5
+   "max": 4
   },
   "target": "enemy",
   "effects": [
@@ -305,11 +305,11 @@
  },
  "sc_range_finding": {
   "name": "Range Finding",
-  "description": "Deal attack+1 physical damage and apply Marked for 2 turns at range 2-6.",
+  "description": "Deal attack+1 physical damage and apply Marked for 2 turns at range 2-5.",
   "apCost": 3,
   "range": {
    "min": 2,
-   "max": 6
+   "max": 5
   },
   "target": "enemy",
   "cooldown": 2,
@@ -1164,7 +1164,7 @@
  },
  "sc_orrel_measure_twice": {
   "name": "Measure Twice",
-  "description": "Apply Marked to an enemy within 2-5 for 2 turns, then deal attack salt damage plus 1.",
+  "description": "Deal attack salt damage plus 1 to an enemy within 2-5, then apply Marked for 2 turns.",
   "apCost": 3,
   "range": {
    "min": 2,
@@ -1174,14 +1174,14 @@
   "cooldown": 2,
   "effects": [
    {
-    "type": "status",
-    "status": "marked",
-    "duration": 2
-   },
-   {
     "type": "damage",
     "amount": 1,
     "damageType": "salt"
+   },
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 2
    }
   ]
  },
@@ -1215,7 +1215,7 @@
  },
  "sc_orrel_night_lamp": {
   "name": "Night Lamp",
-  "description": "Passive: allies within 2 tiles gain +1 defense and +1 attack.",
+  "description": "Passive: allies within 2 tiles gain +1 attack.",
   "passive": true,
   "effects": [
    {
@@ -1223,7 +1223,6 @@
     "radius": 2,
     "affects": "allies",
     "statMods": {
-     "defense": 1,
      "attack": 1
     }
    }

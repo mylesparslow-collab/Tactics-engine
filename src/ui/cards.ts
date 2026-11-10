@@ -157,7 +157,7 @@ function rulesFor(c: Content, id: string, full: boolean): HTMLElement[] {
       if (ud.resist && Object.keys(ud.resist).length) rule(null, 'Resist ' + Object.entries(ud.resist).map(([k, v]) => `${k} ${v > 0 ? '+' : ''}${v}`).join(', '));
       if (ud.revive) rule(null, `Rises once on death (${Math.round(ud.revive.hpFraction * 100)}% HP).`);
       if (ud.flying) rule('Flying', 'Every tile costs 1 AP; ignores height and crosses impassable ground. Holds no Wells.');
-      if (ud.skyfall) rule('Skyfall', `May drop onto any open tile beyond 2 of the enemy ${label(c, 'keystone')}; lands next turn for ${ud.skyfall.impact} damage to adjacent enemies.`);
+      if (ud.skyfall) rule('Skyfall', `May drop onto any open tile beyond 2 of the enemy ${label(c, 'keystone')}; lands next turn for ${ud.skyfall.impact} damage to adjacent enemies (through shells).`);
       if (ud.dries) rule('Dries', `Loses ${ud.dries} HP each turn unless on wet ground or Wet.`);
       traitRules(c, ud).forEach(t => rule(t.name, t.text));
       if (ud.description) out.push(h('p', { class: 'r fl' }, ud.description));

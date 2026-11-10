@@ -535,3 +535,52 @@ describe('AI stays stable with every new mechanic on the board', () => {
     }
   });
 });
+
+describe('cross-faction interactions (balance pass)', () => {
+  it('a wet Venom carrier washes off a stack at the end of its turn even after acting, two if it also stayed idle', () => {
+    const g = world({
+      teams: [team('human', [{ unit: 'snake', x: 1, y: 1, tag: 's' }, anchor(0, 5)]), team('ai', [{ unit: 'dummy', x: 2, y: 1, tag: 'd' }, { unit: 'dummy', x: 2, y: 3, tag: 'w' }, anchor()])],
+      edit: c => { c.statuses.drenched = { name: 'Drenched', wet: true }; },
+    });
+    const d = byTag(g, 'd'), w = byTag(g, 'w');
+    for (const v of [d, w]) v.statuses.push({ id: 'sl_venom', remaining: 99, stacks: 4 });
+    w.statuses.push({ id: 'drenched', remaining: 99 });
+    g.endTurn();
+    g.move(d.uid, 3, 1); g.move(w.uid, 3, 3); // both act
+    g.endTurn();
+    expect(stacks(d)).toBe(4); // dry: keeps every stack after an active turn
+    expect(stacks(w)).toBe(3); // wet: brine washes one out anyway
+    g.endTurn(); g.endTurn(); // both idle
+    expect(stacks(d)).toBe(3);
+    expect(stacks(w)).toBe(1);
+  });
+
+  it('a flyer under Venom is bitten for using abilities but not for flying', () => {
+    const g = world({
+      teams: [team('human', [{ unit: 'dummy', x: 1, y: 1, tag: 'f' }, anchor(0, 5)]), team('ai', [{ unit: 'dummy', x: 6, y: 1, tag: 'd' }, anchor()])],
+      edit: c => { c.units.bird = { ...c.units.dummy, flying: true }; c.missions.w3.teams[0].units![0].unit = 'bird'; },
+    });
+    const f = byTag(g, 'f'), d = byTag(g, 'd');
+    expect(g.def(f).flying).toBe(true);
+    f.statuses.push({ id: 'sl_venom', remaining: 99, stacks: 2 });
+    const hp = f.hp;
+    expect(g.move(f.uid, 5, 1)).toBe(true);
+    expect(f.hp).toBe(hp); // the flight did not bite
+    expect(g.useAbility(f.uid, 'poke', 6, 1)).toBe(true);
+    expect(f.hp).toBe(hp - 2); // the peck did
+    expect(d.hp).toBeLessThan(30);
+  });
+
+  it('skyfall impact skips a shell and hits the crab inside', () => {
+    const g = world({
+      teams: [team('human', [anchor(0, 5)], ['dropper']), team('ai', [{ unit: 'crab', x: 4, y: 2, tag: 'c' }, anchor()])],
+      edit: c => { c.units.dropper = { name: 'Dropper', cost: 30, stats: stats(12), abilities: ['poke'], sprite, skyfall: { impact: 5 } }; },
+    });
+    const c = byTag(g, 'c');
+    expect(g.deploy(0, 0, 4, 3)).toBe(true);
+    cycle(g); // lands at the start of our next turn
+    expect(g.unitAt(4, 3)?.defId).toBe('dropper');
+    expect(c.shellHp).toBe(8);
+    expect(c.hp).toBe(15);
+  });
+});

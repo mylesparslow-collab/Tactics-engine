@@ -21,7 +21,7 @@ Example files ship in `content/` with placeholder names; replace them freely.
 | resist | {damageType: number}? | flat damage reduction per damage type (negative = weakness) |
 | hero | bool? | unique: max one copy per warband/roster; shown with a crown |
 | revive | {hpFraction}? | returns once on death with that fraction of max HP |
-| skyfall | {impact: number}? | besides the deploy zone, may be deployed on any empty passable tile not within 2 (Manhattan) of the enemy keystone. The cost is paid now and a landing marker (visible to both sides) sits on the tile; at the start of the owner's next turn the unit lands and can act. On landing every adjacent enemy takes `impact` flat physical damage (resist applies, defense does not). If the tile is occupied then, the occupant (any team) takes impact+3 and the unit lands on the nearest free passable tile. A pending landing counts as alive for `eliminate`. |
+| skyfall | {impact: number}? | besides the deploy zone, may be deployed on any empty passable tile not within 2 (Manhattan) of the enemy keystone. The cost is paid now and a landing marker (visible to both sides) sits on the tile; at the start of the owner's next turn the unit lands and can act. On landing every adjacent enemy takes `impact` flat physical damage (resist applies, defense does not; it skips a Hermitage shell and hits the body). If the tile is occupied then, the occupant (any team) takes impact+3 and the unit lands on the nearest free passable tile. A pending landing counts as alive for `eliminate`. |
 | dries | number? | at the start of its owner's turn (not the turn it lands) loses this many HP, unless it stands on a wet tile (`brine_pool`, `living_reef`, or terrain with `wet: true`), has a status with `wet: true`, or is inside a passive aura with `keepsWet: true`. Can kill (damageType `drying`). |
 | flying | bool? | every passable tile costs 1 AP, height/jump ignored, impassable tiles can be crossed but not ended on (enemies and structures still block, allies can be passed), terrain `onEnter` never triggers, and the unit does not hold Wells (no income, no forward deploy). |
 | ignoresEngagement | bool? | never pays the engagement cost (below). Flyers ignore it already. |
@@ -69,7 +69,7 @@ Effect types:
 - `{type:"rehouse"}` — cast-level, ability only (not spells), the ability must have `target:"tile"` (use range 1). See **Shells**.
 - `{type:"moveOut"}` — cast-level, ability only (not spells), the ability must have `target:"empty"` (use range 1). See **Shells**.
 
-Damage types (free text; these are the ones in use): `physical`, `fire`, `salt`, `pressure`, `light`, `brine`, `drowning`, `venom` (new, Slough), plus engine-made `impact` (push collisions), `drying` and `sacrifice`. `venom`, `drying` and `sacrifice` damage, and any `pierce` damage, bypass shells.
+Damage types (free text; these are the ones in use): `physical`, `fire`, `salt`, `pressure`, `light`, `brine`, `drowning`, `venom` (new, Slough), plus engine-made `impact` (push collisions), `drying` and `sacrifice`. `venom`, `drying` and `sacrifice` damage, any `pierce` damage, and skyfall landing impact bypass shells.
 
 Passive abilities: `{name, description, passive: true, effects: [aura...]}`; apCost/range/target can be omitted.
 Optional `requires: string[]` on abilities is ignored by the engine (author bookkeeping). Tags for engine features: `terrain`, `draw`, `convert_on_kill`, `untargetable`.
@@ -88,7 +88,9 @@ Canonical status (statuses.json):
 ```
 Apply it with `{ "type": "status", "status": "sl_venom", "duration": 99 }`; several of these in one ability add several stacks
 (capped at maxStacks). Each walk and each ability use by the carrier then costs it (stacks x 1) venom damage minus its
-`resist.venom`. A carrier that does nothing for a whole turn loses one stack at the end of that turn. Venom damage bypasses
+`resist.venom`; a `flying` carrier's walks do not bite (only its ability uses do). A carrier that does nothing for a whole
+turn loses one stack at the end of that turn, and a carrier that ends its turn wet (the same test as `dries`: wet tile, wet
+status or `keepsWet` aura) loses one more, active or not: brine washes it out. Venom damage bypasses
 shells. Structures (husks, shells, segments, Beacons) are immune. Pair with `ifTargetStatus: "sl_venom"`,
 `ifTargetStacks: {status: "sl_venom", min: N}` and `vsWounded` on other effects.
 
@@ -119,7 +121,7 @@ The strike emits `react` then a normal `ability` event. It does not trigger the 
   is reduced by defense/terrain/resist as normal and then lands on the shell first; when shellHp reaches 0 the rest of that
   hit is discarded and the unit is **Evicted**: it becomes `shell.evicted` (new stats, abilities, sprite, traits), body HP
   carries over capped to the new max, statuses and equipment stay, ability cooldowns are cleared, AP is capped to the new
-  max. `pierce` damage and `venom`/`drying`/`sacrifice` damage skip the shell and hit the body. Healing heals the body only.
+  max. `pierce` damage, `venom`/`drying`/`sacrifice` damage and skyfall landing impact skip the shell and hit the body. Healing heals the body only.
 - `shell.onBreak?: Effect[]` — cast-level effects run for the owner at the unit's tile when the shell breaks (forced eviction
   only, not moveOut). Only `essence`, `summon`, `terrain` and `draw` are allowed, e.g. `[{"type":"essence","amount":4}]`.
 - Evicted forms are ordinary UnitDefs, mark them `"token": true` (cost 0). A champion that dies after being evicted (or after
