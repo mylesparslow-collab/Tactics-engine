@@ -14216,5 +14216,1954 @@
   "requires": [
    "summon"
   ]
+ },
+ "hm_rehouse": {
+  "name": "Rehouse",
+  "description": "Climb into a friendly empty shell on an adjacent tile and become the crab that lives in it (its shell keeps the HP it had; your own HP carries over, capped at the new body's maximum). Or climb into an adjacent Wreck or Scrap Field tile for a full new shell; that tile becomes salt flat.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "tile",
+  "effects": [
+   {
+    "type": "rehouse"
+   }
+  ],
+  "requires": [
+   "rehouse"
+  ],
+  "vfx": "dust"
+ },
+ "hm_move_out": {
+  "name": "Move Out",
+  "description": "Step out onto an adjacent empty tile as your bare form, leaving your shell behind as a friendly empty shell with the HP it had left. Another bare crab can climb into it.",
+  "apCost": 1,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "empty",
+  "effects": [
+   {
+    "type": "moveOut"
+   }
+  ],
+  "requires": [
+   "moveOut"
+  ]
+ },
+ "hm_scuttler_pinch": {
+  "name": "Pinch",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_scuttler_frenzy": {
+  "name": "Frenzy",
+  "description": "Deal attack+2 physical damage to an adjacent enemy (+2 more if it is below half HP).",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 2
+    }
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "hm_snapper_snap": {
+  "name": "Snap",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_snapper_rend": {
+  "name": "Rend",
+  "description": "Deal attack+1 physical damage to an adjacent enemy and apply Bleeding (2 damage a turn) for 2 turns.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "bleeding",
+    "duration": 2
+   }
+  ]
+ },
+ "hm_brute_crush": {
+  "name": "Crush",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_brute_thrash": {
+  "name": "Thrash",
+  "description": "Deal attack-2 physical damage to every enemy adjacent to you.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_giant_claw": {
+  "name": "Great Claw",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_giant_tantrum": {
+  "name": "Tantrum",
+  "description": "Deal attack-1 physical damage to every enemy adjacent to you and push each of them 1 tile away (2 damage if it hits something).",
+  "apCost": 4,
+  "cooldown": 2,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "push",
+    "distance": 1,
+    "collisionDamage": 2
+   }
+  ]
+ },
+ "hm_hopeful_pinch": {
+  "name": "Hopeful Pinch",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_barrel_bash": {
+  "name": "Stave Bash",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_barrel_roll": {
+  "name": "Roll Over",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and push it 1 tile away (2 damage if it hits something).",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "push",
+    "distance": 1,
+    "collisionDamage": 2
+   }
+  ]
+ },
+ "hm_jug_lob": {
+  "name": "Lob Ballast",
+  "description": "Deal attack physical damage to an enemy within 2-4.",
+  "apCost": 2,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_jug_pot_shot": {
+  "name": "Pot Shot",
+  "description": "Deal attack-2 physical damage to every enemy within 1 of a target within 2-4.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   }
+  ],
+  "vfx": "dust"
+ },
+ "hm_pot_pinch": {
+  "name": "Withy Pinch",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_pot_haul": {
+  "name": "Haul In",
+  "description": "Deal attack-2 physical damage to an enemy within 2-3, pull it 1 tile toward you and Root it for 1 turn.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 2,
+   "max": 3
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "pull",
+    "distance": 1
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "hm_divingbell_butt": {
+  "name": "Bell Butt",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_batten_down": {
+  "name": "Batten Down",
+  "description": "Pull everything in and shut the hatch: gain Battened Down (+2 defense, -1 AP) for 2 turns.",
+  "apCost": 2,
+  "cooldown": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "effects": [
+   {
+    "type": "status",
+    "status": "hm_battened",
+    "duration": 2
+   }
+  ]
+ },
+ "hm_bell_swing": {
+  "name": "Clapper Swing",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_bell_clang": {
+  "name": "Clang",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and Stun it for 1 turn.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "stunned",
+    "duration": 1
+   }
+  ]
+ },
+ "hm_bell_ring": {
+  "name": "Ring",
+  "description": "Deal 2 flat physical damage to every enemy adjacent to you and make them Rattled (-1 AP, -1 attack) for 2 turns.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "hm_rattled",
+    "duration": 2
+   }
+  ]
+ },
+ "hm_boiler_scald": {
+  "name": "Scald",
+  "description": "Deal attack-1 fire damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "fire"
+   }
+  ]
+ },
+ "hm_boiler_blowoff": {
+  "name": "Blow-Off Valve",
+  "description": "Deal attack-2 fire damage to every enemy in a line of 3 and set them Burning (2 fire damage a turn) for 2 turns.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "enemy",
+  "area": {
+   "shape": "line",
+   "size": 3
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "fire"
+   },
+   {
+    "type": "status",
+    "status": "burning",
+    "duration": 2
+   }
+  ],
+  "requires": [
+   "line_area"
+  ],
+  "vfx": "embers"
+ },
+ "hm_tinker_tap": {
+  "name": "Mallet Tap",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_tinker_patch": {
+  "name": "Patch",
+  "description": "Repair an ally's shell within 1-2 by 5 and heal its body 2.",
+  "apCost": 2,
+  "cooldown": 1,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "ally",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 5
+   },
+   {
+    "type": "heal",
+    "amount": 2
+   }
+  ],
+  "requires": [
+   "shell_repair"
+  ]
+ },
+ "hm_tinker_tar_seams": {
+  "name": "Tar the Seams",
+  "description": "Repair the shells of allies within 1 of you by 2 and heal them 2.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 2
+   },
+   {
+    "type": "heal",
+    "amount": 2
+   }
+  ],
+  "requires": [
+   "shell_repair"
+  ]
+ },
+ "hm_lifeboat_ram": {
+  "name": "Gunwale Ram",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_lifeboat_skid": {
+  "name": "Skid",
+  "description": "Skid on the upturned hull to an empty tile within 2-3.",
+  "apCost": 2,
+  "cooldown": 2,
+  "range": {
+   "min": 2,
+   "max": 3
+  },
+  "target": "empty",
+  "effects": [
+   {
+    "type": "teleport"
+   }
+  ],
+  "requires": [
+   "teleport"
+  ],
+  "vfx": "dust"
+ },
+ "hm_lifeboat_keelhaul": {
+  "name": "Keelhaul",
+  "description": "Deal attack+1 physical damage to an adjacent enemy and push it 1 tile away (2 damage if it hits something).",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "push",
+    "distance": 1,
+    "collisionDamage": 2
+   }
+  ]
+ },
+ "hm_bailiff_pinch": {
+  "name": "Lid Snap",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_bailiff_serve_notice": {
+  "name": "Serve Notice",
+  "description": "Deal attack-2 physical damage to an enemy within 1-3 and give it 2 stacks of Grudge (-1 defense per stack, up to 3) for 3 turns.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   },
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   }
+  ]
+ },
+ "hm_bailiff_collect": {
+  "name": "Collect",
+  "description": "Deal attack physical damage to an adjacent enemy, then 4 more if it has Grudge.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "physical",
+    "ignoreAttack": true,
+    "ifTargetStatus": "hm_grudge"
+   }
+  ]
+ },
+ "hm_gundeck_shot": {
+  "name": "Round Shot",
+  "description": "Deal attack physical damage to an enemy within 3-6.",
+  "apCost": 2,
+  "range": {
+   "min": 3,
+   "max": 6
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ],
+  "vfx": "dust"
+ },
+ "hm_gundeck_grapeshot": {
+  "name": "Grapeshot",
+  "description": "Deal attack-2 physical damage to every enemy within 1 of a target within 2-4.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   }
+  ],
+  "vfx": "dust"
+ },
+ "hm_prow_gore": {
+  "name": "Cutwater",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_prow_ram": {
+  "name": "Ram",
+  "description": "Deal attack+1 physical damage to an adjacent enemy and push it 2 tiles away (3 damage if it hits something).",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "push",
+    "distance": 2,
+    "collisionDamage": 3
+   }
+  ]
+ },
+ "hm_prow_stare": {
+  "name": "The Figurehead Stares",
+  "description": "Make an enemy within 1-3 Weakened (-2 attack) for 2 turns.",
+  "apCost": 2,
+  "cooldown": 3,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "status",
+    "status": "weakened",
+    "duration": 2
+   }
+  ]
+ },
+ "hm_warden_cuff": {
+  "name": "Spoke Cuff",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_warden_steady": {
+  "name": "Steady As She Goes",
+  "description": "Passive: allies within 2 tiles gain +1 attack.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "allies",
+    "statMods": {
+     "attack": 1
+    }
+   }
+  ]
+ },
+ "hm_warden_hard_over": {
+  "name": "Hard Over",
+  "description": "Allies within 2 of you: shelled ones gain Hasted (+2 AP) for 1 turn, bare ones gain Skittish (+1 AP, +1 attack, no engagement cost) for 1 turn.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1,
+    "filter": {
+     "shelled": true
+    }
+   },
+   {
+    "type": "status",
+    "status": "hm_skittish",
+    "duration": 1,
+    "filter": {
+     "shelled": false
+    }
+   }
+  ],
+  "requires": [
+   "filter_shelled"
+  ]
+ },
+ "hm_broker_pinch": {
+  "name": "Broker's Pinch",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_broker_hand_me_down": {
+  "name": "Hand-Me-Down",
+  "description": "Drop an Empty Barrel (9 HP) from the pile on your back onto an adjacent empty tile. Any bare ally can climb into it.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "hermitage_empty_barrel",
+    "count": 1
+   }
+  ],
+  "requires": [
+   "summon"
+  ]
+ },
+ "hm_broker_appraise": {
+  "name": "Appraise",
+  "description": "Repair an ally's shell within 1-2 by 4 and give it Hasted (+2 AP) for 1 turn.",
+  "apCost": 2,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "ally",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 4
+   },
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1
+   }
+  ],
+  "requires": [
+   "shell_repair"
+  ]
+ },
+ "hm_landlord_claw": {
+  "name": "Landlord's Claw",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_landlord_lamp": {
+  "name": "The Lamp Turns",
+  "description": "Deal attack-1 light damage to every enemy in a line of 5 and Mark them (-2 defense, -1 attack) for 1 turn.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 5
+  },
+  "target": "enemy",
+  "area": {
+   "shape": "line",
+   "size": 5
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "light"
+   },
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 1
+   }
+  ],
+  "requires": [
+   "line_area"
+  ]
+ },
+ "hm_landlord_premises": {
+  "name": "On the Premises",
+  "description": "Passive: allies within 2 tiles gain +1 defense.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "allies",
+    "statMods": {
+     "defense": 1
+    }
+   }
+  ]
+ },
+ "hm_duchess_rudder": {
+  "name": "Rudder Sweep",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_duchess_stern_chasers": {
+  "name": "Stern Chasers",
+  "description": "Fire the two guns in the gallery windows: deal attack-1 physical damage to an enemy within 2-4.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   }
+  ],
+  "vfx": "dust"
+ },
+ "hm_duchess_notice_to_quit": {
+  "name": "Notice to Quit",
+  "description": "Mark an enemy within 1-4 (-2 defense, -1 attack) for 2 turns and give it 2 stacks of Grudge for 3 turns.",
+  "apCost": 2,
+  "cooldown": 3,
+  "range": {
+   "min": 1,
+   "max": 4
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 2
+   },
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   },
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   }
+  ]
+ },
+ "hm_duchess_quarterdeck": {
+  "name": "The Quarterdeck",
+  "description": "Passive: allies within 2 tiles gain +1 attack and +1 defense.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "allies",
+    "statMods": {
+     "attack": 1,
+     "defense": 1
+    }
+   }
+  ]
+ },
+ "hm_duchess_dowager_claw": {
+  "name": "Dowager's Claw",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_duchess_fury": {
+  "name": "Dowager's Fury",
+  "description": "Deal attack+2 physical damage to an adjacent enemy (+3 more if it is below half HP).",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 3
+    }
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "hm_duchess_legend_full_broadside": {
+  "name": "Full Broadside",
+  "description": "Legend. Deal attack+1 physical damage to every enemy in a line of 5.",
+  "apCost": 4,
+  "cooldown": 4,
+  "range": {
+   "min": 1,
+   "max": 5
+  },
+  "target": "enemy",
+  "area": {
+   "shape": "line",
+   "size": 5
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   }
+  ],
+  "requires": [
+   "line_area"
+  ],
+  "vfx": "dust"
+ },
+ "hm_harrow_mallet": {
+  "name": "Caulking Mallet",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_harrow_refit": {
+  "name": "Refit",
+  "description": "Repair an ally's shell within 1-2 by 6 and heal its body 3.",
+  "apCost": 2,
+  "cooldown": 1,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "ally",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 6
+   },
+   {
+    "type": "heal",
+    "amount": 3
+   }
+  ],
+  "requires": [
+   "shell_repair"
+  ]
+ },
+ "hm_harrow_spare_shell": {
+  "name": "Spare Shell",
+  "description": "Set down an Empty Diving Bell (14 HP) on an empty tile within 1-2. Any bare ally can climb into it.",
+  "apCost": 3,
+  "cooldown": 4,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "hermitage_empty_diving_bell",
+    "count": 1
+   }
+  ],
+  "requires": [
+   "summon"
+  ]
+ },
+ "hm_harrow_workshop": {
+  "name": "Her Workshop",
+  "description": "Passive: allies within 2 tiles take 1 less physical damage (resist physical 1).",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "allies",
+    "resist": {
+     "physical": 1
+    }
+   }
+  ]
+ },
+ "hm_harrow_legend_moving_day": {
+  "name": "Moving Day",
+  "description": "Legend. Repair the shells of allies within 3 of you by 5 and heal them 3.",
+  "apCost": 4,
+  "cooldown": 5,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 3
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 5
+   },
+   {
+    "type": "heal",
+    "amount": 3
+   }
+  ],
+  "requires": [
+   "shell_repair"
+  ]
+ },
+ "hm_sixpence_nip": {
+  "name": "Sixpenny Nip",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_sixpence_powder_flash": {
+  "name": "Powder Flash",
+  "description": "Deal attack-3 fire damage to every enemy adjacent to you and set them Burning (2 fire damage a turn) for 1 turn.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "fire"
+   },
+   {
+    "type": "status",
+    "status": "burning",
+    "duration": 1
+   }
+  ],
+  "vfx": "embers"
+ },
+ "hm_sixpence_cut_the_queue": {
+  "name": "Cutting the Queue",
+  "description": "Passive: bare (unshelled) allies within 2 tiles gain +1 AP.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "allies",
+    "statMods": {
+     "ap": 1
+    },
+    "filter": {
+     "shelled": false
+    }
+   }
+  ],
+  "requires": [
+   "filter_shelled"
+  ]
+ },
+ "hm_sixpence_pocket_pinch": {
+  "name": "Pocket Pinch",
+  "description": "Deal attack+2 physical damage to an adjacent enemy (+2 more if it is below half HP).",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical",
+    "vsWounded": {
+     "below": 0.5,
+     "bonus": 2
+    }
+   }
+  ],
+  "requires": [
+   "vsWounded"
+  ]
+ },
+ "hm_sixpence_legend_front_of_the_queue": {
+  "name": "Front of the Queue",
+  "description": "Legend. Jump to an empty tile within 1-5 and gain Hasted (+2 AP) for 1 turn.",
+  "apCost": 2,
+  "cooldown": 4,
+  "range": {
+   "min": 1,
+   "max": 5
+  },
+  "target": "empty",
+  "effects": [
+   {
+    "type": "teleport"
+   },
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1,
+    "target": "caster"
+   }
+  ],
+  "requires": [
+   "teleport",
+   "status_self"
+  ]
+ },
+ "hm_knell_clapper": {
+  "name": "Clapper",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_knell_toll": {
+  "name": "Toll",
+  "description": "Deal attack-3 pressure damage to every enemy adjacent to you and Stun them for 1 turn.",
+  "apCost": 4,
+  "cooldown": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "pressure"
+   },
+   {
+    "type": "status",
+    "status": "stunned",
+    "duration": 1
+   }
+  ]
+ },
+ "hm_knell_grievances": {
+  "name": "List of Grievances",
+  "description": "Enemies within 1 of a target within 1-3 gain 1 stack of Grudge for 3 turns and are Weakened (-2 attack) for 1 turn.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "enemy",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   },
+   {
+    "type": "status",
+    "status": "weakened",
+    "duration": 1
+   }
+  ]
+ },
+ "hm_knell_remembers": {
+  "name": "It Remembers",
+  "description": "Passive: enemies within 2 tiles have -1 defense.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "enemies",
+    "statMods": {
+     "defense": -1
+    }
+   }
+  ]
+ },
+ "hm_knell_bare_claw": {
+  "name": "Old Claw",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "hm_knell_settle_score": {
+  "name": "Settle the Score",
+  "description": "Deal attack+1 physical damage to an adjacent enemy, then 4 more if it has Grudge.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "physical",
+    "ignoreAttack": true,
+    "ifTargetStatus": "hm_grudge"
+   }
+  ]
+ },
+ "hm_knell_legend_last_toll": {
+  "name": "The Last Toll",
+  "description": "Legend. Enemies within 2 of you are Stunned for 1 turn and gain 2 stacks of Grudge for 3 turns.",
+  "apCost": 5,
+  "cooldown": 6,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "stunned",
+    "duration": 1
+   },
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   },
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   }
+  ]
+ },
+ "hm_r3_hopeful_cut_in": {
+  "name": "Cut In",
+  "description": "Scuttle to an empty tile within 1-3.",
+  "apCost": 2,
+  "cooldown": 3,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "empty",
+  "effects": [
+   {
+    "type": "teleport"
+   }
+  ],
+  "requires": [
+   "teleport"
+  ]
+ },
+ "hm_r3_barrel_hoops": {
+  "name": "Tighten the Hoops",
+  "description": "Repair your own shell by 4.",
+  "apCost": 2,
+  "cooldown": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 4
+   }
+  ],
+  "requires": [
+   "shell_repair"
+  ]
+ },
+ "hm_r3_jug_brine_jug": {
+  "name": "Brine Jug",
+  "description": "Deal attack-2 brine damage to every enemy within 1 of a target within 2-4 and Soak them (-1 defense, -1 AP) for 2 turns.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "brine"
+   },
+   {
+    "type": "status",
+    "status": "soaked",
+    "duration": 2
+   }
+  ],
+  "vfx": "spray"
+ },
+ "hm_r3_pot_full_catch": {
+  "name": "Full Catch",
+  "description": "Root every enemy adjacent to you for 1 turn.",
+  "apCost": 3,
+  "cooldown": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   }
+  ]
+ },
+ "hm_r3_divingbell_air": {
+  "name": "Air from the Bell",
+  "description": "Heal allies within 1 of you for 3.",
+  "apCost": 2,
+  "cooldown": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 3
+   }
+  ],
+  "vfx": "bubbles"
+ },
+ "hm_r3_bell_full_peal": {
+  "name": "Full Peal",
+  "description": "Make every enemy within 2 of you Rattled (-1 AP, -1 attack) for 2 turns.",
+  "apCost": 3,
+  "cooldown": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "hm_rattled",
+    "duration": 2
+   }
+  ]
+ },
+ "hm_r3_boiler_overpressure": {
+  "name": "Overpressure",
+  "description": "Deal attack-1 fire damage to every enemy adjacent to you and set them Burning for 2 turns.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "fire"
+   },
+   {
+    "type": "status",
+    "status": "burning",
+    "duration": 2
+   }
+  ],
+  "vfx": "embers"
+ },
+ "hm_r3_tinker_overhaul": {
+  "name": "Overhaul",
+  "description": "Repair an ally's shell within 1-2 by 8.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "ally",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 8
+   }
+  ],
+  "requires": [
+   "shell_repair"
+  ]
+ },
+ "hm_r3_lifeboat_launch": {
+  "name": "Launch",
+  "description": "Run the boat down to an empty tile within 2-5.",
+  "apCost": 2,
+  "cooldown": 3,
+  "range": {
+   "min": 2,
+   "max": 5
+  },
+  "target": "empty",
+  "effects": [
+   {
+    "type": "teleport"
+   }
+  ],
+  "requires": [
+   "teleport"
+  ],
+  "vfx": "dust"
+ },
+ "hm_r3_bailiff_distrain": {
+  "name": "Distrain",
+  "description": "Deal attack physical damage to an adjacent enemy, drain 4 of its owner's Tide and gain 2 Tide.",
+  "apCost": 3,
+  "cooldown": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "essence",
+    "amount": -4,
+    "team": "enemy"
+   },
+   {
+    "type": "essence",
+    "amount": 2,
+    "team": "self"
+   }
+  ],
+  "requires": [
+   "essence"
+  ]
+ },
+ "hm_r3_gundeck_double_shot": {
+  "name": "Double Shot",
+  "description": "Deal attack+2 physical damage to an enemy within 3-6.",
+  "apCost": 3,
+  "cooldown": 2,
+  "range": {
+   "min": 3,
+   "max": 6
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical"
+   }
+  ],
+  "vfx": "dust"
+ },
+ "hm_r3_prow_full_sail": {
+  "name": "Full Sail",
+  "description": "Deal attack-1 physical damage to every enemy in a line of 3 and push them 1 tile (2 damage if they hit something).",
+  "apCost": 4,
+  "cooldown": 3,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "enemy",
+  "area": {
+   "shape": "line",
+   "size": 3
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "push",
+    "distance": 1,
+    "collisionDamage": 2
+   }
+  ],
+  "requires": [
+   "line_area"
+  ]
+ },
+ "hm_r3_warden_all_hands": {
+  "name": "All Hands",
+  "description": "Repair the shells of allies within 3 of you by 3 and give them Emboldened (+2 attack) for 1 turn.",
+  "apCost": 4,
+  "cooldown": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "size": 3
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 3
+   },
+   {
+    "type": "status",
+    "status": "emboldened",
+    "duration": 1
+   }
+  ],
+  "requires": [
+   "shell_repair"
+  ]
+ },
+ "hm_r3_broker_bell_on_order": {
+  "name": "Bell on Order",
+  "description": "Drop an Empty Bell (12 HP) onto an adjacent empty tile. Any bare ally can climb into it.",
+  "apCost": 3,
+  "cooldown": 4,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "empty",
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "hermitage_empty_bell",
+    "count": 1
+   }
+  ],
+  "requires": [
+   "summon"
+  ]
+ },
+ "hm_r3_landlord_full_rotation": {
+  "name": "Full Rotation",
+  "description": "Deal attack light damage to every enemy in a line of 6 and Mark them (-2 defense, -1 attack) for 2 turns.",
+  "apCost": 4,
+  "cooldown": 4,
+  "range": {
+   "min": 1,
+   "max": 6
+  },
+  "target": "enemy",
+  "area": {
+   "shape": "line",
+   "size": 6
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "light"
+   },
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 2
+   }
+  ],
+  "requires": [
+   "line_area"
+  ]
+ },
+ "hm_equip_patch_self": {
+  "name": "Bolt On a Plate",
+  "description": "Repair your own shell by 5. Does nothing if you are bare.",
+  "apCost": 1,
+  "cooldown": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 5
+   }
+  ],
+  "requires": [
+   "shell_repair"
+  ]
+ },
+ "hm_equip_ledger_remember": {
+  "name": "Write It Down",
+  "description": "Mark an enemy within 1-3 (-2 defense, -1 attack) for 1 turn and give it 2 stacks of Grudge for 3 turns.",
+  "apCost": 2,
+  "cooldown": 3,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "status",
+    "status": "marked",
+    "duration": 1
+   },
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   },
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   }
+  ]
  }
 }

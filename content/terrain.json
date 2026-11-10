@@ -82,7 +82,8 @@
     "factionMoveCost": {
       "salvage_compact": 1
     },
-    "description": "Broken hull and ribs. Hard going and good cover; Salvage Compact crews climb it freely."
+    "description": "Broken hull and ribs. Hard going and good cover; Salvage Compact crews climb it freely.",
+    "shellSource": "hermitage_lifeboat_skimmer"
   },
   "brine_pool": {
     "name": "Brine Pool",
@@ -386,7 +387,8 @@
         "tiles/scrap_field_prop_1.png",
         "tiles/scrap_field_prop_2.png"
       ]
-    }
+    },
+    "shellSource": "hermitage_barrel_squatter"
   },
   "beam_glass": {
     "name": "Beam Glass",

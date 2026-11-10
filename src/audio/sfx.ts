@@ -27,7 +27,7 @@ function profile(g: Game, u: Unit) {
   const big = BIG_ROLE.test(role);
   let body: Body;
   if (MACHINE_ROLE.test(role)) body = 'm';
-  else if (fac === 'reef_ascendant') body = 'c';
+  else if (fac === 'reef_ascendant' || fac === 'hermitage') body = 'c';
   else if (fac === 'returning_tide') body = 'd';
   else if (fac === 'hadal_court') body = d.hero ? 'g' : 'l';
   else body = big ? 'l' : 'h';

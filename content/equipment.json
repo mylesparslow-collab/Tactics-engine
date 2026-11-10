@@ -599,5 +599,71 @@
   "statMods": {
    "attack": 2
   }
+ },
+ "hm_equip_tar_caulking": {
+  "name": "Tar Caulking",
+  "description": "+3 hp and resist 1 brine damage. Every seam on the bearer packed with hot tar and oakum.",
+  "faction": "hermitage",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "hp": 3
+  },
+  "resist": {
+   "brine": 1
+  }
+ },
+ "hm_equip_filed_claw": {
+  "name": "Filed Claw",
+  "description": "+1 attack. The inside edge of the big claw filed to a working edge on a wreck-rib.",
+  "faction": "hermitage",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "attack": 1
+  }
+ },
+ "hm_equip_spare_plating": {
+  "name": "Spare Plating",
+  "description": "Grants Bolt On a Plate: repair your own shell by 5 (1 AP, cooldown 3). Does nothing for a bare crab.",
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "cost": 18,
+  "grantAbilities": [
+   "hm_equip_patch_self"
+  ]
+ },
+ "hm_equip_grudge_ledger": {
+  "name": "Grudge Ledger",
+  "description": "Grants Write It Down: Mark an enemy within 1-3 for 1 turn and give it 2 stacks of Grudge for 3 turns.",
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "cost": 20,
+  "grantAbilities": [
+   "hm_equip_ledger_remember"
+  ]
+ },
+ "hm_equip_moulting_sac": {
+  "name": "Moulting Sac",
+  "description": "+2 hp, and the bearer returns once on death with 30 percent of its hp, having quietly grown a new skin.",
+  "faction": "hermitage",
+  "rarity": "rare",
+  "cost": 30,
+  "statMods": {
+   "hp": 2
+  },
+  "revive": {
+   "hpFraction": 0.3
+  }
+ },
+ "hm_equip_brass_claw_cap": {
+  "name": "Brass Claw-Cap",
+  "description": "+2 attack. A ship's brass fender-cap hammered over the big claw.",
+  "faction": "hermitage",
+  "rarity": "rare",
+  "cost": 30,
+  "statMods": {
+   "attack": 2
+  }
  }
 }

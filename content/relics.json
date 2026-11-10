@@ -5218,5 +5218,654 @@
   ],
   "card": "salvage_compact_hesk_varrow",
   "unit": "salvage_compact_hesk_varrow"
+ },
+ "hermitage_hopeful": {
+  "faction": "hermitage",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Legs"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Grown a Bit"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_hopeful_cut_in",
+    "label": "Cut In"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_hopeful",
+  "unit": "hermitage_hopeful"
+ },
+ "hermitage_barrel_squatter": {
+  "faction": "hermitage",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thicker Staves"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Iron Hoops"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_barrel_hoops",
+    "label": "Tighten the Hoops"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_barrel_squatter",
+  "unit": "hermitage_barrel_squatter"
+ },
+ "hermitage_jug_lobber": {
+  "faction": "hermitage",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Glazed Jug"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Heavier Ballast"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_jug_brine_jug",
+    "label": "Brine Jug"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_jug_lobber",
+  "unit": "hermitage_jug_lobber"
+ },
+ "hermitage_lobster_pot_lurker": {
+  "faction": "hermitage",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Tarred Withies"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Longer Line"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_pot_full_catch",
+    "label": "Full Catch"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_lobster_pot_lurker",
+  "unit": "hermitage_lobster_pot_lurker"
+ },
+ "hermitage_diving_bell_hermit": {
+  "faction": "hermitage",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Riveted Rim"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Thick Glass"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_divingbell_air",
+    "label": "Air from the Bell"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_diving_bell_hermit",
+  "unit": "hermitage_diving_bell_hermit"
+ },
+ "hermitage_bell_tenant": {
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Bronze Lip"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Heavier Clapper"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_bell_full_peal",
+    "label": "Full Peal"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_bell_tenant",
+  "unit": "hermitage_bell_tenant"
+ },
+ "hermitage_boiler_lodger": {
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Patched Firebox"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Higher Pressure"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_boiler_overpressure",
+    "label": "Overpressure"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_boiler_lodger",
+  "unit": "hermitage_boiler_lodger"
+ },
+ "hermitage_tool_chest_tinker": {
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Brass Corners"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Busy Claws"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_tinker_overhaul",
+    "label": "Overhaul"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_tool_chest_tinker",
+  "unit": "hermitage_tool_chest_tinker"
+ },
+ "hermitage_lifeboat_skimmer": {
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Greased Keel"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Doubled Strakes"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_lifeboat_launch",
+    "label": "Launch"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_lifeboat_skimmer",
+  "unit": "hermitage_lifeboat_skimmer"
+ },
+ "hermitage_strongbox_bailiff": {
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Second Padlock"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Long Memory"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_bailiff_distrain",
+    "label": "Distrain"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_strongbox_bailiff",
+  "unit": "hermitage_strongbox_bailiff"
+ },
+ "hermitage_gun_deck_lodger": {
+  "faction": "hermitage",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Better Powder"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Bronze Breech"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_gundeck_double_shot",
+    "label": "Double Shot"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_gun_deck_lodger",
+  "unit": "hermitage_gun_deck_lodger"
+ },
+ "hermitage_prow_ram": {
+  "faction": "hermitage",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Iron-Shod Bow"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharpened Ram"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_prow_full_sail",
+    "label": "Full Sail"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_prow_ram",
+  "unit": "hermitage_prow_ram"
+ },
+ "hermitage_wheelhouse_warden": {
+  "faction": "hermitage",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Planked Roof"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Firm Hand"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_warden_all_hands",
+    "label": "All Hands"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_wheelhouse_warden",
+  "unit": "hermitage_wheelhouse_warden"
+ },
+ "hermitage_shell_broker": {
+  "faction": "hermitage",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Lighter Sledge"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thick Skin"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_broker_bell_on_order",
+    "label": "Bell on Order"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_shell_broker",
+  "unit": "hermitage_shell_broker"
+ },
+ "hermitage_the_landlord": {
+  "faction": "hermitage",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "New Panes"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Brighter Lamp"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_landlord_full_rotation",
+    "label": "Full Rotation"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_the_landlord",
+  "unit": "hermitage_the_landlord"
+ },
+ "hermitage_duchess_abaft": {
+  "faction": "hermitage",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "New Gilding"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Oak Knees"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hm_duchess_legend_full_broadside",
+    "label": "Full Broadside"
+   }
+  ],
+  "card": "hermitage_duchess_abaft",
+  "unit": "hermitage_duchess_abaft"
+ },
+ "hermitage_mother_harrow": {
+  "faction": "hermitage",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Old Hands"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Short Cuts"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hm_harrow_legend_moving_day",
+    "label": "Moving Day"
+   }
+  ],
+  "card": "hermitage_mother_harrow",
+  "unit": "hermitage_mother_harrow"
+ },
+ "hermitage_sixpence": {
+  "faction": "hermitage",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Shorter Fuse"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Lucky Keg"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hm_sixpence_legend_front_of_the_queue",
+    "label": "Front of the Queue"
+   }
+  ],
+  "card": "hermitage_sixpence",
+  "unit": "hermitage_sixpence"
+ },
+ "hermitage_old_knell": {
+  "faction": "hermitage",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Thicker Bronze"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Longer List"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hm_knell_legend_last_toll",
+    "label": "The Last Toll"
+   }
+  ],
+  "card": "hermitage_old_knell",
+  "unit": "hermitage_old_knell"
+ },
+ "hm_spell_leftovers": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hm_spell_leftovers"
+ },
+ "hm_spell_caulk_and_tar": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hm_spell_caulk_and_tar"
+ },
+ "hm_spell_long_memory": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hm_spell_long_memory"
+ },
+ "hm_spell_the_bell_comes_down": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hm_spell_the_bell_comes_down"
+ },
+ "hm_spell_bare_claws": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hm_spell_bare_claws"
+ },
+ "hm_spell_salvage_spill": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hm_spell_salvage_spill"
+ },
+ "hm_spell_off_the_gun_deck": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hm_spell_off_the_gun_deck"
+ },
+ "hm_spell_moving_day": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hm_spell_moving_day"
+ },
+ "hm_equip_tar_caulking": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hm_equip_tar_caulking"
+ },
+ "hm_equip_filed_claw": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hm_equip_filed_claw"
+ },
+ "hm_equip_spare_plating": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hm_equip_spare_plating"
+ },
+ "hm_equip_grudge_ledger": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hm_equip_grudge_ledger"
+ },
+ "hm_equip_moulting_sac": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hm_equip_moulting_sac"
+ },
+ "hm_equip_brass_claw_cap": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hm_equip_brass_claw_cap"
  }
 }

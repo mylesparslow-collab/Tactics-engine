@@ -352,5 +352,39 @@
   "statMods": {
    "ap": -1
   }
+ },
+ "hm_grudge": {
+  "name": "Grudge",
+  "description": "The Hermitage has put you on its list and will not take you off. -1 defense per stack (stacks to 3).",
+  "statMods": {
+   "defense": -1
+  },
+  "stacks": true,
+  "maxStacks": 3
+ },
+ "hm_battened": {
+  "name": "Battened Down",
+  "description": "Everything pulled in and the lid shut. +2 defense, -1 AP.",
+  "statMods": {
+   "defense": 2,
+   "ap": -1
+  }
+ },
+ "hm_rattled": {
+  "name": "Rattled",
+  "description": "Ears full of bell. -1 AP, -1 attack.",
+  "statMods": {
+   "ap": -1,
+   "attack": -1
+  }
+ },
+ "hm_skittish": {
+  "name": "Skittish",
+  "description": "Bare, frightened and very fast. +1 AP, +1 attack, and never pays the engagement cost.",
+  "statMods": {
+   "ap": 1,
+   "attack": 1
+  },
+  "ignoresEngagement": true
  }
 }

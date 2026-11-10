@@ -22,6 +22,7 @@ PAL = {
     'lanternkeepers':  dict(sea=(10, 14, 30), top=(18, 20, 36), hor=(92, 82, 100), land=(46, 44, 56), gn=(34, 32, 40), gf=(56, 52, 62), key=(255, 204, 116), acc=(227, 176, 75), prop=(24, 22, 30)),
     'overcurrent':     dict(sea=(6, 20, 46), top=(14, 34, 66), hor=(118, 184, 218), land=(40, 70, 96), gn=(28, 48, 70), gf=(58, 92, 118), key=(160, 238, 240), acc=(95, 224, 230), prop=(18, 34, 56)),
     'gyre':            dict(sea=(32, 40, 50), top=(54, 60, 70), hor=(184, 178, 132), land=(96, 100, 104), gn=(82, 86, 90), gf=(122, 124, 120), key=(242, 216, 162), acc=(232, 137, 47), prop=(44, 48, 56)),
+    'hermitage':       dict(sea=(30, 20, 40), top=(52, 34, 66), hor=(214, 140, 80), land=(110, 72, 100), gn=(90, 60, 76), gf=(130, 88, 100), key=(255, 206, 150), acc=(217, 130, 43), prop=(44, 28, 46)),
 }
 
 def A(c): return np.asarray(c, np.float32)
@@ -403,6 +404,7 @@ LANDMARKS = {
     'salt_concord': L_salt_concord, 'hadal_court': L_hadal_court, 'returning_tide': L_returning_tide,
     'salvage_compact': L_salvage_compact, 'reef_ascendant': L_reef_ascendant, 'lanternkeepers': L_lanternkeepers,
     'overcurrent': L_overcurrent, 'gyre': L_gyre,
+    'hermitage': L_salvage_compact,  # wreck field on the Hulks; give it its own landmarks when the faction gets painted scenes
 }
 
 def scene(fid, seed):

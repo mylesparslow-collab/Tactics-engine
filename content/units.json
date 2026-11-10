@@ -3977,5 +3977,854 @@
    "glyph": "HV"
   },
   "description": "The broker from the paper swords, before the Concord caught him, with a quill behind one ear and a knife behind the other. Every order he has signed is real, in the sense that someone obeyed it."
+ },
+ "hermitage_bare_small": {
+  "name": "Bare Scuttler",
+  "role": "Evicted (small)",
+  "faction": "hermitage",
+  "cost": 0,
+  "token": true,
+  "stats": {
+   "hp": 12,
+   "ap": 8,
+   "attack": 8,
+   "defense": 0,
+   "jump": 2
+  },
+  "ignoresEngagement": true,
+  "abilities": [
+   "hm_scuttler_pinch",
+   "hm_scuttler_frenzy",
+   "hm_rehouse"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "bs"
+  },
+  "description": "A dog-sized hermit crab with its soft curled tail out in the air for everyone to see. It is embarrassed, it is furious, and it is very quick."
+ },
+ "hermitage_bare_medium": {
+  "name": "Bare Snapper",
+  "role": "Evicted (medium)",
+  "faction": "hermitage",
+  "cost": 0,
+  "token": true,
+  "stats": {
+   "hp": 16,
+   "ap": 8,
+   "attack": 9,
+   "defense": 0,
+   "jump": 2
+  },
+  "ignoresEngagement": true,
+  "abilities": [
+   "hm_snapper_snap",
+   "hm_snapper_rend",
+   "hm_rehouse"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "bS"
+  },
+  "description": "A pony-sized crab caught without a house, tail curled tight, one great violet claw held up like a grievance. It wants a shell, and failing that, yours."
+ },
+ "hermitage_bare_large": {
+  "name": "Bare Brute",
+  "role": "Evicted (large)",
+  "faction": "hermitage",
+  "cost": 0,
+  "token": true,
+  "stats": {
+   "hp": 22,
+   "ap": 7,
+   "attack": 10,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "hm_brute_crush",
+   "hm_brute_thrash",
+   "hm_rehouse"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "bB"
+  },
+  "description": "A crab the size of a dray-horse turned out of its gun or its wheelhouse, pale tail dragging, claws wide. Nobody on the Ebb has ever wanted to be the reason."
+ },
+ "hermitage_bare_great": {
+  "name": "Bare Giant",
+  "role": "Evicted (great)",
+  "faction": "hermitage",
+  "cost": 0,
+  "token": true,
+  "stats": {
+   "hp": 30,
+   "ap": 7,
+   "attack": 11,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "hm_giant_claw",
+   "hm_giant_tantrum",
+   "hm_rehouse"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "bG"
+  },
+  "description": "A crab as big as a hay-wagon with nothing on its back for the first time in a century. It is looking for the one who did this, and then for somewhere to live."
+ },
+ "hermitage_duchess_bare": {
+  "name": "Duchess Abaft, Bare",
+  "role": "Hero (Evicted)",
+  "faction": "hermitage",
+  "cost": 0,
+  "title": "the Stern Tenant",
+  "token": true,
+  "stats": {
+   "hp": 26,
+   "ap": 7,
+   "attack": 11,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "hm_duchess_dowager_claw",
+   "hm_duchess_fury",
+   "hm_duchess_quarterdeck",
+   "hm_rehouse"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "DA",
+   "image": "sprites/hermitage_bare_great_still.png",
+   "sheet": "sprites/hermitage_bare_great.png",
+   "manifest": "sprites/hermitage_bare_great.json"
+  },
+  "description": "The Duchess out of her stern-castle, enormous and pale and absolutely not receiving visitors. Her quarterdeck manner survives the loss of the quarterdeck."
+ },
+ "hermitage_knell_bare": {
+  "name": "Old Knell, Bare",
+  "role": "Hero (Evicted)",
+  "faction": "hermitage",
+  "cost": 0,
+  "title": "the Grudge-Bell",
+  "token": true,
+  "stats": {
+   "hp": 22,
+   "ap": 7,
+   "attack": 11,
+   "defense": 1,
+   "jump": 2
+  },
+  "abilities": [
+   "hm_knell_bare_claw",
+   "hm_knell_settle_score",
+   "hm_knell_remembers",
+   "hm_rehouse"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "OK",
+   "image": "sprites/hermitage_bare_large_still.png",
+   "sheet": "sprites/hermitage_bare_large.png",
+   "manifest": "sprites/hermitage_bare_large.json"
+  },
+  "description": "Old Knell without its bell, which it will tell you about. At length. After it has dealt with you."
+ },
+ "hermitage_sixpence_bare": {
+  "name": "Sixpence, Bare",
+  "role": "Hero (Evicted)",
+  "faction": "hermitage",
+  "cost": 0,
+  "title": "the Queue-Jumper",
+  "token": true,
+  "stats": {
+   "hp": 16,
+   "ap": 9,
+   "attack": 10,
+   "defense": 0,
+   "jump": 2
+  },
+  "ignoresEngagement": true,
+  "abilities": [
+   "hm_sixpence_nip",
+   "hm_sixpence_pocket_pinch",
+   "hm_sixpence_cut_the_queue",
+   "hm_rehouse"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "6d",
+   "image": "sprites/hermitage_bare_medium_still.png",
+   "sheet": "sprites/hermitage_bare_medium.png",
+   "manifest": "sprites/hermitage_bare_medium.json"
+  },
+  "description": "Sixpence between kegs, which is how Sixpence likes it best: light, quick, and first to whatever is going."
+ },
+ "hermitage_empty_barrel": {
+  "name": "Empty Barrel",
+  "role": "Empty Shell",
+  "faction": "hermitage",
+  "cost": 0,
+  "token": true,
+  "structure": true,
+  "stats": {
+   "hp": 9,
+   "ap": 0,
+   "attack": 0,
+   "defense": 1,
+   "jump": 0
+  },
+  "emptyShell": {
+   "becomes": "hermitage_barrel_squatter"
+  },
+  "abilities": [],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "eb"
+  },
+  "description": "A tarred hogshead with the bung knocked out and the inside worn smooth. Vacant; apply within."
+ },
+ "hermitage_empty_diving_bell": {
+  "name": "Empty Diving Bell",
+  "role": "Empty Shell",
+  "faction": "hermitage",
+  "cost": 0,
+  "token": true,
+  "structure": true,
+  "stats": {
+   "hp": 14,
+   "ap": 0,
+   "attack": 0,
+   "defense": 3,
+   "jump": 0
+  },
+  "emptyShell": {
+   "becomes": "hermitage_diving_bell_hermit"
+  },
+  "abilities": [],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "ed"
+  },
+  "description": "A brass diving bell standing open-mouthed on the salt, portholes dark. It still smells of the last tenant."
+ },
+ "hermitage_empty_bell": {
+  "name": "Empty Bell",
+  "role": "Empty Shell",
+  "faction": "hermitage",
+  "cost": 0,
+  "token": true,
+  "structure": true,
+  "stats": {
+   "hp": 12,
+   "ap": 0,
+   "attack": 0,
+   "defense": 2,
+   "jump": 0
+  },
+  "emptyShell": {
+   "becomes": "hermitage_bell_tenant"
+  },
+  "abilities": [],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "eB"
+  },
+  "description": "A cracked bronze chapel bell lying on its lip, clapper tied up with rope so it does not ring for nobody."
+ },
+ "hermitage_empty_boiler": {
+  "name": "Empty Boiler",
+  "role": "Empty Shell",
+  "faction": "hermitage",
+  "cost": 0,
+  "token": true,
+  "structure": true,
+  "stats": {
+   "hp": 12,
+   "ap": 0,
+   "attack": 0,
+   "defense": 2,
+   "jump": 0
+  },
+  "emptyShell": {
+   "becomes": "hermitage_boiler_lodger"
+  },
+  "abilities": [],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "eo"
+  },
+  "description": "A riveted ship's boiler on its side with the firebox door hanging open, still warm. Good for a crab who likes it hot."
+ },
+ "hermitage_empty_cannon": {
+  "name": "Empty Cannon",
+  "role": "Empty Shell",
+  "faction": "hermitage",
+  "cost": 0,
+  "token": true,
+  "structure": true,
+  "stats": {
+   "hp": 16,
+   "ap": 0,
+   "attack": 0,
+   "defense": 2,
+   "jump": 0
+  },
+  "emptyShell": {
+   "becomes": "hermitage_gun_deck_lodger"
+  },
+  "abilities": [],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "ec"
+  },
+  "description": "A Concord long gun with its carriage gone, lying on the salt with the breech open. The best address in the queue."
+ },
+ "hermitage_hopeful": {
+  "name": "Hopeful",
+  "role": "Cheap Body",
+  "faction": "hermitage",
+  "cost": 20,
+  "stats": {
+   "hp": 10,
+   "ap": 7,
+   "attack": 6,
+   "defense": 0,
+   "jump": 2
+  },
+  "abilities": [
+   "hm_hopeful_pinch",
+   "hm_rehouse"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Hp",
+   "image": "sprites/hermitage_bare_small_still.png",
+   "sheet": "sprites/hermitage_bare_small.png",
+   "manifest": "sprites/hermitage_bare_small.json"
+  },
+  "description": "A young crab with no house at all, sent to the front of the fight because the front is where the wrecks are. Every Hopeful is in the queue for something."
+ },
+ "hermitage_barrel_squatter": {
+  "name": "Barrel Squatter",
+  "role": "Cheap Body",
+  "faction": "hermitage",
+  "cost": 30,
+  "stats": {
+   "hp": 9,
+   "ap": 5,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 9,
+   "evicted": "hermitage_bare_small",
+   "leaves": "hermitage_empty_barrel"
+  },
+  "abilities": [
+   "hm_barrel_bash",
+   "hm_barrel_roll",
+   "hm_move_out"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Bq"
+  },
+  "description": "A dog-sized crab in a tarred brewer's hogshead, the first rung of the Hermitage's ladder. Every crab on the Ebb has lived in a barrel once and none of them talk about it."
+ },
+ "hermitage_jug_lobber": {
+  "name": "Jug Lobber",
+  "role": "Ranged",
+  "faction": "hermitage",
+  "cost": 35,
+  "stats": {
+   "hp": 9,
+   "ap": 5,
+   "attack": 6,
+   "defense": 0,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 8,
+   "evicted": "hermitage_bare_small"
+  },
+  "abilities": [
+   "hm_jug_lob",
+   "hm_jug_pot_shot"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Jl"
+  },
+  "description": "A crab in a stoneware cistern-jug that throws ballast stones with its big claw. The Compact pay it in jugs, which it considers the deal of the century."
+ },
+ "hermitage_lobster_pot_lurker": {
+  "name": "Lobster-Pot Lurker",
+  "role": "Controller",
+  "faction": "hermitage",
+  "cost": 35,
+  "stats": {
+   "hp": 9,
+   "ap": 5,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 9,
+   "evicted": "hermitage_bare_small"
+  },
+  "abilities": [
+   "hm_pot_pinch",
+   "hm_pot_haul"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Lp"
+  },
+  "description": "A crab that moved into a giant iron-and-withy lobster pot and kept the rope. It finds the irony delicious, and so, eventually, does whatever it hauls in."
+ },
+ "hermitage_diving_bell_hermit": {
+  "name": "Diving-Bell Hermit",
+  "role": "Tank",
+  "faction": "hermitage",
+  "cost": 40,
+  "stats": {
+   "hp": 12,
+   "ap": 4,
+   "attack": 6,
+   "defense": 3,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 14,
+   "evicted": "hermitage_bare_medium",
+   "leaves": "hermitage_empty_diving_bell"
+  },
+  "resist": {
+   "salt": -1
+  },
+  "abilities": [
+   "hm_divingbell_butt",
+   "hm_batten_down",
+   "hm_move_out"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Db"
+  },
+  "description": "A pony-sized crab in a brass salvage diving bell, eyestalks up the inside of the portholes. It holds a line the way a doorstop holds a door."
+ },
+ "hermitage_bell_tenant": {
+  "name": "Bell Tenant",
+  "role": "Controller",
+  "faction": "hermitage",
+  "cost": 45,
+  "stats": {
+   "hp": 11,
+   "ap": 4,
+   "attack": 7,
+   "defense": 2,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 12,
+   "evicted": "hermitage_bare_medium",
+   "leaves": "hermitage_empty_bell"
+  },
+  "abilities": [
+   "hm_bell_swing",
+   "hm_bell_clang",
+   "hm_bell_ring",
+   "hm_move_out"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Bt"
+  },
+  "description": "A crab that took a chapel bell off the Greywater Stair and has rung it, loudly, at everyone since. The Concord still sends letters."
+ },
+ "hermitage_boiler_lodger": {
+  "name": "Boiler Lodger",
+  "role": "Short Ranged / Fire",
+  "faction": "hermitage",
+  "cost": 45,
+  "stats": {
+   "hp": 11,
+   "ap": 4,
+   "attack": 7,
+   "defense": 2,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 12,
+   "evicted": "hermitage_bare_medium",
+   "leaves": "hermitage_empty_boiler"
+  },
+  "resist": {
+   "fire": 2,
+   "salt": -1
+  },
+  "abilities": [
+   "hm_boiler_scald",
+   "hm_boiler_blowoff",
+   "hm_move_out"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Bl"
+  },
+  "description": "A crab living in a steamer's boiler with a banked fire still going in the box, kept fed on wreck-timber. It likes the warmth and it likes to share."
+ },
+ "hermitage_tool_chest_tinker": {
+  "name": "Tool-Chest Tinker",
+  "role": "Support / Healer",
+  "faction": "hermitage",
+  "cost": 40,
+  "stats": {
+   "hp": 9,
+   "ap": 5,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 10,
+   "evicted": "hermitage_bare_small"
+  },
+  "abilities": [
+   "hm_tinker_tap",
+   "hm_tinker_patch",
+   "hm_tinker_tar_seams"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Tt"
+  },
+  "description": "A crab in a ship's carpenter's chest with the lid propped open on a chisel, mallet in its claw. It mends shells for the queue and takes payment in nails."
+ },
+ "hermitage_lifeboat_skimmer": {
+  "name": "Lifeboat Skimmer",
+  "role": "Mobile",
+  "faction": "hermitage",
+  "cost": 45,
+  "stats": {
+   "hp": 11,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 10,
+   "evicted": "hermitage_bare_medium"
+  },
+  "ignoresEngagement": true,
+  "abilities": [
+   "hm_lifeboat_ram",
+   "hm_lifeboat_skid",
+   "hm_lifeboat_keelhaul"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Ls"
+  },
+  "description": "A crab under an upturned clinker lifeboat, legs out beneath it like oars, skidding across the salt on the keel. Every wreck on the Hulks had one of these, and now most of them have a tenant."
+ },
+ "hermitage_strongbox_bailiff": {
+  "name": "Strongbox Bailiff",
+  "role": "Disruptor",
+  "faction": "hermitage",
+  "cost": 45,
+  "stats": {
+   "hp": 11,
+   "ap": 5,
+   "attack": 7,
+   "defense": 2,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 11,
+   "evicted": "hermitage_bare_medium"
+  },
+  "resist": {
+   "salt": -1
+  },
+  "abilities": [
+   "hm_bailiff_pinch",
+   "hm_bailiff_serve_notice",
+   "hm_bailiff_collect"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Sb"
+  },
+  "description": "A crab in an iron-banded Compact pay-chest, lid raised like a visor, padlock swinging on its chain. It keeps the Hermitage's list of grudges and it serves every one of them in person."
+ },
+ "hermitage_gun_deck_lodger": {
+  "name": "Gun-Deck Lodger",
+  "role": "Long Ranged",
+  "faction": "hermitage",
+  "cost": 60,
+  "stats": {
+   "hp": 14,
+   "ap": 4,
+   "attack": 8,
+   "defense": 2,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 16,
+   "evicted": "hermitage_bare_large",
+   "leaves": "hermitage_empty_cannon"
+  },
+  "resist": {
+   "salt": -1
+  },
+  "abilities": [
+   "hm_gundeck_shot",
+   "hm_gundeck_grapeshot",
+   "hm_move_out"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Gd"
+  },
+  "description": "A horse-sized crab living in a Concord long gun, claws out of the breech, eyestalks either side of the muzzle. It worked out the powder on its own and nobody is happy about that."
+ },
+ "hermitage_prow_ram": {
+  "name": "Prow Ram",
+  "role": "Bruiser",
+  "faction": "hermitage",
+  "cost": 55,
+  "stats": {
+   "hp": 14,
+   "ap": 5,
+   "attack": 9,
+   "defense": 2,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 15,
+   "evicted": "hermitage_bare_large"
+  },
+  "abilities": [
+   "hm_prow_gore",
+   "hm_prow_ram",
+   "hm_prow_stare"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Pr"
+  },
+  "description": "A crab wearing the whole bow of a ship, iron ram low, a carved figurehead staring out ahead of it. It has never once gone round anything."
+ },
+ "hermitage_wheelhouse_warden": {
+  "name": "Wheelhouse Warden",
+  "role": "Commander",
+  "faction": "hermitage",
+  "cost": 55,
+  "stats": {
+   "hp": 13,
+   "ap": 5,
+   "attack": 7,
+   "defense": 2,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 14,
+   "evicted": "hermitage_bare_large"
+  },
+  "abilities": [
+   "hm_warden_cuff",
+   "hm_warden_steady",
+   "hm_warden_hard_over"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Ww"
+  },
+  "description": "A crab in a coaster's wheelhouse, the great wheel turning in its window as it walks. It keeps the queue, settles who gets which shell, and is obeyed because nobody wants the job."
+ },
+ "hermitage_shell_broker": {
+  "name": "Shell-Broker",
+  "role": "Support / Mobile",
+  "faction": "hermitage",
+  "cost": 50,
+  "stats": {
+   "hp": 18,
+   "ap": 7,
+   "attack": 7,
+   "defense": 1,
+   "jump": 2
+  },
+  "ignoresEngagement": true,
+  "abilities": [
+   "hm_broker_pinch",
+   "hm_broker_hand_me_down",
+   "hm_broker_appraise",
+   "hm_rehouse"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Sh"
+  },
+  "description": "A bare crab who never keeps a house, dragging a net-sledge of barrels and spare plate. It sets the price of every shell on the Ebb, and the price is always 'one size up'."
+ },
+ "hermitage_the_landlord": {
+  "name": "The Landlord",
+  "role": "Exotic Big Body",
+  "faction": "hermitage",
+  "cost": 70,
+  "stats": {
+   "hp": 16,
+   "ap": 4,
+   "attack": 8,
+   "defense": 2,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 22,
+   "evicted": "hermitage_bare_great"
+  },
+  "resist": {
+   "light": 1
+  },
+  "abilities": [
+   "hm_landlord_claw",
+   "hm_landlord_lamp",
+   "hm_landlord_premises"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "LL"
+  },
+  "description": "A crab as big as a wagon wearing the lamp-room of a fallen lighthouse, the lamp still lit inside it and turning. The Lanternkeepers want it back more than they will say."
+ },
+ "hermitage_duchess_abaft": {
+  "name": "Duchess Abaft",
+  "role": "Hero",
+  "faction": "hermitage",
+  "cost": 85,
+  "title": "the Stern Tenant",
+  "hero": true,
+  "stats": {
+   "hp": 20,
+   "ap": 4,
+   "attack": 9,
+   "defense": 3,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 20,
+   "evicted": "hermitage_duchess_bare"
+  },
+  "abilities": [
+   "hm_duchess_rudder",
+   "hm_duchess_stern_chasers",
+   "hm_duchess_notice_to_quit",
+   "hm_duchess_quarterdeck"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "DA"
+  },
+  "description": "The eldest crab on the Hulks, living in the carved stern-castle of a sunk ship-of-the-line, gallery windows lit, rudder for a tail. She owns the Hermitage's longest grudge and its best view."
+ },
+ "hermitage_mother_harrow": {
+  "name": "Mother Harrow",
+  "role": "Hero",
+  "faction": "hermitage",
+  "cost": 70,
+  "title": "the Hermit of the Kettle",
+  "hero": true,
+  "stats": {
+   "hp": 26,
+   "ap": 6,
+   "attack": 6,
+   "defense": 1,
+   "jump": 1
+  },
+  "abilities": [
+   "hm_harrow_mallet",
+   "hm_harrow_refit",
+   "hm_harrow_spare_shell",
+   "hm_harrow_workshop"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "MH"
+  },
+  "description": "A retired Compact ship's carpenter who walked out into the Kettle forty years ago to mend crabs' shells and never came back. The Compact called her shack 'the Hermitage', and the name stuck to everything that queued outside it."
+ },
+ "hermitage_sixpence": {
+  "name": "Sixpence",
+  "role": "Hero",
+  "faction": "hermitage",
+  "cost": 75,
+  "title": "the Queue-Jumper",
+  "hero": true,
+  "stats": {
+   "hp": 14,
+   "ap": 6,
+   "attack": 9,
+   "defense": 1,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 10,
+   "evicted": "hermitage_sixpence_bare",
+   "leaves": "hermitage_empty_barrel"
+  },
+  "ignoresEngagement": true,
+  "abilities": [
+   "hm_sixpence_nip",
+   "hm_sixpence_powder_flash",
+   "hm_sixpence_cut_the_queue",
+   "hm_move_out"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "6d"
+  },
+  "description": "A pony-sized crab in a Compact powder keg, still half full, who has never waited in a line in its life. Every crab in the Hermitage has a grudge against Sixpence, and every one of them wants to be it."
+ },
+ "hermitage_old_knell": {
+  "name": "Old Knell",
+  "role": "Hero",
+  "faction": "hermitage",
+  "cost": 80,
+  "title": "the Grudge-Bell",
+  "hero": true,
+  "stats": {
+   "hp": 18,
+   "ap": 4,
+   "attack": 8,
+   "defense": 3,
+   "jump": 1
+  },
+  "shell": {
+   "hp": 18,
+   "evicted": "hermitage_knell_bare"
+  },
+  "resist": {
+   "pressure": 1
+  },
+  "abilities": [
+   "hm_knell_clapper",
+   "hm_knell_toll",
+   "hm_knell_grievances",
+   "hm_knell_remembers"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "OK"
+  },
+  "description": "A huge crab in a pressure-bell carried off from the bell-shrine of Trench Deeplight, which the Hadal Court would like back. Old Knell remembers every wrong ever done to it and tolls once for each."
  }
 }

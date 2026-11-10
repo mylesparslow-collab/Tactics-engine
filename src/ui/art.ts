@@ -66,6 +66,7 @@ const CREST: Record<string, CrestStyle> = {
   lanternkeepers: { field: ['#7d8791', '#22272c'], ink: '#f2c766', hi: '#fff3c4', glow: '#ffd86b' },
   overcurrent: { field: ['#8cc7e8', '#14243a'], ink: '#f4f0ff', hi: '#9ff3ff', glow: '#9ff3ff' },
   gyre: { field: ['#6f7a86', '#1f252c'], ink: '#efe9df', hi: '#e8892f' },
+  hermitage: { field: ['#7b4f8f', '#241530'], ink: '#d9822b', hi: '#f3c58a' },
 };
 
 function charge(fid: string, s: CrestStyle, g: string): string {
@@ -113,6 +114,14 @@ function charge(fid: string, s: CrestStyle, g: string): string {
         return `<path d="M-10 2 Q-5 -6 0 0 Q5 -6 10 2" transform="translate(${x} ${y}) rotate(${r})" fill="none" stroke="${ink}" stroke-width="3" stroke-linecap="round"/>`; }).join('');
       return `${birds}<path d="M40 66 Q50 52 60 64 Q70 52 80 66 L60 74 Z" fill="${ink}"/><path d="M60 64 L66 70 L60 72 Z" fill="${s.hi}"/>
         <path d="M38 108 Q48 98 60 104 Q72 98 82 108" fill="none" stroke="${ink}" stroke-width="3" opacity=".7"/><circle cx="60" cy="104" r="3" fill="${s.hi}"/>`;
+    }
+    case 'hermitage': {
+      // a whelk shell with a big claw raised beside it, a queue of small shells behind
+      const queue = [0, 1, 2].map(i => `<circle cx="${34 + i * 10}" cy="${112 - i * 2}" r="${5 - i}" fill="${ink}" opacity="${0.75 - i * 0.18}"/>`).join('');
+      return `${queue}<path d="M58 104 C34 100 32 68 52 56 C70 46 92 58 90 80 C88 98 74 106 58 104 Z" fill="${ink}" stroke="#241530" stroke-width="2"/>
+        <path d="M52 62 C62 56 78 62 78 76 C78 86 68 92 60 88 C54 84 56 76 62 76 C66 76 66 70 60 70" fill="none" stroke="#241530" stroke-width="2"/>
+        <path d="M44 100 C34 90 30 78 34 66 L24 52 L38 54 L40 42 L44 56 C50 62 50 90 44 100 Z" fill="${s.hi}" stroke="#241530" stroke-width="1.6"/>
+        <path d="M38 36 V28 M46 38 V30" stroke="${s.hi}" stroke-width="2.4"/><circle cx="38" cy="26" r="2.6" fill="${s.hi}"/><circle cx="46" cy="28" r="2.6" fill="${s.hi}"/>`;
     }
     case 'lanternkeepers': {
       const lenses = Array.from({ length: 7 }, (_, i) => { const a = i / 7 * Math.PI * 2 - Math.PI / 2, x = 60 + Math.cos(a) * 36, y = 70 + Math.sin(a) * 36;
