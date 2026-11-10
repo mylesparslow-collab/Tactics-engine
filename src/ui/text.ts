@@ -3,7 +3,8 @@ import { label } from '../engine/content';
 
 /** Short badge text for the movement/survival flags a unit def carries, e.g. "Flying · Skyfall (impact 6) · Dries 2". */
 export function traitLine(d: UnitDef): string {
-  return [d.flying ? 'Flying' : '', d.skyfall ? `Skyfall (impact ${d.skyfall.impact})` : '', d.dries ? `Dries ${d.dries}` : ''].filter(Boolean).join(' \u00B7 ');
+  return [d.flying ? 'Flying' : '', d.skyfall ? `Skyfall (impact ${d.skyfall.impact})` : '', d.dries ? `Dries ${d.dries}` : '',
+    d.shell ? `Shell ${d.shell.hp}` : '', d.shed ? 'Shed' : '', d.coiled ? 'Coiled' : '', d.tail ? `Long body (${d.tail.length})` : ''].filter(Boolean).join(' \u00B7 ');
 }
 
 export function effectText(c: Content, e: Effect): string {
@@ -27,6 +28,10 @@ export function effectText(c: Content, e: Effect): string {
       return `${who}: ${parts.join(', ')}${e.perAdjacentAlly ? ' per adjacent ally' : ''}`;
     }
     case 'sacrifice': return 'Sacrifices the caster';
+    case 'reshed': return 'Can Shed again';
+    case 'shell': return `Repairs ${e.amount} shell`;
+    case 'rehouse': return 'Moves into an adjacent empty shell or wreck';
+    case 'moveOut': return 'Steps out of its shell, leaving it behind';
     default: return (e as { type: string }).type;
   }
 }

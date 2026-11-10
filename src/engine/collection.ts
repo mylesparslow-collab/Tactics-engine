@@ -3,6 +3,7 @@
 // everything ever earned, so resetting a campaign does not take relics away. Pearls and Tempering come later.
 import type { Content } from './types';
 import { loadProgress } from './campaign';
+import { nonCardUnits } from './content';
 
 export type RelicType = 'champion' | 'hero' | 'spell' | 'equipment';
 export interface RelicSource { campaign: string; campaignName: string; mission?: number; missionName?: string }
@@ -28,9 +29,10 @@ export function grantRelics(ids: string[]) {
   const s = readSet(OWNED_KEY); ids.forEach(i => s.add(i)); writeSet(OWNED_KEY, s);
 }
 
-/** Every collectable card id: faction champions, heroes, spells and equipment (not Beacons or other structures). */
+/** Every collectable card id: faction champions, heroes, spells and equipment (not Beacons or other structures, not tokens). */
 export function allRelics(c: Content): string[] {
-  const units = Object.entries(c.units).filter(([, u]) => u.faction && !u.structure).map(([k]) => k);
+  const tokens = nonCardUnits(c);
+  const units = Object.entries(c.units).filter(([k, u]) => u.faction && !u.structure && !tokens.has(k)).map(([k]) => k);
   return [...units, ...Object.keys(c.spells), ...Object.keys(c.equipment)];
 }
 

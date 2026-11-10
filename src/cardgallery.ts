@@ -4,11 +4,13 @@ import { loadBundledContent } from './engine/bundled';
 import { installArt } from './ui/art';
 import { buildCard, type CardSize } from './ui/cards';
 import { h } from './ui/dom';
+import { nonCardUnits } from './engine/content';
 
 const content = loadBundledContent();
 installArt();
 const q = new URLSearchParams(location.search);
-const ids = q.get('ids')?.split(',') ?? [...Object.keys(content.units).filter(id => id !== 'keystone'), ...Object.keys(content.spells), ...Object.keys(content.equipment)];
+const tokens = nonCardUnits(content);
+const ids = q.get('ids')?.split(',') ?? [...Object.keys(content.units).filter(id => id !== 'keystone' && !tokens.has(id)), ...Object.keys(content.spells), ...Object.keys(content.equipment)];
 const sizes = (q.get('size')?.split(',') ?? ['full']) as CardSize[];
 const root = document.getElementById('app')!;
 root.style.cssText = 'display:flex;flex-wrap:wrap;gap:24px;padding:24px;align-items:flex-start;--cw:' + (q.get('w') ?? '300') + 'px';

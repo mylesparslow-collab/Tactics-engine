@@ -19,6 +19,8 @@ export const cooldownFor = (cost: number) => Math.max(COOLDOWN.min, Math.ceil(co
 export const ENGAGE_COST = 2;
 
 export const TIDE_DROP = { fraction: 0.25, min: 5 };
+/** Damage types that skip a shell and hit the body (pierce damage does too). */
+export const SHELL_BYPASS = ['venom', 'drying', 'sacrifice'];
 export const tideDropFor = (cost: number) => cost > 0 ? Math.max(TIDE_DROP.min, Math.round(cost * TIDE_DROP.fraction / 5) * 5) : 0;
 
 /** Small seeded PRNG (mulberry32) so a game can be replayed from its seed. */
@@ -56,6 +58,8 @@ export class Game {
   log: GameEvent[] = [];
   private listeners: ((e: GameEvent) => void)[] = [];
   private nextUid = 1;
+  /** Counts every turn start (any team); Coiled strikes are once per enemy turn. */
+  private turnNo = 0;
   private firedEvents = new Set<number>();
   readonly seed: number;
   /** Seeded randomness for shuffles. */
@@ -201,8 +205,16 @@ export class Game {
     if (f.flying !== undefined && !!d.flying !== f.flying) return false;
     if (f.faction && !(d.faction !== undefined && f.faction.includes(d.faction))) return false;
     if (f.notFaction && d.faction !== undefined && f.notFaction.includes(d.faction)) return false;
+    if (f.shelled !== undefined && this.shelled(u) !== f.shelled) return false;
     return true;
   }
+
+  /** True while the unit's shell is up. */
+  shelled(u: Unit): boolean { return (u.shellHp ?? 0) > 0; }
+  /** True for units that are not real fighters: decoys, empty shells and tail segments (AI and UI treat them as props). */
+  isProp(u: Unit): boolean { const d = this.def(u); return !!d.decoy || !!d.emptyShell || u.tailOf !== undefined; }
+  /** A tail segment stands in for its head; anything else is itself. */
+  proxyOf(u: Unit): Unit { if (u.tailOf === undefined) return u; const h = this.unit(u.tailOf); return h && h.alive ? h : u; }
 
   hasFlag(u: Unit, flag: 'preventsMove' | 'preventsAction') {
     return u.statuses.some(s => this.content.statuses[s.id]?.[flag]);
@@ -273,7 +285,7 @@ export class Game {
         if (!flying && Math.abs(t.height - this.tiles[cur.y][cur.x].height) > jump) continue;
         const occ = this.unitAt(nx, ny);
         if (occ && occ.team !== u.team) continue;
-        if (occ && this.def(occ).structure) continue;
+        if (occ && this.def(occ).structure && occ.tailOf !== u.uid) continue; // a long body may slither over its own tail
         const cost = cur.cost + (cur.x === u.x && cur.y === u.y ? leave : 0) + (flying ? 1 : (faction !== undefined ? terr.factionMoveCost?.[faction] : undefined) ?? terr.moveCost);
         if (cost > apBudget) continue;
         const k = key(nx, ny);
@@ -304,7 +316,21 @@ export class Game {
     const a = this.ability(abilityId);
     return !!a && !a.passive && this.isActive(u) && !this.def(u).structure && !u.summonedThisTurn &&
       !this.hasFlag(u, 'preventsAction') && u.ap >= a.apCost && (u.cooldowns[abilityId] ?? 0) <= 0 &&
-      !this.usedThisTurn(u, abilityId) && this.abilitiesOf(u).includes(abilityId);
+      !this.usedThisTurn(u, abilityId) && this.abilitiesOf(u).includes(abilityId) && this.shellUseOk(u, a);
+  }
+
+  /** `rehouse` needs a caster without a shell; `moveOut` needs a shelled caster. */
+  private shellUseOk(u: Unit, a: AbilityDef): boolean {
+    if (a.effects.some(e => e.type === 'rehouse') && this.def(u).shell) return false;
+    if (a.effects.some(e => e.type === 'moveOut') && !this.def(u).shell) return false;
+    return true;
+  }
+
+  /** Where a `rehouse` by `u` would succeed: a friendly empty shell, or an unoccupied tile whose terrain is a shellSource. */
+  rehouseOk(u: Unit, x: number, y: number, from: Pos = u): boolean {
+    const occ = (x === from.x && y === from.y) ? u : this.units.find(o => o.alive && o.uid !== u.uid && o.x === x && o.y === y);
+    if (occ) return occ.uid !== u.uid && occ.team === u.team && !!this.def(occ).emptyShell;
+    return !!this.terrainAt(x, y).shellSource;
   }
 
   /** Each ability fires at most once per turn: the basic attack can't be spammed, so specials and positioning matter. */
@@ -340,8 +366,10 @@ export class Game {
     const out: Pos[] = [];
     if (a.target === 'self') return [{ x: from.x, y: from.y }];
     const r = a.range.max + 1 + Math.max(0, this.terrainAt(from.x, from.y).rangeBonus ?? 0);
+    const rehouse = a.effects.some(e => e.type === 'rehouse');
     for (let y = from.y - r; y <= from.y + r; y++) for (let x = from.x - r; x <= from.x + r; x++) {
       if (!this.inBounds(x, y) || !this.inRange(a, from, { x, y })) continue;
+      if (rehouse && !this.rehouseOk(u, x, y, from)) continue;
       const occ = this.unitAt(x, y);
       const occIsSelf = occ?.uid === u.uid;
       const atSelfTile = x === from.x && y === from.y;
@@ -497,25 +525,38 @@ export class Game {
       const had = this.statusSnapshot(sp.effects, targets);
       for (const e of sp.effects) {
         if ((CAST_LEVEL_EFFECTS as readonly string[]).includes(e.type)) { if (this.snapOk(e, had)) this.applyCastEffect(e, team, undefined, this.radiusTiles({ x, y }, sp.area?.size ?? 0), { x, y }); }
-        else for (const t of targets) if (t.alive && this.snapOk(e, had, t)) this.applyEffect(e, t, undefined, { x, y }, team);
+        else for (const t of this.proxied(e, targets)) if (t.alive && this.snapOk(e, had, t)) this.applyEffect(e, t, undefined, { x, y }, team);
       }
     }
     this.afterAction();
     return true;
   }
 
-  /** For ifTargetStatus: which units had each conditional status when the use began. */
-  private statusSnapshot(effects: Effect[], units: Unit[]): Map<string, Set<number>> {
-    const out = new Map<string, Set<number>>();
-    for (const e of effects) if (e.ifTargetStatus && !out.has(e.ifTargetStatus))
-      out.set(e.ifTargetStatus, new Set(units.filter(t => t.statuses.some(s => s.id === e.ifTargetStatus)).map(t => t.uid)));
+  /** For ifTargetStatus / ifTargetStacks: each unit's status stacks when the use began (tail segments add their head). */
+  private statusSnapshot(effects: Effect[], units: Unit[]): Map<number, Record<string, number>> {
+    const out = new Map<number, Record<string, number>>();
+    if (!effects.some(e => e.ifTargetStatus || e.ifTargetStacks)) return out;
+    for (const t of [...units, ...units.map(o => this.proxyOf(o))]) {
+      if (out.has(t.uid)) continue;
+      const rec: Record<string, number> = {};
+      for (const s of t.statuses) rec[s.id] = s.stacks ?? 1;
+      out.set(t.uid, rec);
+    }
     return out;
   }
-  /** Per-target check against the snapshot; without a target (cast-level effects) any snapshot hit passes. */
-  private snapOk(e: Effect, had: Map<string, Set<number>>, t?: Unit): boolean {
-    if (!e.ifTargetStatus) return true;
-    const s = had.get(e.ifTargetStatus);
-    return !!s && (t ? s.has(t.uid) : s.size > 0);
+  /** Per-target check against the snapshot; without a target (cast-level effects) any snapshot unit passing is enough. */
+  private snapOk(e: Effect, had: Map<number, Record<string, number>>, t?: Unit): boolean {
+    if (!e.ifTargetStatus && !e.ifTargetStacks) return true;
+    const ok = (rec: Record<string, number> | undefined) => !!rec && (!e.ifTargetStatus || (rec[e.ifTargetStatus] ?? 0) > 0) &&
+      (!e.ifTargetStacks || (rec[e.ifTargetStacks.status] ?? 0) >= e.ifTargetStacks.min);
+    return t ? ok(had.get(t.uid)) : [...had.values()].some(ok);
+  }
+  /** Damage aimed at tail segments lands on the head instead, once per effect however many segments were hit. */
+  private proxied(e: Effect, targets: Unit[]): Unit[] {
+    if (e.type !== 'damage' || !targets.some(t => t.tailOf !== undefined)) return targets;
+    const out: Unit[] = [];
+    for (const t of targets) { const p = this.proxyOf(t); if (!out.includes(p)) out.push(p); }
+    return out;
   }
 
   spellTargets(team: number, sp: SpellDef): Pos[] {
@@ -600,15 +641,27 @@ export class Game {
     if (!u || !this.canMove(u) || (u.x === x && u.y === y)) return false;
     const node = this.reachable(u).get(key(x, y));
     if (!node) return false;
-    const path = this.pathFrom(this.reachRaw(u, u.ap), x, y);
+    const raw = this.reachRaw(u, u.ap);
+    const path = this.pathFrom(raw, x, y);
     u.ap -= node.cost;
     this.emit({ kind: 'move', uid, path });
+    const walked: Pos[] = [path[0]];
     for (const step of path.slice(1)) {
       u.x = step.x; u.y = step.y;
+      walked.push(step);
       this.enterTile(u);
-      if (!u.alive) break;
+      if (!u.alive || u.x !== step.x || u.y !== step.y) break; // died, or shed away
       this.collectAt(u);
+      // Coiled enemies strike the first walker that comes next to them; it stops if killed, moved, rooted or stunned.
+      // (Not checked on a tile it is only passing through, where it could not stop.)
+      const stunned = this.hasFlag(u, 'preventsAction');
+      if (!this.units.some(o => o.alive && o !== u && o.x === step.x && o.y === step.y) && this.coiledStrike(u) && (!u.alive || u.x !== step.x || u.y !== step.y || this.hasFlag(u, 'preventsMove') || (!stunned && this.hasFlag(u, 'preventsAction')))) break;
     }
+    // A walk cut short refunds the AP for the tiles not walked.
+    const last = walked[walked.length - 1];
+    if (u.alive && (last.x !== x || last.y !== y)) u.ap += Math.max(0, node.cost - (raw.get(key(last.x, last.y))?.cost ?? node.cost));
+    if (u.alive && u.x === last.x && u.y === last.y) this.layTail(u, walked);
+    this.afterUnitAct(u);
     this.afterAction();
     return true;
   }
@@ -622,16 +675,56 @@ export class Game {
     if (a.cooldown) u.cooldowns[abilityId] = a.cooldown;
     (u.usedAbilities ??= []).push(abilityId);
     this.emit({ kind: 'ability', uid, ability: abilityId, target: { x, y } });
-    const targets = this.affected(u, abilityId, { x, y });
+    this.resolveAbility(u, abilityId, { x, y });
+    this.afterUnitAct(u);
+    this.afterAction();
+    return true;
+  }
+
+  /** Apply an ability's effects from `u` at `target`. `reaction`: a Coiled strike (cast-level effects are skipped, `must` is always hit). */
+  private resolveAbility(u: Unit, abilityId: string, target: Pos, reaction?: { must: Unit }) {
+    const a = this.ability(abilityId);
+    const targets = this.affected(u, abilityId, target);
+    if (reaction && !targets.includes(reaction.must)) targets.unshift(reaction.must);
     const had = this.statusSnapshot(a.effects, [...targets, u]);
     for (const e of a.effects) {
       if (!u.alive) break;
-      if ((CAST_LEVEL_EFFECTS as readonly string[]).includes(e.type)) { if (this.snapOk(e, had)) this.applyCastEffect(e, u.team, u, this.areaTiles(u, abilityId, { x, y }), { x, y }); }
+      if ((CAST_LEVEL_EFFECTS as readonly string[]).includes(e.type)) { if (!reaction && this.snapOk(e, had)) this.applyCastEffect(e, u.team, u, this.areaTiles(u, abilityId, target), target); }
       else if (e.type === 'status' && e.target === 'caster') { if (this.snapOk(e, had, u)) this.applyEffect(e, u, u); } // once per use
-      else for (const t of targets) if (t.alive && this.snapOk(e, had, t)) this.applyEffect(e, t, u);
+      else for (const t of this.proxied(e, targets)) if (t.alive && this.snapOk(e, had, t)) this.applyEffect(e, t, u);
     }
-    this.afterAction();
-    return true;
+  }
+
+  /** Coiled: enemies of `walker` that are armed and orthogonally adjacent strike it once this turn. Returns true if any struck. */
+  private coiledStrike(walker: Unit): boolean {
+    if (this.def(walker).structure) return false;
+    let struck = false;
+    for (const c of this.units) {
+      if (!walker.alive) break;
+      const cd = this.def(c).coiled;
+      if (!cd || !c.alive || !c.coiled || c.team === walker.team || c.coilSpent === this.turnNo || manhattan(c, walker) !== 1) continue;
+      if (this.hasFlag(c, 'preventsAction') || !this.ability(cd.ability)) continue;
+      c.coilSpent = this.turnNo;
+      struck = true;
+      const at = { x: walker.x, y: walker.y };
+      this.emit({ kind: 'react', uid: c.uid, target: walker.uid, ability: cd.ability });
+      this.emit({ kind: 'ability', uid: c.uid, ability: cd.ability, target: at });
+      this.resolveAbility(c, cd.ability, at, { must: walker });
+    }
+    return struck;
+  }
+
+  /** After a unit's own action (one walk or one ability use): mark it as having acted, then Venom-like onAct effects bite. */
+  private afterUnitAct(u: Unit) {
+    u.acted = true;
+    for (const s of [...u.statuses]) {
+      const sd = this.content.statuses[s.id];
+      for (const e of sd?.onAct ?? []) {
+        if (!u.alive || !u.statuses.includes(s) || e.type !== 'damage') continue;
+        const amt = this.previewSpellDamage(u, { ...e, amount: e.amount * (s.stacks ?? 1) });
+        if (amt > 0) this.damage(u, amt, e.damageType, e.pierce);
+      }
+    }
   }
 
   deploy(team: number, handIndex: number, x: number, y: number): boolean {
@@ -660,6 +753,13 @@ export class Game {
     if (this.phase !== 'playing') return;
     // Statuses on the team that just acted tick down.
     for (const u of this.aliveUnits(this.current)) {
+      // Venom-like statuses lose a stack on a turn the carrier stayed idle.
+      if (!u.acted) for (const s of u.statuses) if (this.content.statuses[s.id]?.shedsWhenIdle) {
+        s.stacks = (s.stacks ?? 1) - 1;
+        if (s.stacks <= 0) s.remaining = 0;
+      }
+      // Coiled for the enemy turns ahead if it used no ability this turn.
+      u.coiled = !!this.def(u).coiled && !u.usedAbilities?.length;
       for (const s of u.statuses) s.remaining--;
       u.statuses = u.statuses.filter(s => s.remaining > 0);
     }
@@ -679,10 +779,119 @@ export class Game {
     const d = this.content.units[defId];
     const u: Unit = {
       uid: uid ?? this.nextUid++, defId, team, x, y, hp: d.stats.hp, ap: 0, statuses: [], cooldowns: {},
-      summonedThisTurn: true, tag, alive: true,
+      summonedThisTurn: true, tag, alive: true, deployedAs: defId,
     };
+    if (d.shell) u.shellHp = d.shell.hp;
+    if (d.decoy) u.decoyTurns = 3;
     this.units.push(u);
     return u;
+  }
+
+  /** Remove a unit from the board without a death (no Tide, no card cooldown, no mission trigger). */
+  private vanish(u: Unit) {
+    if (!u.alive) return;
+    u.alive = false;
+    this.emit({ kind: 'vanish', uid: u.uid });
+    this.dropTail(u);
+  }
+  private dropTail(u: Unit) {
+    const segs = u.tail ?? [];
+    u.tail = undefined;
+    for (const id of segs) { const s = this.unit(id); if (s) this.vanish(s); }
+  }
+
+  /** Long body: put the tail on the tiles just walked (newest first), then where the old tail lay. */
+  private layTail(u: Unit, walked: Pos[]) {
+    const t = this.def(u).tail;
+    if (!t) return;
+    const old = (u.tail ?? []).map(id => this.unit(id)).filter((s): s is Unit => !!s && s.alive);
+    const trail = [...walked.slice(0, -1).reverse(), ...old.map(s => ({ x: s.x, y: s.y }))];
+    const used = new Set([key(u.x, u.y)]);
+    const spots: Pos[] = [];
+    for (const p of trail) {
+      if (spots.length >= t.length) break;
+      const k = key(p.x, p.y);
+      if (used.has(k)) continue;
+      used.add(k);
+      const occ = this.unitAt(p.x, p.y);
+      if ((occ && occ.tailOf !== u.uid) || this.terrainAt(p.x, p.y).impassable) continue;
+      spots.push(p);
+    }
+    // Reuse the old segments in order (they snap to their new tiles), add or remove the difference.
+    u.tail = [];
+    spots.forEach((p, i) => {
+      const s = old[i];
+      if (s) { s.x = p.x; s.y = p.y; u.tail!.push(s.uid); return; }
+      const n = this.spawn(t.segment, u.team, p.x, p.y);
+      n.tailOf = u.uid;
+      u.tail!.push(n.uid);
+      this.emit({ kind: 'deploy', uid: n.uid });
+    });
+    for (const s of old.slice(spots.length)) this.vanish(s);
+  }
+
+  /** Change what a unit is (eviction, rehouse, moveOut): new stats, abilities and art; body HP carries over (capped),
+   *  statuses and equipment stay, ability cooldowns reset. */
+  private morph(u: Unit, defId: string, shellHp?: number) {
+    u.defId = defId;
+    const d = this.def(u);
+    u.shellHp = d.shell ? Math.max(0, Math.min(d.shell.hp, shellHp ?? d.shell.hp)) : undefined;
+    u.hp = Math.min(u.hp, Math.max(1, this.stat(u, 'hp')));
+    u.ap = Math.min(u.ap, this.stat(u, 'ap'));
+    u.cooldowns = {};
+    if (!d.tail) this.dropTail(u);
+  }
+
+  /** Shell broke: the unit becomes its `shell.evicted` form. */
+  private evict(u: Unit) {
+    const sh = this.def(u).shell;
+    if (!sh || !this.content.units[sh.evicted]) { u.shellHp = 0; return; }
+    const from = u.defId;
+    this.morph(u, sh.evicted);
+    this.emit({ kind: 'evict', uid: u.uid, from, to: u.defId });
+  }
+
+  /** Shed: drop every status, leave a husk on this tile and slide away from the nearest enemy. */
+  private shedSkin(u: Unit) {
+    const sd = this.def(u).shed!;
+    u.shedUsed = true;
+    u.statuses = [];
+    this.dropTail(u);
+    const from = { x: u.x, y: u.y };
+    const to = this.slideTile(u, sd.slide ?? 2);
+    let husk: Unit | undefined;
+    if (to) {
+      u.x = to.x; u.y = to.y;
+      if (this.content.units[sd.husk]) husk = this.spawn(sd.husk, u.team, from.x, from.y);
+    }
+    this.emit({ kind: 'shed', uid: u.uid, from, to: to ?? from, ...(husk ? { husk: husk.uid } : {}) });
+    if (husk) this.emit({ kind: 'deploy', uid: husk.uid });
+  }
+
+  /** The free passable tile within `steps` (walking over free tiles, jump respected) farthest from the nearest enemy. */
+  private slideTile(u: Unit, steps: number): Pos | undefined {
+    const foes = this.units.filter(o => o.alive && o.team !== u.team && !this.isProp(o));
+    const far = (p: Pos) => foes.length ? Math.min(...foes.map(o => manhattan(o, p))) : 0;
+    const jump = this.stat(u, 'jump'), flying = !!this.def(u).flying;
+    const seen = new Set([key(u.x, u.y)]);
+    let frontier: Pos[] = [{ x: u.x, y: u.y }];
+    let best: { p: Pos; d: number } | undefined;
+    for (let i = 0; i < steps; i++) {
+      const next: Pos[] = [];
+      for (const c of frontier) for (const d of DIRS) {
+        const n = { x: c.x + d.x, y: c.y + d.y };
+        const k = key(n.x, n.y);
+        if (!this.inBounds(n.x, n.y) || seen.has(k)) continue;
+        seen.add(k);
+        if (this.terrainAt(n.x, n.y).impassable || this.unitAt(n.x, n.y)) continue;
+        if (!flying && Math.abs(this.tiles[n.y][n.x].height - this.tiles[c.y][c.x].height) > jump) continue;
+        next.push(n);
+        const dd = far(n);
+        if (!best || dd > best.d) best = { p: n, d: dd };
+      }
+      frontier = next;
+    }
+    return best?.p;
   }
 
   private beginTurn() {
@@ -709,11 +918,16 @@ export class Game {
       const holder = this.unitAt(w.x, w.y);
       if (holder && holder.team === this.current && this.holdsWell(holder)) this.gainEssence(this.current, w.amount, { x: w.x, y: w.y });
     }
+    this.turnNo++;
+    // Decoys (husks) last until the start of their owner's 3rd turn after they appeared.
+    for (const u of this.aliveUnits(this.current)) if (u.decoyTurns !== undefined && --u.decoyTurns <= 0) this.vanish(u);
     const landed = this.resolveLandings();
     this.collectDrops();
     for (const u of this.aliveUnits(this.current)) {
       u.summonedThisTurn = false;
       u.usedAbilities = [];
+      u.acted = false;
+      u.coiled = false;
       // Drying: a dry unit off wet ground loses HP (not on the turn it lands). Can kill.
       const dry = landed.has(u.uid) ? 0 : this.dryingLoss(u);
       if (dry > 0) { this.damage(u, dry, 'drying'); if (!u.alive) continue; }
@@ -767,8 +981,10 @@ export class Game {
     if ('filter' in e && !this.passesFilter(target, e.filter)) return;
     switch (e.type) {
       case 'damage': {
+        target = this.proxyOf(target);
+        if (!target.alive) break;
         const amt = source ? this.previewDamage(source, target, e) : origin ? this.previewSpellDamage(target, e) : Math.max(1, e.amount);
-        this.damage(target, amt, e.damageType);
+        this.damage(target, amt, e.damageType, e.pierce);
         const d = this.def(target);
         if (e.convertOnKill && !target.alive && team !== undefined && !d.hero && !d.structure && !target.tag?.startsWith('keystone_'))
           this.summonAt(e.convertOnKill, team, target, 1);
@@ -776,6 +992,7 @@ export class Game {
       }
       case 'heal': {
         if (e.target === 'caster') { if (!source) break; target = source; }
+        if (target.tailOf !== undefined) break; // tail segments are not healed
         const max = this.def(target).stats.hp;
         const amt = Math.min(e.amount, max - target.hp);
         if (amt > 0) { target.hp += amt; this.emit({ kind: 'heal', uid: target.uid, amount: amt }); }
@@ -829,8 +1046,25 @@ export class Game {
         if (target.x !== from.x || target.y !== from.y) this.emit({ kind: 'push', uid: target.uid, from, to: { x: target.x, y: target.y } });
         break;
       }
+      case 'reshed': {
+        if (this.def(target).shed && target.shedUsed) { target.shedUsed = false; this.emit({ kind: 'status', uid: target.uid, status: 'reshed' }); }
+        break;
+      }
+      case 'shell': {
+        const sh = this.def(target).shell;
+        if (!sh || !target.alive) break;
+        const amt = Math.min(e.amount, sh.hp - (target.shellHp ?? 0));
+        if (amt > 0) { target.shellHp = (target.shellHp ?? 0) + amt; this.emit({ kind: 'shell', uid: target.uid, amount: amt }); }
+        break;
+      }
       default: break; // cast-level effects are handled in applyCastEffect; auras are passive
     }
+  }
+
+  /** Effect movement for rehouse / moveOut: one step onto `to` (no engagement, no onEnter, no Coiled trigger). */
+  private stepTo(u: Unit, to: Pos) {
+    this.emit({ kind: 'move', uid: u.uid, path: [{ x: u.x, y: u.y }, { x: to.x, y: to.y }] });
+    u.x = to.x; u.y = to.y;
   }
 
   private applyCastEffect(e: Effect, team: number, u: Unit | undefined, area: Pos[], target: Pos) {
@@ -874,11 +1108,44 @@ export class Game {
         return;
       }
       case 'sacrifice': {
-        if (u?.alive) { u.revived = true; this.damage(u, u.hp, 'sacrifice'); }
+        if (u?.alive) { u.revived = true; u.shedUsed = true; this.damage(u, u.hp, 'sacrifice', true); }
         return;
       }
       case 'essence': {
         this.gainEssence(e.team === 'enemy' ? (team === 0 ? 1 : 0) : team, e.amount);
+        return;
+      }
+      case 'rehouse': {
+        if (!u?.alive || this.def(u).shell || !this.rehouseOk(u, target.x, target.y)) return;
+        const from = u.defId;
+        const occ = this.unitAt(target.x, target.y);
+        if (occ) {
+          const becomes = this.def(occ).emptyShell!.becomes;
+          const hp = occ.hp;
+          this.vanish(occ);
+          this.stepTo(u, target);
+          this.morph(u, becomes, hp);
+        } else {
+          const src = this.terrainAt(target.x, target.y).shellSource!;
+          this.stepTo(u, target);
+          this.morph(u, src);
+          if (this.content.terrain.salt_flat) this.setTerrain(target.x, target.y, 'salt_flat');
+        }
+        this.emit({ kind: 'rehouse', uid: u.uid, from, to: u.defId, at: { x: target.x, y: target.y } });
+        return;
+      }
+      case 'moveOut': {
+        const sh = u?.alive ? this.def(u).shell : undefined;
+        if (!u || !sh || this.unitAt(target.x, target.y) || this.terrainAt(target.x, target.y).impassable || !this.content.units[sh.evicted]) return;
+        const at = { x: u.x, y: u.y }, left = u.shellHp ?? 0, from = u.defId;
+        this.stepTo(u, target);
+        this.morph(u, sh.evicted);
+        this.emit({ kind: 'evict', uid: u.uid, from, to: u.defId, voluntary: true });
+        if (sh.leaves && left > 0 && this.content.units[sh.leaves]) {
+          const s = this.spawn(sh.leaves, u.team, at.x, at.y);
+          s.hp = left;
+          this.emit({ kind: 'deploy', uid: s.uid });
+        }
         return;
       }
     }
@@ -907,10 +1174,22 @@ export class Game {
     if (t.essence !== before) this.emit({ kind: 'essence', team, amount: t.essence - before, ...(at ? { at } : {}) });
   }
 
-  private damage(u: Unit, amount: number, damageType?: string) {
+  /** Deal `amount` to `u`. A shell soaks it first unless `pierce` or the type is venom/drying/sacrifice. */
+  private damage(u: Unit, amount: number, damageType?: string, pierce = false) {
+    u = this.proxyOf(u);
     if (!u.alive) return;
+    if (this.shelled(u) && !pierce && !SHELL_BYPASS.includes(damageType ?? '')) {
+      // The shell takes the hit; whatever is left over when it breaks is lost.
+      const dealt = Math.min(amount, u.shellHp!);
+      u.shellHp! -= amount;
+      this.emit({ kind: 'damage', uid: u.uid, amount: dealt, damageType, shell: true });
+      if (u.shellHp! <= 0) { u.shellHp = 0; this.evict(u); }
+      return;
+    }
     u.hp -= amount;
     this.emit({ kind: 'damage', uid: u.uid, amount, damageType });
+    const sd = this.def(u).shed;
+    if (u.hp > 0 && sd && !u.shedUsed && !this.def(u).structure && u.hp < this.def(u).stats.hp * 0.5) this.shedSkin(u);
     if (u.hp <= 0) {
       const rv = this.def(u).revive;
       if (rv && !u.revived) {
@@ -922,15 +1201,17 @@ export class Game {
       }
       u.hp = 0; u.alive = false;
       this.emit({ kind: 'death', uid: u.uid });
+      this.dropTail(u);
       const d = this.def(u);
       if (!d.structure) {
-        const amount = tideDropFor(d.cost ?? 0);
+        // Tide and the card cooldown go by what the unit was deployed as (an evicted crab is still its card).
+        const amount = tideDropFor(this.content.units[u.deployedAs ?? u.defId]?.cost ?? d.cost ?? 0);
         if (amount > 0) {
           const at = this.drops.find(p => p.x === u.x && p.y === u.y);
           if (at) at.amount += amount; else this.drops.push({ x: u.x, y: u.y, amount });
           this.emit({ kind: 'drop', x: u.x, y: u.y, amount });
         }
-        if (u.fromCard) this.startCooldown(u.team, u.defId);
+        if (u.fromCard) this.startCooldown(u.team, u.deployedAs ?? u.defId);
       }
       if (u.tag) this.runEvents(ev => 'unitDefeated' in ev.when && ev.when.unitDefeated === u.tag);
     }

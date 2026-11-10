@@ -28,6 +28,10 @@ export interface SpriteOpts {
   glow: number;                   // 0..1 caster glow
   lampGlow?: number;              // structures: 0..1 lamp intensity
   reduced: boolean;
+  /** Shelled units: shell points left and the shell's full size (a rust bar over the HP bar). */
+  shell?: { hp: number; max: number };
+  /** Props (husks, empty shells, tail segments): no lighthouse placeholder, no lamp glow. */
+  prop?: boolean;
 }
 
 export function statusColor(id: string) {
@@ -45,9 +49,9 @@ export function figureHeight(o: { frame: Frame | null; def: UnitDef }) {
 function placeholderFigure(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
   const def = o.def, base = def.sprite.color ?? o.factionColor ?? o.teamColor;
   const fill = o.dim ? shade(base, 0.6) : base;
-  const H = def.structure ? 120 : 92;
+  const H = def.structure && !o.prop ? 120 : 92;
   const light = mix(fill, '#fff6e0', 0.35), dark = shade(fill, 0.55);
-  if (def.structure) {
+  if (def.structure && !o.prop) {
     // a stranded lighthouse: tapered tower, gallery, lamp
     const g = ctx.createLinearGradient(-18, 0, 18, 0);
     g.addColorStop(0, light); g.addColorStop(0.45, fill); g.addColorStop(1, dark);
@@ -200,7 +204,7 @@ export function drawUnitSprite(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
   ctx.restore();
 
   // structures: lamp glow tied to HP
-  if (def.structure) {
+  if (def.structure && o.lampGlow !== undefined) {
     const k = o.lampGlow ?? 1;
     const ly = y - o.lift - fh + 10;
     const g = ctx.createRadialGradient(x, ly, 2, x, ly, 40 + 30 * k);
@@ -238,9 +242,17 @@ export function drawUnitSprite(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
         ctx.fillRect(x - bw / 2 + i * (tw + gap), ay, tw, ah);
       }
     }
+    let pipY = by - 9;
+    if (o.shell && o.shell.max > 0) { // shell points: a thin rust bar just above the HP bar
+      const sy = by - 5, sh = 3, k = Math.max(0, Math.min(1, o.shell.hp / o.shell.max));
+      ctx.fillStyle = 'rgba(8,8,12,0.85)'; ctx.fillRect(x - bw / 2 - 1.5, sy - 1.5, bw + 3, sh + 3);
+      ctx.fillStyle = 'rgba(217,130,43,0.22)'; ctx.fillRect(x - bw / 2, sy, bw, sh);
+      ctx.fillStyle = '#d9822b'; ctx.fillRect(x - bw / 2, sy, bw * k, sh);
+      pipY -= 5;
+    }
     const st = o.statuses.slice(0, 5);
     st.forEach((s, i) => {
-      const sx = x - (st.length - 1) * 6 + i * 12, sy = by - 9;
+      const sx = x - (st.length - 1) * 6 + i * 12, sy = pipY;
       ctx.fillStyle = statusColor(s.id);
       ctx.beginPath(); ctx.arc(sx, sy, 5, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = 'rgba(0,0,0,0.75)'; ctx.lineWidth = 1; ctx.stroke();

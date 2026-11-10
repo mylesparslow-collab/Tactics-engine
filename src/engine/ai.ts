@@ -40,7 +40,19 @@ function turnMemo(g: Game): TurnMemo {
 }
 
 const isHarmful = (s?: StatusDef) => !!s && (!!s.preventsMove || !!s.preventsAction ||
-  (s.onTurnStart ?? []).some(e => e.type === 'damage') || Object.values(s.statMods ?? {}).some(v => (v ?? 0) < 0));
+  (s.onTurnStart ?? []).some(e => e.type === 'damage') || (s.onAct ?? []).some(e => e.type === 'damage') ||
+  Object.values(s.statMods ?? {}).some(v => (v ?? 0) < 0));
+
+/** HP `u` loses after each of its own actions (Venom-like onAct statuses). */
+function actTick(g: Game, u: Unit): number {
+  let n = 0;
+  for (const s of u.statuses) for (const e of g.content.statuses[s.id]?.onAct ?? [])
+    if (e.type === 'damage') n += g.previewSpellDamage(u, { ...e, amount: e.amount * (s.stacks ?? 1) });
+  return n;
+}
+
+/** Decoys and empty shells: not worth chasing or spending a big hit on. Tail segments are proxies, not decoys. */
+const isDecoy = (g: Game, o: Unit) => !!g.def(o).decoy || !!g.def(o).emptyShell;
 
 const key = (x: number, y: number) => `${x},${y}`;
 
@@ -191,6 +203,13 @@ function scoreAbility(g: Game, u: Unit, abilityId: string, target: Pos, from: Po
   const a = g.ability(abilityId);
   let s = scoreEffects(g, u.team, a.effects, g.affected(u, abilityId, target, from),
     (o, e) => g.previewDamage(u, o, e, from), it);
+  // Rehouse: a crab out of its shell badly wants a new one.
+  if (a.effects.some(e => e.type === 'rehouse')) {
+    const occ = g.unitAt(target.x, target.y);
+    const src = occ ? undefined : g.terrainAt(target.x, target.y).shellSource;
+    const shellHp = occ ? occ.hp : src ? g.content.units[src]?.shell?.hp ?? 0 : 0;
+    s += 6 + shellHp * 0.6;
+  }
   // Terrain effects: hazards dropped under enemies are worth something, under friends they hurt.
   const terr = a.effects.find((e): e is Extract<Effect, { type: 'terrain' }> => e.type === 'terrain');
   if (terr) {
@@ -209,26 +228,43 @@ function scoreAbility(g: Game, u: Unit, abilityId: string, target: Pos, from: Po
 function scoreEffects(g: Game, team: number, effects: Effect[], hit: Unit[],
   dmg: (o: Unit, e: Extract<Effect, { type: 'damage' }>) => number, it?: Intel): number {
   let score = 0;
+  // Tail segments stand in for their head (damage lands on the head once).
+  const seen = new Set<number>();
+  hit = hit.map(o => g.proxyOf(o)).filter(o => !seen.has(o.uid) && !!seen.add(o.uid));
   for (const o of hit) {
     const enemy = o.team !== team;
     effects = effects.filter(e => !('filter' in e) || g.passesFilter(o, e.filter));
     const vip = enemy && !!it && isVip(o, it.hunt);
-    const objective = g.def(o).structure ? 1.6 : vip ? 2.5 : 1;
-    let hp = o.hp;
+    const decoy = isDecoy(g, o);
+    const objective = decoy ? 0.15 : g.def(o).structure ? 1.6 : vip ? 2.5 : 1;
+    let hp = o.hp, shell = o.shellHp ?? 0;
     for (const e of effects) {
       if (e.type === 'damage') {
+        // A shell soaks the hit (overflow is lost) unless it pierces or is venom.
+        if (shell > 0 && !e.pierce && e.damageType !== 'venom') {
+          const d = Math.min(dmg(o, e), shell);
+          shell -= d;
+          score += enemy ? d * 0.8 * objective + (shell <= 0 ? 4 : 0) : -d;
+          continue;
+        }
         const d = Math.min(dmg(o, e), hp);
         hp -= d;
         score += enemy ? d * objective : -d * 1.5;
-        // Kills are what swing a tactics game: worth more for expensive targets, a mission win for VIPs.
-        if (hp <= 0) score += enemy ? (8 + g.def(o).cost / 10) * objective + (vip ? 40 : 0) : -15;
+        // Kills are what swing a tactics game: worth more for expensive targets, a mission win for VIPs. Husks are worth nothing.
+        if (hp <= 0) score += enemy ? (decoy ? 0.5 : (8 + g.def(o).cost / 10) * objective + (vip ? 40 : 0)) : -15;
       } else if (e.type === 'heal') {
         const missing = g.def(o).stats.hp - o.hp;
         const guardBonus = !enemy && it && isVip(o, it.guard) ? 2 : 1;
         if (!enemy) score += Math.min(e.amount, missing) * (missing > 4 ? 1.2 : 0.3) * guardBonus;
+      } else if (e.type === 'shell') {
+        const sh = g.def(o).shell;
+        if (!enemy && sh) score += Math.min(e.amount, sh.hp - (o.shellHp ?? 0)) * 0.8;
       } else if (e.type === 'status') {
-        if (g.def(o).structure || o.statuses.some(s => s.id === e.status)) continue;
         const sd = g.content.statuses[e.status];
+        const had = o.statuses.find(s => s.id === e.status);
+        // Another stack of a stacking poison is still worth something.
+        if (had && sd?.stacks && !g.def(o).structure && (had.stacks ?? 1) < (sd.maxStacks ?? Infinity)) { score += isHarmful(sd) === enemy ? 2 : -2; continue; }
+        if (g.def(o).structure || had) continue;
         const harmful = isHarmful(sd);
         const heavy = sd?.preventsAction ? 2 : sd?.preventsMove ? 1.4 : 1;
         if (harmful === enemy) score += 3 * heavy * Math.min(2, e.duration) / 1.5;
@@ -247,6 +283,7 @@ function scoreEffects(g: Game, team: number, effects: Effect[], hit: Unit[],
 
 function bestPlan(g: Game, u: Unit, th: Threat, it: Intel): Plan | undefined {
   const reach = g.reachable(u);
+  const tick = actTick(g, u);
   const vip = isVip(u, it.guard);
   let best: Plan | undefined;
   for (const [k, node] of reach) {
@@ -256,13 +293,16 @@ function bestPlan(g: Game, u: Unit, th: Threat, it: Intel): Plan | undefined {
     const hazard = enterPenalty(g, u, from) - turnStartValue(g, u, from) * 0.6 - rangeTileBonus(g, u, from) * 0.4;
     // A drying unit left off wet ground loses HP next turn.
     const risk = danger(g, th, u, from, vip) + g.dryingLoss(u, from) * 1.3;
+    // Venom bites after every action: a walk and an ability are two bites. Never act into a Venom death.
+    const bites = tick * ((x !== u.x || y !== u.y) ? 2 : 1);
+    if (tick > 0 && bites >= u.hp) continue;
     for (const ab of g.abilitiesOf(u)) {
       const a = g.ability(ab);
       if (!a || a.apCost > left || (u.cooldowns[ab] ?? 0) > 0 || g.usedThisTurn(u, ab) || g.hasFlag(u, 'preventsAction') || u.summonedThisTurn) continue;
       if (a.passive || a.effects.some(e => e.type === 'teleport' || e.type === 'swap' || e.type === 'sacrifice')) continue;
       for (const t of g.targetsFrom(u, ab, from)) {
         // Risk is discounted when the action is a kill: trading into danger for a kill is often right.
-        const s = scoreAbility(g, u, ab, t, from, it) - node.cost * 0.05 - hazard - a.apCost * 0.1 - risk * 0.6 + wellBonus(g, u, from) * 0.5 + dropBonus(g, from) * 0.5 + jitter(g);
+        const s = scoreAbility(g, u, ab, t, from, it) - node.cost * 0.05 - hazard - a.apCost * 0.1 - risk * 0.6 - bites * 1.2 + wellBonus(g, u, from) * 0.5 + dropBonus(g, from) * 0.5 + jitter(g);
         if (!best || s > best.score) best = { score: s, to: from, ability: ab, target: t };
       }
     }
@@ -284,7 +324,10 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
   const reach = g.reachable(u);
   const vip = isVip(u, it.guard);
   const goal = it.goals.find(gl => gl.tag === '*' || gl.tag === u.tag);
-  const enemies = g.aliveUnits().filter(o => o.team !== u.team);
+  const enemies = g.aliveUnits().filter(o => o.team !== u.team && !isDecoy(g, o));
+  // Walking under Venom costs HP: never walk into a Venom death, and only walk when it is worth the bite.
+  const tick = actTick(g, u);
+  if (tick > 0 && tick >= u.hp) return;
   if (!enemies.length && !goal) return;
   const want = desiredRange(g, u);
   const value = (p: Pos) => {
@@ -314,7 +357,7 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
   let best: { p: Pos; d: number } | undefined;
   for (const [k, node] of reach) {
     const [x, y] = k.split(',').map(Number);
-    const d = cost({ x, y }, node.cost) + jitter(g) * 0.5;
+    const d = cost({ x, y }, node.cost) + tick * 1.5 + jitter(g) * 0.5;
     if (!best || d < best.d) best = { p: { x, y }, d };
   }
   return best && best.d < here - 0.5 ? best.p : undefined;

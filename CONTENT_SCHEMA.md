@@ -25,6 +25,13 @@ Example files ship in `content/` with placeholder names; replace them freely.
 | dries | number? | at the start of its owner's turn (not the turn it lands) loses this many HP, unless it stands on a wet tile (`brine_pool`, `living_reef`, or terrain with `wet: true`), has a status with `wet: true`, or is inside a passive aura with `keepsWet: true`. Can kill (damageType `drying`). |
 | flying | bool? | every passable tile costs 1 AP, height/jump ignored, impassable tiles can be crossed but not ended on (enemies and structures still block, allies can be passed), terrain `onEnter` never triggers, and the unit does not hold Wells (no income, no forward deploy). |
 | ignoresEngagement | bool? | never pays the engagement cost (below). Flyers ignore it already. |
+| token | bool? | never a card: excluded from warbands, campaign rosters/unlocks (validation error), default faction decks, the collection, the card gallery, Tidewatch offers and the proving ground. Use for evicted forms, empty shells, husks and tail segments. Units named as `shed.husk`, `shell.evicted`, `shell.leaves` or `tail.segment`, and every `decoy`/`emptyShell` unit, are treated as tokens even without the flag. Tokens may still be summoned, pre-placed or spawned. |
+| decoy | bool? | (must also be `structure: true`) a decoy such as a Shed husk: does not count for `eliminate`, holds no Wells, drops no Tide, and vanishes at the start of its owner's 3rd turn after it appeared. The AI treats it as a low-value target. |
+| shed | {husk: unitId, slide?: number}? | see **Shed** below. `husk` must be a structure unit (normally `{structure, decoy, token, cost 0, stats.hp 1, abilities []}`); `slide` defaults to 2. |
+| coiled | {ability: abilityId}? | see **Coiled** below. |
+| shell | {hp: number, evicted: unitId, leaves?: unitId}? | see **Shells** below. `evicted` must exist, have no `shell` and not be a structure; `leaves` must be an `emptyShell` unit. Not allowed on structures. |
+| emptyShell | {becomes: unitId}? | (must also be `structure: true`, mark it `token: true`) an empty shell object; `becomes` must be a unit with a `shell`. |
+| tail | {segment: unitId, length: 1\|2\|3}? | see **Long bodies** below. `segment` must be a structure unit (mark it `token: true`). |
 
 ## content/abilities.json — `{ [abilityId]: AbilityDef }`
 | field | type | notes |
@@ -44,7 +51,7 @@ Effect types:
 - `{type:"sacrifice"}` — kills the caster (no revive); put it last
 - `{type:"status", status, duration, target?: "caster"}` — `target:"caster"` applies it to the caster once per use (not per unit hit); not allowed in spells
 - **Engagement:** a unit that starts a walk orthogonally next to a living enemy (structures don't count) pays +2 AP (`ENGAGE_COST` in game.ts) on its first step, once per walk, even if it stays adjacent. Flyers, units with `ignoresEngagement`, and carriers of an `ignoresEngagement` status are exempt. Effect movement (charge, swap, push, teleport) never pays it.
-- Any effect may carry `filter: {flying?, faction?: [ids], notFaction?: [ids]}` (only matching units are affected; also on `aura`) and `ifTargetStatus: "<statusId>"` (only targets that had that status when the use began — a snapshot, so an earlier effect in the same use cannot enable it).
+- Any effect may carry `filter: {flying?, shelled?, faction?: [ids], notFaction?: [ids]}` (only matching units are affected; also on `aura`; `shelled: true` = target's shell is up (shellHp > 0), `false` = it has none), `ifTargetStatus: "<statusId>"` (only targets that had that status when the use began — a snapshot, so an earlier effect in the same use cannot enable it) and `ifTargetStacks: {status: "<statusId>", min: N}` (only targets that had at least N stacks of that status when the use began; same snapshot rule).
 - An ability with `target:"empty"` and an `area` hits the units in that area (e.g. `line` + `affects:"enemies"`); cast-level effects such as `teleport` then run once.
 - Passive `aura` effects may carry `keepsWet: true`: allies inside count as wet for `dries`.
 - `{type:"push", distance, collisionDamage?}` — away from the caster
@@ -57,6 +64,12 @@ Effect types:
 - `{type:"aura", radius, affects?, statMods}` — only in `passive: true` abilities; continuous stat mods (radius 0 = self only)
 
 - `{type:"aura", ..., perAdjacentAlly: true, maxStacks?}` — swarm bonus: statMods multiplied by the number of allies adjacent to the affected unit
+- `{type:"reshed"}` — per unit hit: resets the target's Shed so it can trigger again. No effect on units without `shed`.
+- `{type:"shell", amount}` — per unit hit: repairs the target's shell by `amount`, never above its `shell.hp`. No effect on units without `shell`.
+- `{type:"rehouse"}` — cast-level, ability only (not spells), the ability must have `target:"tile"` (use range 1). See **Shells**.
+- `{type:"moveOut"}` — cast-level, ability only (not spells), the ability must have `target:"empty"` (use range 1). See **Shells**.
+
+Damage types (free text; these are the ones in use): `physical`, `fire`, `salt`, `pressure`, `light`, `brine`, `drowning`, `venom` (new, Slough), plus engine-made `impact` (push collisions), `drying` and `sacrifice`. `venom`, `drying` and `sacrifice` damage, and any `pierce` damage, bypass shells.
 
 Passive abilities: `{name, description, passive: true, effects: [aura...]}`; apCost/range/target can be omitted.
 Optional `requires: string[]` on abilities is ignored by the engine (author bookkeeping). Tags for engine features: `terrain`, `draw`, `convert_on_kill`, `untargetable`.
@@ -64,6 +77,84 @@ Optional `requires: string[]` on abilities is ignored by the engine (author book
 Effect additions:
 - `{"type":"draw","count":N}` (requires `draw`): cast-level; the caster's team draws N cards from its deck into hand, stopping at the hand max (8) or an empty deck; emits a `draw` event per card. Allowed in abilities and spells.
 - `convertOnKill: "<unitId>"` on a `damage` effect (requires `convert_on_kill`): if the damage kills the target (not a hero, not a structure/Beacon), one `<unitId>` is summoned for the caster's team on the target's tile after the death (acts next turn, like `summon`). Works in abilities and spells.
+
+## Wave 3 mechanics (Slough and Hermitage)
+
+### Venom
+Canonical status (statuses.json):
+```json
+"sl_venom": { "name": "Venom", "stacks": true, "maxStacks": 5, "shedsWhenIdle": true,
+  "onAct": [ { "type": "damage", "amount": 1, "damageType": "venom", "ignoreAttack": true, "pierce": true } ] }
+```
+Apply it with `{ "type": "status", "status": "sl_venom", "duration": 99 }`; several of these in one ability add several stacks
+(capped at maxStacks). Each walk and each ability use by the carrier then costs it (stacks x 1) venom damage minus its
+`resist.venom`. A carrier that does nothing for a whole turn loses one stack at the end of that turn. Venom damage bypasses
+shells. Structures (husks, shells, segments, Beacons) are immune. Pair with `ifTargetStatus: "sl_venom"`,
+`ifTargetStacks: {status: "sl_venom", min: N}` and `vsWounded` on other effects.
+
+### Shed
+`"shed": { "husk": "<unitId>", "slide": 2 }` on a UnitDef. The first time damage leaves the unit alive with HP below
+50% of its base max HP (`stats.hp`): all its statuses are removed, it slides to the free passable tile within `slide`
+steps (walking over free tiles only, jump respected) that is farthest from the nearest enemy, and a `husk` unit is
+spawned for its team on the tile it left. If no tile is free it stays put, still drops its statuses, and no husk appears.
+Once per battle per unit; `{ "type": "reshed" }` re-arms it. A unit that sheds loses its tail segments. The slide is
+effect movement: no `onEnter`, no Coiled trigger. If it happens mid-walk the walk ends there (unspent AP refunded).
+Husk shape: `{ "structure": true, "decoy": true, "token": true, "cost": 0, "stats": {"hp": 1, ...}, "abilities": [] }`.
+
+### Coiled
+`"coiled": { "ability": "<abilityId>" }` on a UnitDef. When its owner's turn ends and it used no ability that turn
+(walking is fine; a unit deployed that turn counts), it is Coiled until its owner's next turn starts. During each enemy
+turn, the first enemy that walks onto a tile orthogonally adjacent to it (by a move command; flyers included) is hit at once
+with that ability's per-unit effects: no AP cost, range ignored, `area`/`affects` measured around the walker's tile, the
+walker always hit. Cast-level effects (teleport, summon, terrain, draw, essence, swap, sacrifice, rehouse, moveOut) in the
+coiled ability are ignored, so use a plain damage/status ability. Once per enemy turn per coiled unit. The walker stops on
+that tile (and gets back the AP for the rest of the walk) if the strike kills it, moves it, roots it (`preventsMove`) or
+newly stuns it (`preventsAction`). A coiled unit that is itself stunned does not strike. Tiles the walker only passes
+through (occupied by an ally) do not trigger it. Push, pull, swap, teleport, skyfall landings and slides never trigger it.
+The strike emits `react` then a normal `ability` event. It does not trigger the striker's Venom.
+
+### Shells, eviction and rehousing
+- `"shell": { "hp": N, "evicted": "<unitId>", "leaves": "<unitId>" }`. The unit enters play (deployed, summoned,
+  pre-placed or rehoused) with `shellHp = N` (rehousing into an empty shell: that object's current HP). Every damage hit
+  is reduced by defense/terrain/resist as normal and then lands on the shell first; when shellHp reaches 0 the rest of that
+  hit is discarded and the unit is **Evicted**: it becomes `shell.evicted` (new stats, abilities, sprite, traits), body HP
+  carries over capped to the new max, statuses and equipment stay, ability cooldowns are cleared, AP is capped to the new
+  max. `pierce` damage and `venom`/`drying`/`sacrifice` damage skip the shell and hit the body. Healing heals the body only.
+- Evicted forms are ordinary UnitDefs, mark them `"token": true` (cost 0). A champion that dies after being evicted (or after
+  rehousing into something else) still puts the card it was DEPLOYED as on cooldown and spills that card's Tide.
+- Empty shells: `{ "structure": true, "token": true, "emptyShell": { "becomes": "<shelled unitId>" }, "stats": {"hp": N, ...}, "abilities": [] }`.
+  They belong to a team, block movement (even for allies), can be attacked, never count for `eliminate`, hold no Wells,
+  drop no Tide. A spell or ability drops one with the normal `summon` effect (full `stats.hp`).
+- `{ "type": "rehouse" }` in an ability with `"target": "tile"`, range 1. The caster must have no `shell` in its current
+  form (the ability is unusable otherwise). Valid target tiles (only these are offered): a tile holding a friendly empty
+  shell, or an unoccupied tile whose terrain has `shellSource`. Empty shell: the shell object vanishes, the caster steps onto
+  its tile and becomes `emptyShell.becomes` with shellHp = the object's current HP (capped at that unit's `shell.hp`).
+  shellSource tile: the caster steps onto it, becomes that unit with a full shell, and the tile turns into `salt_flat`.
+- `{ "type": "moveOut" }` in an ability with `"target": "empty"`, range 1. The caster must have a `shell` (unusable
+  otherwise). It steps to the target tile as its `shell.evicted` form and leaves `shell.leaves` (an empty-shell unit of its
+  team, HP = its shellHp at that moment) on the tile it left. No shell is left if `leaves` is absent or shellHp is 0.
+- `{ "type": "shell", "amount": N }` repairs the target's shell by N (up to `shell.hp`).
+- `filter: { "shelled": true|false }` on any effect: target's shell up (shellHp > 0) or not.
+- Every definition change (eviction, rehouse, moveOut) clears ability cooldowns; abilities already used this turn stay used.
+- Rehouse/moveOut steps are effect movement (no AP for the step, no `onEnter`, no Coiled trigger). They emit `move` + `rehouse`/`evict`.
+
+### Long bodies
+`"tail": { "segment": "<unitId>", "length": 1-3 }` on a UnitDef; the segment is a structure unit (`"token": true`, cost 0,
+no abilities; its HP is irrelevant). After each walk the head lays its tail on the tiles it just walked (newest first),
+then on the tiles its old tail covered, skipping occupied and impassable tiles, up to `length` segments. A unit has no
+tail until its first walk; a 1-tile walk with no old tail gives 1 segment. Segments are structures of the head's team:
+they block movement (the head itself may walk over its own tail but not stop on it), are never healed, take no statuses,
+and hold no Wells. Damage that hits a segment is dealt to the head instead (computed against the head's defense and
+resist), and an area that hits several segments and/or the head deals that effect to the head only once. Segments vanish
+when the head dies, sheds, or changes into a form without `tail`. There is no line of sight in the engine, so segments
+do not block sight. A long unit must still be a good unit without its tail. Non-damage effects (push, status...) on a
+segment affect the segment (a structure), i.e. nothing.
+
+### Events (for UI)
+`damage` gains `shell?: true` (the hit landed on the shell). New: `shed {uid, from, to, husk?}`,
+`evict {uid, from, to, voluntary?}` (voluntary = moveOut), `rehouse {uid, from, to, at}`, `shell {uid, amount}` (repair),
+`react {uid, target, ability}` (Coiled strike), `vanish {uid}` (removed without dying: expired husk, used empty shell,
+old tail segment). A unit's `defId` can change mid-battle; its `deployedAs` keeps the id it entered play as.
 
 ## Cards: the warband is a deck
 A warband / roster / unlock list may contain unit ids, spell ids and equipment ids. Ids must be unique across
@@ -81,7 +172,11 @@ Attached to one of your units on the board; one item per unit; lasts until the u
 
 ## content/statuses.json — `{ [statusId]: StatusDef }`
 `name, description, onTurnStart?: Effect[] (damage/heal only), preventsMove?, preventsAction?, statMods?: {attack?, defense?, ap?},
-stacks?: bool, maxStacks?, wet?: bool (carrier does not dry out), ignoresEngagement?: bool (carrier never pays the engagement cost)` — stacking statuses add a stack on re-application; statMods and onTurnStart amounts are multiplied by stacks.
+stacks?: bool, maxStacks?, wet?: bool (carrier does not dry out), ignoresEngagement?: bool (carrier never pays the engagement cost),
+onAct?: Effect[] (damage only), shedsWhenIdle?: bool` — stacking statuses add a stack on re-application; statMods, onTurnStart and onAct amounts are multiplied by stacks.
+- `onAct`: applied to the carrier right after each of its own actions resolves: one walk (any length; one per move command) or one ability use (including a `rehouse`/`moveOut`). Not after cards played from the hand, not after a Coiled reaction strike, not after effect movement. Amount x stacks, then defense/terrain (unless `pierce`) and the carrier's `resist[damageType]` exactly like spell damage (min 1 before resist, can reach 0 after resist).
+- `shedsWhenIdle`: at the END of the owner's turn, a carrier that took no action that turn (no walk, no ability) loses one stack; at 0 stacks the status is removed.
+- Structures never receive statuses.
 
 ## content/terrain.json — `{ [terrainId]: TerrainDef }`
 `name, moveCost, defense, color (placeholder tile colour), impassable?, onEnter?: Effect, wet?: bool` — `wet` tiles (and always `brine_pool`, `living_reef`) stop `dries` units losing HP.
@@ -94,8 +189,9 @@ Extra optional fields:
 - `underlay: terrainId` — renderer hint: terrain drawn beneath this tile's art.
 - Negative `defense` is allowed (the tile makes its occupant easier to hurt).
 - `onEnter` effects honour `filter` too, e.g. `{ "filter": { "notFaction": ["reef_ascendant"] } }`.
+- `shellSource: unitId` — a `rehouse` aimed at this tile (when nothing stands on it) turns the caster into this unit with a full shell, and the tile becomes `salt_flat` (which must exist). The unit must have a `shell`.
 
-`EffectFilter` (the `filter` on damage/heal/status/aura effects): `flying?: bool`, `faction?: string[]` (only units whose faction is listed), `notFaction?: string[]` (units whose faction is not listed; units with no faction always pass). All present keys must match. Faction ids must exist in `factions` when it is defined.
+`EffectFilter` (the `filter` on damage/heal/status/aura effects): `flying?: bool`, `shelled?: bool`, `faction?: string[]` (only units whose faction is listed), `notFaction?: string[]` (units whose faction is not listed; units with no faction always pass). All present keys must match. Faction ids must exist in `factions` when it is defined.
 
 ## content/maps/<id>.json
 `id, name, description, legend {char: terrainId}, tiles: string[] (rows), heights: string[] (digit rows, 0-9),

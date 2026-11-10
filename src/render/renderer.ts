@@ -394,7 +394,7 @@ export class Renderer {
         if (lethal || heavy) this.at(t, () => this.shakeCamera(t, lethal ? 7 : 4, lethal ? 320 : 200));
         this.at(t, () => {
           const u = this.uname(e.uid); if (!u) return;
-          this.hpShown.set(e.uid, Math.max(0, (this.hpShown.get(e.uid) ?? u.hp) - e.amount));
+          if (!e.shell) this.hpShown.set(e.uid, Math.max(0, (this.hpShown.get(e.uid) ?? u.hp) - e.amount));
           this.flashUntil.set(e.uid, t + 220);
           this.shake.set(e.uid, t + 260);
           const art = unitArt(u.defId, g.def(u));
@@ -438,12 +438,42 @@ export class Renderer {
         this.cue(t, { kind: 'status', uid: e.uid });
         break;
       }
+      case 'shed': {
+        // Slides out of its old skin: a quick hop to the new tile; the husk pops in where it stood.
+        push(e.uid, { start: this.cursor, dur: 260, path: [e.from, e.to], arc: true });
+        const t = this.cursor;
+        this.at(t, () => { const u = this.uname(e.uid); if (u) { this.floatAt(e.from, 'Shed', '#d8e07a', this.now()); this.burst(e.from, 10, '#d8e07a', { up: 40, spread: 30, life: 600, size: 2.5 }); } });
+        this.cursor += 260; this.endAt = Math.max(this.endAt, this.cursor); break;
+      }
+      case 'evict': case 'rehouse': {
+        const t = this.cursor;
+        const txt = e.kind === 'rehouse' ? 'Rehoused' : e.voluntary ? 'Moves out' : 'Evicted!';
+        this.at(t, () => {
+          const u = this.uname(e.uid); if (!u) return;
+          this.hpShown.set(e.uid, u.hp);
+          this.popStart.set(e.uid, t);
+          this.floatAt(this.unitPos(u, t), txt, '#e8a25a', this.now(), undefined, 1.2);
+          this.burst(u, 14, '#e8a25a', { up: 50, spread: 40, life: 700, size: 3 });
+        });
+        this.cursor += 200; this.endAt = Math.max(this.endAt, this.cursor + POP_MS); break;
+      }
+      case 'shell': {
+        const t = this.cursor;
+        this.at(t, () => { const u = this.uname(e.uid); if (u) this.floatAt(this.unitPos(u, t), `+${e.amount} shell`, '#e8a25a', this.now()); });
+        break;
+      }
+      case 'react': {
+        const t = this.cursor;
+        this.at(t, () => { const u = this.uname(e.uid); if (u) this.floatAt(this.unitPos(u, t), 'Coiled!', '#d8e07a', this.now(), undefined, 1.2); });
+        break;
+      }
+      case 'vanish':
       case 'death': {
-        const t = this.cursor + 180;
+        const t = this.cursor + 180, quiet = e.kind === 'vanish';
         this.pendingDeath.add(e.uid);
         this.at(t, () => {
           this.pendingDeath.delete(e.uid); this.dying.set(e.uid, t);
-          this.onCue?.({ kind: 'death', uid: e.uid });
+          if (!quiet) this.onCue?.({ kind: 'death', uid: e.uid });
           const u = this.uname(e.uid);
           if (u) {
             const art = unitArt(u.defId, g.def(u));
@@ -982,12 +1012,14 @@ export class Renderer {
       flash: Math.max(0, Math.min(1, fl / 220)),
       hp: hpNow, maxHp: def.stats.hp,
       ap: def.structure ? undefined : u.ap, maxAp: def.structure ? undefined : g.stat(u, 'ap'),
-      statuses: u.statuses.map(s => ({ id: s.id, name: g.content.statuses[s.id]?.name ?? s.id })),
+      statuses: [...u.statuses.map(s => ({ id: s.id, name: g.content.statuses[s.id]?.name ?? s.id })), ...(u.coiled && def.coiled && u.alive ? [{ id: 'coiled', name: 'Coiled' }] : [])],
       selected: !!ov.selected && ov.selected.x === u.x && ov.selected.y === u.y && !this.segs.has(u.uid),
       hovered: !!ov.hover && ov.hover.x === u.x && ov.hover.y === u.y,
       flying: !!def.flying, scale, time: now, frame, facing: d.facing, squash, tilt, lift, glow,
-      lampGlow: def.structure ? Math.max(0.08, hpNow / def.stats.hp) : undefined,
+      lampGlow: def.structure && !g.isProp(u) ? Math.max(0.08, hpNow / def.stats.hp) : undefined,
       reduced: this.reduced,
+      shell: def.shell ? { hp: u.shellHp ?? 0, max: def.shell.hp } : undefined,
+      prop: g.isProp(u),
     };
   }
 
@@ -1078,7 +1110,7 @@ export class Renderer {
 function spellColor(effects: { type: string; damageType?: string }[]): string {
   const e = effects.find(x => x.type === 'damage') ?? effects[0];
   switch (e?.type) {
-    case 'damage': return ({ fire: '#ff9a4a', salt: '#ffd98a', cold: '#8fdcff', pressure: '#6fb6ff', light: '#ffe08a', brine: '#5fe0c8', physical: '#ffcf8a' } as Record<string, string>)[e.damageType ?? ''] ?? '#ffcf8a';
+    case 'damage': return ({ fire: '#ff9a4a', salt: '#ffd98a', cold: '#8fdcff', pressure: '#6fb6ff', light: '#ffe08a', brine: '#5fe0c8', venom: '#b5c934', physical: '#ffcf8a' } as Record<string, string>)[e.damageType ?? ''] ?? '#ffcf8a';
     case 'heal': return '#8ff0a0';
     case 'status': return '#c79bff';
     case 'summon': return '#7fe0dc';

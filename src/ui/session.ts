@@ -215,11 +215,16 @@ export class GameSession {
     switch (e.kind) {
       case 'move': this.logLine(`${this.uname(e.uid)} moves ${e.path.length - 1} tile${e.path.length === 2 ? '' : 's'}.`, 'move'); break;
       case 'ability': this.logLine(`${this.uname(e.uid)} uses ${g.ability(e.ability)?.name ?? e.ability}.`, 'ability'); break;
-      case 'damage': this.logLine(`${this.uname(e.uid)} takes ${e.amount} ${e.damageType ?? ''} damage.`.replace('  ', ' '), 'dmg'); break;
+      case 'damage': this.logLine(`${this.uname(e.uid)} takes ${e.amount} ${e.damageType ?? ''} damage${e.shell ? ' to its shell' : ''}.`.replace('  ', ' '), 'dmg'); break;
       case 'heal': this.logLine(`${this.uname(e.uid)} recovers ${e.amount} HP.`, 'heal'); break;
       case 'status': this.logLine(`${this.uname(e.uid)} is ${g.content.statuses[e.status]?.name ?? e.status}.`, 'status'); break;
       case 'push': this.logLine(`${this.uname(e.uid)} is moved.`, 'move'); break;
       case 'death': this.logLine(`${this.uname(e.uid)} is defeated.`, 'death'); break;
+      case 'shed': this.logLine(`${this.uname(e.uid)} sheds its skin and slips away.`, 'move'); break;
+      case 'evict': this.logLine(e.voluntary ? `${g.content.units[e.from]?.name ?? e.from} moves out and is now ${this.uname(e.uid)}.` : `${g.content.units[e.from]?.name ?? e.from} is evicted from its shell.`, 'status'); break;
+      case 'rehouse': this.logLine(`${g.content.units[e.from]?.name ?? e.from} moves into a new shell: ${this.uname(e.uid)}.`, 'status'); break;
+      case 'shell': this.logLine(`${this.uname(e.uid)} repairs ${e.amount} shell.`, 'heal'); break;
+      case 'react': this.logLine(`${this.uname(e.uid)} strikes from coiled at ${this.uname(e.target)}!`, 'ability'); break;
       case 'revive': this.logLine(`${this.uname(e.uid)} rises again with ${e.hp} HP.`, 'heal'); break;
       case 'spell': this.logLine(`${g.teams[e.team].name} casts ${g.content.spells[e.spell]?.name ?? e.spell}.`, 'ability'); break;
       case 'equip': this.logLine(`${this.uname(e.uid)} is equipped with ${g.content.equipment[e.equipment]?.name ?? e.equipment}.`, 'status'); break;
@@ -646,10 +651,12 @@ export class GameSession {
         h('div', { class: 'u-name' }, d.name, d.hero ? h('span', { class: 'u-hero', title: 'Hero' }, '\u2655') : null),
         h('div', { class: 'u-line' },
           h('span', { class: 'u-hp' }, h('i', { class: 'hcoin' }), h('div', { class: 'ubar hp' }, h('div', { class: 'fill', style: `width:${Math.max(0, u.hp / d.stats.hp * 100)}%` }), h('span', null, `${u.hp}/${d.stats.hp}`))),
+          d.shell ? h('span', { class: 'u-hp', title: 'Shell: soaks damage before HP' }, h('div', { class: 'ubar hp' }, h('div', { class: 'fill', style: `width:${Math.max(0, (u.shellHp ?? 0) / d.shell.hp * 100)}%;background:#d9822b` }), h('span', null, `Shell ${u.shellHp ?? 0}/${d.shell.hp}`))) : null,
           stat('atk', 'ATK', g.stat(u, 'attack'), d.stats.attack), stat('def', 'DEF', g.stat(u, 'defense'), d.stats.defense)),
         d.structure ? null : h('div', { class: 'pips', title: `Action points ${u.ap}/${maxAp}` }, h('small', null, 'AP'), ...Array.from({ length: Math.min(maxAp, 14) }, (_, i) => h('i', { class: i < u.ap ? 'on' : '' })), h('b', { class: 'num' }, `${u.ap}/${maxAp}`)),
-        u.statuses.length || engaged ? h('div', { class: 'statuses' },
+        u.statuses.length || engaged || (u.coiled && d.coiled) ? h('div', { class: 'statuses' },
           engaged ? h('span', { class: 'schip', style: '--sc:#e0a040', title: `Next to an enemy: walking away costs +${engaged} AP.` }, 'Engaged', h('small', null, `+${engaged}`)) : null,
+          u.coiled && d.coiled && u.alive ? h('span', { class: 'schip', style: '--sc:#b5c934', title: `The first enemy to walk next to it this turn is struck by ${g.ability(d.coiled.ability)?.name ?? d.coiled.ability}.` }, 'Coiled') : null,
           ...u.statuses.map(s => {
           const sd = g.content.statuses[s.id];
           return h('span', { class: 'schip', style: `--sc:${statusColor(s.id)}`, title: sd?.description ?? '' }, sd?.name ?? s.id, h('small', null, `${s.remaining}${s.stacks && s.stacks > 1 ? ` \u00D7${s.stacks}` : ''}`));
