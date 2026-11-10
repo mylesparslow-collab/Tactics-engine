@@ -472,17 +472,19 @@ def cheliped(add, P, C, side, size, big=True, barn=0, seed=3, guard=None, arm=1.
     palm, Rc, mouth = chela(add, ww, dw, up, size * s, op, bumps=big, fat=fat)
     cs = size * s
     if scar:
+        # two long, fat pale gouges across the outer (camera-side) face of the palm: wide enough to survive 1x
         X, Y, Z = Rc[:, 0], Rc[:, 1], Rc[:, 2]
-        out = X * (-side)
-        for a, b in ((0.03, -0.02), (-0.04, 0.05)):
-            c = palm + out * 0.082 * cs + Y * a * cs + Z * b * cs
-            add(Capsule(c - Y * 0.045 * cs + Z * 0.03 * cs, c + Y * 0.045 * cs - Z * 0.03 * cs, 0.011 * cs),
+        out = norm(X * (-side) * 0.75 + Y * 0.65)
+        for a, b in ((0.035, -0.035), (-0.025, 0.045)):
+            c = palm + out * 0.098 * cs + Y * a * cs + Z * b * cs
+            add(Capsule(c - Y * 0.060 * cs + Z * 0.045 * cs, c + Y * 0.060 * cs - Z * 0.045 * cs, 0.019 * cs),
                 'scar', 0.0)
     if barn:
+        # a few FAT clusters on the top / camera side of the palm and arm (3 cones each, big enough to read at 1x)
         for i in range(barn):
-            nrm = norm(Rc[:, 1] * 0.8 + Rc[:, 0] * (-side) * (0.7 - 0.9 * i) + Rc[:, 2] * (0.2 * i - 0.25))
-            barnacles(add, palm + nrm * 0.10 * cs + Rc[:, 2] * (0.03 - 0.08 * i) * cs, nrm,
-                      size=0.026 * cs, n=3 + (i % 2), seed=seed + i)
+            nrm = norm(Rc[:, 1] * 0.9 + Rc[:, 0] * (-side) * (0.55 - 0.8 * i) + Rc[:, 2] * (0.15 * i - 0.25))
+            barnacles(add, palm + nrm * 0.105 * cs + Rc[:, 2] * (0.02 - 0.10 * i) * cs, nrm,
+                      size=0.040 * cs, n=3, spread=0.050 * cs, seed=seed + i)
     if big and P['fx'] > 0.5 and P['snap'] > 0.6:
         # snap accent: three short bright strokes off the shut tips (not a burst, not smoke)
         Z, Y = Rc[:, 2], Rc[:, 1]
@@ -895,8 +897,8 @@ def bare(P, size, b, mats=None, lights=(), world=None):
     if b.shield_barn:
         for i in range(b.shield_barn):
             nrm = norm(C.v((0.5 - 0.9 * i, 1.0, -0.4 + 0.2 * i)))
-            barnacles(add, C.p((0.07 - 0.13 * i, 0.07, -0.06 + 0.03 * i)) + nrm * 0.03 * s, nrm, size=0.035 * s,
-                      n=3 + i % 2, seed=11 + i)
+            barnacles(add, C.p((0.07 - 0.13 * i, 0.07, -0.06 + 0.03 * i)) + nrm * 0.03 * s, nrm, size=0.050 * s,
+                      n=3, spread=0.065 * s, seed=11 + i)
     tk = dict(b.tail)
     if P['flip'] > 0:      # on its back the soft abdomen flops over sideways onto the salt
         tk['side'] = tk.get('side', -0.6) - 1.6 * P['flip']

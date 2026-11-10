@@ -5,15 +5,15 @@ Defining detail: the muzzle ring and the recoil (the whole crab skids back a ste
 from _hermitage_common import *
 
 UNIT_ID = 'hermitage_gun_deck_lodger'
-SIZE = 'large'
-CAMERA = size_camera(SIZE)
-GUN_L = 1.30
+SIZE = 1.34            # 'large' class; crab scaled up so its face and claws read clearly under the muzzle
+CAMERA = size_camera('large')
+GUN_L = 1.16
 
 SHELL = Shell(
     build=long_gun_shell(length=GUN_L, r_breech=0.27, r_muzzle=0.14, open_breech=True, bore=0.075),
-    ride=0.50, tilt=-0.24, crab_at=(0, -0.30, 0.16), crab_upright=1.0, z0=-0.68, x0=0.36, yaw=0.50,
-    eye_len=0.30, eye_bead=0.060, span=0.50, duck_dir=(0, 0.6, -1.0), duck_depth=0.18,
-    big=1.35, small=0.85, side_r=0.30, tip_angle=0.9, lie=-0.05, leg_r=1.1)
+    ride=0.52, tilt=-0.24, crab_at=(0, -0.30, 0.36), crab_upright=1.0, z0=-0.82, x0=0.30, yaw=0.32,
+    eye_len=0.32, eye_bead=0.066, span=0.46, duck_dir=(0, 0.6, -1.0), duck_depth=0.22,
+    big=1.40, small=0.82, guard=((0.25, -0.20, 0.17), (-0.42, 0.12, 0.90)), side_r=0.30, tip_angle=0.9, lie=-0.05, leg_r=1.1)
 
 
 def neutral_pose():
@@ -40,7 +40,7 @@ def _rows(R):
         P['snap'] = 0.0
         P['open'] = [0.3, 0.2, 0.5, 0.3][i]
         P['lean'] = [-0.03, -0.07, -0.13, -0.05][i]
-        P['recoil'] = [0.0, 0.0, 0.11, 0.08][i]
+        P['recoil'] = [0.0, 0.0, 0.08, 0.06][i]
         P['fire'] = [0.0, 0.0, 1.0, 0.0][i]
         P['fx'] = [0.0, 0.0, 1.0, 0.4][i]
         P['lift_a'] = [0, 0, 0.6, 0][i]
@@ -56,7 +56,7 @@ def _rows(R):
         P['limp'] *= 0.45
         k = [0, 0.3, 0.85, 1.0][i]  # topple forward onto the shadow, not behind it
         P['slide'] += -0.24 * k
-        P['recoil'] += -0.22 * k
+        P['recoil'] += -0.10 * k
     return R
 
 

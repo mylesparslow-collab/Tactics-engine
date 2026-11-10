@@ -22,7 +22,7 @@ def build(P):
     parts, add = new_parts()
     B = naga_body(P, add, N)
     s = P['s']
-    pole(add, P, 'r', 'l', 'glaive', below=0.40, above=0.92)
+    pole(add, P, 'r', 'l', 'glaive', below=0.40, above=0.86)
     # amber lacquered sash across the chest, shoulder to hip
     Rt = B['chest_R']
     rt, up, fw = Rt[:, 0], Rt[:, 1], Rt[:, 2]
@@ -45,6 +45,8 @@ def _fit(row, i, P):
     if row == 'cast':            # the guard stays put (the glaive would leave the top of the frame)
         s = P['s']
         move_hands(P, -v3(0, [0.12, 0.28, 0.10][i], [0.02, 0.06, 0.12][i]) * s, ('r', 'l'))
+        slide(P, v3(0, -[0.06, 0.10, 0.04][i] * s, 0))
+        P['hood'] = min(P['hood'], 1.12)
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='thrust', hook=_fit)

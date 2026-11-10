@@ -4,7 +4,7 @@ clusters on the big claw (it has been housed a long time)."""
 from _hermitage_common import *
 
 UNIT_ID = 'hermitage_bare_large'
-SIZE = 1.15   # 'large' class
+SIZE = 1.06   # 'large' class, between the medium snapper and the giant
 CAMERA = size_camera('large')
 BARE = Bare(h=0.30, yaw=0.05, pitch=0.04, z0=-0.38, x0=0.24, big=1.40, small=1.0, eye_len=0.24, eye_bead=0.058,
             span=0.50, spread=1.3, leg_len=1.0, leg_r=1.25, shield=1.15, arm=1.2, fat=1.05, barn=2,

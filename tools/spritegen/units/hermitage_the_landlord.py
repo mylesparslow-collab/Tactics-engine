@@ -6,7 +6,7 @@ Defining detail: the lit lamp turning inside (a bright face sweeps round the gla
 from _hermitage_common import *
 
 UNIT_ID = 'hermitage_the_landlord'
-SIZE = 1.30            # 'great' class, trimmed so lamp-room, claws and legs fit at ppm 44
+SIZE = 1.50            # 'great' class: the crab is big and fully out in front of the lamp-room deck
 CAMERA = size_camera('great')
 GR, GH = 0.50, 0.78          # glass radius / height (shell-local y 0.10 .. 0.88)
 G0 = 0.10
@@ -81,9 +81,9 @@ def _eyes():
 
 
 SHELL = Shell(
-    build=lamp_room, ride=0.44, tilt=-0.20, crab_at=(0, -0.26, 0.34), crab_upright=1.0, z0=-0.78, x0=0.36,
-    eye_len=0.26, eye_bead=0.058, span=0.46, duck_dir=(0, 0.7, -1.0), duck_depth=0.16,
-    big=1.30, small=0.70, side_r=0.54, tip_angle=0.60, tip_dir=-1.0, leg_r=1.30, shield=1.1)
+    build=lamp_room, ride=0.44, tilt=-0.20, crab_at=(0, -0.10, 0.54), crab_upright=1.0, z0=-1.00, x0=0.32,
+    eye_len=0.30, eye_bead=0.066, span=0.44, duck_dir=(0, 0.5, -1.0), duck_depth=0.22,
+    big=1.40, small=0.72, guard=((0.25, -0.20, 0.17), (-0.42, 0.12, 0.90)), side_r=0.54, tip_angle=0.60, tip_dir=-1.0, leg_r=1.30, shield=1.1)
 
 
 def neutral_pose():
@@ -113,16 +113,17 @@ def _rows(R):
     for row in ('attack', 'death', 'cast', 'hit'):     # the claw is huge at this scale: keep it in frame
         for P, o in R[row]:
             P['snap'] *= 0.55
-            P['drum'] *= 0.5
-            P['limp'] *= 0.4
+            P['drum'] *= 0.22
+            P['limp'] *= 0.35
     for i, (P, o) in enumerate(R['death']):
         k = [0, 0.3, 0.85, 1.0][i]  # topple forward onto the shadow, not behind it
-        P['slide'] = [0, 0.0, -0.02, -0.02][i] - 0.165 * k
-        P['recoil'] += -0.36 * k
+        P['slide'] = [0, 0.0, -0.02, -0.02][i] - 0.12 * k
+        P['recoil'] += -0.22 * k
         P['duck'] = [0.6, 0.5, 0.7, 0.75][i]
     for i, (P, o) in enumerate(R['cast']):
         P['ring'] = [0.6, 1.0, 1.0, 0.7][i]
         P['tell'] = [0.10, 0.22, 0.34, 0.46][i]
+        P['recoil'] += [0.0, 0.11, 0.0, 0.11][i]     # the drum lands on the rim, not off the bottom of the frame
     return R
 
 
