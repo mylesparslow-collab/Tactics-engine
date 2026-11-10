@@ -4826,5 +4826,639 @@
    "glyph": "OK"
   },
   "description": "A huge crab in a pressure-bell carried off from the bell-shrine of Trench Deeplight, which the Hadal Court would like back. Old Knell remembers every wrong ever done to it and tolls once for each."
+ },
+ "slough_brinkling": {
+  "name": "Brinkling",
+  "role": "Cheap Body",
+  "faction": "slough",
+  "cost": 25,
+  "stats": {
+   "hp": 18,
+   "ap": 6,
+   "attack": 7,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 1
+  },
+  "abilities": [
+   "sl_brinkling_gaff",
+   "sl_brinkling_first_bite"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Bk"
+  },
+  "description": "A young Slough a few sheddings old, reared to the height of a man on a coil it has not grown into, with a reed gaff and a buckler cut from its own first skin. The marsh sends its young to the front because the young still heal."
+ },
+ "slough_banded_lancer": {
+  "name": "Banded Lancer",
+  "role": "Line Infantry",
+  "faction": "slough",
+  "cost": 35,
+  "stats": {
+   "hp": 22,
+   "ap": 6,
+   "attack": 8,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "shed": {
+   "husk": "slough_husk",
+   "slide": 2
+  },
+  "coiled": {
+   "ability": "sl_lancer_coil_thrust"
+  },
+  "abilities": [
+   "sl_lancer_thrust",
+   "sl_lancer_fang_tip"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Bl"
+  },
+  "description": "A black-and-bone banded krait with a long fang-tipped lance, coiled low behind it like a drawn bow. Lancers walk the edges of the hanging-skin cities and strike anything that steps where the skins are."
+ },
+ "slough_spitting_olive": {
+  "name": "Spitting Olive",
+  "role": "Ranged",
+  "faction": "slough",
+  "cost": 35,
+  "stats": {
+   "hp": 16,
+   "ap": 6,
+   "attack": 8,
+   "defense": 0,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "shed": {
+   "husk": "slough_husk",
+   "slide": 2
+  },
+  "abilities": [
+   "sl_olive_spit",
+   "sl_olive_eye_spray"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "So"
+  },
+  "description": "An olive-green sea snake with a throat sac of venom and no patience, who spits for the eyes from four tiles off and is gone before you can see again. The Slough keep them on the reed-towers as other people keep dogs."
+ },
+ "slough_reedrunner": {
+  "name": "Reedrunner",
+  "role": "Skirmisher",
+  "faction": "slough",
+  "cost": 35,
+  "stats": {
+   "hp": 18,
+   "ap": 8,
+   "attack": 8,
+   "defense": 0,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "shed": {
+   "husk": "slough_husk",
+   "slide": 2
+  },
+  "ignoresEngagement": true,
+  "abilities": [
+   "sl_reedrunner_hook",
+   "sl_reedrunner_nick"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Rr"
+  },
+  "description": "A thin, fast yellow-lipped krait who carries messages between the hanging cities by the shortest wet line. It does not stop to fight; it cuts in passing and is three reed-beds away when the wound starts to burn."
+ },
+ "slough_scaleshield": {
+  "name": "Scaleshield",
+  "role": "Tank",
+  "faction": "slough",
+  "cost": 40,
+  "stats": {
+   "hp": 30,
+   "ap": 5,
+   "attack": 7,
+   "defense": 3,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "coiled": {
+   "ability": "sl_scaleshield_coil_bash"
+  },
+  "abilities": [
+   "sl_scaleshield_bash",
+   "sl_scaleshield_lacquer_wall"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Ss"
+  },
+  "description": "A heavy-bodied krait behind a shield cut from one scale of a stranded leviathan, wider than a door. It lies across the causeways into the Brinks and nothing gets past that it has not let past."
+ },
+ "slough_skin_reader": {
+  "name": "Skin-Reader",
+  "role": "Support / Healer",
+  "faction": "slough",
+  "cost": 35,
+  "stats": {
+   "hp": 20,
+   "ap": 6,
+   "attack": 5,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "abilities": [
+   "sl_reader_hook",
+   "sl_reader_mend",
+   "sl_reader_second_skin"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Sr"
+  },
+  "description": "A scholar of the hanging library who reads the old skins by touch, the scars and the patterns, and can tell a snake how it was healed last time. Mostly that is enough to heal it again."
+ },
+ "slough_gourdslinger": {
+  "name": "Gourdslinger",
+  "role": "Ranged / Area",
+  "faction": "slough",
+  "cost": 40,
+  "stats": {
+   "hp": 17,
+   "ap": 6,
+   "attack": 8,
+   "defense": 0,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "shed": {
+   "husk": "slough_husk",
+   "slide": 2
+  },
+  "abilities": [
+   "sl_gourd_sling",
+   "sl_gourd_lob"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Gs"
+  },
+  "description": "A krait with a rack of sealed marsh-gourds slung across its back and a sling in each hand, one for stones and one for gourds. The gourds are filled at the milking-posts, and the Slough are not careful about which."
+ },
+ "slough_hookfang_wrangler": {
+  "name": "Hookfang Wrangler",
+  "role": "Controller",
+  "faction": "slough",
+  "cost": 40,
+  "stats": {
+   "hp": 23,
+   "ap": 6,
+   "attack": 8,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "abilities": [
+   "sl_wrangler_trident",
+   "sl_wrangler_haul",
+   "sl_wrangler_barb"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Hw"
+  },
+  "description": "A krait who hunts eels in the brine-channels with a barbed trident and a line, and has found the same tools bring a soldier off a causeway just as well. It holds what it hooks until the hooked thing stops arguing."
+ },
+ "slough_siltcoil": {
+  "name": "Siltcoil Ambusher",
+  "role": "Ambusher",
+  "faction": "slough",
+  "cost": 40,
+  "stats": {
+   "hp": 24,
+   "ap": 5,
+   "attack": 8,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "coiled": {
+   "ability": "sl_siltcoil_strike"
+  },
+  "abilities": [
+   "sl_siltcoil_glaive",
+   "sl_siltcoil_lunge"
+  ],
+  "sprite": {
+   "shape": "square",
+   "glyph": "Sc"
+  },
+  "description": "A mud-coloured krait who lies in the silt of a channel with only its hood and glaive-tip showing and waits, sometimes for days. Brink children are taught to step over still water, never into it."
+ },
+ "slough_glaive_sister": {
+  "name": "Glaive-Sister",
+  "role": "Duelist",
+  "faction": "slough",
+  "cost": 45,
+  "stats": {
+   "hp": 25,
+   "ap": 6,
+   "attack": 9,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "shed": {
+   "husk": "slough_husk",
+   "slide": 2
+  },
+  "abilities": [
+   "sl_sister_glaive",
+   "sl_sister_open_vein",
+   "sl_sister_measured_cut"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Gv"
+  },
+  "description": "One of an order of duellists who settle the Slough's disputes in front of the hanging skins, so the old ones can watch. They open a vein first and let the other one decide how much longer it wants to move."
+ },
+ "slough_yellowbelly_matriarch": {
+  "name": "Yellowbelly Matriarch",
+  "role": "Venom Burst",
+  "faction": "slough",
+  "cost": 55,
+  "stats": {
+   "hp": 28,
+   "ap": 6,
+   "attack": 9,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "shed": {
+   "husk": "slough_husk",
+   "slide": 2
+  },
+  "abilities": [
+   "sl_matriarch_bite",
+   "sl_matriarch_kiss",
+   "sl_matriarch_choke"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Ym"
+  },
+  "description": "A brood-mother of the yellowbelly line, gold underneath and black above, wearing a girdle of her children's first skins. Her venom is the strongest in the Brinks, and she is the only one who decides who gets milked for the gourds."
+ },
+ "slough_skinbanner_elder": {
+  "name": "Skinbanner Elder",
+  "role": "Commander",
+  "faction": "slough",
+  "cost": 50,
+  "stats": {
+   "hp": 27,
+   "ap": 6,
+   "attack": 8,
+   "defense": 2,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "abilities": [
+   "sl_elder_hook",
+   "sl_elder_banner",
+   "sl_elder_raise_hood"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Se"
+  },
+  "description": "An elder who carries a pole hung with the skins of every Slough who died on this march, so that they can still see it. Where the banner goes the young fight harder, because they are being watched by the dead."
+ },
+ "slough_ringwall": {
+  "name": "Ringwall",
+  "role": "Long Tank",
+  "faction": "slough",
+  "cost": 55,
+  "stats": {
+   "hp": 36,
+   "ap": 5,
+   "attack": 9,
+   "defense": 3,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "coiled": {
+   "ability": "sl_ringwall_coil_crush"
+  },
+  "tail": {
+   "segment": "slough_tail_segment",
+   "length": 2
+  },
+  "abilities": [
+   "sl_ringwall_tridents",
+   "sl_ringwall_constrict",
+   "sl_ringwall_scale_wall"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Rw"
+  },
+  "description": "A four-armed krait as long as a barge, two hands on leviathan-scale shields and two on hooked tridents, whose body is the wall of whatever camp it lies around. The Slough do not build palisades. They ask a Ringwall."
+ },
+ "slough_silt_slider": {
+  "name": "Silt-Slider",
+  "role": "Mobile",
+  "faction": "slough",
+  "cost": 50,
+  "stats": {
+   "hp": 22,
+   "ap": 8,
+   "attack": 9,
+   "defense": 0,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "shed": {
+   "husk": "slough_husk",
+   "slide": 2
+  },
+  "ignoresEngagement": true,
+  "abilities": [
+   "sl_slider_sabre",
+   "sl_slider_pass_bite",
+   "sl_slider_fang_line"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Sl"
+  },
+  "description": "A long glossy krait that rides the wet silt like a sled, tail paddling, a hooked sabre in each hand. Sliders run the Brinks' borders and are the reason the Compact's bone-sleds no longer take the trench road."
+ },
+ "slough_hundredcoat": {
+  "name": "Hundredcoat",
+  "role": "Exotic Long Giant",
+  "faction": "slough",
+  "cost": 65,
+  "stats": {
+   "hp": 38,
+   "ap": 5,
+   "attack": 10,
+   "defense": 3,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 3
+  },
+  "shed": {
+   "husk": "slough_great_husk",
+   "slide": 2
+  },
+  "tail": {
+   "segment": "slough_tail_segment",
+   "length": 3
+  },
+  "abilities": [
+   "sl_hundredcoat_glaives",
+   "sl_hundredcoat_fury",
+   "sl_hundredcoat_crush",
+   "sl_hundredcoat_coats"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Hc"
+  },
+  "description": "A four-armed krait three wagons long that has kept every skin it ever shed and wears them all, lacquered, layer over layer, so that it rattles like a reed-bed when it moves. Strip a coat off it and there is always another underneath."
+ },
+ "slough_eldest_skin": {
+  "name": "The Eldest Skin",
+  "title": "Who Has Shed Ninety Times",
+  "role": "Hero",
+  "faction": "slough",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 34,
+   "ap": 6,
+   "attack": 8,
+   "defense": 2,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 3
+  },
+  "shed": {
+   "husk": "slough_husk",
+   "slide": 2
+  },
+  "abilities": [
+   "sl_eldest_staff",
+   "sl_eldest_library",
+   "sl_eldest_recital",
+   "sl_eldest_teach_shed"
+  ],
+  "sprite": {
+   "shape": "circle",
+   "glyph": "Es"
+  },
+  "description": "The ruler of the Slough, because she has shed more times than anyone alive: ninety skins, every one hung in order in the great library at the trench edge. She remembers the night the water left as the night the world was handed to her people, and nobody has been able to tell her otherwise."
+ },
+ "slough_kesh": {
+  "name": "Kesh",
+  "title": "the Four-Handed",
+  "role": "Hero",
+  "faction": "slough",
+  "hero": true,
+  "cost": 80,
+  "stats": {
+   "hp": 40,
+   "ap": 5,
+   "attack": 10,
+   "defense": 2,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 3
+  },
+  "coiled": {
+   "ability": "sl_kesh_coil_strike"
+  },
+  "tail": {
+   "segment": "slough_tail_segment",
+   "length": 2
+  },
+  "abilities": [
+   "sl_kesh_glaives",
+   "sl_kesh_coil_and_crush",
+   "sl_kesh_tail_sweep",
+   "sl_kesh_held_fast"
+  ],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "Ke"
+  },
+  "description": "The Eldest Skin's champion, a four-armed krait the length of a street who has never lost a duel in front of the library. Kesh is not cruel. Kesh simply holds on, with four hands and the whole of that body, until the argument is over."
+ },
+ "slough_mother_ashgourd": {
+  "name": "Mother Ashgourd",
+  "title": "Keeper of the Bitter Gourds",
+  "role": "Hero",
+  "faction": "slough",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 28,
+   "ap": 6,
+   "attack": 8,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 4
+  },
+  "abilities": [
+   "sl_ashgourd_sling",
+   "sl_ashgourd_brew",
+   "sl_ashgourd_antivenom",
+   "sl_ashgourd_fumes"
+  ],
+  "sprite": {
+   "shape": "diamond",
+   "glyph": "Ma"
+  },
+  "description": "The keeper of the milking-posts, grey around the hood, who has filled every gourd the Slough have thrown for sixty years and brewed the antivenom for the ones that broke at home. She sells neither, and she has been asked."
+ },
+ "slough_teshk": {
+  "name": "Teshk",
+  "title": "Who Bites Last",
+  "role": "Hero",
+  "faction": "slough",
+  "hero": true,
+  "cost": 75,
+  "stats": {
+   "hp": 30,
+   "ap": 7,
+   "attack": 10,
+   "defense": 1,
+   "jump": 1
+  },
+  "resist": {
+   "venom": 2
+  },
+  "shed": {
+   "husk": "slough_husk",
+   "slide": 2
+  },
+  "abilities": [
+   "sl_teshk_sabre",
+   "sl_teshk_patient_bite",
+   "sl_teshk_last_bite",
+   "sl_teshk_unbitten"
+  ],
+  "sprite": {
+   "shape": "triangle",
+   "glyph": "Te"
+  },
+  "description": "A lean grey-banded duellist who fought his first Glaive-Sister at nine sheddings and has never been bitten since. He believes, sincerely, that the Ebb was done for the Slough, and that every army marching through the Brinks is a guest that has stayed too long."
+ },
+ "slough_husk": {
+  "name": "Shed Husk",
+  "role": "Decoy",
+  "faction": "slough",
+  "cost": 0,
+  "structure": true,
+  "decoy": true,
+  "token": true,
+  "stats": {
+   "hp": 1,
+   "ap": 0,
+   "attack": 0,
+   "defense": 0,
+   "jump": 0
+  },
+  "abilities": [],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "~"
+  },
+  "description": "An empty skin, still standing in the shape of the snake that left it, hood up. It blocks the way until the wind takes it."
+ },
+ "slough_great_husk": {
+  "name": "Great Husk",
+  "role": "Decoy",
+  "faction": "slough",
+  "cost": 0,
+  "structure": true,
+  "decoy": true,
+  "token": true,
+  "stats": {
+   "hp": 1,
+   "ap": 0,
+   "attack": 0,
+   "defense": 0,
+   "jump": 0
+  },
+  "abilities": [],
+  "sprite": {
+   "shape": "pillar",
+   "glyph": "~~"
+  },
+  "description": "The lacquered outer coat of a giant, four empty sleeves and a hood as big as a tent, left upright on the field like a cast-off suit of armour."
+ },
+ "slough_tail_segment": {
+  "name": "Coil",
+  "role": "Tail Segment",
+  "faction": "slough",
+  "cost": 0,
+  "structure": true,
+  "token": true,
+  "stats": {
+   "hp": 1,
+   "ap": 0,
+   "attack": 0,
+   "defense": 0,
+   "jump": 0
+  },
+  "abilities": [],
+  "sprite": {
+   "shape": "square",
+   "glyph": "o"
+  },
+  "description": "A length of banded krait body. Strike it and the head feels it."
  }
 }

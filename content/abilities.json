@@ -16165,5 +16165,1919 @@
     "duration": 3
    }
   ]
+ },
+ "sl_brinkling_gaff": {
+  "name": "Gaff",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_brinkling_first_bite": {
+  "name": "First Bite",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 1,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_r3_brinkling_knot_bite": {
+  "name": "Knot Bite",
+  "description": "Deal attack-1 physical damage to an adjacent enemy, apply 1 Venom and heal yourself 2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "heal",
+    "amount": 2,
+    "target": "caster"
+   }
+  ]
+ },
+ "sl_lancer_thrust": {
+  "name": "Banded Lance",
+  "description": "Deal attack-1 physical damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_lancer_fang_tip": {
+  "name": "Fang-Tipped Thrust",
+  "description": "Deal attack-1 physical damage to an enemy within 1-2 and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_lancer_coil_thrust": {
+  "name": "Coil Thrust",
+  "description": "Coiled reaction: deal attack-1 physical damage to the first enemy that walks next to the Lancer and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_r3_lancer_long_strike": {
+  "name": "Long Strike",
+  "description": "Deal attack+1 physical damage to an enemy within 2-3 and apply 1 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 3
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_olive_spit": {
+  "name": "Spit",
+  "description": "Deal attack-3 venom damage to an enemy within 2-4 and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "venom"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "vfx": "spray"
+ },
+ "sl_olive_eye_spray": {
+  "name": "Eye Spray",
+  "description": "Deal attack-3 venom damage to an enemy within 2-3 and apply Weakened (-2 attack) for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 3
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "venom"
+   },
+   {
+    "type": "status",
+    "status": "weakened",
+    "duration": 2
+   }
+  ],
+  "vfx": "spray"
+ },
+ "sl_r3_olive_twin_spit": {
+  "name": "Twin Spit",
+  "description": "Deal attack-4 venom damage to enemies within 1 of a target within 2-4 and apply 1 Venom.",
+  "apCost": 4,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -4,
+    "damageType": "venom"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "vfx": "spray"
+ },
+ "sl_reedrunner_hook": {
+  "name": "Hook-Knife",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_reedrunner_nick": {
+  "name": "Nick and Go",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 1,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_r3_reedrunner_hamstring": {
+  "name": "Hamstring Bite",
+  "description": "Deal attack-1 physical damage to an adjacent enemy, apply 1 Venom and Numb it (-1 AP) for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "sl_numbed",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_scaleshield_bash": {
+  "name": "Scale-Shield Bash",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_scaleshield_lacquer_wall": {
+  "name": "Lacquer Wall",
+  "description": "You and allies within 1 become Lacquered (+2 defense) for 1 turn.",
+  "apCost": 2,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "sl_lacquered",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_scaleshield_coil_bash": {
+  "name": "Shield Snap",
+  "description": "Coiled reaction: deal attack-2 physical damage to the first enemy that walks next to the Scaleshield and Root it for 1 turn.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_r3_scaleshield_hold": {
+  "name": "Hold the Reed-Line",
+  "description": "Root all adjacent enemies for 1 turn and apply Weakened (-2 attack) for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   },
+   {
+    "type": "status",
+    "status": "weakened",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_reader_hook": {
+  "name": "Reading-Hook",
+  "description": "Deal attack physical damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_reader_mend": {
+  "name": "Mend with Old Skin",
+  "description": "Heal an ally within 1-3 for 5.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "ally",
+  "cooldown": 1,
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 5
+   }
+  ]
+ },
+ "sl_reader_second_skin": {
+  "name": "Read the Second Skin",
+  "description": "An ally within 1-3 heals 2 and can Shed again this battle.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "ally",
+  "cooldown": 4,
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 2
+   },
+   {
+    "type": "reshed"
+   }
+  ],
+  "requires": [
+   "reshed"
+  ]
+ },
+ "sl_r3_reader_recital": {
+  "name": "Recital of Skins",
+  "description": "Allies within 2 heal 3 and become Lacquered (+2 defense) for 1 turn.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 3
+   },
+   {
+    "type": "status",
+    "status": "sl_lacquered",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_gourd_sling": {
+  "name": "Sling Stone",
+  "description": "Deal attack-1 physical damage to an enemy within 2-4.",
+  "apCost": 2,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_gourd_lob": {
+  "name": "Venom Gourd",
+  "description": "Deal attack-3 venom damage to enemies within 1 of a tile within 2-4 and apply 1 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "tile",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "venom"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "vfx": "spray"
+ },
+ "sl_r3_gourd_two_gourds": {
+  "name": "Two Gourds",
+  "description": "Deal attack-3 venom damage to enemies within 1 of a tile within 2-5, apply 1 Venom and Numb them (-1 AP) for 1 turn.",
+  "apCost": 4,
+  "range": {
+   "min": 2,
+   "max": 5
+  },
+  "target": "tile",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "venom"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "sl_numbed",
+    "duration": 1
+   }
+  ],
+  "vfx": "spray"
+ },
+ "sl_wrangler_trident": {
+  "name": "Hooked Trident",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_wrangler_haul": {
+  "name": "Haul In",
+  "description": "Deal attack-2 physical damage to an enemy within 2-3 and pull it 2 tiles toward the Wrangler.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 3
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "pull",
+    "distance": 2
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "sl_wrangler_barb": {
+  "name": "Barbed Tine",
+  "description": "Deal attack-1 physical damage to an adjacent enemy, apply 1 Venom and Root it for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_r3_wrangler_drag": {
+  "name": "Drag to the Marsh",
+  "description": "Pull an enemy within 2-4 three tiles toward the Wrangler and apply 1 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "pull",
+    "distance": 3
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "requires": [
+   "pull"
+  ]
+ },
+ "sl_siltcoil_glaive": {
+  "name": "Fang-Glaive",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_siltcoil_lunge": {
+  "name": "Lunge from the Silt",
+  "description": "Deal attack physical damage to an enemy within 1-2 and apply 1 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_siltcoil_strike": {
+  "name": "Strike from the Silt",
+  "description": "Coiled reaction: deal attack+1 physical damage to the first enemy that walks next to the Siltcoil and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_r3_siltcoil_double_fang": {
+  "name": "Double Fang",
+  "description": "Deal attack physical damage to an adjacent enemy and apply 2 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 4,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_sister_glaive": {
+  "name": "Fang-Glaive",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_sister_open_vein": {
+  "name": "Open the Vein",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_sister_measured_cut": {
+  "name": "Measured Cut",
+  "description": "Deal attack+1 physical damage to an adjacent enemy, and 4 more venom damage if it carries 2 or more Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "venom",
+    "ignoreAttack": true,
+    "ifTargetStacks": {
+     "status": "sl_venom",
+     "min": 2
+    }
+   }
+  ],
+  "requires": [
+   "ifTargetStacks"
+  ]
+ },
+ "sl_r3_sister_drink": {
+  "name": "Drink the Wound",
+  "description": "Deal attack physical damage to an adjacent enemy; if it carries Venom, heal yourself 4.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "heal",
+    "amount": 4,
+    "target": "caster",
+    "ifTargetStatus": "sl_venom"
+   }
+  ],
+  "requires": [
+   "conditional_heal"
+  ]
+ },
+ "sl_matriarch_bite": {
+  "name": "Yellowbelly Bite",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_matriarch_kiss": {
+  "name": "Matriarch's Kiss",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and apply 3 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_matriarch_choke": {
+  "name": "Choke the Blood",
+  "description": "Deal attack-2 venom damage to an enemy within 1-2; if it carries 4 or more Venom, Root it for 2 turns.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "venom"
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 2,
+    "ifTargetStacks": {
+     "status": "sl_venom",
+     "min": 4
+    }
+   }
+  ],
+  "requires": [
+   "ifTargetStacks"
+  ]
+ },
+ "sl_r3_matriarch_brood": {
+  "name": "The Brood Rises",
+  "description": "Deal attack-3 venom damage to all adjacent enemies and apply 1 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "venom"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_elder_hook": {
+  "name": "Banner-Hook",
+  "description": "Deal attack physical damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_elder_banner": {
+  "name": "Banner of Skins",
+  "description": "Passive: allies within 2 tiles gain +1 attack.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "allies",
+    "statMods": {
+     "attack": 1
+    }
+   }
+  ],
+  "requires": [
+   "passive"
+  ]
+ },
+ "sl_elder_raise_hood": {
+  "name": "Raise the Hood",
+  "description": "Allies within 2 become Lacquered (+2 defense) for 1 turn.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "sl_lacquered",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_r3_elder_old_skins": {
+  "name": "The Old Skins Remember",
+  "description": "Allies within 2 heal 3 and gain Emboldened (+2 attack) for 1 turn.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 3
+   },
+   {
+    "type": "status",
+    "status": "emboldened",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_ringwall_tridents": {
+  "name": "Two Tridents",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_ringwall_constrict": {
+  "name": "Constrict",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and Root it for 2 turns.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 2
+   }
+  ]
+ },
+ "sl_ringwall_scale_wall": {
+  "name": "Wall of Scales",
+  "description": "Passive: adjacent allies gain +1 defense.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 1,
+    "affects": "allies",
+    "statMods": {
+     "defense": 1
+    }
+   }
+  ],
+  "requires": [
+   "passive"
+  ]
+ },
+ "sl_ringwall_coil_crush": {
+  "name": "Ring Snap",
+  "description": "Coiled reaction: deal attack physical damage to the first enemy that walks next to the Ringwall and Root it for 1 turn.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_r3_ringwall_close_ring": {
+  "name": "Close the Ring",
+  "description": "Deal attack-2 physical damage to all adjacent enemies and Root them for 1 turn.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_slider_sabre": {
+  "name": "Hook-Sabre",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_slider_pass_bite": {
+  "name": "Passing Bite",
+  "description": "Deal attack-1 physical damage to an enemy within 1-2 and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_slider_fang_line": {
+  "name": "Fang-Line",
+  "description": "Deal attack-3 physical damage to every enemy in a line of 3 tiles and apply 1 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "area": {
+   "shape": "line",
+   "size": 3
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "requires": [
+   "line_area"
+  ]
+ },
+ "sl_r3_slider_long_slide": {
+  "name": "Long Slide",
+  "description": "Deal attack+1 physical damage to an enemy within 1-3 and apply 1 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_hundredcoat_glaives": {
+  "name": "Twin Glaives",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_hundredcoat_fury": {
+  "name": "Four-Armed Fury",
+  "description": "Deal attack-2 physical damage to all adjacent enemies and apply 1 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 2,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_hundredcoat_crush": {
+  "name": "Lacquer Crush",
+  "description": "Deal attack+2 physical damage to an adjacent enemy; Stun it for 1 turn if it carries 3 or more Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "stunned",
+    "duration": 1,
+    "ifTargetStacks": {
+     "status": "sl_venom",
+     "min": 3
+    }
+   }
+  ],
+  "requires": [
+   "ifTargetStacks"
+  ]
+ },
+ "sl_hundredcoat_coats": {
+  "name": "A Hundred Coats",
+  "description": "Passive: adjacent allies gain +1 defense.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 1,
+    "affects": "allies",
+    "statMods": {
+     "defense": 1
+    }
+   }
+  ],
+  "requires": [
+   "passive"
+  ]
+ },
+ "sl_r3_hundredcoat_shed_storm": {
+  "name": "Shedding Storm",
+  "description": "Apply 1 Venom and Weakened (-2 attack) for 1 turn to all enemies within 2.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 4,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "weakened",
+    "duration": 1
+   }
+  ]
+ },
+ "sl_eldest_staff": {
+  "name": "Skin-Staff",
+  "description": "Deal attack physical damage to an enemy within 1-2.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 2
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_eldest_library": {
+  "name": "The Library of Skins",
+  "description": "Signature passive: allies within 2 tiles gain +1 defense.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "allies",
+    "statMods": {
+     "defense": 1
+    }
+   }
+  ],
+  "requires": [
+   "passive"
+  ]
+ },
+ "sl_eldest_recital": {
+  "name": "Recital",
+  "description": "Allies within 2 heal 3.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 2,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 3
+   }
+  ]
+ },
+ "sl_eldest_teach_shed": {
+  "name": "Teach the Shedding",
+  "description": "An ally within 1-3 becomes Lacquered (+2 defense) for 2 turns and can Shed again this battle.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "ally",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "status",
+    "status": "sl_lacquered",
+    "duration": 2
+   },
+   {
+    "type": "reshed"
+   }
+  ],
+  "requires": [
+   "reshed"
+  ]
+ },
+ "sl_eldest_legend_every_skin": {
+  "name": "Every Skin I Ever Wore",
+  "description": "Legend. Raise 3 Shed Husks on and around an empty tile within 1-3: decoys that block the way for two turns. Cooldown 5.",
+  "apCost": 4,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "empty",
+  "cooldown": 5,
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "slough_husk",
+    "count": 3
+   }
+  ],
+  "requires": [
+   "summon"
+  ]
+ },
+ "sl_kesh_glaives": {
+  "name": "Four Glaives",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_kesh_coil_and_crush": {
+  "name": "Coil and Crush",
+  "description": "Deal attack+1 physical damage to an adjacent enemy, Root it for 2 turns and apply 1 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 2
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_kesh_tail_sweep": {
+  "name": "Paddle-Tail Sweep",
+  "description": "Deal attack-2 physical damage to all adjacent enemies and push them 1 tile.",
+  "apCost": 3,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 3,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -2,
+    "damageType": "physical"
+   },
+   {
+    "type": "push",
+    "distance": 1
+   }
+  ],
+  "requires": [
+   "push"
+  ]
+ },
+ "sl_kesh_held_fast": {
+  "name": "Held Fast",
+  "description": "Signature passive: adjacent enemies have -1 defense.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 1,
+    "affects": "enemies",
+    "statMods": {
+     "defense": -1
+    }
+   }
+  ],
+  "requires": [
+   "passive"
+  ]
+ },
+ "sl_kesh_coil_strike": {
+  "name": "Four-Handed Catch",
+  "description": "Coiled reaction: deal attack physical damage to the first enemy that walks next to Kesh and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_kesh_legend_ring_closes": {
+  "name": "The Ring Closes",
+  "description": "Legend. Root all enemies within 2 for 1 turn and apply 1 Venom. Cooldown 5.",
+  "apCost": 4,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 5,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "rooted",
+    "duration": 1
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_ashgourd_sling": {
+  "name": "Gourd-Sling",
+  "description": "Deal attack-1 venom damage to an enemy within 2-4.",
+  "apCost": 2,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "venom"
+   }
+  ],
+  "vfx": "spray"
+ },
+ "sl_ashgourd_brew": {
+  "name": "Brew Over",
+  "description": "Deal attack-4 venom damage to enemies within 1 of a tile within 2-4 and apply 1 Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "tile",
+  "cooldown": 2,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -4,
+    "damageType": "venom"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "vfx": "spray"
+ },
+ "sl_ashgourd_antivenom": {
+  "name": "Antivenom",
+  "description": "Heal an ally within 1-3 for 5.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 3
+  },
+  "target": "ally",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 5
+   }
+  ]
+ },
+ "sl_ashgourd_fumes": {
+  "name": "Bitter Fumes",
+  "description": "Signature passive: enemies within 2 tiles have -1 attack.",
+  "passive": true,
+  "effects": [
+   {
+    "type": "aura",
+    "radius": 2,
+    "affects": "enemies",
+    "statMods": {
+     "attack": -1
+    }
+   }
+  ],
+  "requires": [
+   "passive"
+  ]
+ },
+ "sl_ashgourd_legend_last_gourd": {
+  "name": "The Last Gourd",
+  "description": "Legend. Deal 3 venom damage (ignores defense) to enemies within 2 of a tile within 2-4 and apply 2 Venom. Cooldown 5.",
+  "apCost": 4,
+  "range": {
+   "min": 2,
+   "max": 4
+  },
+  "target": "tile",
+  "cooldown": 5,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "venom",
+    "ignoreAttack": true,
+    "pierce": true
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "vfx": "mist"
+ },
+ "sl_teshk_sabre": {
+  "name": "Fang-Sabre",
+  "description": "Deal attack physical damage to an adjacent enemy.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   }
+  ]
+ },
+ "sl_teshk_patient_bite": {
+  "name": "Patient Bite",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_teshk_last_bite": {
+  "name": "The Last Bite",
+  "description": "Deal attack+1 physical damage to an adjacent enemy, and 5 more venom damage if it carries 3 or more Venom.",
+  "apCost": 3,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "physical"
+   },
+   {
+    "type": "damage",
+    "amount": 5,
+    "damageType": "venom",
+    "ignoreAttack": true,
+    "ifTargetStacks": {
+     "status": "sl_venom",
+     "min": 3
+    }
+   }
+  ],
+  "requires": [
+   "ifTargetStacks"
+  ]
+ },
+ "sl_teshk_unbitten": {
+  "name": "Unbitten",
+  "description": "Signature passive: takes 1 less physical damage from every hit (resist physical 1).",
+  "apCost": 0,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "effects": [
+   {
+    "type": "resist",
+    "damageType": "physical",
+    "amount": 1
+   }
+  ],
+  "requires": [
+   "resist"
+  ],
+  "passive": true
+ },
+ "sl_teshk_legend_bites_last": {
+  "name": "Who Bites Last",
+  "description": "Legend. Strike an adjacent enemy twice, each for attack physical damage, and apply 2 Venom. Cooldown 4.",
+  "apCost": 4,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 4,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "damage",
+    "amount": 0,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_fang_caps_bite": {
+  "name": "Capped Fang",
+  "description": "Deal attack-1 physical damage to an adjacent enemy and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 1,
+   "max": 1
+  },
+  "target": "enemy",
+  "cooldown": 2,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -1,
+    "damageType": "physical"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ]
+ },
+ "sl_bandolier_gourd": {
+  "name": "Throw Gourd",
+  "description": "Deal attack-3 venom damage to an enemy within 2-3 and apply 1 Venom.",
+  "apCost": 2,
+  "range": {
+   "min": 2,
+   "max": 3
+  },
+  "target": "enemy",
+  "cooldown": 3,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": -3,
+    "damageType": "venom"
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "vfx": "spray"
+ },
+ "sl_spare_skin_regrow": {
+  "name": "Grow a Spare Skin",
+  "description": "Once per battle: heal yourself 3 and become able to Shed again (only matters for units that can Shed).",
+  "apCost": 2,
+  "range": {
+   "min": 0,
+   "max": 0
+  },
+  "target": "self",
+  "cooldown": 20,
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 3
+   },
+   {
+    "type": "reshed"
+   }
+  ],
+  "requires": [
+   "reshed",
+   "once_per_battle"
+  ]
  }
 }

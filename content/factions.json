@@ -52,5 +52,11 @@
   "color": "#7b4f8f",
   "accent": "#d9822b",
   "tagline": "Every wreck is a house, and every house has a queue."
+ },
+ "slough": {
+  "name": "The Slough",
+  "color": "#b5c934",
+  "accent": "#16181a",
+  "tagline": "The sea left. We were the ones who could breathe."
  }
 }

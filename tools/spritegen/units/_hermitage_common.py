@@ -80,7 +80,7 @@ OAK_GREY = _hex('#8a8178')      # weathered timber
 BRASS = _hex('#b08a45')
 IRON = _hex('#3b3638')
 GREY_VIOLET = _hex('#857c8e')   # drained colour (bare death)
-RAG = _hex('#7d4a92')
+RAG = _hex('#7a3a9e')
 
 LOOK = dataclasses.replace(Look(), rim_color=(0.88, 0.80, 0.98), rim_int=0.6, sky=(0.64, 0.63, 0.70),
                            bounce=(0.84, 0.74, 0.62))
@@ -303,13 +303,13 @@ def barnacles(add, center, normal, size=0.05, n=4, spread=None, seed=1, mat='bar
         add(Sphere(top + nrm * sz * 0.25, sz * 0.38), hole, 0.0)
 
 
-def rag(add, knot, axis, r, P, length=0.24, width=0.06, mat='rag'):
+def rag(add, knot, axis, r, P, length=0.34, width=0.10, mat='rag'):
     """The violet 'Vacant' rag: a band tied round something (axis, radius r) with two tails that flutter."""
     axis = norm(axis)
-    add(Torus(knot, axis, r + 0.012, 0.022), mat, 0.0)
-    side = norm(np.cross(axis, v3(0, 1, 0))) if abs(axis[1]) < 0.9 else v3(1, 0, 0)
+    add(Torus(knot, axis, r + 0.02, 0.032), mat, 0.0)
+    side = norm(np.cross(axis, v3(0, 1, 0))) if abs(axis[1]) < 0.9 else norm(v3(-0.55, 0, 0.83))   # knot faces the camera
     top = knot + v3(0, r + 0.02, 0) if abs(axis[1]) < 0.9 else knot + side * (r + 0.02)
-    add(Sphere(top, 0.035), mat, 0.01)
+    add(Sphere(top, 0.05), mat, 0.01)
     fl = 0.25 * np.sin(2 * np.pi * P.get('tell', 0.0))
     for j, sg in enumerate((-1, 1)):
         d = norm(v3(0, -1, 0) + side * sg * 0.55 + v3(0.25, 0, 0.35) * (fl + 0.3))
@@ -325,20 +325,20 @@ CLAW_KEYS = {
     'fwd': ((0.14, -0.06, 0.40), (0.12, 0.10, 1.0)),
     'up': ((0.24, 0.26, 0.44), (0.12, 0.62, 0.78)),
     'cock': ((0.26, 0.38, 0.04), (0.20, 0.80, -0.45)),
-    'snap': ((0.08, 0.02, 0.62), (-0.08, -0.12, 1.0)),
-    'drum': ((0.14, -0.12, 0.36), (0.05, -0.85, 0.50)),
+    'snap': ((0.10, 0.04, 0.50), (-0.08, -0.05, 1.0)),
+    'drum': ((0.16, -0.02, 0.30), (0.08, -0.70, 0.60)),
     'tuck': ((0.09, -0.10, 0.22), (-0.15, -0.25, 1.0)),
-    'limp': ((0.16, -0.30, 0.44), (0.10, -0.45, 1.0)),
+    'limp': ((0.16, -0.22, 0.32), (0.10, -0.45, 1.0)),
     'spread': ((0.36, 0.06, 0.26), (0.65, 0.25, 0.75)),
 }
 SHOULDER = (0.13, -0.03, 0.15)
 
 
-def _claw_target(P, big=True):
+def _claw_target(P, big=True, guard=None):
     if big:
-        w, d = [np.array(x, dtype=np.float64) for x in CLAW_KEYS['fwd']]
+        w, d = [np.array(x, dtype=np.float64) for x in (guard or CLAW_KEYS['fwd'])]
         seq = (('up', P['raise_']), ('cock', P['cock']), ('snap', P['snap']), ('drum', P['drum']),
-               ('tuck', max(P['duck'], P['fold'] * 0.8)), ('limp', P['limp']))
+               ('tuck', max(P['duck'], P['fold'])), ('limp', P['limp']))
     else:
         w, d = [np.array(x, dtype=np.float64) for x in CLAW_KEYS['tuck']]
         seq = (('spread', P['spread']), ('fwd', 0.35 * P['snap']), ('up', 0.25 * P['cock']),
@@ -378,9 +378,9 @@ def chela(add, w, d, up, cs, open_, mat='claw', tip='tip', bumps=True):
     return palm, Rc
 
 
-def cheliped(add, P, C, side, size, big=True, barn=0, seed=3):
-    """Arm + claw in crab frame C. side -1 = crab's right (the big claw)."""
-    w, d = _claw_target(P, big)
+def cheliped(add, P, C, side, size, big=True, barn=0, seed=3, guard=None):
+    """Arm + claw in crab frame C. side -1 = crab's right (the big claw). guard = rest (wrist, dir) key."""
+    w, d = _claw_target(P, big, guard)
     w = w * v3(side, 1, 1)
     d = d * v3(side, 1, 1)
     sh = C.p(v3(SHOULDER[0] * side, SHOULDER[1], SHOULDER[2]))
@@ -403,11 +403,11 @@ def cheliped(add, P, C, side, size, big=True, barn=0, seed=3):
     return ww, dw
 
 
-def eyestalk(add, base, d, L, s, bead=0.046, mat='claw'):
+def eyestalk(add, base, d, L, s, bead=0.046, mat='claw', r=1.0):
     tip = base + d * L
     mid = base + d * L * 0.55
-    add(Capsule(base, mid, 0.030 * s, 0.025 * s), mat, 0.0)
-    add(Capsule(mid, tip, 0.025 * s, 0.024 * s), 'tip', 0.004 * s)
+    add(Capsule(base, mid, 0.030 * s * r, 0.025 * s * r), mat, 0.0)
+    add(Capsule(mid, tip, 0.025 * s * r, 0.024 * s * r), 'tip', 0.004 * s)
     add(Ellipsoid(tip + d * bead * 0.6 * s, (bead * s, bead * 1.15 * s, bead * s), R_from(v3(0, 0, 1) + d * 0.0, d)),
         'eye', 0.0)
     return tip
@@ -531,6 +531,10 @@ class Shell:
     leg_r: float = 1.0
     antennae: bool = True
     tip_angle: float = 1.35
+    x0: float = 0.0
+    eye_bead: float = 0.056
+    guard: Optional[tuple] = ((0.14, 0.10, 0.42), (-0.55, 0.45, 0.70))   # claw rest: across the mouth, up
+    yaw: float = 0.0           # turn the whole unit (+ = toward screen-right, side-on); feet turn with it
 
 
 def shell_frame(P, sh):
@@ -541,8 +545,8 @@ def shell_frame(P, sh):
     y = lerp(ride, sh.side_r, tip)
     pitch = lerp(sh.tilt + P['lean'] + P['rock'], sh.lie, tip)
     roll = -sh.tip_dir * tip * sh.tip_angle + P['sway']
-    R = rot_y(P['yaw']) @ rot_z(roll) @ rot_x(pitch)
-    o = v3(P['slide'] + P['shake'] * 0.02, y, sh.z0 - P['recoil'])
+    R = rot_y(sh.yaw + P['yaw']) @ rot_z(roll) @ rot_x(pitch)
+    o = v3(sh.x0 + P['slide'] + P['shake'] * 0.02, y, sh.z0) + rot_y(sh.yaw + P['yaw']) @ v3(0, 0, -P['recoil'])
     return Frame(o, R, 1.0)
 
 
@@ -558,7 +562,7 @@ def shelled(P, size, sh, mats=None, lights=(), world=None):
     C = F.child(v3(*sh.crab_at) + v3(0, -0.02 * P['duck'], -0.10 * P['duck'] * s), rot_x(sh.crab_pitch), s)
     carapace(add, C, antennae=sh.antennae and P['duck'] < 0.5)
     # claws (right = -x is the big one)
-    cheliped(add, P, C, -1, sh.big, True, barn=sh.barn)
+    cheliped(add, P, C, -1, sh.big, True, barn=sh.barn, guard=sh.guard)
     cheliped(add, P, C, 1, sh.small, False)
     # eyes
     if sh.eyes is None:
@@ -574,11 +578,11 @@ def shelled(P, size, sh, mats=None, lights=(), world=None):
         dip = max(P['dip_r'] if side < 0 else P['dip_l'], P['duck'], droop) if i < 2 else max(P['dip_r'], P['duck'], droop)
         dd = axis_rot(C.v((0, 1, 0)), yaw) @ norm(d)
         dd = norm(lerp(dd, C.v((side * 0.15, -0.30, 1.0)), min(dip, 1.0) * 0.7))
-        eyestalk(add, b, dd, L * (1 - 0.6 * min(dip, 1.0)), s)
+        eyestalk(add, b, dd, L * (1 - 0.6 * min(dip, 1.0)), s, bead=sh.eye_bead, r=1.3)
     # legs
-    fwd = norm(v3(F.R[0, 2], 0, F.R[2, 2])) if abs(F.R[1, 2]) < 0.99 else v3(0, 0, 1)
-    fwd = rot_y(P['yaw']) @ v3(0, 0, 1)
-    base = [v3(fx + P['slide'], 0, fz + sh.z0 - P['recoil']) for fx, fz in sh.feet]
+    Ry = rot_y(sh.yaw + P['yaw'])
+    fwd = Ry @ v3(0, 0, 1)
+    base = [v3(sh.x0 + P['slide'], 0, sh.z0) + Ry @ v3(fx, 0, fz - P['recoil']) for fx, fz in sh.feet]
     feet = _gait_feet(P, base, fwd, s)
     if sh.leg_roots is None:
         roots = [C.p((-0.17, -0.07, 0.07)), C.p((0.17, -0.07, 0.07)), C.p((-0.18, -0.08, -0.06)),
@@ -748,7 +752,7 @@ def barrel_shell(length=0.86, r_mid=0.34, r_end=0.28, bung=True, mouth=True, woo
             a = np.where(st[:, None], a * 0.62, a)
             g = fbm(q * v3(1, 1, 0.25), 7.0, 2)[:, None]
             a = a * (0.85 + 0.3 * g)
-            tar = (vnoise(q * v3(1, 1, 0.5), 5.0) > 0.70)[:, None]
+            tar = (vnoise(q * v3(1, 1, 0.5), 5.0) > 0.80)[:, None]
             a = np.where(tar, np.array(TAR)[None, :] * 1.3, a)
             inside = (np.sqrt(q[:, 0] ** 2 + q[:, 1] ** 2) < (r_end - 0.03 + (r_mid - r_end) * (1 - np.clip(q[:, 2] / hl, -1, 1) ** 2)))
             return np.where(inside[:, None], np.array(TAR)[None, :] * 0.8, a)
@@ -763,6 +767,14 @@ def barrel_shell(length=0.86, r_mid=0.34, r_end=0.28, bung=True, mouth=True, woo
     return build
 
 
+def bell_port(h, r_bot, r_top, az, y):
+    """Shell-local centre and outward normal of a diving-bell porthole (same profile as diving_bell_shell)."""
+    hb, ht = -h / 2, h / 2
+    t = np.clip((y - hb) / (ht - hb), 0, 1)
+    rr = r_bot + (r_top - r_bot) * t ** 1.6
+    return v3(np.sin(az) * rr, y, np.cos(az) * rr), norm(v3(np.sin(az), 0.18, np.cos(az)))
+
+
 def diving_bell_shell(h=0.95, r_bot=0.48, r_top=0.30, ports=((0.0, 1.0), (-1.05, 1.0), (1.05, 1.0)), port_r=0.11,
                       port_y=0.08, hose=False, eyes_in=(0, 1)):
     """Brass diving bell, mouth down (-y). Shell-local origin at the middle of the bell's height.
@@ -772,7 +784,7 @@ def diving_bell_shell(h=0.95, r_bot=0.48, r_top=0.30, ports=((0.0, 1.0), (-1.05,
     def bell_sdf(p):
         y = p[:, 1]
         t = np.clip((y - hb) / (ht - hb), 0, 1)
-        r = r_bot + (r_top - r_bot) * t ** 0.8
+        r = r_bot + (r_top - r_bot) * t ** 1.6
         rr = np.sqrt(p[:, 0] ** 2 + p[:, 2] ** 2)
         side = (rr - r) * 0.92
         d = np.maximum(side, np.maximum(hb - y, y - ht))
@@ -786,18 +798,15 @@ def diving_bell_shell(h=0.95, r_bot=0.48, r_top=0.30, ports=((0.0, 1.0), (-1.05,
         inner = Xform(Func(bell_sdf, (0, 0, 0), h * 0.75 + r_bot), t=(0, -0.06, 0), s=0.88)
         F.put(add, Subtract(outer, inner), 'brassb')
         F.cyl(add, (0, hb + 0.06, 0), (0, hb + 0.10, 0), r_bot * 0.93, 'dark')   # dark interior roof plug
-        F.put(add, Torus(v3(0, hb + 0.02, 0), v3(0, 1, 0), r_bot + 0.01, 0.035), 'brassd')   # rim flange
-        F.put(add, Torus(v3(0, ht - 0.02, 0), v3(0, 1, 0), r_top * 0.82, 0.03), 'brassd')
-        F.put(add, Torus(v3(0, ht + 0.16, 0), v3(1, 0, 0), 0.075, 0.025), 'brassd')         # lifting eye
-        F.cyl(add, (0, ht + 0.02, 0), (0, ht + 0.10, 0), 0.06, 'brassd', 0.01)
+        F.put(add, Torus(v3(0, hb + 0.03, 0), v3(0, 1, 0), r_bot + 0.012, 0.05), 'brassd')   # heavy skirt flange
+        F.put(add, Torus(v3(0, ht - 0.03, 0), v3(0, 1, 0), r_top + 0.004, 0.035), 'brassd')    # crown band
+        F.put(add, Torus(v3(0, ht + 0.33, 0), v3(1, 0, 0), 0.085, 0.034), 'brassd')         # lifting eye
+        F.cyl(add, (0, ht + 0.16, 0), (0, ht + 0.26, 0), 0.07, 'brassd', 0.01)
         for j, (az, sc) in enumerate(ports):
             yy = port_y
-            t = np.clip((yy - hb) / (ht - hb), 0, 1)
-            rr = r_bot + (r_top - r_bot) * t ** 0.8
-            nrm = v3(np.sin(az), 0.18, np.cos(az))
-            c = v3(np.sin(az) * rr, yy, np.cos(az) * rr)
+            c, nrm = bell_port(h, r_bot, r_top, az, yy)
             pr = port_r * sc
-            F.put(add, Torus(c + norm(nrm) * 0.02, nrm, pr, 0.028), 'brassd')
+            F.put(add, Torus(c + norm(nrm) * 0.015, nrm, pr + 0.01, 0.034), 'brassd')
             F.put(add, Cylinder(c - norm(nrm) * 0.03, c + norm(nrm) * 0.03, pr, 0.01), 'glass' if j in eyes_in else 'portdark')
         if hose:
             pts = [v3(-0.05, ht + 0.06, -0.08), v3(-0.25, ht + 0.02, -0.30), v3(-0.45, hb + 0.3, -0.35),
@@ -806,13 +815,14 @@ def diving_bell_shell(h=0.95, r_bot=0.48, r_top=0.30, ports=((0.0, 1.0), (-1.05,
                 F.put(add, Capsule(a, b, 0.035), 'hose')
 
         def alb(q, n):
-            a = _arr(BRASS, len(q))
+            a = _arr(_hex('#9a783c'), len(q))
             v = fbm(q, 5.0, 2)[:, None]
-            pat = np.clip((v - 0.48) * 4, 0, 1)
+            v = fbm(q, 8.0, 2)[:, None]
+            pat = np.clip((v - 0.60) * 6, 0, 1) * 0.8
             a = a * (1 - pat) + np.array(VERDI)[None, :] * pat
-            low = np.clip((hb + 0.25 - q[:, 1]) / 0.25, 0, 1)[:, None] * 0.5
+            low = np.clip((hb + 0.22 - q[:, 1]) / 0.22, 0, 1)[:, None] * 0.6
             return a * (1 - low) + np.array(VERDI)[None, :] * low
-        return {'brassb': Material(local_albedo(F, alb), spec=0.8, gloss=36, metal=0.6, brush=0.05),
+        return {'brassb': Material(local_albedo(F, alb), spec=0.55, gloss=70, metal=0.6, brush=0.05),
                 'brassd': Material(_hex('#8f6e35'), spec=0.8, gloss=36, metal=0.7),
                 'glass': Material(_hex('#a9c4c2'), spec=1.0, gloss=90, rim=0.8),
                 'portdark': Material(_hex('#22282a'), spec=1.0, gloss=90),
@@ -849,9 +859,9 @@ def chapel_bell_shell(h=0.95, r_bot=0.50, r_top=0.26, crack=True, clapper_tied=T
             F.put(add, Capsule(v3(0, ht + 0.18, 0), v3(0.10, ht + 0.32, -0.06), 0.025), 'rope')
 
         def alb(q, n):
-            a = _arr(VERDI, len(q))
+            a = _arr(_hex('#4f7a6a'), len(q))
             v = fbm(q, 4.0, 2)[:, None]
-            a = a * (0.8 + 0.4 * v)
+            a = a * (0.8 + 0.3 * v)
             bronze = (vnoise(q, 6.0) > 0.68)[:, None]
             a = np.where(bronze, np.array(_hex('#8a6a3c'))[None, :], a)
             if crack:
@@ -872,15 +882,16 @@ def boiler_shell(length=1.3, r=0.42, door=0.0, glow=1.0, funnel=True, bosses=4):
     hl = length / 2 - r * 0.5
 
     def build(add, P, F):
-        F.put(add, Capsule(v3(0, 0, -hl), v3(0, 0, hl), r), 'boil')
-        F.cyl(add, (0, 0, hl - 0.05), (0, 0, hl + r * 0.55), r * 0.92, 'boil', 0.03, 0.04)   # flat front plate
+        fz = hl + r * 0.55
+        F.put(add, Subtract(Capsule(v3(0, 0, -hl), v3(0, 0, fz + r), r),
+                            Cylinder(v3(0, 0, fz), v3(0, 0, fz + 2 * r), r * 1.5)), 'boil')     # flat front plate
+        F.put(add, Torus(v3(0, 0, fz - 0.03), v3(0, 0, 1), r - 0.01, 0.03), 'boilband')
         for z in (-hl * 0.55, hl * 0.35):
             F.put(add, Torus(v3(0, 0, z), v3(0, 0, 1), r + 0.004, 0.02), 'boilband')
         # a few big rivet bosses, never a row
         for j, (a, z) in enumerate(((0.9, -hl * 0.2), (2.3, hl * 0.6), (-0.6, hl * 0.1), (1.6, -hl * 0.85))[:bosses]):
             c = v3(np.cos(a) * r, np.sin(a) * r, z)
             F.sph(add, c, 0.035, 'boilband')
-        fz = hl + r * 0.55
         # firebox mouth and door
         F.cyl(add, (0, -0.06, fz - 0.10), (0, -0.06, fz + 0.012), 0.20, 'fire_in')
         F.put(add, Torus(v3(0, -0.06, fz + 0.01), v3(0, 0, 1), 0.21, 0.028), 'boilband')
@@ -904,7 +915,7 @@ def boiler_shell(length=1.3, r=0.42, door=0.0, glow=1.0, funnel=True, bosses=4):
         return {'boil': Material(local_albedo(F, alb), spec=0.35, gloss=20, metal=0.3, brush=0.06),
                 'boilband': Material(_hex('#4a2c1c'), spec=0.4, gloss=24, metal=0.4),
                 'door': Material(_hex('#3e2a20'), spec=0.4, gloss=24, metal=0.4),
-                'fire_in': Material(_hex('#ff9a3c'), emissive=tuple(np.array(LAMP) * (0.25 + 0.8 * g)), rim=0.0)}
+                'fire_in': Material(_hex('#7a2e14'), emissive=tuple(np.array(LAMP) * (0.08 + 0.9 * g)), rim=0.0)}
     return build
 
 
@@ -926,11 +937,11 @@ def long_gun_shell(length=2.0, r_breech=0.24, r_muzzle=0.15, open_breech=True, b
         borec = Cylinder(v3(0, 0, -hl * 0.2), v3(0, 0, hl + 0.1), bore)
         body = Subtract(g, borec)
         if open_breech:
-            body = Subtract(body, Cylinder(v3(0, 0, -hl - 0.1), v3(0, 0, -hl + 0.30), r_breech - 0.05))
+            body = Subtract(body, Cylinder(v3(0, 0, -hl - 0.1), v3(0, 0, -hl + 0.14), r_breech - 0.06))
         F.put(add, body, 'gun')
         F.cyl(add, (0, 0, hl - 0.2), (0, 0, hl - 0.14), bore + 0.004, 'dark')
         if open_breech:
-            F.cyl(add, (0, 0, -hl + 0.28), (0, 0, -hl + 0.30), r_breech - 0.045, 'dark')
+            F.cyl(add, (0, 0, -hl + 0.12), (0, 0, -hl + 0.15), r_breech - 0.055, 'dark')
         for z in (-hl + 0.32, -hl * 0.15):
             t = (z + hl) / length
             rr = r_breech + (r_muzzle - r_breech) * t
@@ -944,9 +955,9 @@ def long_gun_shell(length=2.0, r_breech=0.24, r_muzzle=0.15, open_breech=True, b
             a = _arr(_hex('#2b2729'), len(q))
             v = fbm(q, 4.0, 2)[:, None]
             a = a * (0.85 + 0.35 * v)
-            rr = (vnoise(q, 6.0) > 0.66)[:, None]
-            a = np.where(rr, np.array(RUST)[None, :] * 1.2, a)
-            rr2 = (vnoise(q + 3.3, 11.0) > 0.80)[:, None]
+            rr = (vnoise(q * v3(1, 1, 0.35), 5.0) > 0.74)[:, None]
+            a = np.where(rr, np.array(RUST)[None, :] * 1.1, a)
+            rr2 = (vnoise(q + 3.3, 9.0) > 0.90)[:, None]
             return np.where(rr2, np.array(ORANGE)[None, :] * 0.7, a)
         return {'gun': Material(local_albedo(F, alb), spec=0.45, gloss=26, metal=0.5, brush=0.05),
                 'gunring': Material(_hex('#3a3234'), spec=0.6, gloss=30, metal=0.6)}

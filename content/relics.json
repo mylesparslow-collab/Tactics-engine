@@ -5867,5 +5867,654 @@
   "rarity": "rare",
   "pearlCost": 120,
   "card": "hm_equip_brass_claw_cap"
+ },
+ "slough_brinkling": {
+  "faction": "slough",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "First Shedding"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharper Fang"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_brinkling_knot_bite",
+    "label": "Knot Bite"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_brinkling",
+  "unit": "slough_brinkling"
+ },
+ "slough_banded_lancer": {
+  "faction": "slough",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Tighter Coil"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Barbed Tip"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_lancer_long_strike",
+    "label": "Long Strike"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_banded_lancer",
+  "unit": "slough_banded_lancer"
+ },
+ "slough_spitting_olive": {
+  "faction": "slough",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Fuller Sac"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Bitter Aim"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_olive_twin_spit",
+    "label": "Twin Spit"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_spitting_olive",
+  "unit": "slough_spitting_olive"
+ },
+ "slough_reedrunner": {
+  "faction": "slough",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Quick Water"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Longer Stride"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_reedrunner_hamstring",
+    "label": "Hamstring Bite"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_reedrunner",
+  "unit": "slough_reedrunner"
+ },
+ "slough_scaleshield": {
+  "faction": "slough",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Thicker Coil"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Heavier Scale"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_scaleshield_hold",
+    "label": "Hold the Reed-Line"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_scaleshield",
+  "unit": "slough_scaleshield"
+ },
+ "slough_skin_reader": {
+  "faction": "slough",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Long Memory"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Fingers"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_reader_recital",
+    "label": "Recital of Skins"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_skin_reader",
+  "unit": "slough_skin_reader"
+ },
+ "slough_gourdslinger": {
+  "faction": "slough",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Bigger Rack"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Practised Arm"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_gourd_two_gourds",
+    "label": "Two Gourds"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_gourdslinger",
+  "unit": "slough_gourdslinger"
+ },
+ "slough_hookfang_wrangler": {
+  "faction": "slough",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Stronger Line"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Deeper Barbs"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_wrangler_drag",
+    "label": "Drag to the Marsh"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_hookfang_wrangler",
+  "unit": "slough_hookfang_wrangler"
+ },
+ "slough_siltcoil": {
+  "faction": "slough",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Deeper Silt"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Patient Edge"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_siltcoil_double_fang",
+    "label": "Double Fang"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_siltcoil",
+  "unit": "slough_siltcoil"
+ },
+ "slough_glaive_sister": {
+  "faction": "slough",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Scarred Hide"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "The Second Cut"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_sister_drink",
+    "label": "Drink the Wound"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_glaive_sister",
+  "unit": "slough_glaive_sister"
+ },
+ "slough_yellowbelly_matriarch": {
+  "faction": "slough",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Golden Belly"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Deeper Fangs"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_matriarch_brood",
+    "label": "The Brood Rises"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_yellowbelly_matriarch",
+  "unit": "slough_yellowbelly_matriarch"
+ },
+ "slough_skinbanner_elder": {
+  "faction": "slough",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Older Skin"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Heavier Banner"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_elder_old_skins",
+    "label": "The Old Skins Remember"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_skinbanner_elder",
+  "unit": "slough_skinbanner_elder"
+ },
+ "slough_ringwall": {
+  "faction": "slough",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Longer Ring"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Harder Bands"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_ringwall_close_ring",
+    "label": "Close the Ring"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_ringwall",
+  "unit": "slough_ringwall"
+ },
+ "slough_silt_slider": {
+  "faction": "slough",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Slicker Belly"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Faster Paddle"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_slider_long_slide",
+    "label": "Long Slide"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_silt_slider",
+  "unit": "slough_silt_slider"
+ },
+ "slough_hundredcoat": {
+  "faction": "slough",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Another Coat"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Heavier Glaives"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_hundredcoat_shed_storm",
+    "label": "Shedding Storm"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_hundredcoat",
+  "unit": "slough_hundredcoat"
+ },
+ "slough_eldest_skin": {
+  "faction": "slough",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Ninety-First Skin"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Hard Old Scale"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sl_eldest_legend_every_skin",
+    "label": "Every Skin I Ever Wore"
+   }
+  ],
+  "card": "slough_eldest_skin",
+  "unit": "slough_eldest_skin"
+ },
+ "slough_kesh": {
+  "faction": "slough",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Longer Body"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Fifth Blade"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sl_kesh_legend_ring_closes",
+    "label": "The Ring Closes"
+   }
+  ],
+  "card": "slough_kesh",
+  "unit": "slough_kesh"
+ },
+ "slough_mother_ashgourd": {
+  "faction": "slough",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Thick Hide"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Stronger Brew"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sl_ashgourd_legend_last_gourd",
+    "label": "The Last Gourd"
+   }
+  ],
+  "card": "slough_mother_ashgourd",
+  "unit": "slough_mother_ashgourd"
+ },
+ "slough_teshk": {
+  "faction": "slough",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Old Scars"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quicker Hood"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sl_teshk_legend_bites_last",
+    "label": "Who Bites Last"
+   }
+  ],
+  "card": "slough_teshk",
+  "unit": "slough_teshk"
+ },
+ "sl_spell_bitter_spray": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sl_spell_bitter_spray"
+ },
+ "sl_spell_old_skin_ward": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sl_spell_old_skin_ward"
+ },
+ "sl_spell_shed_oil": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sl_spell_shed_oil"
+ },
+ "sl_spell_gourd_volley": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sl_spell_gourd_volley"
+ },
+ "sl_spell_mire": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sl_spell_mire"
+ },
+ "sl_spell_lacquer_the_line": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sl_spell_lacquer_the_line"
+ },
+ "sl_spell_venom_tide": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sl_spell_venom_tide"
+ },
+ "sl_spell_last_hiss": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sl_spell_last_hiss"
+ },
+ "sl_equip_lacquered_skin_coat": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sl_equip_lacquered_skin_coat"
+ },
+ "sl_equip_fang_caps": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sl_equip_fang_caps"
+ },
+ "sl_equip_leviathan_scale": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sl_equip_leviathan_scale"
+ },
+ "sl_equip_gourd_bandolier": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sl_equip_gourd_bandolier"
+ },
+ "sl_equip_spare_skin": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sl_equip_spare_skin"
+ },
+ "sl_equip_eldest_hood": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sl_equip_eldest_hood"
  }
 }

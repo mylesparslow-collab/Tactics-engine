@@ -1834,5 +1834,214 @@
   ],
   "anim": "glyph",
   "vfx": "dust"
+ },
+ "sl_spell_bitter_spray": {
+  "name": "Bitter Spray",
+  "description": "Deal 3 venom damage to an enemy within 3 of a friendly unit and apply 1 Venom.",
+  "faction": "slough",
+  "rarity": "common",
+  "cost": 18,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "venom",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "castRange": 3,
+  "anim": "drain",
+  "vfx": "spray"
+ },
+ "sl_spell_old_skin_ward": {
+  "name": "Old Skin Ward",
+  "description": "A friendly unit becomes Lacquered (+2 defense) for 2 turns and heals 2.",
+  "faction": "slough",
+  "rarity": "common",
+  "cost": 15,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "status",
+    "status": "sl_lacquered",
+    "duration": 2
+   },
+   {
+    "type": "heal",
+    "amount": 2
+   }
+  ],
+  "anim": "glyph",
+  "vfx": "shards"
+ },
+ "sl_spell_shed_oil": {
+  "name": "Shed-Oil Salve",
+  "description": "Heal a friendly unit and allies within 1 of it for 4.",
+  "faction": "slough",
+  "rarity": "common",
+  "cost": 20,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 4
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "anim": "heal",
+  "vfx": "heal"
+ },
+ "sl_spell_gourd_volley": {
+  "name": "Gourd Volley",
+  "description": "Deal 2 venom damage to enemies within 1 of a tile within 3 of a friendly unit and apply 1 Venom.",
+  "faction": "slough",
+  "rarity": "uncommon",
+  "cost": 28,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "venom",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "castRange": 3,
+  "anim": "hail",
+  "vfx": "spray"
+ },
+ "sl_spell_mire": {
+  "name": "Mire",
+  "description": "Turn the tiles within 1 of a tile within 3 of a friendly unit into sinkmud for 2 turns and Numb enemies there (-1 AP) for 1 turn.",
+  "faction": "slough",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "sinkmud",
+    "duration": 2
+   },
+   {
+    "type": "status",
+    "status": "sl_numbed",
+    "duration": 1
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "requires": [
+   "terrain"
+  ],
+  "castRange": 3,
+  "anim": "geyser",
+  "vfx": "murk"
+ },
+ "sl_spell_lacquer_the_line": {
+  "name": "Lacquer the Line",
+  "description": "Allies within 1 of a tile within 3 of a friendly unit become Lacquered (+2 defense) for 2 turns.",
+  "faction": "slough",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "status",
+    "status": "sl_lacquered",
+    "duration": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "castRange": 3,
+  "anim": "glyph",
+  "vfx": "shards"
+ },
+ "sl_spell_venom_tide": {
+  "name": "Venom Tide",
+  "description": "Apply 2 Venom to every enemy within 2 of a tile within 3 of a friendly unit.",
+  "faction": "slough",
+  "rarity": "rare",
+  "cost": 42,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "castRange": 3,
+  "anim": "vortex",
+  "vfx": "mist"
+ },
+ "sl_spell_last_hiss": {
+  "name": "The Last Hiss",
+  "description": "Deal 3 venom damage to an enemy within 4 of a friendly unit, and 6 more if it carries 3 or more Venom.",
+  "faction": "slough",
+  "rarity": "rare",
+  "cost": 38,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "venom",
+    "ignoreAttack": true
+   },
+   {
+    "type": "damage",
+    "amount": 6,
+    "damageType": "venom",
+    "ignoreAttack": true,
+    "ifTargetStacks": {
+     "status": "sl_venom",
+     "min": 3
+    }
+   }
+  ],
+  "requires": [
+   "ifTargetStacks"
+  ],
+  "castRange": 4,
+  "anim": "drain",
+  "vfx": "spray"
  }
 }

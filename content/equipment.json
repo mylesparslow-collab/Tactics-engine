@@ -665,5 +665,72 @@
   "statMods": {
    "attack": 2
   }
+ },
+ "sl_equip_lacquered_skin_coat": {
+  "name": "Lacquered Skin Coat",
+  "description": "+4 hp. A coat cut from an old skin of the wearer's own, lacquered hard with marsh resin.",
+  "faction": "slough",
+  "rarity": "common",
+  "cost": 10,
+  "statMods": {
+   "hp": 4
+  }
+ },
+ "sl_equip_fang_caps": {
+  "name": "Fang-Caps",
+  "description": "Grants Capped Fang: deal attack-1 physical damage to an adjacent enemy and apply 1 Venom.",
+  "faction": "slough",
+  "rarity": "common",
+  "cost": 12,
+  "grantAbilities": [
+   "sl_fang_caps_bite"
+  ]
+ },
+ "sl_equip_leviathan_scale": {
+  "name": "Leviathan Scale",
+  "description": "+1 defense and resist 1 physical damage. One scale from a stranded leviathan, as wide as a door.",
+  "faction": "slough",
+  "rarity": "uncommon",
+  "cost": 20,
+  "statMods": {
+   "defense": 1
+  },
+  "resist": {
+   "physical": 1
+  }
+ },
+ "sl_equip_gourd_bandolier": {
+  "name": "Gourd Bandolier",
+  "description": "Grants Throw Gourd: deal attack-3 venom damage to an enemy within 2-3 and apply 1 Venom.",
+  "faction": "slough",
+  "rarity": "uncommon",
+  "cost": 20,
+  "grantAbilities": [
+   "sl_bandolier_gourd"
+  ]
+ },
+ "sl_equip_spare_skin": {
+  "name": "Spare Skin",
+  "description": "+2 hp. Grants Grow a Spare Skin: once per battle, heal 3 and become able to Shed again. Best on a unit that can Shed.",
+  "faction": "slough",
+  "rarity": "rare",
+  "cost": 28,
+  "statMods": {
+   "hp": 2
+  },
+  "grantAbilities": [
+   "sl_spare_skin_regrow"
+  ]
+ },
+ "sl_equip_eldest_hood": {
+  "name": "Hood of the Eldest",
+  "description": "+1 attack and +1 defense. A hood-skin from the library, lent to the bearer for one battle.",
+  "faction": "slough",
+  "rarity": "rare",
+  "cost": 30,
+  "statMods": {
+   "attack": 1,
+   "defense": 1
+  }
  }
 }

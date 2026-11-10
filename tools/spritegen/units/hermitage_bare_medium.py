@@ -6,7 +6,7 @@ from _hermitage_common import *
 UNIT_ID = 'hermitage_bare_medium'
 SIZE = 'medium'
 CAMERA = size_camera(SIZE)
-BARE = Bare(h=0.50, yaw=0.65, leg_len=1.12, z0=-0.30, x0=0.18, big=1.4, small=0.55, eye_len=0.36,
+BARE = Bare(h=0.50, yaw=0.65, leg_len=1.12, z0=-0.38, x0=0.20, big=1.4, small=0.55, eye_len=0.36,
             tail=dict(size=1.15, center=(0, 0.26, -0.40), r0=0.25, r1=0.06, thick=(0.15, 0.035), turns=1.05))
 
 

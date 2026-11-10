@@ -136,7 +136,8 @@ function danger(g: Game, th: Threat, u: Unit, p: Pos, vip: boolean): number {
   const expected = Math.max(0, raw - def * 2);
   const worth = g.def(u).cost / 6 + (g.isHero(u) ? 6 : 0);
   let pen = expected * 0.25;
-  if (expected >= u.hp) pen += worth;
+  // A shell soaks hits before the body (and loses the overflow when it breaks), so it counts toward staying alive.
+  if (expected >= u.hp + (u.shellHp ?? 0)) pen += worth;
   return vip ? pen * 3 + (expected > 0 ? 4 : 0) : pen;
 }
 
@@ -202,13 +203,13 @@ interface Plan { score: number; to: Pos; ability?: string; target?: Pos }
 function scoreAbility(g: Game, u: Unit, abilityId: string, target: Pos, from: Pos, it: Intel): number {
   const a = g.ability(abilityId);
   let s = scoreEffects(g, u.team, a.effects, g.affected(u, abilityId, target, from),
-    (o, e) => g.previewDamage(u, o, e, from), it);
-  // Rehouse: a crab out of its shell badly wants a new one.
+    (o, e) => g.previewDamage(u, o, e, from), it, target);
+  // Rehouse: a crab out of its shell badly wants a new one (unless climbing in would cost it more than it gains).
   if (a.effects.some(e => e.type === 'rehouse')) {
     const occ = g.unitAt(target.x, target.y);
-    const src = occ ? undefined : g.terrainAt(target.x, target.y).shellSource;
-    const shellHp = occ ? occ.hp : src ? g.content.units[src]?.shell?.hp ?? 0 : 0;
-    s += 6 + shellHp * 0.6;
+    const becomes = occ ? g.def(occ).emptyShell?.becomes : g.terrainAt(target.x, target.y).shellSource;
+    const v = becomes ? rehouseValue(g, u, becomes, occ ? occ.hp : undefined) : 0;
+    s += v > 0 ? v : -100;
   }
   // moveOut: only to trade a nearly broken shell for a fresh one next to the tile it steps to; otherwise never.
   if (a.effects.some(e => e.type === 'moveOut')) {
@@ -237,8 +238,36 @@ function scoreAbility(g: Game, u: Unit, abilityId: string, target: Pos, from: Po
   return s;
 }
 
+/** Score of `u` (a crab with no shell) climbing into a shell that turns it into `becomes` with `shellHp` (default: full). */
+function rehouseValue(g: Game, u: Unit, becomes: string, shellHp?: number): number {
+  const nd = g.content.units[becomes], cur = g.def(u);
+  if (!nd?.shell) return 0;
+  // A real champion without a shell (not an evicted crab) only trades its own kit up, never down.
+  if (!cur.token && nd.cost < cur.cost) return 0;
+  const sh = Math.min(nd.shell.hp, shellHp ?? nd.shell.hp);
+  const lost = Math.max(0, u.hp - nd.stats.hp); // body HP is capped to the new form's max
+  return 6 + sh * 0.6 - lost * 1.2;
+}
+
+/** Value of summoning `count` of `unitId` at `at` for `team`. An empty shell is clutter that blocks our own units
+ *  unless a crab without a shell can still walk next to it and climb in this turn (it would likely die before the next). */
+function summonValue(g: Game, team: number, unitId: string, at: Pos | undefined, count: number): number {
+  const d = g.content.units[unitId];
+  if (!d?.emptyShell) return 4 * count;
+  if (!at) return 0.5;
+  let best = 0;
+  for (const o of g.aliveUnits(team)) {
+    const od = g.def(o);
+    if (od.structure || od.shell || o.summonedThisTurn || g.hasFlag(o, 'preventsAction')) continue;
+    const rh = g.abilitiesOf(o).find(id => g.ability(id)?.effects.some(e => e.type === 'rehouse'));
+    if (!rh || (o.cooldowns[rh] ?? 0) > 0 || manhattan(o, at) > o.ap - g.ability(rh).apCost + 1) continue;
+    best = Math.max(best, rehouseValue(g, o, d.emptyShell.becomes, d.stats.hp));
+  }
+  return best > 0 ? best * 0.8 : 0.5;
+}
+
 function scoreEffects(g: Game, team: number, effects: Effect[], hit: Unit[],
-  dmg: (o: Unit, e: Extract<Effect, { type: 'damage' }>) => number, it?: Intel): number {
+  dmg: (o: Unit, e: Extract<Effect, { type: 'damage' }>) => number, it?: Intel, at?: Pos): number {
   let score = 0;
   // Tail segments stand in for their head (damage lands on the head once).
   const seen = new Set<number>();
@@ -287,7 +316,7 @@ function scoreEffects(g: Game, team: number, effects: Effect[], hit: Unit[],
     }
   }
   for (const e of effects) {
-    if (e.type === 'summon') score += 4 * (e.count ?? 1);
+    if (e.type === 'summon') score += summonValue(g, team, e.unit, at, e.count ?? 1);
     if (e.type === 'essence') score += Math.abs(e.amount) / 5;
   }
   return score;
@@ -413,6 +442,22 @@ function tryDeploy(g: Game): boolean {
   return g.deploy(g.current, pick.i, tile.x, tile.y);
 }
 
+/** A spell that turns ground into a shell source: worth what the best bare ally in reach would gain by climbing in. */
+function shellSourceValue(g: Game, team: number, sp: SpellDef, p: Pos): number {
+  const terr = sp.effects.find((e): e is Extract<Effect, { type: 'terrain' }> => e.type === 'terrain');
+  const src = terr && g.content.terrain[terr.terrain]?.shellSource;
+  if (!src) return 0;
+  const size = sp.area?.size ?? 0;
+  let best = 0;
+  for (const o of g.aliveUnits(team)) {
+    const od = g.def(o);
+    if (od.structure || od.shell || manhattan(o, p) > g.stat(o, 'ap') + size) continue;
+    if (!g.abilitiesOf(o).some(id => g.ability(id)?.effects.some(e => e.type === 'rehouse'))) continue;
+    best = Math.max(best, rehouseValue(g, o, src));
+  }
+  return best;
+}
+
 function tryCards(g: Game, it: Intel): boolean {
   const team = g.current;
   const hand = g.teams[team].hand;
@@ -429,11 +474,12 @@ function tryCards(g: Game, it: Intel): boolean {
     const sp: SpellDef = g.content.spells[hand[i]];
     let best: { p: Pos; s: number } | undefined;
     for (const p of targets) {
-      const s = scoreEffects(g, team, sp.effects, g.spellAffected(team, sp, p), (o, e) => g.previewSpellDamage(o, e), it);
+      const s = scoreEffects(g, team, sp.effects, g.spellAffected(team, sp, p), (o, e) => g.previewSpellDamage(o, e), it, p) + shellSourceValue(g, team, sp, p);
       if (!best || s > best.s) best = { p, s };
     }
     // Only cast when worth roughly its cost.
-    if (best && best.s >= sp.cost / 6 && !sp.effects.some(e => e.type === 'terrain')) return g.playCard(team, i, best.p.x, best.p.y);
+    // Terrain spells are skipped (hard to judge), except ground that bare crabs can climb into.
+    if (best && best.s >= sp.cost / 6 && !sp.effects.some(e => e.type === 'terrain' && !g.content.terrain[e.terrain]?.shellSource)) return g.playCard(team, i, best.p.x, best.p.y);
   }
   return false;
 }

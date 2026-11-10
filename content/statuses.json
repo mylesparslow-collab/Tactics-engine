@@ -386,5 +386,35 @@
    "attack": 1
   },
   "ignoresEngagement": true
+ },
+ "sl_venom": {
+  "name": "Venom",
+  "description": "Krait venom in the blood. Each time the carrier walks or uses an ability it takes 1 venom damage per stack (ignores defense). Ending its own turn without acting sheds one stack. Stacks to 5.",
+  "stacks": true,
+  "maxStacks": 5,
+  "shedsWhenIdle": true,
+  "onAct": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "venom",
+    "ignoreAttack": true,
+    "pierce": true
+   }
+  ]
+ },
+ "sl_numbed": {
+  "name": "Numbed",
+  "description": "Venom has reached the limbs. -1 AP.",
+  "statMods": {
+   "ap": -1
+  }
+ },
+ "sl_lacquered": {
+  "name": "Lacquered",
+  "description": "Wrapped in lacquered shed skin. +2 defense.",
+  "statMods": {
+   "defense": 2
+  }
  }
 }
