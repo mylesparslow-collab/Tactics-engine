@@ -128,7 +128,7 @@ def _eyes():
 
 
 SHELL = Shell(
-    build=stern, ride=0.86, tilt=-0.04, crab_at=(0, -0.20, 0.46), crab_upright=1.0, z0=-0.76, x0=0.47, yaw=0.02,
+    build=stern, ride=0.86, tilt=-0.04, crab_at=(0, -0.26, 0.64), crab_upright=1.0, eye_lean=(1.25, -0.1, 0.35), z0=-0.76, x0=0.405, yaw=0.02,
     eye_len=0.30, eye_bead=0.060, span=0.38, duck_dir=(0, 0.1, -1.0), duck_depth=0.26,
     big=1.20, small=0.60, side_r=0.55, tip_angle=1.15, leg_len=0.80, leg_r=1.35)
 
@@ -152,7 +152,7 @@ def _rows(R):
     for P, o in R['death']:
         P['slide'] -= 0.20 * P['tip']; P['limp'] *= 0.4
     R['death'][1][0]['slide'] += 0.11      # the half-fallen frame swings wide: nudge it in
-    fit_rows(R, death_slide=0.18, death_yaw=-0.3, stride=0.5)   # keep claws and the death topple inside the frame
+    fit_rows(R, snap=0.7, death_back=0.35, death_slide=0.28, death_yaw=-0.3, stride=0.5)   # keep claws and the death topple inside the frame
     return R
 
 

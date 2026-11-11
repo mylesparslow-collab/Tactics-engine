@@ -88,9 +88,9 @@ def _fit(row, i, P):
         P['hd_r'] = P['hd_r'] - v3(0, [0.12, 0.28, 0.10][i], [0.02, 0.06, 0.12][i]) * s
         P['hd_l'] = P['hd_l'] + v3(0, 0.0, 0.0)
     if row == 'attack':             # the pole dips forward on the strike (hook toward the enemy)
-        a = [-0.10, 0.0, 0.62, 0.22][i]
+        a = [0.0, 0.04, 0.62, 0.22][i]
         P['item_r'] = norm(rot_x(a) @ v3(0, 1, 0))
-        P['hd_r'] = P['hd_r'] + v3(0, 0, [-0.02, 0.0, 0.12, 0.05][i]) * s
+        P['hd_r'] = P['hd_r'] + v3(0, [0.03, 0.05, 0.0, 0.0][i], [-0.02, 0.0, 0.12, 0.05][i]) * s + E1 * [0.04, 0.02, 0, 0][i] * s
         if i >= 2:
             slide(P, -E1 * [0, 0, 0.09, 0.04][i])
     if row in ('idle', 'move', 'hit', 'death'):

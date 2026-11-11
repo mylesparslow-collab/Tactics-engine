@@ -6,7 +6,7 @@ from _slough_common import *
 
 UNIT_ID = 'slough_hookfang_wrangler'
 N = Naga(height=2.1, girth=1.08, tube=0.16, coil_r=0.50, loops=1.75, hood='cobra', hood_w=1.0, accent=(),
-         band_len=0.30, band_dark=0.48, head_len=1.4, tail_side=1, lean=0.06, pattern='rings', hood_mark='chevron',
+         band_len=0.30, band_dark=0.48, head_len=1.4, tail_side=1, lean=0.06, coil_back=0.30, pattern='rings', hood_mark='chevron',
          dark=_hex('#233a2c'), light=_hex('#c9d2a2'), belly=_hex('#d8c070'), mantle=_hex('#1c2e22'),
          hood_face=_hex('#5f7a5c'), hood_rim=_hex('#e2e8c4'), lip=_hex('#e2e8c4'), skin=_hex('#46604a'))
 CAMERA = naga_camera(N)
@@ -50,10 +50,14 @@ def build(P):
     s = P['s']
     ha, hb = P['hd_r'], P['hd_l']
     d = norm(hb - ha)
-    butt, tip = ha - d * 0.30 * s, hb + d * 0.95 * s
+    butt, tip = ha - d * 0.30 * s, hb + d * 0.80 * s
     butt, tip = _drop(P, butt, tip)
+    if P['drop'] > 0:           # lying on the ground it would span the tile: the fallen haft sinks into the silt
+        m = (butt + tip) / 2
+        k = 1.0 - 0.30 * min(1.0, P['drop'] * 2)
+        butt, tip = m + (butt - m) * k, m + (tip - m) * k
     d = norm(tip - butt)
-    big_trident(add, butt, tip, d, s, 1.35)
+    big_trident(add, butt, tip, d, s, 1.25)
     # line coiled over the left shoulder: three loops round the shoulder/upper chest, a tail trailing to the coil
     Rt = B['chest_R']
     rt, up, fw = Rt[:, 0], Rt[:, 1], Rt[:, 2]
@@ -71,4 +75,16 @@ def build(P):
     return naga_finish(P, N, parts, mats)
 
 
-ROWS, frames = naga_rows(neutral_pose, attack='thrust')
+def _fit(row, i, P):
+    """The oversized trident is the widest thing in the frame: keep the thrust and the raise inside it."""
+    s = P['s']
+    if row == 'attack':
+        move_hands(P, -E1 * [0.0, 0.03, 0.08, 0.04][i] * s)
+    if row == 'cast':
+        move_hands(P, v3(0, -[0.10, 0.18, 0.10][i] * s, 0))
+    if row == 'hit':
+        move_hands(P, E1 * 0.04 * s)
+    P['hood'] = min(P['hood'], 1.12)
+
+
+ROWS, frames = naga_rows(neutral_pose, attack='thrust', hook=_fit)

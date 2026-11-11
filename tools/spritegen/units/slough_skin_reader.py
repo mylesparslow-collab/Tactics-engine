@@ -31,7 +31,7 @@ def build(P):
     g = P['hd_r']
     # tall hook-staff: shaft 2.15 m, hook at the top
     L = 1.05
-    butt, tip = blade(add, P, 'r', 'gaff', length=L, below=0.85)
+    butt, tip = blade(add, P, 'r', 'gaff', length=L, below=0.85 - 0.45 * min(1.0, P['drop'] * 3))   # butt stays off the frame bottom as it falls
     dd = norm(tip - butt)
     # chartreuse knot below the hook
     add(Sphere(tip - dd * 0.12, 0.045), 'glaze', 0.0)
@@ -60,8 +60,10 @@ def _hang_off(d):
 
 def _fit(row, i, P):
     if row == 'attack':      # staff: raise, then bring the hook down and forward
-        P['hd_r'] = [scr(-0.46, 1.08, 0.12), scr(-0.42, 1.25, 0.20), scr(-0.10, 1.25, 0.55), scr(-0.30, 1.10, 0.35)][i]
-        P['item_r'] = [sdir(-0.15, 1.0, -0.1), sdir(0.0, 1.0, 0.2), sdir(0.75, 0.65, 0.35), sdir(0.3, 1.0, 0.2)][i]
+        P['hd_r'] = [scr(-0.42, 1.00, 0.24), scr(-0.40, 1.04, 0.26), scr(-0.20, 1.25, 0.45), scr(-0.30, 1.10, 0.35)][i]
+        slide(P, -E1 * [0, 0.02, 0.08, 0.04][i] * P['s'])
+        P['hood'] = min(P['hood'], 1.05)
+        P['item_r'] = [sdir(0.05, 1.0, 0.05), sdir(0.15, 1.0, 0.15), sdir(0.45, 0.85, 0.25), sdir(0.3, 1.0, 0.2)][i]
 
 
 def _fit2(row, i, P):
@@ -70,6 +72,8 @@ def _fit2(row, i, P):
         P['hd_r'] = scr(-0.46, 1.05, 0.22)
         P['hd_l'] = scr(0.38, 1.22 + [0.0, 0.2, 0.1][i], 0.38)
         P['item_r'] = norm(v3(0, 1, 0))
+    if row == 'death' and i >= 1:   # keep the slumping S off the bottom edge
+        P['mid'] = P['mid'] - E2 * 0.22 * [0, 0.6, 1.0, 1.0][i]
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='swing', cast='raise', hook=_fit2)

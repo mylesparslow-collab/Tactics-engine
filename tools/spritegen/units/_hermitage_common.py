@@ -676,13 +676,13 @@ def crab_legs(add, P, C, roots_w, feet_w, s, leg_len=1.0, leg_r=1.0, fold=0.0, t
 
 
 def crab_eyes(add, P, C, s, eye_len=0.22, bead=0.056, droop=0.0, splay=0.36, base=(0.066, 0.05, 0.13), r=1.0,
-              duck_keep=0.45, fwd=0.22):
+              duck_keep=0.45, fwd=0.22, lean=(0.0, 0.0, 0.0)):
     """Two eyestalks from the front of the shield. Swivel = eye_l / eye_r, dip_l / dip_r pull one down."""
     tips = []
     for side in (-1, 1):
         yaw = P['eye_r'] if side < 0 else P['eye_l']
         dip = max(P['dip_r'] if side < 0 else P['dip_l'], droop)
-        dl = norm(v3(side * splay, 1.0, fwd))
+        dl = norm(v3(side * splay, 1.0, fwd) + v3(*lean))      # lean: both stalks tilt the same way
         dl = axis_rot(v3(0, 1, 0), yaw) @ dl
         dl = norm(lerp(dl, v3(side * 0.25, -0.15, 1.0), min(dip, 1.0) * 0.8))
         if P.get('flip', 0.0) > 0:      # upside down: the stalks flop out sideways, never into the ground
@@ -752,6 +752,10 @@ class Shell:
     duck_depth: float = 0.20
     crab_upright: float = 0.0  # 0..1: keep the crab's up axis toward world up regardless of the shell's tilt
     shield: float = 1.0        # head-shield width factor
+    eye_fwd: float = 0.22      # how far the eyestalks lean forward: raise it so the eyes stand in open air in front
+    eye_splay: float = 0.36    # of a tall shell instead of being drawn over its face; splay = sideways spread
+    eye_lean: tuple = (0.0, 0.0, 0.0)   # crab-local tilt shared by both stalks; +x (crab's left) and +z lean them
+                                        # toward screen-right, into the open air beside a shell that sits upper-left
     hide_legs: tuple = ()      # leg indices (FR, FL, BR, BL) that the object hides anyway
 
 
@@ -802,7 +806,8 @@ def shelled(P, size, sh, mats=None, lights=(), world=None):
     cheliped(add, P, C, 1, sh.small, False)
     droop = P['end'] * 0.9
     if sh.eyes is None:
-        crab_eyes(add, P, C, s, sh.eye_len, sh.eye_bead, droop=droop, r=1.0)
+        crab_eyes(add, P, C, s, sh.eye_len, sh.eye_bead, droop=droop, r=1.0, fwd=sh.eye_fwd, splay=sh.eye_splay,
+                  lean=sh.eye_lean)
     else:
         for i, (b, d, L) in enumerate(sh.eyes):
             side = -1 if i % 2 == 0 else 1

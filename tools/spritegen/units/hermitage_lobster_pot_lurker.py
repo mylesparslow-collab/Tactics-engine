@@ -73,7 +73,7 @@ def pot_shell(rope_coil=True):
 
 SHELL = Shell(
     build=pot_shell(),
-    ride=0.44, tilt=-0.06, crab_at=(0, -0.06, 0.52), crab_upright=1.0, z0=-0.70, x0=0.28,
+    ride=0.44, tilt=-0.06, crab_at=(0, -0.10, 0.76), crab_upright=1.0, eye_lean=(1.3, -0.1, 0.35), z0=-0.75, x0=0.32,
     eye_len=0.32, eye_bead=0.068, span=0.46, duck_dir=(0, 0.1, -1.0), duck_depth=0.26,
     big=1.35, small=0.70, side_r=0.50, tip_angle=1.30)
 
@@ -88,7 +88,7 @@ def build(P):
     def world(add):
         grip, dw = claw_grip(P, SHELL, SIZE, big=True)
         t = P['throw']
-        end = grip + F.v((0.0, 0.05, 1.0)) * 0.34 * min(t, 1.0) * (1.0 if t < 1.5 else 0.6)
+        end = grip + F.v((0.0, 0.05, 1.0)) * 0.15 * min(t, 1.0) * (1.0 if t < 1.5 else 0.6)
         end = lerp(end, v3(end[0] - 0.05, 0.05, end[2]), min(P['drop'], 1.0))
         start = F.p((0.10, Y0 + RY + 0.09, -0.12))
         ctrl = F.p((-0.66, 0.10, 0.02)) + v3(0, -0.12, 0)
@@ -109,7 +109,7 @@ def _rows(R):
         P['open'] = [0.45, 0.35, 0.8, 0.5][i]
     for i, (P, o) in enumerate(R['death']):
         P['drop'] = [0, 0.3, 1, 1][i]
-    fit_rows(R, snap=0.7, drum=0.6, limp=0.5, death_back=0.16, death_slide=0.20, death_yaw=-0.5)   # keep claws and the death topple inside the frame
+    fit_rows(R, snap=0.5, drum=0.6, limp=0.5, death_back=0.45, death_slide=0.20, death_yaw=-0.5)   # keep claws and the death topple inside the frame
     return R
 
 

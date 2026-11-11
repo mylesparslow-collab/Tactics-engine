@@ -76,7 +76,7 @@ def boat_shell():
 
 SHELL = Shell(
     build=boat_shell(),
-    ride=0.56, tilt=-0.18, crab_at=(0, -0.20, 0.52), crab_upright=1.0, z0=-0.66, x0=0.20, yaw=0.30,
+    ride=0.56, tilt=-0.18, crab_at=(0, -0.20, 0.60), crab_upright=1.0, eye_lean=(0.7, 0.0, 0.2), z0=-0.71, x0=0.21, yaw=0.22,
     eye_len=0.32, eye_bead=0.062, span=0.40, duck_dir=(0, 0.3, -1.0), duck_depth=0.24,
     big=1.35, small=0.70, side_r=0.42, tip_angle=1.30, lie=0.0, leg_len=1.05, leg_r=1.05)
 
@@ -98,7 +98,7 @@ def _rows(R):
         P['bob'] = [0.03, 0.05, 0.03, 0.05][i]
         P['lean'] = -0.05
     R['death'][1][0]['slide'] += 0.06      # the half-fallen frame swings wide: nudge it in
-    fit_rows(R, snap=0.35, drum=0.6, limp=0.5, death_back=0.42, death_slide=0.16, death_yaw=-0.4, cast_back=0.04)   # keep claws and the death topple inside the frame
+    fit_rows(R, snap=0.15, drum=0.6, limp=0.5, death_back=0.42, death_slide=0.22, death_yaw=-0.4, cast_back=0.04)   # keep claws and the death topple inside the frame
     return R
 
 

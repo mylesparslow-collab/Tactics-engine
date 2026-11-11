@@ -98,7 +98,7 @@ def _eyes():
 
 SHELL = Shell(
     build=wheelhouse(),
-    ride=0.86, tilt=0.0, crab_at=(0, -0.36, 0.44), crab_upright=1.0, z0=-0.62, x0=0.40, yaw=-0.30,
+    ride=0.78, tilt=0.0, crab_at=(0, -0.40, 0.70), crab_upright=1.0, eye_lean=(1.3, -0.2, 0.35), z0=-1.00, x0=0.62, yaw=-0.30,
     eye_len=0.34, eye_bead=0.062, span=0.44, duck_dir=(0, 0.35, -1.0), duck_depth=0.24,
     big=1.45, small=0.70, side_r=0.42, tip_angle=1.25, leg_len=1.15, leg_r=1.15)
 
@@ -128,7 +128,7 @@ def _rows(R):
     for P, o in R['death']:
         P['recoil'] = 0.60 * P['tip']
         P['limp'] *= 0.5
-    fit_rows(R, snap=0.7, drum=0.5, death_back=0.10, death_slide=0.14, cast_back=0.20)   # keep claws and the death topple inside the frame
+    fit_rows(R, snap=0.7, drum=0.5, death_back=0.0, death_slide=0.22, cast_back=0.20)   # keep claws and the death topple inside the frame
     return R
 
 

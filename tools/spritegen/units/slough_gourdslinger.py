@@ -6,7 +6,7 @@ from _slough_common import *
 
 UNIT_ID = 'slough_gourdslinger'
 N = Naga(height=2.1, girth=1.0, tube=0.15, coil_r=0.50, loops=1.75, hood='broad', hood_w=0.8, accent=(),
-         band_len=0.26, band_dark=0.66, head_len=1.4, tail_side=-1, pattern='saddles', hood_mark='ocelli',
+         band_len=0.26, band_dark=0.66, head_len=1.4, tail_side=-1, coil_back=0.30, pattern='saddles', hood_mark='ocelli',
          dark=_hex('#3b2c20'), light=_hex('#d8c49c'), belly=_hex('#d9a94a'), mantle=_hex('#2e231a'),
          hood_face=_hex('#8a7356'), hood_rim=_hex('#efe0b8'), lip=_hex('#ecdcb4'), skin=_hex('#6e5640'),
          bracer=_hex('#7a6a3a'))
@@ -16,7 +16,7 @@ CAMERA = naga_camera(N)
 def neutral_pose():
     P = naga_pose(N)
     s = P['s']
-    reach(P, 'r', scr(-0.52, 1.50, 0.12))
+    reach(P, 'r', scr(-0.44, 1.50, 0.12))
     aim(P, 'r', sdir(-0.2, 1.0, 0.0))        # direction the sling hangs / whirls from the hand
     reach(P, 'l', scr(0.45, 1.34, 0.45))
     return P
@@ -52,9 +52,9 @@ def build(P):
     d = norm(P['item_r'])
     side = norm(np.cross(d, v3(0.3, 0, 1)))
     a = norm(d * np.cos(ph) + side * np.sin(ph) * 0.9 + v3(0, 0.1, 0))
-    L = 0.55 * s
+    L = 0.40 * s
     pouch = h + a * L
-    tgt = h + sdir(0.8, -0.1, 0.3) * 0.75
+    tgt = h + sdir(0.8, -0.1, 0.3) * 0.60
     if th > 0.01:
         pouch = lerp(h + sdir(0.9, 0.3, 0.2) * L, tgt, th)
         a = norm(pouch - h)
@@ -87,7 +87,7 @@ def _fit(row, i, P):
     s = P['s']
     if row == 'attack':
         # wind the sling up behind the head, whirl it, then let go forward
-        P['hd_r'] = [scr(-0.55, 1.55, -0.05), scr(-0.50, 1.70, 0.0), scr(-0.30, 1.45, 0.45), scr(-0.45, 1.40, 0.30)][i]
+        P['hd_r'] = [scr(-0.48, 1.45, -0.05), scr(-0.44, 1.52, 0.0), scr(-0.26, 1.40, 0.40), scr(-0.40, 1.36, 0.28)][i]
         P['item_r'] = [sdir(-0.5, 0.8, -0.3), sdir(-0.1, 1.0, -0.2), sdir(0.9, 0.3, 0.2), sdir(0.3, -0.5, 0.2)][i]
         P['tell'] = [0.0, 0.25, 0.5, 0.75][i]
         P['throw'] = [0, 0, 0.25, 1.0][i] if i < 3 else 1.0
@@ -95,13 +95,19 @@ def _fit(row, i, P):
         P['hd_r'] = P['hd_r'] + v3(0, 0.0, 0.0)
         P['throw'] = [0.0, 0.5, 1.0][i]
         P['item_r'] = sdir(0.6, 0.6, 0.3)
-        P['hd_l'] = scr(0.40, 1.30, 0.42) + v3(0, [0.0, 0.25, 0.10][i], 0)
+        P['hood'] = min(P['hood'], 1.0)
+        slide(P, v3(0, -0.05 * s, 0))
+        P['hd_l'] = scr(0.40, 1.22, 0.42) + v3(0, [0.0, 0.10, 0.04][i], 0)
     elif row == 'idle':
         P['tell'] = [0.0, 0.25, 0.5, 0.75][i]
     elif row == 'move':
         P['tell'] = [0.0, 0.25, 0.5, 0.75][i]
+    elif row == 'death' and i == 0:
+        slide(P, E1 * 0.10 * s)
     elif row == 'hit':
         P['throw'] = 0.0
+        slide(P, E1 * 0.10 * s)        # the recoil throws the whirling sling toward the left edge
+        P['tell'] = 0.25
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='swing', cast='throw', hook=_fit)

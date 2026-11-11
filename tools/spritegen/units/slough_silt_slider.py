@@ -40,6 +40,9 @@ def _both(row, i, P):
         sh = P['sh_l']
         P['hd_l'] = sh + R @ (P['hd_l'] - sh)
         P['item_l'] = R @ P['item_l']
+    if row == 'attack':      # the flat hood rides ahead of the cut: keep it inside the frame
+        P['hood'] = min(P['hood'], 1.0)
+        P['head'] = P['head'] - E1 * [0, 0.06, 0.14, 0.08][i] * P['s']
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='swing', hook=_both)

@@ -104,7 +104,7 @@ def _fit(row, i, P):
         slide(P, v3(0, -[0.03, 0.07, 0.0][i], 0) * s)
         P['hd_l'] = P['hd_l'] + v3(0, -0.04, 0) * s
     if row in ('idle', 'move', 'hit', 'death'):
-        P['item_r'] = sdir(-0.30, -0.70, 0.45) if row != 'death' else sdir(-0.75, -0.05, -0.55)
+        P['item_r'] = sdir(-0.30, -0.70, 0.45) if (row != 'death' or i == 0) else sdir(-0.45, -0.30, -0.55)
         if row in ('idle', 'move'):
             P['throw'] = 0.0
     P['hood'] = min(P['hood'], 1.0 if row == 'attack' else 1.12)
