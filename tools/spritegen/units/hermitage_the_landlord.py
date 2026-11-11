@@ -81,7 +81,7 @@ def _eyes():
 
 
 SHELL = Shell(
-    build=lamp_room, ride=0.44, tilt=-0.20, crab_at=(0, -0.10, 0.54), crab_upright=1.0, z0=-1.00, x0=0.32,
+    build=lamp_room, ride=0.44, tilt=-0.20, crab_at=(0, -0.10, 0.54), crab_upright=1.0, z0=-1.05, x0=0.35,
     eye_len=0.30, eye_bead=0.066, span=0.44, duck_dir=(0, 0.5, -1.0), duck_depth=0.22,
     big=1.40, small=0.72, guard=((0.25, -0.20, 0.17), (-0.42, 0.12, 0.90)), side_r=0.54, tip_angle=0.60, tip_dir=-1.0, leg_r=1.30, shield=1.1)
 
@@ -110,7 +110,7 @@ def _rows(R):
         P['spin'] = 0.0
     for i, (P, o) in enumerate(R['move']):
         P['spin'] = 0.4
-        P['stride'] *= 0.65          # post-thick legs: a shorter step keeps the feet inside the frame
+        P['stride'] *= 0.5           # post-thick legs: a shorter step keeps the feet inside the frame
     for row in ('attack', 'death', 'cast', 'hit'):     # the claw is huge at this scale: keep it in frame
         for P, o in R[row]:
             P['snap'] *= 0.55

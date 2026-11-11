@@ -25,12 +25,27 @@ def neutral_pose():
     return P
 
 
+def cuirass(add, P, B):
+    """One big bronzed-lacquer breastplate of fused shed skins, with two broad overlapping lames over the belly;
+    every plate shows a lighter edge below it (few, big shapes; reads at 1x)."""
+    s, g, shb = P['s'], N.girth, N.shoulders
+    Rt = B['chest_R']
+    up, fw = Rt[:, 1], Rt[:, 2]
+    C, W = P['chest'], P['waist']
+    add(Ellipsoid(C - up * 0.03 * s + fw * 0.010 * s, (0.240 * g * shb * s, 0.212 * s, 0.152 * g * s), Rt), 'lacquer_lt', 0.0)
+    add(Ellipsoid(C + up * 0.01 * s + fw * 0.014 * s, (0.236 * g * shb * s, 0.212 * s, 0.156 * g * s), Rt), 'lacquer', 0.0)
+    for t, w in ((0.50, 0.195), (0.80, 0.170)):
+        c = lerp(C, W, t) + fw * 0.012 * s
+        add(Ellipsoid(c - up * 0.022 * s, (w * g * s, 0.075 * s, 0.138 * g * s), Rt), 'lacquer_lt', 0.0)
+        add(Ellipsoid(c, (w * g * s * 0.98, 0.075 * s, 0.140 * g * s), Rt), 'lacquer', 0.0)
+
+
 def build(P):
     parts, add = new_parts()
     B = naga_body(P, add, N)
-    lacquer_coat(add, P, B, N, rows=2, per_row=3, coil=False, size=1.45)
-    pauldron(add, P, B, N, 'r', plates=3, size=1.2)
-    pauldron(add, P, B, N, 'l', plates=3, size=1.2)
+    cuirass(add, P, B)
+    pauldron(add, P, B, N, 'r', plates=2, size=1.35)
+    pauldron(add, P, B, N, 'l', plates=2, size=1.35)
     for sd, L, bl in (('r', 0.68, 0.26), ('l', 0.68, 0.26), ('r2', 0.54, 0.20), ('l2', 0.54, 0.20)):
         blade(add, P, sd, 'glaive', length=L, below=bl)
     return naga_finish(P, N, parts)

@@ -774,11 +774,13 @@ def naga_body(P, add, N, arms=True, head=True):
             sx = -1 if sd[0] == 'r' else 1
             lower = sd.endswith('2')
             sh = P['sh_' + sd]
-            add(Sphere(sh, 0.098 * g * s * (0.85 if lower else 1.0)), 'limb', 0.05)
+            add(Sphere(sh, 0.098 * g * s * (0.85 if lower else 1.0)), 'limb2' if lower else 'limb', 0.05)
             pole_v = v3(sx * 1.0, -0.6, -0.7) if not lower else v3(sx * 1.0, -0.2, -0.4)
             ru = 0.074 * g * s * (0.9 if lower else 1.0)
-            _arm(add, sh, P['hd_' + sd], l1, l2, pole_v, ru, ru * 0.84, 'limb', 'hand', 0.060 * s * g ** 0.5,
-                 bracer=N.bracer is not None, lower=lower)
+            # the lower pair is darker and bare (no bracers) so the two pairs read apart at 1x
+            _arm(add, sh, P['hd_' + sd], l1, l2, pole_v, ru, ru * 0.84, 'limb2' if lower else 'limb',
+                 'hand2' if lower else 'hand', 0.060 * s * g ** 0.5, bracer=(N.bracer is not None) and not lower,
+                 lower=lower)
             B['hand'][sd] = P['hd_' + sd]
     # --- head
     if head:
@@ -882,7 +884,8 @@ def _drop(P, butt, tip):
     Lg = min(L, 1.2)
     hd = norm(hd * 0.3 + E1)
     b2, t2 = gm - hd * Lg / 2, gm + hd * Lg / 2
-    return lerp(butt, b2, k), lerp(tip, t2, k)
+    arc = v3(0, 0.22, 0) * np.sin(np.pi * k) - E2 * 0.18 * np.sin(np.pi * k)   # falls back over the coil
+    return lerp(butt, b2, k) + arc, lerp(tip, t2, k) + arc
 
 
 def _side(d):
@@ -1165,6 +1168,8 @@ def naga_mats(P, N, B):
                             spec=0.3 * gl, gloss=28, brush=0.04)
     handc = np.array(N.claw) if N.claw is not None else skin * 0.85 + light * 0.15
     mats['hand'] = Material(tuple(handc), spec=0.25, gloss=22, brush=0.03)
+    mats['limb2'] = Material(tuple(skin * 0.55 + np.array(N.dark) * 0.15), spec=0.3 * gl, gloss=28, brush=0.03)
+    mats['hand2'] = Material(tuple(handc * 0.62), spec=0.25, gloss=22, brush=0.03)
     brc = np.array(N.bracer if N.bracer is not None else LACQUER)
     mats['bracer'] = Material(tuple(brc), spec=0.8, gloss=56, sss=0.6, brush=0.02, emissive=tuple(brc * 0.10))
     mats['bracer_lt'] = Material(tuple(np.clip(brc * 1.45 + 0.08, 0, 1)), spec=0.8, gloss=56, sss=0.5)
@@ -1172,7 +1177,7 @@ def naga_mats(P, N, B):
         F = B['head']
         lip = np.array(N.lip)
         snout = np.array(N.snout if N.snout is not None else N.light)
-        crown = dark * 0.80 + mantle * 0.12 + light * 0.08
+        crown = light * 0.58 + belly * 0.17 + dark * 0.25          # v3: the head is a LIGHT flat plane
         wv = N.head_w
 
         def head_alb(p, n):
@@ -1186,7 +1191,8 @@ def naga_mats(P, N, B):
             col[z > 0.112] = snout
             # pale ring round the eye (a dark eye needs a light surround) and a stripe back to the jaw hinge
             de = np.sqrt((np.abs(x) - 0.062 * wv) ** 2 + (y - 0.024) ** 2 + (z - 0.052) ** 2)
-            col[de < 0.042] = snout
+            lid = (de > 0.026) & (de < 0.037) & (y > 0.022)
+            col[lid] = dark * 0.85                                      # thin dark lid line over the eye
             # the jaw line: a dark mouth slit between the pale upper lip and the pale lower jaw
             slit = (y < -0.014) & (np.abs(x) > 0.025 * wv) & (z > -0.06)
             col[slit] = np.array(MOUTH) * 0.55
@@ -1194,7 +1200,7 @@ def naga_mats(P, N, B):
             tq = np.clip((0.050 - z) / 0.14, 0, 1)
             ly = 0.024 - 0.040 * tq
             stripe = (z < 0.052) & (z > -0.09) & (np.abs(y - ly) < 0.0095) & (np.abs(x) > 0.035)
-            col[stripe] = snout
+            col[stripe] = dark * 0.75
             return col
         mats['head'] = Material(head_alb, spec=0.12 * gl, gloss=24, brush=0.0, sss=0.9,
                                 emissive=lambda p, n: head_alb(p, n) * 0.22)   # flat-lit, one clean plane
@@ -1202,6 +1208,7 @@ def naga_mats(P, N, B):
         HF = B['hood_F']
         Wd, Hd = _hood_dims(P, N)
         hface = np.array(N.hood_face if N.hood_face is not None else mantle * 0.7 + belly * 0.15 + light * 0.15)
+        hface = hface * 0.40 + np.minimum(mantle, dark) * 0.60       # v3: hood face always darker than the head
         rimc = np.array(N.hood_rim)
         markc = np.array(N.hood_mark_col if N.hood_mark_col is not None else N.light)
         mk = N.hood_mark
@@ -1214,7 +1221,7 @@ def naga_mats(P, N, B):
             front = q[:, 2] > 0.10 * q[:, 0] ** 2 / max(Wd, 1e-3) - 0.03 * s * Y
             fc = _arr(hface, len(p))
             prof = _hood_prof(Y, N.hood)
-            inner = (np.abs(X) < prof * 0.70) & (Y < 0.78)
+            inner = (np.abs(X) < prof * 0.86) & (Y < 0.88)
             fc[~inner] = rimc
             if mk == 'ocelli':
                 for sx in (-1, 1):
@@ -1527,7 +1534,7 @@ def death_pose(base, i):
     P['head_roll'] = np.radians(-40) * f
     P['hood'] = [0.35, 0.3, 0.15, 0.1][i]
     P['jaw'] = [0.6, 0.4, 0.1, 0.0][i]
-    P['coil_sq'] = [0.94, 0.95, 0.97, 0.97][i]
+    P['coil_sq'] = 1.0           # (a squashed coil drops its front loop onto the frame edge)
     P['coil_w'] = [1.0, 1.0, 0.99, 0.98][i]
     P['drop'] = [0, 0.3, 1.0, 1.0][i]
     P['end'] = [0, 0.3, 0.65, 1.0][i]

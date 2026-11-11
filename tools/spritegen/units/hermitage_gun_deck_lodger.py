@@ -11,7 +11,7 @@ GUN_L = 1.16
 
 SHELL = Shell(
     build=long_gun_shell(length=GUN_L, r_breech=0.27, r_muzzle=0.14, open_breech=True, bore=0.075),
-    ride=0.52, tilt=-0.24, crab_at=(0, -0.30, 0.36), crab_upright=1.0, z0=-0.82, x0=0.30, yaw=0.32,
+    ride=0.52, tilt=-0.24, crab_at=(0, -0.30, 0.36), crab_upright=1.0, z0=-0.87, x0=0.30, yaw=0.32,
     eye_len=0.32, eye_bead=0.066, span=0.46, duck_dir=(0, 0.6, -1.0), duck_depth=0.22,
     big=1.40, small=0.82, guard=((0.25, -0.20, 0.17), (-0.42, 0.12, 0.90)), side_r=0.30, tip_angle=0.9, lie=-0.05, leg_r=1.1)
 
@@ -45,6 +45,7 @@ def _rows(R):
         P['fx'] = [0.0, 0.0, 1.0, 0.4][i]
         P['lift_a'] = [0, 0, 0.6, 0][i]
         P['squash'] = [1.0, 0.97, 1.02, 1.0][i]
+        P['slide'] += 0.05                     # room for the skid back
     for P, o in R['cast']:
         P['drum'] *= 0.6
     for row in R.values():
@@ -57,6 +58,7 @@ def _rows(R):
         k = [0, 0.3, 0.85, 1.0][i]  # topple forward onto the shadow, not behind it
         P['slide'] += -0.10 * k
         P['recoil'] += -0.10 * k
+    fit_rows(R, stride=0.5)
     return R
 
 

@@ -9,7 +9,7 @@ from _slough_common import *
 UNIT_ID = 'slough_eldest_skin'
 N = Naga(palette='violet', trim=LACQUER_RED, height=2.32, girth=1.12, tube=0.19, coil_r=0.56, loops=1.8, coil_back=0.30, hood='ragged',
          hood_w=1.35, hood_h=1.25, hood_mark='ocelli', hood_mark_col=_hex('#e8e2c8'), head_len=1.35, band_len=0.24,
-         band_dark=0.32, band_fade=0.0, grey=0.0, accent=(), lean=0.08, tail_side=-1)
+         band_dark=0.32, band_fade=0.0, grey=0.0, accent=('tail',), lean=0.08, tail_side=-1)
 CAMERA = naga_camera(N)
 
 GOLD_HERO = _hex('#e0b84a')
@@ -103,11 +103,8 @@ def build(P):
         strip(add, top, dn, E1, L, w * s, 'skin_a' if j != 1 else 'skin_b', sway=0.0)
         add(Capsule(top - dn * 0.01, top + dn * 0.05 * s, 0.017 * s), 'glaze' if j != 1 else 'goldring', 0.0)
     add(Torus(bar + sv * 0.02 * s + v3(0, -0.07, 0) * s, v3(0, 1, 0), 0.05 * s, 0.010 * s), 'goldring', 0.0)
-    # --- bright chartreuse throat ring
-    nk0 = C + up * 0.15 * s
-    hd = P['head'] - up * 0.05 * s
-    ring_c = lerp(nk0, hd, 0.42)
-    add(Torus(ring_c, norm(hd - nk0), 0.090 * s, 0.036 * s), 'throatring', 0.0)
+    # (v3: the chartreuse throat ring read as a grin; the faction accent is now the tail band and the staff knot)
+
     # --- free hand raised, fingers spread
     h = P['hd_l']
     a = norm(h - P['sh_l'])

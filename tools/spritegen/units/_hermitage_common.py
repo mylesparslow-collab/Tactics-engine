@@ -1324,12 +1324,14 @@ def hermit_rows(base, kind='shell', extra=None):
 
 
 def fit_rows(R, snap=1.0, drum=1.0, limp=1.0, death_back=0.0, death_slide=0.0, cast_back=0.0, death_yaw=0.0,
-             rows=None):
+             stride=1.0, rows=None):
     """Keep big claws and death topples inside the 96x112 frame: scale the snap / drum / limp channels (in `rows`,
     default every row) and, in death, move the unit back (death_back, + = away from the camera) and sideways
     (death_slide, world x) in step with the shell tipping over, death_yaw turns it as it falls; cast_back moves the drumming frames back."""
     for P, o in R['cast']:
         P['recoil'] += cast_back * min(1.0, P['drum'])       # (before drum is scaled below)
+    for P, o in R['move']:
+        P['stride'] *= stride                                  # shorter steps for wide-legged big units
     for name in (rows or R.keys()):
         for P, o in R[name]:
             P['snap'] *= snap

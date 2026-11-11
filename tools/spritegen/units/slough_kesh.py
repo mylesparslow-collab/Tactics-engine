@@ -12,10 +12,12 @@ N = Naga(palette='krait', trim=LACQUER_RED, hood_face=_hex('#8c8676'), hood_mark
 CAMERA = Camera(ppm=44.0)
 
 # (side, hand, glaive direction, glaive length)
-ARMS = (('r', scr(-0.44, 1.30, 0.14), sdir(-0.35, 0.9, 0.25), 0.9),
-        ('l', scr(0.42, 1.34, -0.04), sdir(0.35, 0.9, -0.05), 0.9),
-        ('r2', scr(-0.46, 0.88, 0.50), sdir(-0.32, 0.25, 0.85), 0.85),
-        ('l2', scr(0.44, 0.90, 0.30), sdir(0.30, 0.25, 0.80), 0.85))
+# upper pair: glaives raised high and out; lower pair: darker bare arms held low and wide with short hook-sabres
+ARMS = (('r', scr(-0.44, 1.36, 0.10), sdir(-0.30, 0.95, 0.15), 0.9),
+        ('l', scr(0.42, 1.40, -0.06), sdir(0.30, 0.95, -0.05), 0.9),
+        ('r2', scr(-0.56, 0.76, 0.42), sdir(-0.45, -0.10, 0.85), 0.50),
+        ('l2', scr(0.56, 0.78, 0.22), sdir(0.50, -0.10, 0.80), 0.50))
+KIND = {'r': 'glaive', 'l': 'glaive', 'r2': 'sabre', 'l2': 'sabre'}
 
 
 def neutral_pose():
@@ -33,14 +35,15 @@ def build(P):
     pauldron(add, P, B, N, 'r', plates=3, size=1.1)      # red-lacquered champion's shoulder skins
     pauldron(add, P, B, N, 'l', plates=3, size=1.1)
     for sd, h, d, L in ARMS:
-        blade(add, P, sd, 'glaive', length=L, below=0.30)
+        blade(add, P, sd, KIND[sd], length=L, below=0.30 if KIND[sd] == 'glaive' else 0.08)
         # open fingers (catching)
         hd = P['hd_' + sd]
         a = norm(hd - P['sh_' + sd])
         sv = _side(a)
         for k in range(3):
             f = k - 1
-            add(Capsule(hd + a * 0.03, hd + (a + sv * f * 0.5) * 0.12 * s, 0.020 * s, 0.007), 'hand', 0.0)
+            add(Capsule(hd + a * 0.03, hd + (a + sv * f * 0.5) * 0.12 * s, 0.020 * s, 0.007),
+                'hand2' if sd.endswith('2') else 'hand', 0.0)
     return naga_finish(P, N, parts)
 
 
