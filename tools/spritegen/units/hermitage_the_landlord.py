@@ -110,6 +110,7 @@ def _rows(R):
         P['spin'] = 0.0
     for i, (P, o) in enumerate(R['move']):
         P['spin'] = 0.4
+        P['stride'] *= 0.65          # post-thick legs: a shorter step keeps the feet inside the frame
     for row in ('attack', 'death', 'cast', 'hit'):     # the claw is huge at this scale: keep it in frame
         for P, o in R[row]:
             P['snap'] *= 0.55
