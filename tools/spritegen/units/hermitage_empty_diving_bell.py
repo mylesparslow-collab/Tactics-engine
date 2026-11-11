@@ -7,7 +7,7 @@ CAMERA = Camera(ppm=54)
 H = 0.98
 SHELL = Shell(build=diving_bell_shell(h=H, r_bot=0.50, r_top=0.36, ports=((-0.62, 1.0), (0.42, 1.0), (2.7, 1.0)),
                                       port_y=0.06, hose=True, eyes_in=()), ride=H / 2, crab_at=(0, 0, 0))
-PLACE = (v3(0.08, H / 2 - 0.02, -0.32), rot_y(0.15) @ rot_x(-0.05))
+PLACE = (v3(0.26, H / 2 - 0.02, -0.62), rot_y(0.15) @ rot_x(-0.05))
 
 
 def neutral_pose():

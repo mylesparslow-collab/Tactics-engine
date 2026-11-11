@@ -7,7 +7,7 @@ UNIT_ID = 'hermitage_empty_barrel'
 CAMERA = Camera(ppm=56)
 L, RM, RE = 0.98, 0.37, 0.31
 SHELL = Shell(build=barrel_shell(length=L, r_mid=RM, r_end=RE), ride=RM, crab_at=(0, 0, 0))
-PLACE = (v3(0.02, RM - 0.01, -0.30), rot_y(0.30) @ rot_z(0.5))
+PLACE = (v3(0.06, RM - 0.01, -0.38), rot_y(0.30) @ rot_z(0.5))
 
 
 def neutral_pose():

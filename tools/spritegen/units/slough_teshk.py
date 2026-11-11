@@ -8,8 +8,9 @@ UNIT_ID = 'slough_teshk'
 SLATE_D = _hex('#3a3f43')
 N = Naga(height=2.12, girth=0.92, tube=0.145, coil_r=0.42, loops=1.5, coil_back=0.22, coil_depth=0.78, hood='spade',
          hood_w=1.1, hood_h=1.15, head_len=1.5, band_len=0.24, band_dark=0.5, accent=(), gloss=1.7, body_r=0.125,
-         dark=_hex('#4a4f52'), light=_hex('#e9e4d0'), belly=_hex('#e0b440'), skin=_hex('#8a8f86'),
-         mantle=_hex('#33383b'), hood_face=_hex('#c8cdc2'), hood_rim=_hex('#e8c860'), lip=_hex('#f2e6b0'),
+         dark=_hex('#4a4f52'), light=_hex('#e9e4d0'), belly=_hex('#e0b440'), skin=_hex('#6a706c'),
+         mantle=_hex('#33383b'), hood_face=_hex('#7a8078'), hood_rim=_hex('#e8c860'), lip=_hex('#f2e6b0'),
+         pattern='rings', hood_mark='chevron', hood_mark_col=_hex('#e8c860'), trim=BRONZE,
          tail_side=1, lean=0.06)
 CAMERA = naga_camera(N)
 
@@ -46,13 +47,11 @@ def build(P):
     up, fw, rt = Rt[:, 1], Rt[:, 2], Rt[:, 0]
     C = P['chest']
     # amber lacquer shoulder-guard on the sword shoulder + sash across the chest
-    sh = P['sh_r']
-    add(Ellipsoid(sh + up * 0.045 * s - rt * 0.02 * s, (0.125 * s, 0.07 * s, 0.11 * s), Rt), 'amber', 0.04)
-    add(Ellipsoid(sh + up * 0.07 * s, (0.09 * s, 0.03 * s, 0.085 * s), Rt), 'amber_lt', 0.02)
+    pauldron(add, P, B, N, 'r', plates=3, size=1.1)
     a = P['sh_r'] + up * 0.02 * s + fw * 0.07 * s
     b = P['waist'] + rt * 0.17 * s + fw * 0.10 * s - up * 0.03 * s
-    add(Capsule(a, b, 0.032 * s), 'amber', 0.0)
-    add(Capsule(a + fw * 0.012 * s, b + fw * 0.012 * s, 0.012 * s), 'amber_lt', 0.0)
+    add(Capsule(a, b, 0.032 * s), 'lacquer', 0.0)
+    add(Capsule(a + fw * 0.012 * s, b + fw * 0.012 * s, 0.012 * s), 'lacquer_lt', 0.0)
     sabre_fang(add, P)
     mats = {'amber': Material(lambda p, n: _arr(LACQUER, len(p)) * (0.88 + 0.25 * fbm(p, 9.0, 2)[:, None]), spec=0.8, gloss=60, sss=0.3),
             'amber_lt': Material(LACQUER_LT, spec=0.8, gloss=60)}

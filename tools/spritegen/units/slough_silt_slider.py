@@ -7,7 +7,10 @@ from _slough_common import *
 UNIT_ID = 'slough_silt_slider'
 N = Naga(height=1.8, girth=0.86, tube=0.135, coil_r=0.64, loops=1.3, coil_depth=0.42, coil_back=0.36,
          hood='flat', hood_w=1.1, lean=0.34, accent=('tail',), band_len=0.2, band_dark=0.80, gloss=1.9,
-         dark=_hex('#1d2124'), mantle=_hex('#1d2124'), hood_face=_hex('#a89c6a'), paddle=1.5, fang=1.1, head_len=1.4,
+         pattern='edged', hood_mark='bars', trim=BRONZE,
+         dark=_hex('#141c28'), light=_hex('#d4dcd2'), belly=_hex('#e0b440'), mantle=_hex('#141c28'),
+         hood_face=_hex('#4a5666'), hood_rim=_hex('#e6ecdf'), lip=_hex('#e6ecdf'), skin=_hex('#3c4656'),
+         paddle=1.5, fang=1.1, head_len=1.4,
          tail_side=1)
 CAMERA = naga_camera(N)
 

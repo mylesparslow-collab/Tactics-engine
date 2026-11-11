@@ -122,6 +122,7 @@ def _rows(R):
         P['curl'] *= 0.5
     for P, o in R['move']:
         P['lean'] += 0.06
+        P['stride'] *= 0.7
         P['raise_'] = 0.9
     for row in ('attack', 'hit', 'cast', 'death'):
         for P, o in R[row]:

@@ -6,8 +6,9 @@ from _slough_common import *
 UNIT_ID = 'slough_ringwall'
 N = Naga(height=2.62, arms=4, girth=1.35, tube=0.235, coil_r=0.62, loops=2.0, coil_back=0.38, coil_depth=0.62,
          hood='broad', hood_w=1.0, hood_h=0.95, head_len=1.4, band_len=0.34, band_dark=0.62, accent=(),
-         body_r=0.20, dark=_hex('#2a2f2c'), light=_hex('#cfd0b6'), skin=_hex('#6e6a46'), belly=_hex('#a89a4e'),
-         hood_face=_hex('#c8c08a'), tail_side=-1)
+         body_r=0.20, dark=_hex('#2c3a2a'), light=_hex('#c6ccae'), skin=_hex('#55604a'), belly=_hex('#a89a4e'),
+         mantle=_hex('#22301f'), hood_face=_hex('#5f6e56'), hood_rim=_hex('#e0e4cc'), lip=_hex('#dfe2c8'),
+         pattern='edged', hood_mark='chevron', trim=_hex('#5e6f6a'), tail_side=-1)
 CAMERA = naga_camera(N)
 
 
@@ -38,6 +39,8 @@ def build(P):
             nz = norm(lerp(nz, v3(0, 1, 0.05), kk))
             up = norm(lerp(up, E1, kk))
         scale_shield(add, c, nz, up, w=0.33, h=0.52, ridges=3, curve=0.10)
+    pauldron(add, P, B, N, 'r', plates=2, size=1.3)
+    pauldron(add, P, B, N, 'l', plates=2, size=1.3)
     blade(add, P, 'r2', 'trident', length=0.95, below=0.40)
     blade(add, P, 'l2', 'trident', length=0.95, below=0.40)
     return naga_finish(P, N, parts)

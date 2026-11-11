@@ -151,7 +151,7 @@ def _rows(R):
             P['limp'] *= 0.4
     for P, o in R['death']:
         P['slide'] -= 0.20 * P['tip']; P['limp'] *= 0.4
-    fit_rows(R, death_slide=0.12, death_yaw=-0.3)   # keep claws and the death topple inside the frame
+    fit_rows(R, death_slide=0.12, death_yaw=-0.3, stride=0.5)   # keep claws and the death topple inside the frame
     return R
 
 

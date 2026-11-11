@@ -7,7 +7,9 @@ from _slough_common import *
 UNIT_ID = 'slough_skinbanner_elder'
 N = Naga(height=2.1, girth=1.05, tube=0.16, coil_r=0.50, loops=1.8, hood='narrow', hood_w=1.05, hood_h=1.3,
          head_len=1.75, band_len=0.30, band_dark=0.45, band_fade=0.18, grey=0.35, accent=(), tail_side=-1,
-         belly=_hex('#cfa23c'), hood_face=_hex('#d8cf9c'), hood_rim=_hex('#f2ecd0'))
+         pattern='edged', hood_mark='ocelli', trim=LACQUER_RED,
+         dark=_hex('#3e2630'), light=_hex('#e2d2b4'), belly=_hex('#cfa23c'), mantle=_hex('#2e1c24'),
+         hood_face=_hex('#7a5a5e'), hood_rim=_hex('#f2ecd0'), lip=_hex('#ecdcc0'), skin=_hex('#5e434a'))
 CAMERA = Camera(ppm=48.0)
 
 BAR_Y = 1.95         # crossbar height above the hand's pole point (m above ground when upright)

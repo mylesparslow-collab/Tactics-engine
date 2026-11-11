@@ -6,8 +6,10 @@ from _slough_common import *
 UNIT_ID = 'slough_yellowbelly_matriarch'
 N = Naga(height=2.3, girth=1.25, tube=0.215, coil_r=0.56, loops=1.7, coil_back=0.28, hood='broad', hood_w=1.45,
          hood_h=1.25, head_len=1.7, band_len=0.30, band_dark=0.58, accent=(), body_r=0.18,
-         skin=_hex('#b08a34'), belly=_hex('#ecb83e'), mantle=_hex('#1e2124'), hood_face=_hex('#e2c565'),
-         hood_rim=_hex('#f2ecd0'), lip=_hex('#f0d27a'), tail_side=-1)
+         pattern='saddles', hood_mark='ocelli', hood_mark_col=_hex('#ecb83e'), trim=LACQUER_RED,
+         dark=_hex('#1e2124'), light=_hex('#e0903a'), skin=_hex('#8a6a2c'), belly=_hex('#ecb83e'),
+         mantle=_hex('#1e2124'), hood_face=_hex('#6a5228'),
+         hood_rim=_hex('#f2d27a'), lip=_hex('#f0d27a'), tail_side=-1)
 CAMERA = naga_camera(N)
 
 

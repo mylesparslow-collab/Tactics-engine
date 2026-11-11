@@ -40,7 +40,7 @@ def bell_on_side():
 
 SHELL = Shell(
     build=bell_on_side(),
-    ride=0.52, tilt=-0.10, crab_at=(0, -0.20, 0.46), crab_upright=1.0, z0=-0.62, x0=0.28,
+    ride=0.52, tilt=-0.10, crab_at=(0, -0.20, 0.46), crab_upright=1.0, z0=-0.67, x0=0.32,
     eye_len=0.32, eye_bead=0.064, span=0.46, duck_dir=(0, 0.25, -1.0), duck_depth=0.26,
     big=1.35, small=0.72, side_r=0.46, tip_angle=1.30, tip_dir=-1.0)
 
@@ -78,7 +78,7 @@ def _rows(R):
         P['open'] = [0.35, 0.3, 0.7, 0.4][i]
     for i, (P, o) in enumerate(R['cast']):
         P['ring'] = [0, 0.4, 0.2, 0.9][i]
-    fit_rows(R, snap=0.7, drum=0.5, limp=0.5, death_yaw=-0.5, cast_back=0.12)   # keep claws and the death topple inside the frame
+    fit_rows(R, snap=0.6, drum=0.5, limp=0.5, death_yaw=-0.5, cast_back=0.12, stride=0.6)   # keep claws and the death topple inside the frame
     return R
 
 

@@ -7,8 +7,11 @@ from _slough_common import *
 UNIT_ID = 'slough_reedrunner'
 YEL = _hex('#e8c24a')
 N = Naga(height=1.9, girth=0.78, tube=0.125, coil_r=0.72, loops=1.3, coil_depth=0.36, coil_back=0.30,
-         hood='narrow', hood_w=1.2, hood_h=1.1, lean=0.22, accent=(), band_len=0.21, band_dark=0.45, paddle=1.6,
-         lip=YEL, hood_face=_hex('#e6dfba'), hood_rim=YEL, fang=1.15, arm_len=1.05, head_len=1.45)
+         hood='narrow', hood_w=1.2, hood_h=1.1, lean=0.22, accent=(), band_len=0.16, band_dark=0.40, paddle=1.6,
+         pattern='rings', band_grow=0.6, hood_mark='stripe', hood_mark_col=YEL,
+         dark=_hex('#1c2a38'), light=_hex('#a8c2cc'), belly=_hex('#e2d9a6'), mantle=_hex('#18222c'),
+         lip=YEL, hood_face=_hex('#4e6a7a'), hood_rim=YEL, skin=_hex('#4a6270'), fang=1.15, arm_len=1.05,
+         head_len=1.45)
 CAMERA = naga_camera(N)
 
 

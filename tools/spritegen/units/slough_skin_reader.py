@@ -8,7 +8,8 @@ UNIT_ID = 'slough_skin_reader'
 GREY_D = _hex('#4b4d44')
 N = Naga(height=2.0, girth=0.80, tube=0.135, coil_r=0.48, loops=1.7, hood='ragged', hood_w=1.2, hood_h=1.1,
          lean=0.10, dark=GREY_D, light=_hex('#cfc8aa'), band_fade=0.55, band_len=0.27, band_dark=0.45, accent=(),
-         skin=_hex('#a99d72'), mantle=_hex('#34352d'), hood_face=_hex('#ece5c2'), hood_rim=_hex('#f2ecd2'),
+         skin=_hex('#857c5c'), mantle=_hex('#34352d'), hood_face=_hex('#8c8670'), hood_rim=_hex('#f2ecd2'),
+         pattern='rings', hood_mark='plain',
          belly=_hex('#d3a94c'), grey=0.4, head_len=1.4, arm_len=1.0, tail_side=-1)
 CAMERA = naga_camera(N)
 

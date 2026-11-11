@@ -7,8 +7,8 @@ UNIT_ID = 'slough_mother_ashgourd'
 N = Naga(height=2.1, girth=1.30, tube=0.195, coil_r=0.54, loops=1.7, coil_back=0.28, hood='broad', hood_w=1.35,
          hood_h=1.1, head_len=1.5, band_len=0.28, band_dark=0.55, band_fade=0.1, grey=0.6, accent=(), body_r=0.17,
          dark=_hex('#33383a'), light=_hex('#d6d2bc'), belly=_hex('#c9a444'), skin=_hex('#8c8a66'),
-         mantle=_hex('#555a58'), hood_face=_hex('#b4b8a8'), hood_rim=_hex('#e8e6d4'), lip=_hex('#e6dca0'),
-         tail_side=-1)
+         mantle=_hex('#555a58'), hood_face=_hex('#6e7270'), hood_rim=_hex('#e8e6d4'), lip=_hex('#e6dca0'),
+         tail_side=-1, pattern='checker', hood_mark='bars', trim=BRONZE)
 CAMERA = naga_camera(N)
 POUR = 0.5
 
@@ -39,6 +39,7 @@ def build(P):
         sh = P['sh_r' if sx < 0 else 'sh_l']
         a = lerp(sh, P['chest'], 0.55) + fw * 0.12 * s
         add(Capsule(a, hip + fw * 0.04 * s, 0.018 * s), 'lash', 0.0)
+    pauldron(add, P, B, N, 'r', plates=2, size=1.15)
     # --- sling in the right hand
     hd = P['hd_r']
     d = norm(P['item_r'])

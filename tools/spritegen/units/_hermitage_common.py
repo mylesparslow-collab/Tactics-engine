@@ -959,8 +959,8 @@ def empty(P, sh, place, rag_at=None, mats=None, lights=(), world=None, debris_ma
         rng = np.random.default_rng(seed)
         for i in range(6):
             a = rng.uniform(0, 2 * np.pi)
-            dist = (0.45 + 0.35 * rng.uniform()) * (0.5 + 0.5 * c)
-            q = v3(np.cos(a) * dist, 0.03, np.sin(a) * dist * 0.8)
+            dist = (0.38 + 0.25 * rng.uniform()) * (0.5 + 0.5 * c)
+            q = v3(o[0] + np.cos(a) * dist, 0.03, o[2] + np.sin(a) * dist * 0.6 - 0.05)   # round the shell, not the frame foot
             hs = (0.05 * rng.uniform(0.7, 1.4), 0.025, 0.04 * rng.uniform(0.7, 1.3))
             add(RoundBox(q, hs, 0.01, rot_y(rng.uniform(0, 6.28)) @ rot_x(rng.uniform(-0.4, 0.4))), debris_mat, 0.0)
     if world:

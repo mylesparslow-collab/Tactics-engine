@@ -6,8 +6,8 @@ from _hermitage_common import *
 from _hermitage_common import _claw_target, _arr
 
 UNIT_ID = 'hermitage_tool_chest_tinker'
-SIZE = 'small'
-CAMERA = size_camera(SIZE)
+SIZE = 0.98            # 'small' class body, crab scaled up so it reads clearly in front of the dark chest
+CAMERA = size_camera('small')
 HX, HY, HZ = 0.42, 0.23, 0.33         # chest half extents
 LID_A = 0.34                          # lid raised about the back hinge (rad)
 HINGE = v3(0, HY, -HZ)
@@ -69,7 +69,7 @@ def chest_shell():
 
 SHELL = Shell(
     build=chest_shell(),
-    ride=0.34, tilt=-0.04, crab_at=(0, -0.02, 0.42), crab_upright=1.0, z0=-0.62, x0=0.26,
+    ride=0.34, tilt=-0.04, crab_at=(0, -0.04, 0.48), crab_upright=1.0, z0=-0.70, x0=0.28,
     eye_len=0.32, eye_bead=0.068, span=0.46, duck_dir=(0, 0.1, -1.0), duck_depth=0.26,
     big=1.35, small=0.70, side_r=0.34, tip_angle=1.30,
     guard=((0.22, 0.06, 0.20), (-0.30, 0.45, 0.85)))
@@ -102,7 +102,7 @@ def _rows(R):
         for P, o in row:
             P['snap'] *= 0.5
             P['drum'] *= 0.6
-    fit_rows(R, death_back=0.07)   # keep claws and the death topple inside the frame
+    fit_rows(R, snap=0.6, death_back=0.36, death_slide=0.12, death_yaw=-0.4, stride=0.8)   # keep claws and the death topple inside the frame
     return R
 
 

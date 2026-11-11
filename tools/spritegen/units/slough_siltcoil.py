@@ -9,7 +9,8 @@ UNIT_ID = 'slough_siltcoil'
 N = Naga(height=1.72, girth=1.08, tube=0.09, coil_r=0.28, loops=1.4, coil_depth=0.62, coil_back=0.36, coil_lift=0.3,
          hood='broad', hood_w=1.25, hood_h=1.05, lean=0.20, dark=_hex('#2c3020'), light=_hex('#b3ad86'), band_fade=0.15,
          band_len=0.24, accent=(), skin=_hex('#6a7040'), belly=_hex('#b9a65a'), mantle=_hex('#2f341f'),
-         hood_face=_hex('#8f8c5c'), hood_rim=_hex('#ddd6ac'), lip=_hex('#cdbd74'), head_len=1.55, fang=1.2,
+         hood_face=_hex('#5f5c3a'), hood_rim=_hex('#ddd6ac'), lip=_hex('#cdbd74'), head_len=1.55, fang=1.2,
+         pattern='rings', hood_mark='stripe', hood_mark_col=CHART,
          eye=_hex('#ffd23a'), tail_side=-1)
 CAMERA = naga_camera(N)
 

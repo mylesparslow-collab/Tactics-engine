@@ -6,7 +6,9 @@ from _slough_common import *
 
 UNIT_ID = 'slough_hookfang_wrangler'
 N = Naga(height=2.1, girth=1.08, tube=0.16, coil_r=0.50, loops=1.75, hood='cobra', hood_w=1.0, accent=(),
-         band_len=0.27, band_dark=0.55, head_len=1.4, hood_face=_hex('#d2c89a'), tail_side=1, lean=0.06)
+         band_len=0.30, band_dark=0.48, head_len=1.4, tail_side=1, lean=0.06, pattern='rings', hood_mark='chevron',
+         dark=_hex('#233a2c'), light=_hex('#c9d2a2'), belly=_hex('#d8c070'), mantle=_hex('#1c2e22'),
+         hood_face=_hex('#5f7a5c'), hood_rim=_hex('#e2e8c4'), lip=_hex('#e2e8c4'), skin=_hex('#46604a'))
 CAMERA = naga_camera(N)
 
 

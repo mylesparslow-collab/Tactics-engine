@@ -6,7 +6,10 @@ from _slough_common import *
 
 UNIT_ID = 'slough_gourdslinger'
 N = Naga(height=2.1, girth=1.0, tube=0.15, coil_r=0.50, loops=1.75, hood='broad', hood_w=0.8, accent=(),
-         band_len=0.26, head_len=1.4, hood_face=_hex('#d2c89a'), tail_side=-1)
+         band_len=0.26, band_dark=0.66, head_len=1.4, tail_side=-1, pattern='saddles', hood_mark='ocelli',
+         dark=_hex('#3b2c20'), light=_hex('#d8c49c'), belly=_hex('#d9a94a'), mantle=_hex('#2e231a'),
+         hood_face=_hex('#8a7356'), hood_rim=_hex('#efe0b8'), lip=_hex('#ecdcb4'), skin=_hex('#6e5640'),
+         bracer=_hex('#7a6a3a'))
 CAMERA = naga_camera(N)
 
 
