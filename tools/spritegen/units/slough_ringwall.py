@@ -51,10 +51,10 @@ def _fit(row, i, P):
     P0 = neutral_pose()
     if row == 'attack':          # shields hold the wall and shove; the tridents do the stabbing
         for sd in ('r', 'l'):
-            P['hd_' + sd] = P0['hd_' + sd] + v3(0, [-0.02, 0, 0.0, 0.0][i], 0) * s + E2 * [-0.04, 0, 0.14, 0.05][i]
-        k = [-0.10, 0.0, 0.22, 0.06][i]
+            P['hd_' + sd] = P0['hd_' + sd] + v3(0, [-0.02, 0, 0.0, 0.0][i], 0) * s + E2 * [-0.04, 0, 0.08, 0.03][i] - E1 * [0, 0, 0.05, 0.02][i]
+        k = [-0.10, 0.0, 0.18, 0.05][i]
         for sd in ('r2', 'l2'):
-            P['hd_' + sd] = P0['hd_' + sd] + v3(-0.3, 0.0, 1.0) * k
+            P['hd_' + sd] = P0['hd_' + sd] + (E2 - E1 * 0.25) * k
     if row == 'cast':            # shields swing wide, tridents stay low
         for sd, sx in (('r', -1), ('l', 1)):
             P['hd_' + sd] = P0['hd_' + sd] + E1 * sx * [0.02, 0.08, 0.03][i] + v3(0, [0.0, 0.08, 0.0][i], 0) * s
@@ -62,6 +62,10 @@ def _fit(row, i, P):
             P['hd_' + sd] = P0['hd_' + sd]
         slide(P, v3(0, -[0.03, 0.06, 0.0][i] * s, 0))
         P['hood'] = min(P['hood'], 1.25)
+    # the reared giant fills the frame: keep the hood under the top edge when the head snaps back
+    if row == 'hit' or (row == 'death' and i == 0) or row == 'cast':
+        slide(P, v3(0, -0.07 * s, 0))
+    P['hood'] = min(P['hood'], 1.05 if row in ('attack', 'cast', 'hit') else 1.12)
     P['coil_sq'] = max(P['coil_sq'], 0.95)
     P['coil_w'] = min(P['coil_w'], 1.0)
 

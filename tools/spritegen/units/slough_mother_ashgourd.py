@@ -4,7 +4,7 @@ mouth open, a thin glowing stream of venom pouring from it. Defining detail: the
 from _slough_common import *
 
 UNIT_ID = 'slough_mother_ashgourd'
-N = Naga(height=2.1, girth=1.30, tube=0.195, coil_r=0.54, loops=1.7, coil_back=0.28, hood='broad', hood_w=1.35,
+N = Naga(height=2.1, girth=1.30, tube=0.195, coil_r=0.54, loops=1.7, coil_back=0.28, hood='broad', hood_w=1.22,
          hood_h=1.1, head_len=1.5, band_len=0.28, band_dark=0.55, band_fade=0.1, grey=0.6, accent=(), body_r=0.17,
          dark=_hex('#33383a'), light=_hex('#d6d2bc'), belly=_hex('#c9a444'), skin=_hex('#8c8a66'),
          mantle=_hex('#555a58'), hood_face=_hex('#6e7270'), hood_rim=_hex('#e8e6d4'), lip=_hex('#e6dca0'),
@@ -91,12 +91,11 @@ def _fit(row, i, P):
     s = P['s']
     P0 = neutral_pose()
     if row == 'attack':          # sling whirled overhead, gourd released on the strike
-        dirs = [sdir(-0.6, 0.8, -0.4), sdir(-0.2, 1.0, 0.0), sdir(0.3, 0.1, 1.0), sdir(0.0, -0.6, 0.6)]
+        dirs = [sdir(-0.6, 0.8, -0.4), sdir(-0.2, 1.0, 0.0), sdir(0.15, 0.35, 0.9), sdir(0.25, 0.25, 0.8)]
         P['item_r'] = dirs[i]
         P['hd_r'] = P0['hd_r'] + v3(0, [0.12, 0.28, 0.12, 0.0][i], 0) * s + E2 * [-0.05, 0, 0.12, 0.05][i]
-        P['throw'] = [0, 0, 0.9, 1.0][i]
-        if i == 3:
-            P['throw'] = 1.6
+        P['throw'] = [0, 0, 0.2, 0.35][i]
+        slide(P, -E1 * [0, 0.06, 0.16, 0.08][i] * s)      # the swing turns the broad hood toward screen-right      # the gourd leaves the pouch but stays on the tile
     if row == 'cast':            # the held gourd tips and pours hard; hood flares
         P['hd_l'] = P0['hd_l'] + v3(0, [0.0, 0.05, 0.0][i], 0) * s
         P['hd_r'] = P0['hd_r']
@@ -105,10 +104,14 @@ def _fit(row, i, P):
         slide(P, v3(0, -[0.03, 0.07, 0.0][i], 0) * s)
         P['hd_l'] = P['hd_l'] + v3(0, -0.04, 0) * s
     if row in ('idle', 'move', 'hit', 'death'):
-        P['item_r'] = sdir(-0.30, -0.70, 0.45) if row != 'death' else sdir(-0.3, -0.9, 0.2)
+        P['item_r'] = sdir(-0.30, -0.70, 0.45) if row != 'death' else sdir(-0.75, -0.05, -0.55)
         if row in ('idle', 'move'):
             P['throw'] = 0.0
-    P['hood'] = min(P['hood'], 1.15)
+    P['hood'] = min(P['hood'], 1.0 if row == 'attack' else 1.12)
+    if row == 'death':           # the sling and the held gourd fall back onto the coil, not off the frame
+        P['throw'] = 0.0
+        if i >= 1:
+            P['mid'] = P['mid'] - E2 * 0.24 * [0, 0.6, 1.0, 1.0][i]
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='swing', cast='raise', hook=_fit)

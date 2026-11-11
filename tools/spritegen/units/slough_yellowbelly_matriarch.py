@@ -4,8 +4,8 @@ clawed fingers open, mouth open on two big fangs that glow with venom. Defining 
 from _slough_common import *
 
 UNIT_ID = 'slough_yellowbelly_matriarch'
-N = Naga(height=2.3, girth=1.25, tube=0.215, coil_r=0.56, loops=1.7, coil_back=0.28, hood='broad', hood_w=1.45,
-         hood_h=1.25, head_len=1.7, band_len=0.30, band_dark=0.58, accent=(), body_r=0.18,
+N = Naga(height=2.3, girth=1.25, tube=0.215, coil_r=0.56, loops=1.7, coil_back=0.28, hood='broad', hood_w=1.32,
+         hood_h=1.25, head_len=1.7, band_len=0.30, band_dark=0.68, accent=(), body_r=0.18,
          pattern='saddles', hood_mark='ocelli', hood_mark_col=_hex('#ecb83e'), trim=LACQUER_RED,
          dark=_hex('#1e2124'), light=_hex('#e0903a'), skin=_hex('#8a6a2c'), belly=_hex('#ecb83e'),
          mantle=_hex('#1e2124'), hood_face=_hex('#6a5228'),
@@ -68,4 +68,13 @@ def build(P):
     return naga_finish(P, N, parts, world=world)
 
 
-ROWS, frames = naga_rows(neutral_pose, attack='bite', cast='spit')
+def _fit(row, i, P):
+    """The broad brood-mother hood is the widest thing she has: cap its flare and pull the bite back inside."""
+    P['hood'] = min(P['hood'], 1.0 if row in ('attack', 'cast') else 1.08)
+    if row == 'attack' and i >= 1:
+        P['head'] = P['head'] - E1 * [0, 0.12, 0.32, 0.14][i] * P['s']
+    if row == 'cast':
+        P['head'] = P['head'] - E1 * 0.06 * P['s']
+
+
+ROWS, frames = naga_rows(neutral_pose, attack='bite', cast='spit', hook=_fit)
