@@ -207,12 +207,9 @@ def _eyes():
 
 SHELL = Shell(
     build=prow_shell(),
-    ride=0.98, tilt=0.0, crab_at=(0, -0.38, 0.22), crab_pitch=0.10, z0=-0.40, x0=0.04, yaw=0.62,
-    feet=((-0.40, 0.36), (0.42, 0.34), (-0.42, -0.34), (0.46, -0.38)),
-    leg_roots=((-0.14, -0.40, 0.20), (0.14, -0.40, 0.20), (-0.17, -0.40, -0.20), (0.17, -0.40, -0.20)),
-    eyes=_eyes(), eye_bead=0.055, antennae=False,
-    guard=((0.12, -0.20, 0.30), (-0.05, -0.30, 0.95)),
-    big=0.85, small=0.5, side_r=0.40, tip_angle=1.15, leg_len=1.12, leg_r=1.15)
+    ride=0.86, tilt=0.0, crab_at=(0, -0.50, 0.26), crab_upright=1.0, z0=-0.60, x0=0.19, yaw=0.62,
+    eye_len=0.34, eye_bead=0.060, span=0.44, duck_dir=(0, 0.6, -1.0), duck_depth=0.20,
+    big=1.25, small=0.65, side_r=0.40, tip_angle=1.15, leg_len=1.12, leg_r=1.15)
 
 
 def neutral_pose():
@@ -229,15 +226,11 @@ def _rows(R):
         P['lean'] = [-0.10, -0.16, 0.12, 0.03][i]
         P['slide'] = [0.0, -0.04, 0.0, 0.0][i]
         P['snap'] *= 0.4
-    for P, o in R['death']:
-        P['yaw'] = 0.25 * P['tip']           # keels over turning side-on, so the long hull stays in frame
-        k = min(1.0, 1.6 * P['tip'])
-        P['slide'] = 0.42 * k
-        P['recoil'] = 0.30 * k
     for row in ('hit', 'death', 'cast'):
         for P, o in R[row]:
             P['snap'] *= 0.6
             P['drum'] *= 0.6
+    fit_rows(R, limp=0.5, death_yaw=-0.9, death_back=0.50, death_slide=0.30, cast_back=0.06)   # keep claws and the death topple inside the frame
     return R
 
 

@@ -5,12 +5,11 @@ Defining detail: the sledge of stock (three big objects only)."""
 from _hermitage_common import *
 
 UNIT_ID = 'hermitage_shell_broker'
-SIZE = 1.0
+SIZE = 1.10
 CAMERA = Camera(ppm=48)
 YAW = 0.12
-BARE = Bare(h=0.46, yaw=YAW, leg_len=1.05, z0=-0.40, x0=0.58, big=1.15, small=0.5, eye_len=0.30,
-            feet=((-0.46, 0.38), (0.54, 0.34), (-0.50, -0.26), (0.58, -0.22)),
-            tail=dict(size=0.95, center=(0, 0.30, -0.38), r0=0.25, r1=0.06, thick=(0.14, 0.032), turns=1.05))
+BARE = Bare(h=0.40, yaw=YAW, leg_len=1.0, leg_r=1.05, z0=-0.30, x0=0.50, big=1.40, small=0.70, eye_len=0.32,
+            eye_bead=0.068, span=0.40, tail=dict(size=1.0, thick=(0.15, 0.05), side=-0.6, drop=0.02))
 YS = 0.02               # the sledge trails along its own heading, a little off the crab's
 
 

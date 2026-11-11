@@ -5,7 +5,7 @@ from _slough_common import *
 
 UNIT_ID = 'slough_scaleshield'
 N = Naga(palette='krait', hood_face=_hex('#8f8a78'), skin=_hex('#4a4a44'),
-         height=2.0, girth=1.40, tube=0.215, coil_r=0.52, loops=1.6, coil_depth=0.62, coil_back=0.36,
+         height=2.0, girth=1.40, tube=0.215, coil_r=0.52, loops=1.6, coil_depth=0.62, coil_back=0.42,
          hood='broad', hood_w=1.0, hood_h=0.9, hood_mark='chevron', band_dark=0.68, band_len=0.36, pattern='edged',
          accent=('tail',), body_r=0.18, tail_side=-1, shoulders=1.12, head_w=1.15, lean=0.05)
 CAMERA = naga_camera(N)
@@ -28,7 +28,7 @@ def build(P):
     up = norm(v3(0, 1, 0) - nz * nz[1])
     if P['drop'] > 0:      # death: the scale falls flat in front of the coil
         k = min(1.0, P['drop'] * 2.5)
-        c = lerp(c, scr(0.02, 0.10, -0.50), k)
+        c = lerp(c, scr(0.02, 0.10, -0.50), k) + v3(0, 0.22 * np.sin(np.pi * k), 0) * s - E2 * 0.15 * np.sin(np.pi * k)
         nz = norm(lerp(nz, v3(0, 1, 0.05), k))
         up = norm(lerp(up, E1, k))
     scale_shield(add, c, nz, up, w=0.42 * s, h=0.56 * s)
@@ -41,6 +41,9 @@ def _fit(row, i, P):
     """The bash drives the door-sized scale forward: keep its leading edge inside the frame."""
     if row == 'attack':
         move_hands(P, -E1 * 0.13 * P['s'] * (i >= 2))
+        P['hood'] = min(P['hood'], 1.05)
+        if i >= 2:
+            P['head'] = P['head'] - E1 * 0.10 * P['s']
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='bash', hook=_fit)

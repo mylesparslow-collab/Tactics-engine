@@ -36,7 +36,7 @@ def build(P):
         if P['spit'] > 0.25:
             F = B['head']
             d = norm(F.d((0, -0.12, 1.0)) + v3(0, 0, 0.2))
-            spit_stream(add2, P, B['mouth'] + d * 0.04, d, length=0.55 * P['spit'], n=6)
+            spit_stream(add2, P, B['mouth'] + d * 0.04, d, length=0.36 * P['spit'], n=5)
     mats = {'sac': Material(_hex('#efe4b0'), spec=0.6, gloss=50, sss=0.8,
                             emissive=tuple(np.array(CHART) * (0.30 + 0.7 * sp)))}
     return naga_finish(P, N, parts, mats, lights, world=world)

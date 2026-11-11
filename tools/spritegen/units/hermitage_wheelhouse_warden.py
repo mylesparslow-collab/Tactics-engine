@@ -98,12 +98,9 @@ def _eyes():
 
 SHELL = Shell(
     build=wheelhouse(),
-    ride=1.04, tilt=0.02, crab_at=(0, -0.30, 0.02), crab_pitch=0.0, z0=-0.115, x0=0.24, yaw=-0.30,
-    feet=((-0.52, 0.34), (0.56, 0.30), (-0.56, -0.40), (0.60, -0.44)),
-    leg_roots=((-0.22, -0.40, 0.18), (0.22, -0.40, 0.18), (-0.26, -0.40, -0.16), (0.26, -0.40, -0.16)),
-    eyes=_eyes(), eye_bead=0.05, antennae=False,
-    guard=((0.34, 0.28, 0.22), (0.95, 0.06, 0.28)),
-    big=1.45, small=0.55, side_r=0.42, tip_angle=1.25, leg_len=1.15, leg_r=1.15)
+    ride=0.86, tilt=0.0, crab_at=(0, -0.36, 0.44), crab_upright=1.0, z0=-0.62, x0=0.40, yaw=-0.30,
+    eye_len=0.34, eye_bead=0.062, span=0.44, duck_dir=(0, 0.35, -1.0), duck_depth=0.24,
+    big=1.45, small=0.70, side_r=0.42, tip_angle=1.25, leg_len=1.15, leg_r=1.15)
 
 
 def neutral_pose():
@@ -131,6 +128,7 @@ def _rows(R):
     for P, o in R['death']:
         P['recoil'] = 0.60 * P['tip']
         P['limp'] *= 0.5
+    fit_rows(R, snap=0.7, drum=0.5, death_back=0.10, death_slide=0.06, cast_back=0.12)   # keep claws and the death topple inside the frame
     return R
 
 

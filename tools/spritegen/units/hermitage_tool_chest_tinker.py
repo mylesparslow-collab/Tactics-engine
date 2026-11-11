@@ -9,7 +9,7 @@ UNIT_ID = 'hermitage_tool_chest_tinker'
 SIZE = 'small'
 CAMERA = size_camera(SIZE)
 HX, HY, HZ = 0.42, 0.23, 0.33         # chest half extents
-LID_A = 0.62                          # lid raised about the back hinge (rad)
+LID_A = 0.34                          # lid raised about the back hinge (rad)
 HINGE = v3(0, HY, -HZ)
 GREY_OAK = _hex('#7d7870')
 BRASS_L = _hex('#c29a4a')
@@ -69,11 +69,10 @@ def chest_shell():
 
 SHELL = Shell(
     build=chest_shell(),
-    ride=0.50, tilt=0.20, crab_at=(0, -0.08, 0.16), crab_pitch=-0.45, z0=-0.30, x0=0.10,
-    feet=((-0.44, 0.30), (0.44, 0.28), (-0.52, -0.20), (0.50, -0.22)),
-    leg_roots=((-0.16, -0.17, 0.22), (0.16, -0.17, 0.22), (-0.26, -0.18, -0.06), (0.26, -0.18, -0.06)),
-    eye_len=0.46, eye_bead=0.064, big=1.25, small=0.5, side_r=0.34, tip_angle=1.30,
-    guard=((0.14, 0.18, 0.42), (-0.30, 0.65, 0.65)))
+    ride=0.34, tilt=-0.04, crab_at=(0, -0.02, 0.42), crab_upright=1.0, z0=-0.62, x0=0.26,
+    eye_len=0.32, eye_bead=0.068, span=0.46, duck_dir=(0, 0.1, -1.0), duck_depth=0.26,
+    big=1.35, small=0.70, side_r=0.34, tip_angle=1.30,
+    guard=((0.22, 0.06, 0.20), (-0.30, 0.45, 0.85)))
 
 
 def neutral_pose():
@@ -82,14 +81,9 @@ def neutral_pose():
 
 def build(P):
     F = shell_frame(P, SHELL)
-    s = SIZES[SIZE]['s']
-    C = F.child(v3(*SHELL.crab_at) + v3(0, -0.02 * P['duck'], -0.10 * P['duck'] * s), rot_x(SHELL.crab_pitch), s)
 
     def world(add):
-        w, d = _claw_target(P, True, SHELL.guard)
-        ww, dw = C.p(w * v3(-1, 1, 1)), C.v(d * v3(-1, 1, 1))
-        cs = SHELL.big * s
-        grip = ww + dw * 0.40 * cs
+        grip, dw = claw_grip(P, SHELL, SIZE, big=True)
         hd = norm(dw * 0.35 + v3(0, 1.0, 0) * 0.95 + F.v((0, 0, 0.1)))      # the handle stands up out of the grip
         a, b = grip - hd * 0.12, grip + hd * 0.50
         add(Capsule(a, b, 0.032, 0.028), 'mallet', 0.0)
@@ -104,8 +98,11 @@ def build(P):
 
 def _rows(R):
     # attack = a hard mallet blow: raise (cock) then snap forward-down
-    for i, (P, o) in enumerate(R['attack']):
-        P['snap'] *= 0.8
+    for row in R.values():
+        for P, o in row:
+            P['snap'] *= 0.5
+            P['drum'] *= 0.6
+    fit_rows(R, death_back=0.07)   # keep claws and the death topple inside the frame
     return R
 
 

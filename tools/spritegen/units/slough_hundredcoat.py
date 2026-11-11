@@ -28,7 +28,7 @@ def neutral_pose():
 def build(P):
     parts, add = new_parts()
     B = naga_body(P, add, N)
-    lacquer_coat(add, P, B, N, rows=3, per_row=4, coil=False)
+    lacquer_coat(add, P, B, N, rows=2, per_row=3, coil=False, size=1.45)
     pauldron(add, P, B, N, 'r', plates=3, size=1.2)
     pauldron(add, P, B, N, 'l', plates=3, size=1.2)
     for sd, L, bl in (('r', 0.68, 0.26), ('l', 0.68, 0.26), ('r2', 0.54, 0.20), ('l2', 0.54, 0.20)):
@@ -51,6 +51,8 @@ def _fit(row, i, P):
         P['hood'] = min(P['hood'], 1.25)
     if row == 'attack' and i == 0:
         move_hands(P, v3(0, -0.10 * s, 0), ('r', 'l'))
+    if row in ('hit', 'death') and i == 0:     # the recoil would lift the hood out of the top-left corner
+        slide(P, v3(0, -0.07 * s, 0.07 * s))
     P['coil_sq'] = max(P['coil_sq'], 0.95)
     P['coil_w'] = min(P['coil_w'], 1.0)
 

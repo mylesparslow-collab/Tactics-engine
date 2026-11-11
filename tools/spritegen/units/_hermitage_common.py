@@ -38,6 +38,7 @@ API (everything below is exported by `from _hermitage_common import *`)
   empty(P, SHELL, place=(o, R), rag=(local pt, local axis, radius), mats=None) -> Scene   vacant shell
   hermit_rows(neutral_pose, kind='shell'|'bare', extra=None) -> (ROWS, frames)
   structure_rows(neutral_pose) -> (ROWS, frames)   idle(2) / hit(2) / death(3, cracks) for empty shells
+  fit_rows(R, snap=, drum=, limp=, death_back=, death_slide=, cast_back=)   frame-fit helper for extra(rows)
   Shell library (reuse these, do not redraw them): barrel_shell, diving_bell_shell, chapel_bell_shell,
   boiler_shell, long_gun_shell; helpers Frame, barnacles(), rag(), chela(), cheliped_grip(), eyestalk(),
   crab_eyes(), walking_leg(), abdomen(), cracked().
@@ -1320,6 +1321,26 @@ def hermit_rows(base, kind='shell', extra=None):
             extra(R)
         return R
     return ROWS, frames
+
+
+def fit_rows(R, snap=1.0, drum=1.0, limp=1.0, death_back=0.0, death_slide=0.0, cast_back=0.0, death_yaw=0.0,
+             rows=None):
+    """Keep big claws and death topples inside the 96x112 frame: scale the snap / drum / limp channels (in `rows`,
+    default every row) and, in death, move the unit back (death_back, + = away from the camera) and sideways
+    (death_slide, world x) in step with the shell tipping over, death_yaw turns it as it falls; cast_back moves the drumming frames back."""
+    for P, o in R['cast']:
+        P['recoil'] += cast_back * min(1.0, P['drum'])       # (before drum is scaled below)
+    for name in (rows or R.keys()):
+        for P, o in R[name]:
+            P['snap'] *= snap
+            P['drum'] *= drum
+            P['limp'] *= limp
+    for i, (P, o) in enumerate(R['death']):
+        k = [0, 0.3, 0.85, 1.0][i] if len(R['death']) == 4 else min(1.0, P['tip'])
+        P['recoil'] += death_back * k
+        P['slide'] += death_slide * k
+        P['yaw'] += death_yaw * k        # turn the fallen shell end-on to the camera so it fits the frame width
+    return R
 
 
 STRUCTURE_ROWS = [

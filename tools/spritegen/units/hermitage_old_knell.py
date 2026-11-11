@@ -86,12 +86,9 @@ def _eyes():
 
 
 SHELL = Shell(
-    build=pressure_bell, ride=1.00, tilt=0.42, crab_at=(0, -0.42, 0.22), crab_pitch=0.30, z0=-0.50, x0=0.46, yaw=-0.12,
-    feet=((-0.52, 0.34), (0.56, 0.30), (-0.58, -0.30), (0.62, -0.34)),
-    leg_roots=((-0.22, -0.52, 0.26), (0.22, -0.52, 0.26), (-0.30, -0.52, -0.06), (0.30, -0.52, -0.06)),
-    eyes=_eyes(), eye_bead=0.055, antennae=False, barn=3,
-    guard=((0.14, -0.04, 0.44), (-0.55, 0.30, 0.75)),
-    big=1.35, small=0.55, side_r=0.55, tip_angle=1.25, tip_dir=-1.0, leg_len=1.2, leg_r=1.2)
+    build=pressure_bell, ride=0.66, tilt=-0.34, crab_at=(0, -0.56, 0.50), crab_upright=1.0, z0=-1.00, x0=0.43,
+    yaw=-0.12, eye_len=0.30, eye_bead=0.062, span=0.46, duck_dir=(0, 1.0, -0.25), duck_depth=0.24, barn=3,
+    big=1.40, small=0.72, side_r=0.55, tip_angle=1.25, tip_dir=-1.0, leg_len=1.2, leg_r=1.2)
 
 
 def neutral_pose():
@@ -110,6 +107,7 @@ def _rows(R):
             P['limp'] *= 0.5
     for P, o in R['death']:
         P['slide'] -= 0.20 * P['tip']
+    fit_rows(R, limp=0.6, death_yaw=-0.7, death_slide=0.50, death_back=-0.06, cast_back=0.28)   # keep claws and the death topple inside the frame
     return R
 
 

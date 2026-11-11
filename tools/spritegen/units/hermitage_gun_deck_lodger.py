@@ -55,7 +55,7 @@ def _rows(R):
         P['tip'] = min(P['tip'], 0.75)
         P['limp'] *= 0.45
         k = [0, 0.3, 0.85, 1.0][i]  # topple forward onto the shadow, not behind it
-        P['slide'] += -0.24 * k
+        P['slide'] += -0.10 * k
         P['recoil'] += -0.10 * k
     return R
 

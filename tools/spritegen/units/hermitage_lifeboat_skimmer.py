@@ -76,12 +76,9 @@ def boat_shell():
 
 SHELL = Shell(
     build=boat_shell(),
-    ride=0.72, tilt=-0.20, crab_at=(0, -0.28, 0.24), crab_pitch=0.0, z0=-0.20, x0=0.04, yaw=0.30,
-    feet=((-0.40, 0.34), (0.42, 0.32), (-0.48, -0.28), (0.48, -0.32)),
-    leg_roots=((-0.20, -0.30, 0.28), (0.20, -0.30, 0.28), (-0.28, -0.28, -0.08), (0.28, -0.28, -0.08)),
-    eyes=(((-0.10, -0.28, 0.48), (-0.20, 0.55, 0.85), 0.50), ((0.10, -0.28, 0.48), (0.20, 0.55, 0.85), 0.50)),
-    eye_bead=0.058, big=1.25, small=0.55, side_r=0.42, tip_angle=1.30, lie=0.0, leg_len=1.12, leg_r=1.1,
-    guard=((0.12, 0.02, 0.40), (-0.45, 0.30, 0.85)))
+    ride=0.56, tilt=-0.18, crab_at=(0, -0.20, 0.52), crab_upright=1.0, z0=-0.66, x0=0.20, yaw=0.30,
+    eye_len=0.32, eye_bead=0.062, span=0.40, duck_dir=(0, 0.3, -1.0), duck_depth=0.24,
+    big=1.35, small=0.70, side_r=0.42, tip_angle=1.30, lie=0.0, leg_len=1.05, leg_r=1.05)
 
 
 def neutral_pose():
@@ -100,6 +97,7 @@ def _rows(R):
         P['stride'] *= 0.6
         P['bob'] = [0.03, 0.05, 0.03, 0.05][i]
         P['lean'] = -0.05
+    fit_rows(R, snap=0.45, drum=0.6, limp=0.5, death_back=0.34, death_slide=0.16, death_yaw=-0.4, cast_back=0.04)   # keep claws and the death topple inside the frame
     return R
 
 

@@ -85,12 +85,9 @@ def chest_shell():
 
 SHELL = Shell(
     build=chest_shell(),
-    ride=0.66, tilt=0.12, crab_at=(0, -0.10, 0.22), crab_pitch=-0.22, z0=-0.34, x0=0.16,
-    feet=((-0.50, 0.26), (0.50, 0.24), (-0.56, -0.34), (0.56, -0.36)),
-    leg_roots=((-0.20, -0.22, 0.26), (0.20, -0.22, 0.26), (-0.30, -0.24, -0.06), (0.30, -0.24, -0.06)),
-    eyes=(((-0.10, 0.02, 0.38), (-0.20, 0.55, 0.85), 0.54), ((0.10, 0.02, 0.38), (0.20, 0.55, 0.85), 0.54)),
-    eye_bead=0.06, big=1.3, small=0.55, side_r=0.46, tip_angle=1.30, tip_dir=-1.0, leg_len=1.1, leg_r=1.1,
-    guard=((0.14, 0.02, 0.46), (-0.50, 0.20, 0.85)))
+    ride=0.42, tilt=-0.08, crab_at=(0, -0.08, 0.40), crab_upright=1.0, z0=-0.62, x0=0.26,
+    eye_len=0.32, eye_bead=0.064, span=0.46, duck_dir=(0, 0.2, -1.0), duck_depth=0.26,
+    big=1.40, small=0.70, side_r=0.46, tip_angle=1.30, tip_dir=-1.0)
 
 
 def neutral_pose():
@@ -110,6 +107,7 @@ def _rows(R):
         P['door'] = -1.4
     for i, (P, o) in enumerate(R['death']):
         P['door'] = [-0.8, -1.2, -1.5, -1.6][i]
+    fit_rows(R, snap=0.6, drum=0.45, limp=0.5, death_yaw=-0.5, cast_back=0.06)   # keep claws and the death topple inside the frame
     return R
 
 

@@ -820,7 +820,8 @@ def _snake_head(P, add, N, F):
     # eyes: big, bright, set on the side of the wedge, vertical slit pupil
     for sx in (-1, 1):
         F.sph(add, (sx * 0.062 * w, 0.024, 0.052), 0.029, 'eye')
-        F.ell(add, (sx * (0.062 * w + 0.022), 0.030, 0.062), (0.006, 0.019, 0.008), 'pupil', 0.0, R2=rot_z(-sx * 0.6))
+        F.sph(add, (sx * (0.062 * w + 0.010), 0.026, 0.056), 0.024, 'pupil')          # big dark eye
+        F.sph(add, (sx * (0.062 * w + 0.022), 0.036, 0.066), 0.008, 'eyehi')          # catch-light
     # two big fangs at the front of the upper jaw, uneven, curving back; longer when the mouth opens
     fl = 0.125 * N.fang * (0.55 + 0.45 * min(1.0, j * 1.3))
     for sx, k in ((-1, 1.0), (1, 0.84)):
@@ -1045,7 +1046,7 @@ def gourd(add, c, r=0.11, mat='gourd', seal='glaze', neck=v3(0, 1, 0)):
     return c + nk * r * 1.85
 
 
-def lacquer_coat(add, P, B, N, rows=4, per_row=7, coil=True, mat='lacquer', edge='lacquer_lt'):
+def lacquer_coat(add, P, B, N, rows=4, per_row=7, coil=True, mat='lacquer', edge='lacquer_lt', size=1.0):
     """Shingled armour of lacquered shed skins: rows of overlapping amber plates (roof tiles) over the torso
     front and sides, each plate showing a lighter edge below it; with coil=True a run of plates on the top loop."""
     s = P['s']
@@ -1072,8 +1073,9 @@ def lacquer_coat(add, P, B, N, rows=4, per_row=7, coil=True, mat='lacquer', edge
             dn = norm(-up + nrm * 0.35)
             R = R_from(dn, nrm)
             pc = q + nrm * 0.012 * s + dn * 0.04 * s
-            add(Ellipsoid(pc + dn * 0.020 * s - nrm * 0.006 * s, (0.095 * s * g, 0.088 * s, 0.014 * s), R), edge, 0.0)
-            add(Ellipsoid(pc, (0.090 * s * g, 0.080 * s, 0.017 * s), R), mat, 0.0)
+            z = size
+            add(Ellipsoid(pc + dn * 0.020 * s * z - nrm * 0.006 * s, (0.095 * s * g * z, 0.088 * s * z, 0.014 * s), R), edge, 0.0)
+            add(Ellipsoid(pc, (0.090 * s * g * z, 0.080 * s * z, 0.017 * s), R), mat, 0.0)
     if coil:
         pts, rad, nc = B['path'], B['rad'], B['nc']
         for i in range(int(nc * 0.50), nc - 1, 2):
@@ -1182,14 +1184,20 @@ def naga_mats(P, N, B):
             col[low] = lip
             # pale band across the snout tip
             col[z > 0.112] = snout
-            # pale ring round the eye and a stripe from the eye back to the jaw hinge
+            # pale ring round the eye (a dark eye needs a light surround) and a stripe back to the jaw hinge
+            de = np.sqrt((np.abs(x) - 0.062 * wv) ** 2 + (y - 0.024) ** 2 + (z - 0.052) ** 2)
+            col[de < 0.042] = snout
+            # the jaw line: a dark mouth slit between the pale upper lip and the pale lower jaw
+            slit = (y < -0.014) & (np.abs(x) > 0.025 * wv) & (z > -0.06)
+            col[slit] = np.array(MOUTH) * 0.55
             ex = 0.064 * wv
             tq = np.clip((0.050 - z) / 0.14, 0, 1)
             ly = 0.024 - 0.040 * tq
             stripe = (z < 0.052) & (z > -0.09) & (np.abs(y - ly) < 0.0095) & (np.abs(x) > 0.035)
             col[stripe] = snout
             return col
-        mats['head'] = Material(head_alb, spec=0.22 * gl, gloss=30, brush=0.02)
+        mats['head'] = Material(head_alb, spec=0.12 * gl, gloss=24, brush=0.0, sss=0.9,
+                                emissive=lambda p, n: head_alb(p, n) * 0.22)   # flat-lit, one clean plane
         mats['jaw'] = Material(tuple(lip), spec=0.35, gloss=30, brush=0.02)
         HF = B['hood_F']
         Wd, Hd = _hood_dims(P, N)
@@ -1206,7 +1214,7 @@ def naga_mats(P, N, B):
             front = q[:, 2] > 0.10 * q[:, 0] ** 2 / max(Wd, 1e-3) - 0.03 * s * Y
             fc = _arr(hface, len(p))
             prof = _hood_prof(Y, N.hood)
-            inner = (np.abs(X) < prof * 0.78) & (Y < 0.84)
+            inner = (np.abs(X) < prof * 0.70) & (Y < 0.78)
             fc[~inner] = rimc
             if mk == 'ocelli':
                 for sx in (-1, 1):
@@ -1233,7 +1241,8 @@ def naga_mats(P, N, B):
     mats['mouth'] = Material(MOUTH, spec=0.4, gloss=30, emissive=tuple(np.array(VENOM) * 0.20 * v) if v > 0.05 else None,
                              rim=0.2)
     mats['tongue'] = Material(TONGUE, spec=0.5, gloss=40, emissive=tuple(np.array(TONGUE) * 0.25))
-    mats['eye'] = Material(N.eye, spec=0.9, gloss=80, emissive=tuple(np.array(N.eye) * 0.55 * min(1.0, max(P['glow'], 0.6))))
+    mats['eye'] = Material(N.eye, spec=0.9, gloss=80, emissive=tuple(np.array(N.eye) * 0.45 * min(1.0, max(P['glow'], 0.6))))
+    mats['eyehi'] = Material((1.0, 1.0, 0.95), spec=0.0, emissive=(0.9, 0.9, 0.85), rim=0.0)
     mats['pupil'] = Material(INK, spec=0.9, gloss=90, rim=0.0)
     # props
     mats['haft'] = Material(_hex('#6b5638'), spec=0.2, gloss=20, brush=0.05)
@@ -1421,7 +1430,7 @@ def _attack_pose(base, i, style):
         slide(P, v3(0.0, -0.06, 0.30) * s, mid=0.7)
         bend(P, fwd=np.radians(14))
         P['coil_sq'] = 1.04
-        P['hood'] = 1.35
+        P['hood'] = 1.22
         P['jaw'] = 1.0
         P['venom'] = 1.0
         P['fx'] = 1.0
@@ -1519,7 +1528,7 @@ def death_pose(base, i):
     P['hood'] = [0.35, 0.3, 0.15, 0.1][i]
     P['jaw'] = [0.6, 0.4, 0.1, 0.0][i]
     P['coil_sq'] = [0.94, 0.95, 0.97, 0.97][i]
-    P['coil_w'] = [1.0, 1.02, 1.03, 1.03][i]
+    P['coil_w'] = [1.0, 1.0, 0.99, 0.98][i]
     P['drop'] = [0, 0.3, 1.0, 1.0][i]
     P['end'] = [0, 0.3, 0.65, 1.0][i]
     P['flat'] = [0, 0, 0.25, 1.0][i]
@@ -1539,7 +1548,7 @@ def cast_pose(base, i, style='raise'):
     s = P['s']
     bend(P, fwd=np.radians([-4, -7, 6][i]))
     slide(P, v3(0, [0.03, 0.06, 0.0][i], [0.0, -0.02, 0.08][i]) * s)
-    P['hood'] = [1.2, 1.4, 1.1][i]
+    P['hood'] = [1.15, 1.25, 1.08][i]
     P['venom'] = [0.4, 1.0, 0.6][i]
     P['jaw'] = [0.3, 0.6, 0.4][i]
     P['cast_glow'] = [0.5, 1.0, 0.4][i]

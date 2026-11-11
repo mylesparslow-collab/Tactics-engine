@@ -40,12 +40,9 @@ def bell_on_side():
 
 SHELL = Shell(
     build=bell_on_side(),
-    ride=0.80, tilt=0.0, crab_at=(0, -0.20, 0.30), crab_pitch=0.0, z0=-0.30, x0=0.14,
-    feet=((-0.52, 0.34), (0.54, 0.32), (-0.58, -0.24), (0.58, -0.26)),
-    leg_roots=((-0.20, -0.24, 0.30), (0.20, -0.24, 0.30), (-0.30, -0.26, -0.05), (0.30, -0.26, -0.05)),
-    eyes=(((-0.10, -0.12, 0.40), (-0.18, 1.0, 0.30), 0.56), ((0.10, -0.12, 0.40), (0.18, 1.0, 0.30), 0.56)),
-    eye_bead=0.058, big=1.25, small=0.6, side_r=0.46, tip_angle=1.30, tip_dir=-1.0,
-    guard=((0.14, 0.00, 0.44), (-0.50, 0.35, 0.8)), leg_len=1.05)
+    ride=0.52, tilt=-0.10, crab_at=(0, -0.20, 0.46), crab_upright=1.0, z0=-0.62, x0=0.28,
+    eye_len=0.32, eye_bead=0.064, span=0.46, duck_dir=(0, 0.25, -1.0), duck_depth=0.26,
+    big=1.35, small=0.72, side_r=0.46, tip_angle=1.30, tip_dir=-1.0)
 
 
 def neutral_pose():
@@ -54,18 +51,13 @@ def neutral_pose():
 
 def build(P):
     F = shell_frame(P, SHELL)
-    s = SIZES[SIZE]['s']
-    C = F.child(v3(*SHELL.crab_at) + v3(0, -0.02 * P['duck'], -0.10 * P['duck'] * s), rot_x(SHELL.crab_pitch), s)
     F2 = Frame(F.o, F.R @ rot_x(TH), 1.0)
     mouth = F2.p((0, -H / 2, 0))
     axis = F2.v((0, -1, 0))
 
     def world(add):
         # clapper: iron ball held in the small claw, rod running back inside the bell
-        w, d = _claw_target(P, False)
-        ww, dw = C.p(w * v3(1, 1, 1)), C.v(d)
-        cs = SHELL.small * s
-        ball = ww + dw * 0.40 * cs + F.v((0, 0.02, 0))
+        ball, dw = claw_grip(P, SHELL, SIZE, big=False)
         add(Sphere(ball, 0.075), 'iron', 0.0)
         add(Capsule(ball, mouth - axis * 0.18 + F.v((0.05, 0.05, 0)), 0.02, 0.02), 'iron', 0.0)
         r = P['ring']
@@ -86,6 +78,7 @@ def _rows(R):
         P['open'] = [0.35, 0.3, 0.7, 0.4][i]
     for i, (P, o) in enumerate(R['cast']):
         P['ring'] = [0, 0.4, 0.2, 0.9][i]
+    fit_rows(R, snap=0.7, drum=0.5, limp=0.5, death_yaw=-0.5, cast_back=0.12)   # keep claws and the death topple inside the frame
     return R
 
 

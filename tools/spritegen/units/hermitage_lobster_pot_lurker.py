@@ -73,11 +73,9 @@ def pot_shell(rope_coil=True):
 
 SHELL = Shell(
     build=pot_shell(),
-    ride=0.74, tilt=0.16, crab_at=(0, -0.22, 0.24), crab_pitch=-0.10, z0=-0.22, x0=0.20,
-    feet=((-0.44, 0.30), (0.44, 0.28), (-0.52, -0.22), (0.50, -0.24)),
-    leg_roots=((-0.20, -0.22, 0.28), (0.20, -0.22, 0.28), (-0.32, -0.20, -0.08), (0.32, -0.20, -0.08)),
-    eye_len=0.52, eye_bead=0.068, big=1.3, small=0.5, side_r=0.50, tip_angle=1.30, leg_len=1.12, leg_r=1.2,
-    guard=((0.16, 0.06, 0.46), (-0.45, 0.40, 0.8)))
+    ride=0.44, tilt=-0.06, crab_at=(0, -0.06, 0.52), crab_upright=1.0, z0=-0.70, x0=0.28,
+    eye_len=0.32, eye_bead=0.068, span=0.46, duck_dir=(0, 0.1, -1.0), duck_depth=0.26,
+    big=1.35, small=0.70, side_r=0.50, tip_angle=1.30)
 
 
 def neutral_pose():
@@ -86,15 +84,11 @@ def neutral_pose():
 
 def build(P):
     F = shell_frame(P, SHELL)
-    s = SIZES[SIZE]['s']
-    C = F.child(v3(*SHELL.crab_at) + v3(0, -0.02 * P['duck'], -0.10 * P['duck'] * s), rot_x(SHELL.crab_pitch), s)
 
     def world(add):
-        w, d = _claw_target(P, True, SHELL.guard)
-        ww, dw = C.p(w * v3(-1, 1, 1)), C.v(d * v3(-1, 1, 1))
-        cs = SHELL.big * s
+        grip, dw = claw_grip(P, SHELL, SIZE, big=True)
         t = P['throw']
-        end = ww + dw * 0.44 * cs + F.v((0.0, 0.05, 1.0)) * 0.55 * min(t, 1.0) * (1.0 if t < 1.5 else 0.6)
+        end = grip + F.v((0.0, 0.05, 1.0)) * 0.34 * min(t, 1.0) * (1.0 if t < 1.5 else 0.6)
         end = lerp(end, v3(end[0] - 0.05, 0.05, end[2]), min(P['drop'], 1.0))
         start = F.p((0.10, Y0 + RY + 0.09, -0.12))
         ctrl = F.p((-0.66, 0.10, 0.02)) + v3(0, -0.12, 0)
@@ -115,6 +109,7 @@ def _rows(R):
         P['open'] = [0.45, 0.35, 0.8, 0.5][i]
     for i, (P, o) in enumerate(R['death']):
         P['drop'] = [0, 0.3, 1, 1][i]
+    fit_rows(R, snap=0.7, drum=0.6, limp=0.5, death_back=0.16, death_slide=0.20, death_yaw=-0.5)   # keep claws and the death topple inside the frame
     return R
 
 

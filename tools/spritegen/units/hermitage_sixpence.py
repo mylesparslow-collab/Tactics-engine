@@ -34,13 +34,9 @@ def keg(add, P, F):
 
 
 SHELL = Shell(
-    build=keg, ride=0.84, tilt=0.30, crab_at=(0, -0.03, 0.20), crab_pitch=-0.30, z0=-0.57, x0=0.27, yaw=0.30,
-    feet=((-0.40, 0.40), (0.44, 0.36), (-0.46, -0.20), (0.50, -0.22)),
-    leg_roots=((-0.14, -0.16, 0.24), (0.14, -0.16, 0.24), (-0.22, -0.20, -0.04), (0.22, -0.20, -0.04)),
-    eyes=(((-0.09, 0.10, 0.30), (-0.30, 1.0, 0.20), 0.46),
-          ((0.09, 0.10, 0.30), (0.30, 1.0, 0.20), 0.46)),
-    big=1.35, small=0.62, side_r=0.33, leg_len=1.25, leg_r=1.0,
-    guard=((0.20, 0.10, 0.42), (-0.50, 0.55, 0.70)))
+    build=keg, ride=0.60, tilt=-0.06, crab_at=(0, -0.08, 0.42), crab_upright=1.0, z0=-0.66, x0=0.27, yaw=0.30,
+    eye_len=0.34, eye_bead=0.066, span=0.46, duck_dir=(0, 0.1, -1.0), duck_depth=0.24,
+    big=1.40, small=0.72, side_r=0.33, leg_len=1.25, leg_r=1.0)
 
 
 def neutral_pose():
@@ -49,14 +45,9 @@ def neutral_pose():
 
 def build(P):
     F = shell_frame(P, SHELL)
-    s = SIZES[SIZE]['s']
-    C = F.child(v3(*SHELL.crab_at) + v3(0, -0.02 * P['duck'], -0.10 * P['duck'] * s), rot_x(SHELL.crab_pitch), s)
-    from _hermitage_common import _claw_target
 
     def world(add):
-        w, d = _claw_target(P, big=False)
-        ww = C.p(w * v3(1, 1, 1))
-        tip = ww + C.v(norm(d)) * 0.16
+        tip, dw = claw_grip(P, SHELL, SIZE, big=False)
         hole = F.p((0.0, KEG_R + 0.02, -0.02))
         mid = (hole + tip) / 2 + v3(0.0, 0.16, 0.10)
         n = 12
@@ -83,6 +74,7 @@ def _rows(R):
     for row in ('attack', 'death', 'cast', 'hit'):
         for P, o in R[row]:
             P['snap'] *= 0.35
+    fit_rows(R, death_back=0.07)   # keep claws and the death topple inside the frame
     return R
 
 
