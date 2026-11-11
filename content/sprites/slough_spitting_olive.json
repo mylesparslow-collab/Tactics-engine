@@ -1,0 +1,104 @@
+{
+ "frameWidth": 96,
+ "frameHeight": 112,
+ "anchor": [
+  48,
+  104
+ ],
+ "facing": "lower-right",
+ "animations": {
+  "idle": {
+   "row": 0,
+   "frames": 8,
+   "fps": 8,
+   "loop": true
+  },
+  "move": {
+   "row": 1,
+   "frames": 8,
+   "fps": 16,
+   "loop": true
+  },
+  "attack": {
+   "row": 2,
+   "frames": 7,
+   "fps": 18,
+   "loop": false,
+   "hitFrame": 4
+  },
+  "hit": {
+   "row": 3,
+   "frames": 3,
+   "fps": 15,
+   "loop": false
+  },
+  "death": {
+   "row": 4,
+   "frames": 7,
+   "fps": 10,
+   "loop": false,
+   "holdLast": true
+  },
+  "cast": {
+   "row": 5,
+   "frames": 5,
+   "fps": 13,
+   "loop": false
+  }
+ },
+ "fx": [
+  {
+   "preset": "spray",
+   "tracks": {
+    "attack": [
+     0,
+     0,
+     0,
+     [
+      77.9,
+      47.8,
+      0.8
+     ],
+     [
+      92.5,
+      58.1,
+      0.8
+     ],
+     [
+      80.6,
+      49.1,
+      0.8
+     ],
+     [
+      68.8,
+      40.2,
+      0.8
+     ]
+    ],
+    "cast": [
+     0,
+     [
+      72.2,
+      34.3,
+      0.8
+     ],
+     [
+      78.3,
+      37.1,
+      0.8
+     ],
+     [
+      77.9,
+      38.6,
+      0.8
+     ],
+     [
+      77.5,
+      40.1,
+      0.8
+     ]
+    ]
+   }
+  }
+ ]
+}

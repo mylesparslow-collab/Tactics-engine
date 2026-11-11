@@ -1,0 +1,81 @@
+{
+ "frameWidth": 96,
+ "frameHeight": 112,
+ "anchor": [
+  48,
+  104
+ ],
+ "facing": "lower-right",
+ "animations": {
+  "idle": {
+   "row": 0,
+   "frames": 8,
+   "fps": 8,
+   "loop": true
+  },
+  "move": {
+   "row": 1,
+   "frames": 8,
+   "fps": 12,
+   "loop": true
+  },
+  "attack": {
+   "row": 2,
+   "frames": 7,
+   "fps": 14,
+   "loop": false,
+   "hitFrame": 4
+  },
+  "hit": {
+   "row": 3,
+   "frames": 3,
+   "fps": 15,
+   "loop": false
+  },
+  "death": {
+   "row": 4,
+   "frames": 7,
+   "fps": 10,
+   "loop": false,
+   "holdLast": true
+  },
+  "cast": {
+   "row": 5,
+   "frames": 7,
+   "fps": 14,
+   "loop": false
+  }
+ },
+ "fx": [
+  {
+   "preset": "smoke",
+   "tracks": {
+    "attack": [
+     0,
+     0,
+     0,
+     [
+      61.1,
+      59.4,
+      0.7
+     ],
+     [
+      59.0,
+      57.3,
+      1.4
+     ],
+     [
+      59.9,
+      58.9,
+      0.7
+     ],
+     [
+      60.7,
+      60.6,
+      0.2
+     ]
+    ]
+   }
+  }
+ ]
+}

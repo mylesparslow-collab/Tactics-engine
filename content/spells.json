@@ -1580,5 +1580,468 @@
   "castRange": 5,
   "anim": "hail",
   "vfx": "feathers"
+ },
+ "hm_spell_leftovers": {
+  "name": "Moving-Day Leftovers",
+  "description": "Set down 2 Empty Barrels (9 HP each) on an empty tile within 3 of a friendly unit. They block the way, and any bare ally can climb into one.",
+  "faction": "hermitage",
+  "rarity": "common",
+  "cost": 20,
+  "target": "empty",
+  "castRange": 3,
+  "effects": [
+   {
+    "type": "summon",
+    "unit": "hermitage_empty_barrel",
+    "count": 2
+   }
+  ],
+  "requires": [
+   "summon"
+  ],
+  "anim": "summon",
+  "vfx": "dust"
+ },
+ "hm_spell_caulk_and_tar": {
+  "name": "Caulk and Tar",
+  "description": "Repair the shells of allies within 1 of an ally within 4 of a friendly unit by 4 and heal them 2.",
+  "faction": "hermitage",
+  "rarity": "common",
+  "cost": 20,
+  "target": "ally",
+  "castRange": 4,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 4
+   },
+   {
+    "type": "heal",
+    "amount": 2
+   }
+  ],
+  "requires": [
+   "shell_repair"
+  ],
+  "anim": "heal",
+  "vfx": "oil"
+ },
+ "hm_spell_long_memory": {
+  "name": "Long Memory",
+  "description": "Deal 4 physical damage to an enemy within 4 of a friendly unit and give it 2 stacks of Grudge (-1 defense per stack) for 3 turns.",
+  "faction": "hermitage",
+  "rarity": "common",
+  "cost": 20,
+  "target": "enemy",
+  "castRange": 4,
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 4,
+    "damageType": "physical",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   },
+   {
+    "type": "status",
+    "status": "hm_grudge",
+    "duration": 3
+   }
+  ],
+  "anim": "hex",
+  "vfx": "soot"
+ },
+ "hm_spell_the_bell_comes_down": {
+  "name": "The Bell Comes Down",
+  "description": "Tip a chapel bell off a wreck onto an empty tile within 3 of a friendly unit: enemies within 1 take 2 physical damage and are Rattled (-1 AP, -1 attack) for 2 turns, and an Empty Bell (12 HP) is left on the tile.",
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "cost": 30,
+  "target": "empty",
+  "castRange": 3,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "hm_rattled",
+    "duration": 2
+   },
+   {
+    "type": "summon",
+    "unit": "hermitage_empty_bell",
+    "count": 1
+   }
+  ],
+  "requires": [
+   "summon"
+  ],
+  "anim": "fall",
+  "vfx": "dust"
+ },
+ "hm_spell_bare_claws": {
+  "name": "Bare Claws",
+  "description": "Bare (unshelled) allies within 2 of a tile within 3 of a friendly unit gain Hasted (+2 AP) and Emboldened (+2 attack) for 1 turn.",
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "tile",
+  "castRange": 3,
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1,
+    "filter": {
+     "shelled": false
+    }
+   },
+   {
+    "type": "status",
+    "status": "emboldened",
+    "duration": 1,
+    "filter": {
+     "shelled": false
+    }
+   }
+  ],
+  "requires": [
+   "filter_shelled"
+  ],
+  "anim": "glyph",
+  "vfx": "embers"
+ },
+ "hm_spell_salvage_spill": {
+  "name": "Salvage Spill",
+  "description": "Spill a cart of ironwork over a tile within 3 of a friendly unit: the tiles within 1 become Scrap Field for 3 turns (cover, and a bare crab can climb into it for a Barrel Squatter's shell) and enemies there take 2 physical damage.",
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "tile",
+  "castRange": 3,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "scrap_field",
+    "duration": 3
+   },
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "physical",
+    "ignoreAttack": true
+   }
+  ],
+  "requires": [
+   "terrain"
+  ],
+  "anim": "hail",
+  "vfx": "shards"
+ },
+ "hm_spell_off_the_gun_deck": {
+  "name": "Off the Gun-Deck",
+  "description": "Roll a long gun off a wreck onto an empty tile within 3 of a friendly unit: enemies within 1 take 5 physical damage, and an Empty Cannon (16 HP) is left on the tile.",
+  "faction": "hermitage",
+  "rarity": "rare",
+  "cost": 40,
+  "target": "empty",
+  "castRange": 3,
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 5,
+    "damageType": "physical",
+    "ignoreAttack": true
+   },
+   {
+    "type": "summon",
+    "unit": "hermitage_empty_cannon",
+    "count": 1
+   }
+  ],
+  "requires": [
+   "summon"
+  ],
+  "anim": "crush",
+  "vfx": "dust"
+ },
+ "hm_spell_moving_day": {
+  "name": "Moving Day",
+  "description": "Every allied shell on the board is repaired by 4, and every bare (unshelled) ally gains Hasted (+2 AP) for 1 turn.",
+  "faction": "hermitage",
+  "rarity": "rare",
+  "cost": 45,
+  "target": "tile",
+  "area": {
+   "shape": "radius",
+   "size": 30
+  },
+  "affects": "allies",
+  "effects": [
+   {
+    "type": "shell",
+    "amount": 4,
+    "filter": {
+     "shelled": true
+    }
+   },
+   {
+    "type": "status",
+    "status": "hasted",
+    "duration": 1,
+    "filter": {
+     "shelled": false
+    }
+   }
+  ],
+  "requires": [
+   "global_area",
+   "shell_repair",
+   "filter_shelled"
+  ],
+  "anim": "glyph",
+  "vfx": "dust"
+ },
+ "sl_spell_bitter_spray": {
+  "name": "Bitter Spray",
+  "description": "Deal 3 venom damage to an enemy within 3 of a friendly unit and apply 1 Venom.",
+  "faction": "slough",
+  "rarity": "common",
+  "cost": 18,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "venom",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "castRange": 3,
+  "anim": "drain",
+  "vfx": "spray"
+ },
+ "sl_spell_old_skin_ward": {
+  "name": "Old Skin Ward",
+  "description": "A friendly unit becomes Lacquered (+2 defense) for 2 turns and heals 2.",
+  "faction": "slough",
+  "rarity": "common",
+  "cost": 15,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "status",
+    "status": "sl_lacquered",
+    "duration": 2
+   },
+   {
+    "type": "heal",
+    "amount": 2
+   }
+  ],
+  "anim": "glyph",
+  "vfx": "shards"
+ },
+ "sl_spell_shed_oil": {
+  "name": "Shed-Oil Salve",
+  "description": "Heal a friendly unit and allies within 1 of it for 4.",
+  "faction": "slough",
+  "rarity": "common",
+  "cost": 20,
+  "target": "ally",
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 4
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "anim": "heal",
+  "vfx": "heal"
+ },
+ "sl_spell_gourd_volley": {
+  "name": "Gourd Volley",
+  "description": "Deal 2 venom damage to enemies within 1 of a tile within 3 of a friendly unit and apply 1 Venom.",
+  "faction": "slough",
+  "rarity": "uncommon",
+  "cost": 28,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 2,
+    "damageType": "venom",
+    "ignoreAttack": true
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "castRange": 3,
+  "anim": "hail",
+  "vfx": "spray"
+ },
+ "sl_spell_mire": {
+  "name": "Mire",
+  "description": "Turn the tiles within 1 of a tile within 3 of a friendly unit into sinkmud for 2 turns and Numb enemies there (-1 AP) for 1 turn.",
+  "faction": "slough",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "terrain",
+    "terrain": "sinkmud",
+    "duration": 2
+   },
+   {
+    "type": "status",
+    "status": "sl_numbed",
+    "duration": 1
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "enemies",
+  "requires": [
+   "terrain"
+  ],
+  "castRange": 3,
+  "anim": "geyser",
+  "vfx": "murk"
+ },
+ "sl_spell_lacquer_the_line": {
+  "name": "Lacquer the Line",
+  "description": "Allies within 1 of a tile within 3 of a friendly unit become Lacquered (+2 defense) for 2 turns.",
+  "faction": "slough",
+  "rarity": "uncommon",
+  "cost": 25,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "status",
+    "status": "sl_lacquered",
+    "duration": 2
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 1
+  },
+  "affects": "allies",
+  "castRange": 3,
+  "anim": "glyph",
+  "vfx": "shards"
+ },
+ "sl_spell_venom_tide": {
+  "name": "Venom Tide",
+  "description": "Apply 2 Venom to every enemy within 2 of a tile within 3 of a friendly unit.",
+  "faction": "slough",
+  "rarity": "rare",
+  "cost": 42,
+  "target": "tile",
+  "effects": [
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   },
+   {
+    "type": "status",
+    "status": "sl_venom",
+    "duration": 99
+   }
+  ],
+  "area": {
+   "shape": "radius",
+   "size": 2
+  },
+  "affects": "enemies",
+  "castRange": 3,
+  "anim": "vortex",
+  "vfx": "mist"
+ },
+ "sl_spell_last_hiss": {
+  "name": "The Last Hiss",
+  "description": "Deal 3 venom damage to an enemy within 4 of a friendly unit, and 6 more if it carries 3 or more Venom.",
+  "faction": "slough",
+  "rarity": "rare",
+  "cost": 38,
+  "target": "enemy",
+  "effects": [
+   {
+    "type": "damage",
+    "amount": 3,
+    "damageType": "venom",
+    "ignoreAttack": true
+   },
+   {
+    "type": "damage",
+    "amount": 6,
+    "damageType": "venom",
+    "ignoreAttack": true,
+    "ifTargetStacks": {
+     "status": "sl_venom",
+     "min": 3
+    }
+   }
+  ],
+  "requires": [
+   "ifTargetStacks"
+  ],
+  "castRange": 4,
+  "anim": "drain",
+  "vfx": "spray"
  }
 }

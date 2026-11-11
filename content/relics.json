@@ -5218,5 +5218,1303 @@
   ],
   "card": "salvage_compact_hesk_varrow",
   "unit": "salvage_compact_hesk_varrow"
+ },
+ "hermitage_hopeful": {
+  "faction": "hermitage",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Legs"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Grown a Bit"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_hopeful_cut_in",
+    "label": "Cut In"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_hopeful",
+  "unit": "hermitage_hopeful"
+ },
+ "hermitage_barrel_squatter": {
+  "faction": "hermitage",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thicker Staves"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Iron Hoops"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_barrel_hoops",
+    "label": "Tighten the Hoops"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_barrel_squatter",
+  "unit": "hermitage_barrel_squatter"
+ },
+ "hermitage_jug_lobber": {
+  "faction": "hermitage",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Glazed Jug"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Heavier Ballast"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_jug_brine_jug",
+    "label": "Brine Jug"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_jug_lobber",
+  "unit": "hermitage_jug_lobber"
+ },
+ "hermitage_lobster_pot_lurker": {
+  "faction": "hermitage",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Tarred Withies"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Longer Line"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_pot_full_catch",
+    "label": "Full Catch"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_lobster_pot_lurker",
+  "unit": "hermitage_lobster_pot_lurker"
+ },
+ "hermitage_diving_bell_hermit": {
+  "faction": "hermitage",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Riveted Rim"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Thick Glass"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_divingbell_air",
+    "label": "Air from the Bell"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_diving_bell_hermit",
+  "unit": "hermitage_diving_bell_hermit"
+ },
+ "hermitage_bell_tenant": {
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Bronze Lip"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Heavier Clapper"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_bell_full_peal",
+    "label": "Full Peal"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_bell_tenant",
+  "unit": "hermitage_bell_tenant"
+ },
+ "hermitage_boiler_lodger": {
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Patched Firebox"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Higher Pressure"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_boiler_overpressure",
+    "label": "Overpressure"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_boiler_lodger",
+  "unit": "hermitage_boiler_lodger"
+ },
+ "hermitage_tool_chest_tinker": {
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Brass Corners"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Busy Claws"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_tinker_overhaul",
+    "label": "Overhaul"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_tool_chest_tinker",
+  "unit": "hermitage_tool_chest_tinker"
+ },
+ "hermitage_lifeboat_skimmer": {
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Greased Keel"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Doubled Strakes"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_lifeboat_launch",
+    "label": "Launch"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_lifeboat_skimmer",
+  "unit": "hermitage_lifeboat_skimmer"
+ },
+ "hermitage_strongbox_bailiff": {
+  "faction": "hermitage",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Second Padlock"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Long Memory"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_bailiff_distrain",
+    "label": "Distrain"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_strongbox_bailiff",
+  "unit": "hermitage_strongbox_bailiff"
+ },
+ "hermitage_gun_deck_lodger": {
+  "faction": "hermitage",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Better Powder"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Bronze Breech"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_gundeck_double_shot",
+    "label": "Double Shot"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_gun_deck_lodger",
+  "unit": "hermitage_gun_deck_lodger"
+ },
+ "hermitage_prow_ram": {
+  "faction": "hermitage",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Iron-Shod Bow"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharpened Ram"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_prow_full_sail",
+    "label": "Full Sail"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_prow_ram",
+  "unit": "hermitage_prow_ram"
+ },
+ "hermitage_wheelhouse_warden": {
+  "faction": "hermitage",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Planked Roof"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Firm Hand"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_warden_all_hands",
+    "label": "All Hands"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_wheelhouse_warden",
+  "unit": "hermitage_wheelhouse_warden"
+ },
+ "hermitage_shell_broker": {
+  "faction": "hermitage",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Lighter Sledge"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Thick Skin"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_broker_bell_on_order",
+    "label": "Bell on Order"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_shell_broker",
+  "unit": "hermitage_shell_broker"
+ },
+ "hermitage_the_landlord": {
+  "faction": "hermitage",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "New Panes"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Brighter Lamp"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "hm_r3_landlord_full_rotation",
+    "label": "Full Rotation"
+   }
+  ],
+  "type": "champion",
+  "card": "hermitage_the_landlord",
+  "unit": "hermitage_the_landlord"
+ },
+ "hermitage_duchess_abaft": {
+  "faction": "hermitage",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "New Gilding"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Oak Knees"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hm_duchess_legend_full_broadside",
+    "label": "Full Broadside"
+   }
+  ],
+  "card": "hermitage_duchess_abaft",
+  "unit": "hermitage_duchess_abaft"
+ },
+ "hermitage_mother_harrow": {
+  "faction": "hermitage",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Old Hands"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Short Cuts"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hm_harrow_legend_moving_day",
+    "label": "Moving Day"
+   }
+  ],
+  "card": "hermitage_mother_harrow",
+  "unit": "hermitage_mother_harrow"
+ },
+ "hermitage_sixpence": {
+  "faction": "hermitage",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Shorter Fuse"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Lucky Keg"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hm_sixpence_legend_front_of_the_queue",
+    "label": "Front of the Queue"
+   }
+  ],
+  "card": "hermitage_sixpence",
+  "unit": "hermitage_sixpence"
+ },
+ "hermitage_old_knell": {
+  "faction": "hermitage",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Thicker Bronze"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Longer List"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "hm_knell_legend_last_toll",
+    "label": "The Last Toll"
+   }
+  ],
+  "card": "hermitage_old_knell",
+  "unit": "hermitage_old_knell"
+ },
+ "hm_spell_leftovers": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hm_spell_leftovers"
+ },
+ "hm_spell_caulk_and_tar": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hm_spell_caulk_and_tar"
+ },
+ "hm_spell_long_memory": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hm_spell_long_memory"
+ },
+ "hm_spell_the_bell_comes_down": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hm_spell_the_bell_comes_down"
+ },
+ "hm_spell_bare_claws": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hm_spell_bare_claws"
+ },
+ "hm_spell_salvage_spill": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hm_spell_salvage_spill"
+ },
+ "hm_spell_off_the_gun_deck": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hm_spell_off_the_gun_deck"
+ },
+ "hm_spell_moving_day": {
+  "faction": "hermitage",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hm_spell_moving_day"
+ },
+ "hm_equip_tar_caulking": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hm_equip_tar_caulking"
+ },
+ "hm_equip_filed_claw": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "hm_equip_filed_claw"
+ },
+ "hm_equip_spare_plating": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hm_equip_spare_plating"
+ },
+ "hm_equip_grudge_ledger": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "hm_equip_grudge_ledger"
+ },
+ "hm_equip_moulting_sac": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hm_equip_moulting_sac"
+ },
+ "hm_equip_brass_claw_cap": {
+  "faction": "hermitage",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "hm_equip_brass_claw_cap"
+ },
+ "slough_brinkling": {
+  "faction": "slough",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "First Shedding"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Sharper Fang"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_brinkling_knot_bite",
+    "label": "Knot Bite"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_brinkling",
+  "unit": "slough_brinkling"
+ },
+ "slough_banded_lancer": {
+  "faction": "slough",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Tighter Coil"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Barbed Tip"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_lancer_long_strike",
+    "label": "Long Strike"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_banded_lancer",
+  "unit": "slough_banded_lancer"
+ },
+ "slough_spitting_olive": {
+  "faction": "slough",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Fuller Sac"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Bitter Aim"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_olive_twin_spit",
+    "label": "Twin Spit"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_spitting_olive",
+  "unit": "slough_spitting_olive"
+ },
+ "slough_reedrunner": {
+  "faction": "slough",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Quick Water"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Longer Stride"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_reedrunner_hamstring",
+    "label": "Hamstring Bite"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_reedrunner",
+  "unit": "slough_reedrunner"
+ },
+ "slough_scaleshield": {
+  "faction": "slough",
+  "rarity": "common",
+  "pearlCost": 40,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Thicker Coil"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Heavier Scale"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_scaleshield_hold",
+    "label": "Hold the Reed-Line"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_scaleshield",
+  "unit": "slough_scaleshield"
+ },
+ "slough_skin_reader": {
+  "faction": "slough",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Long Memory"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quick Fingers"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_reader_recital",
+    "label": "Recital of Skins"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_skin_reader",
+  "unit": "slough_skin_reader"
+ },
+ "slough_gourdslinger": {
+  "faction": "slough",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Bigger Rack"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Practised Arm"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_gourd_two_gourds",
+    "label": "Two Gourds"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_gourdslinger",
+  "unit": "slough_gourdslinger"
+ },
+ "slough_hookfang_wrangler": {
+  "faction": "slough",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Stronger Line"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Deeper Barbs"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_wrangler_drag",
+    "label": "Drag to the Marsh"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_hookfang_wrangler",
+  "unit": "slough_hookfang_wrangler"
+ },
+ "slough_siltcoil": {
+  "faction": "slough",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Deeper Silt"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Patient Edge"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_siltcoil_double_fang",
+    "label": "Double Fang"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_siltcoil",
+  "unit": "slough_siltcoil"
+ },
+ "slough_glaive_sister": {
+  "faction": "slough",
+  "rarity": "uncommon",
+  "pearlCost": 80,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Scarred Hide"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "The Second Cut"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_sister_drink",
+    "label": "Drink the Wound"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_glaive_sister",
+  "unit": "slough_glaive_sister"
+ },
+ "slough_yellowbelly_matriarch": {
+  "faction": "slough",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Golden Belly"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Deeper Fangs"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_matriarch_brood",
+    "label": "The Brood Rises"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_yellowbelly_matriarch",
+  "unit": "slough_yellowbelly_matriarch"
+ },
+ "slough_skinbanner_elder": {
+  "faction": "slough",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Older Skin"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Heavier Banner"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_elder_old_skins",
+    "label": "The Old Skins Remember"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_skinbanner_elder",
+  "unit": "slough_skinbanner_elder"
+ },
+ "slough_ringwall": {
+  "faction": "slough",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Longer Ring"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Harder Bands"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_ringwall_close_ring",
+    "label": "Close the Ring"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_ringwall",
+  "unit": "slough_ringwall"
+ },
+ "slough_silt_slider": {
+  "faction": "slough",
+  "rarity": "rare",
+  "pearlCost": 160,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 2
+    },
+    "label": "Slicker Belly"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Faster Paddle"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_slider_long_slide",
+    "label": "Long Slide"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_silt_slider",
+  "unit": "slough_silt_slider"
+ },
+ "slough_hundredcoat": {
+  "faction": "slough",
+  "rarity": "exotic",
+  "pearlCost": 320,
+  "tempering": [
+   {
+    "xpRequired": 3,
+    "statMods": {
+     "hp": 3
+    },
+    "label": "Another Coat"
+   },
+   {
+    "xpRequired": 8,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Heavier Glaives"
+   },
+   {
+    "xpRequired": 15,
+    "addAbility": "sl_r3_hundredcoat_shed_storm",
+    "label": "Shedding Storm"
+   }
+  ],
+  "type": "champion",
+  "card": "slough_hundredcoat",
+  "unit": "slough_hundredcoat"
+ },
+ "slough_eldest_skin": {
+  "faction": "slough",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Ninety-First Skin"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "defense": 1
+    },
+    "label": "Hard Old Scale"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sl_eldest_legend_every_skin",
+    "label": "Every Skin I Ever Wore"
+   }
+  ],
+  "card": "slough_eldest_skin",
+  "unit": "slough_eldest_skin"
+ },
+ "slough_kesh": {
+  "faction": "slough",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Longer Body"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Fifth Blade"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sl_kesh_legend_ring_closes",
+    "label": "The Ring Closes"
+   }
+  ],
+  "card": "slough_kesh",
+  "unit": "slough_kesh"
+ },
+ "slough_mother_ashgourd": {
+  "faction": "slough",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Thick Hide"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "attack": 1
+    },
+    "label": "Stronger Brew"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sl_ashgourd_legend_last_gourd",
+    "label": "The Last Gourd"
+   }
+  ],
+  "card": "slough_mother_ashgourd",
+  "unit": "slough_mother_ashgourd"
+ },
+ "slough_teshk": {
+  "faction": "slough",
+  "type": "hero",
+  "rarity": "hero",
+  "pearlCost": 400,
+  "tempering": [
+   {
+    "xpRequired": 4,
+    "statMods": {
+     "hp": 4
+    },
+    "label": "Old Scars"
+   },
+   {
+    "xpRequired": 10,
+    "statMods": {
+     "ap": 1
+    },
+    "label": "Quicker Hood"
+   },
+   {
+    "xpRequired": 20,
+    "addAbility": "sl_teshk_legend_bites_last",
+    "label": "Who Bites Last"
+   }
+  ],
+  "card": "slough_teshk",
+  "unit": "slough_teshk"
+ },
+ "sl_spell_bitter_spray": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sl_spell_bitter_spray"
+ },
+ "sl_spell_old_skin_ward": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sl_spell_old_skin_ward"
+ },
+ "sl_spell_shed_oil": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sl_spell_shed_oil"
+ },
+ "sl_spell_gourd_volley": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sl_spell_gourd_volley"
+ },
+ "sl_spell_mire": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sl_spell_mire"
+ },
+ "sl_spell_lacquer_the_line": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sl_spell_lacquer_the_line"
+ },
+ "sl_spell_venom_tide": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sl_spell_venom_tide"
+ },
+ "sl_spell_last_hiss": {
+  "faction": "slough",
+  "type": "spell",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sl_spell_last_hiss"
+ },
+ "sl_equip_lacquered_skin_coat": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sl_equip_lacquered_skin_coat"
+ },
+ "sl_equip_fang_caps": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "common",
+  "pearlCost": 30,
+  "card": "sl_equip_fang_caps"
+ },
+ "sl_equip_leviathan_scale": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sl_equip_leviathan_scale"
+ },
+ "sl_equip_gourd_bandolier": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "uncommon",
+  "pearlCost": 60,
+  "card": "sl_equip_gourd_bandolier"
+ },
+ "sl_equip_spare_skin": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sl_equip_spare_skin"
+ },
+ "sl_equip_eldest_hood": {
+  "faction": "slough",
+  "type": "equipment",
+  "rarity": "rare",
+  "pearlCost": 120,
+  "card": "sl_equip_eldest_hood"
  }
 }

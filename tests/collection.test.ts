@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { loadBundledContent } from '../src/engine/bundled';
+import { nonCardUnits } from '../src/engine/content';
 import { allRelics, markSeen, ownedRelics, relicSources, unseenRelics } from '../src/engine/collection';
 import { recordVictory, saveProgress } from '../src/engine/campaign';
 
@@ -21,7 +22,7 @@ describe('relic collection', () => {
     const ids = allRelics(c);
     expect(new Set(ids).size).toBe(ids.length);
     expect(ids).not.toContain('keystone');
-    expect(ids.length).toBe(Object.values(c.units).filter(u => u.faction && !u.structure).length + Object.keys(c.spells).length + Object.keys(c.equipment).length);
+    expect(ids.length).toBe(Object.entries(c.units).filter(([k, u]) => u.faction && !u.structure && !nonCardUnits(c).has(k)).length + Object.keys(c.spells).length + Object.keys(c.equipment).length);
   });
 
   it('owns the starting company and mission unlocks already won', () => {

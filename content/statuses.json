@@ -352,5 +352,69 @@
   "statMods": {
    "ap": -1
   }
+ },
+ "hm_grudge": {
+  "name": "Grudge",
+  "description": "The Hermitage has put you on its list and will not take you off. -1 defense per stack (stacks to 3).",
+  "statMods": {
+   "defense": -1
+  },
+  "stacks": true,
+  "maxStacks": 3
+ },
+ "hm_battened": {
+  "name": "Battened Down",
+  "description": "Everything pulled in and the lid shut. +2 defense, -1 AP.",
+  "statMods": {
+   "defense": 2,
+   "ap": -1
+  }
+ },
+ "hm_rattled": {
+  "name": "Rattled",
+  "description": "Ears full of bell. -1 AP, -1 attack.",
+  "statMods": {
+   "ap": -1,
+   "attack": -1
+  }
+ },
+ "hm_skittish": {
+  "name": "Skittish",
+  "description": "Bare, frightened and very fast. +1 AP, +1 attack, and never pays the engagement cost.",
+  "statMods": {
+   "ap": 1,
+   "attack": 1
+  },
+  "ignoresEngagement": true
+ },
+ "sl_venom": {
+  "name": "Venom",
+  "description": "Krait venom in the blood. Each time the carrier walks or uses an ability it takes 1 venom damage per stack (ignores defense); a flyer is not bitten for flying. Ending its own turn without acting sheds one stack, and ending it wet washes out one more. Stacks to 5.",
+  "stacks": true,
+  "maxStacks": 5,
+  "shedsWhenIdle": true,
+  "onAct": [
+   {
+    "type": "damage",
+    "amount": 1,
+    "damageType": "venom",
+    "ignoreAttack": true,
+    "pierce": true
+   }
+  ]
+ },
+ "sl_numbed": {
+  "name": "Numbed",
+  "description": "Venom has reached the limbs. -1 AP.",
+  "statMods": {
+   "ap": -1
+  }
+ },
+ "sl_lacquered": {
+  "name": "Lacquered",
+  "description": "Wrapped in lacquered shed skin. +2 defense.",
+  "statMods": {
+   "defense": 2
+  }
  }
 }

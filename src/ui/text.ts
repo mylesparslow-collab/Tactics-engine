@@ -3,7 +3,20 @@ import { label } from '../engine/content';
 
 /** Short badge text for the movement/survival flags a unit def carries, e.g. "Flying · Skyfall (impact 6) · Dries 2". */
 export function traitLine(d: UnitDef): string {
-  return [d.flying ? 'Flying' : '', d.skyfall ? `Skyfall (impact ${d.skyfall.impact})` : '', d.dries ? `Dries ${d.dries}` : ''].filter(Boolean).join(' \u00B7 ');
+  return [d.flying ? 'Flying' : '', d.skyfall ? `Skyfall (impact ${d.skyfall.impact})` : '', d.dries ? `Dries ${d.dries}` : '',
+    d.shell ? `Shell ${d.shell.hp}` : '', d.shed ? 'Shed' : '', d.coiled ? 'Coiled' : '', d.tail ? `Long body (${d.tail.length})` : ''].filter(Boolean).join(' \u00B7 ');
+}
+
+/** One-line explanations for the Shed / Long body / Shell keywords (Flying, Skyfall and Dries are explained in cards.ts). */
+export function traitRules(c: Content, d: UnitDef): { name: string; text: string }[] {
+  const out: { name: string; text: string }[] = [];
+  if (d.shell) {
+    const ev = c.units[d.shell.evicted]?.name;
+    out.push({ name: `Shell ${d.shell.hp}`, text: `Soaks damage before health${ev ? `; when it breaks the unit becomes ${ev}` : ''}.` });
+  }
+  if (d.shed) out.push({ name: 'Shed', text: 'Once per battle, below half HP it sheds, cleanses and slips away, leaving a husk.' });
+  if (d.tail) out.push({ name: 'Long', text: `Trails ${d.tail.length} tail segment${d.tail.length === 1 ? '' : 's'}.` });
+  return out;
 }
 
 export function effectText(c: Content, e: Effect): string {
@@ -27,6 +40,10 @@ export function effectText(c: Content, e: Effect): string {
       return `${who}: ${parts.join(', ')}${e.perAdjacentAlly ? ' per adjacent ally' : ''}`;
     }
     case 'sacrifice': return 'Sacrifices the caster';
+    case 'reshed': return 'Can Shed again';
+    case 'shell': return `Repairs ${e.amount} shell`;
+    case 'rehouse': return 'Moves into an adjacent empty shell or wreck';
+    case 'moveOut': return 'Steps out of its shell, leaving it behind';
     default: return (e as { type: string }).type;
   }
 }

@@ -1,4 +1,5 @@
 import type { Content, MissionDef } from './types';
+import { nonCardUnits } from './content';
 
 declare const process: { env: Record<string, string | undefined> } | undefined;
 const env = (k: string, d: number) => { try { const v = typeof process !== 'undefined' ? process.env[k] : undefined; return v ? Number(v) : d; } catch { return d; } };
@@ -8,7 +9,8 @@ export const SKIRMISH = { startingEssence: env('SK_START', 120), essencePerTurn:
 /** Faction ids that have at least one deployable unit. */
 export function playableFactions(c: Content): string[] {
   const ids = new Set<string>();
-  for (const u of Object.values(c.units)) if (u.faction && !u.structure) ids.add(u.faction);
+  const tokens = nonCardUnits(c);
+  for (const [k, u] of Object.entries(c.units)) if (u.faction && !u.structure && !tokens.has(k)) ids.add(u.faction);
   return [...ids];
 }
 
@@ -20,7 +22,8 @@ export function factionDeck(c: Content, faction: string, opts: { size?: number; 
   const size = opts.size ?? 22;
   const byCost = <T extends { cost: number }>(rec: Record<string, T & { faction?: string }>) =>
     Object.entries(rec).filter(([, v]) => v.faction === faction).sort((a, b) => a[1].cost - b[1].cost).map(([k]) => k);
-  const units = Object.entries(c.units).filter(([, u]) => u.faction === faction && !u.structure);
+  const tokens = nonCardUnits(c);
+  const units = Object.entries(c.units).filter(([k, u]) => u.faction === faction && !u.structure && !tokens.has(k));
   const heroes = units.filter(([, u]) => u.hero).map(([k]) => k);
   const champions = units.filter(([, u]) => !u.hero).sort((a, b) => a[1].cost - b[1].cost).map(([k]) => k);
   const hero = opts.hero && heroes.includes(opts.hero) ? opts.hero : heroes[0];

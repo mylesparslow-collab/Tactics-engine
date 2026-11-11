@@ -40,7 +40,19 @@ function turnMemo(g: Game): TurnMemo {
 }
 
 const isHarmful = (s?: StatusDef) => !!s && (!!s.preventsMove || !!s.preventsAction ||
-  (s.onTurnStart ?? []).some(e => e.type === 'damage') || Object.values(s.statMods ?? {}).some(v => (v ?? 0) < 0));
+  (s.onTurnStart ?? []).some(e => e.type === 'damage') || (s.onAct ?? []).some(e => e.type === 'damage') ||
+  Object.values(s.statMods ?? {}).some(v => (v ?? 0) < 0));
+
+/** HP `u` loses after each of its own actions (Venom-like onAct statuses). */
+function actTick(g: Game, u: Unit): number {
+  let n = 0;
+  for (const s of u.statuses) for (const e of g.content.statuses[s.id]?.onAct ?? [])
+    if (e.type === 'damage') n += g.previewSpellDamage(u, { ...e, amount: e.amount * (s.stacks ?? 1) });
+  return n;
+}
+
+/** Decoys and empty shells: not worth chasing or spending a big hit on. Tail segments are proxies, not decoys. */
+const isDecoy = (g: Game, o: Unit) => !!g.def(o).decoy || !!g.def(o).emptyShell;
 
 const key = (x: number, y: number) => `${x},${y}`;
 
@@ -122,9 +134,10 @@ function danger(g: Game, th: Threat, u: Unit, p: Pos, vip: boolean): number {
   const def = g.stat(u, 'defense') + g.terrainAt(p.x, p.y).defense;
   // Roughly one hit per threatening enemy; defense applies to each, so subtract it about twice.
   const expected = Math.max(0, raw - def * 2);
-  const worth = g.def(u).cost / 6 + (g.def(u).hero ? 6 : 0);
+  const worth = g.def(u).cost / 6 + (g.isHero(u) ? 6 : 0);
   let pen = expected * 0.25;
-  if (expected >= u.hp) pen += worth;
+  // A shell soaks hits before the body (and loses the overflow when it breaks), so it counts toward staying alive.
+  if (expected >= u.hp + (u.shellHp ?? 0)) pen += worth;
   return vip ? pen * 3 + (expected > 0 ? 4 : 0) : pen;
 }
 
@@ -190,7 +203,26 @@ interface Plan { score: number; to: Pos; ability?: string; target?: Pos }
 function scoreAbility(g: Game, u: Unit, abilityId: string, target: Pos, from: Pos, it: Intel): number {
   const a = g.ability(abilityId);
   let s = scoreEffects(g, u.team, a.effects, g.affected(u, abilityId, target, from),
-    (o, e) => g.previewDamage(u, o, e, from), it);
+    (o, e) => g.previewDamage(u, o, e, from), it, target);
+  // Rehouse: a crab out of its shell badly wants a new one (unless climbing in would cost it more than it gains).
+  if (a.effects.some(e => e.type === 'rehouse')) {
+    const occ = g.unitAt(target.x, target.y);
+    const becomes = occ ? g.def(occ).emptyShell?.becomes : g.terrainAt(target.x, target.y).shellSource;
+    const v = becomes ? rehouseValue(g, u, becomes, occ ? occ.hp : undefined) : 0;
+    s += v > 0 ? v : -100;
+  }
+  // moveOut: only to trade a nearly broken shell for a fresh one next to the tile it steps to; otherwise never.
+  if (a.effects.some(e => e.type === 'moveOut')) {
+    const sh = g.def(u).shell, left = u.shellHp ?? 0;
+    const fresh = !!sh && left <= sh.hp * 0.25 && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => {
+      const x = target.x + dx, y = target.y + dy;
+      if (!g.inBounds(x, y) || (x === from.x && y === from.y)) return false;
+      const o = g.unitAt(x, y);
+      if (o) return o.uid !== u.uid && o.team === u.team && !!g.def(o).emptyShell && o.hp > left + 2;
+      return !!g.terrainAt(x, y).shellSource;
+    });
+    s += fresh ? 1.5 : -100;
+  }
   // Terrain effects: hazards dropped under enemies are worth something, under friends they hurt.
   const terr = a.effects.find((e): e is Extract<Effect, { type: 'terrain' }> => e.type === 'terrain');
   if (terr) {
@@ -206,29 +238,87 @@ function scoreAbility(g: Game, u: Unit, abilityId: string, target: Pos, from: Po
   return s;
 }
 
+/** Score of `u` (a crab with no shell) climbing into a shell that turns it into `becomes` with `shellHp` (default: full). */
+function rehouseValue(g: Game, u: Unit, becomes: string, shellHp?: number): number {
+  const nd = g.content.units[becomes], cur = g.def(u);
+  if (!nd?.shell) return 0;
+  // A real champion without a shell (not an evicted crab) only trades its own kit up, never down.
+  if (!cur.token && nd.cost < cur.cost) return 0;
+  const sh = Math.min(nd.shell.hp, shellHp ?? nd.shell.hp);
+  const lost = Math.max(0, u.hp - nd.stats.hp); // body HP is capped to the new form's max
+  return 6 + sh * 0.6 - lost * 1.2;
+}
+
+/** Value of summoning `count` of `unitId` at `at` for `team`. An empty shell is clutter that blocks our own units
+ *  unless a crab without a shell can still walk next to it and climb in this turn (it would likely die before the next). */
+function summonValue(g: Game, team: number, unitId: string, at: Pos | undefined, count: number): number {
+  const d = g.content.units[unitId];
+  if (!d?.emptyShell) return 4 * count;
+  if (!at) return 0.5;
+  let best = 0;
+  for (const o of g.aliveUnits(team)) {
+    const od = g.def(o);
+    if (od.structure || od.shell || o.summonedThisTurn || g.hasFlag(o, 'preventsAction')) continue;
+    const rh = g.abilitiesOf(o).find(id => g.ability(id)?.effects.some(e => e.type === 'rehouse'));
+    if (!rh || (o.cooldowns[rh] ?? 0) > 0) continue;
+    const walk = o.ap - g.ability(rh).apCost;
+    if (manhattan(o, at) > walk + 1) continue;
+    // Already has a shell in reach (a dropped one or shell-source ground): a new one adds nothing.
+    if (hasShellNear(g, o, walk + 1)) continue;
+    best = Math.max(best, rehouseValue(g, o, d.emptyShell.becomes, d.stats.hp));
+  }
+  return best > 0 ? best * 0.8 : 0.5;
+}
+
+/** True if a friendly empty shell or a free shell-source tile lies within `r` steps of `u`. */
+function hasShellNear(g: Game, u: Unit, r: number): boolean {
+  for (let y = u.y - r; y <= u.y + r; y++) for (let x = u.x - r; x <= u.x + r; x++) {
+    if (!g.inBounds(x, y) || Math.abs(x - u.x) + Math.abs(y - u.y) > r || (x === u.x && y === u.y)) continue;
+    if (g.rehouseOk(u, x, y)) return true;
+  }
+  return false;
+}
+
 function scoreEffects(g: Game, team: number, effects: Effect[], hit: Unit[],
-  dmg: (o: Unit, e: Extract<Effect, { type: 'damage' }>) => number, it?: Intel): number {
+  dmg: (o: Unit, e: Extract<Effect, { type: 'damage' }>) => number, it?: Intel, at?: Pos): number {
   let score = 0;
+  // Tail segments stand in for their head (damage lands on the head once).
+  const seen = new Set<number>();
+  hit = hit.map(o => g.proxyOf(o)).filter(o => !seen.has(o.uid) && !!seen.add(o.uid));
   for (const o of hit) {
     const enemy = o.team !== team;
     effects = effects.filter(e => !('filter' in e) || g.passesFilter(o, e.filter));
     const vip = enemy && !!it && isVip(o, it.hunt);
-    const objective = g.def(o).structure ? 1.6 : vip ? 2.5 : 1;
-    let hp = o.hp;
+    const decoy = isDecoy(g, o);
+    const objective = decoy ? 0.15 : g.def(o).structure ? 1.6 : vip ? 2.5 : 1;
+    let hp = o.hp, shell = o.shellHp ?? 0;
     for (const e of effects) {
       if (e.type === 'damage') {
+        // A shell soaks the hit (overflow is lost) unless it pierces or is venom.
+        if (shell > 0 && !e.pierce && e.damageType !== 'venom') {
+          const d = Math.min(dmg(o, e), shell);
+          shell -= d;
+          score += enemy ? d * 0.8 * objective + (shell <= 0 ? 4 : 0) : -d;
+          continue;
+        }
         const d = Math.min(dmg(o, e), hp);
         hp -= d;
         score += enemy ? d * objective : -d * 1.5;
-        // Kills are what swing a tactics game: worth more for expensive targets, a mission win for VIPs.
-        if (hp <= 0) score += enemy ? (8 + g.def(o).cost / 10) * objective + (vip ? 40 : 0) : -15;
+        // Kills are what swing a tactics game: worth more for expensive targets, a mission win for VIPs. Husks are worth nothing.
+        if (hp <= 0) score += enemy ? (decoy ? 0.5 : (8 + g.def(o).cost / 10) * objective + (vip ? 40 : 0)) : -15;
       } else if (e.type === 'heal') {
         const missing = g.def(o).stats.hp - o.hp;
         const guardBonus = !enemy && it && isVip(o, it.guard) ? 2 : 1;
         if (!enemy) score += Math.min(e.amount, missing) * (missing > 4 ? 1.2 : 0.3) * guardBonus;
+      } else if (e.type === 'shell') {
+        const sh = g.def(o).shell;
+        if (!enemy && sh) score += Math.min(e.amount, sh.hp - (o.shellHp ?? 0)) * 0.8;
       } else if (e.type === 'status') {
-        if (g.def(o).structure || o.statuses.some(s => s.id === e.status)) continue;
         const sd = g.content.statuses[e.status];
+        const had = o.statuses.find(s => s.id === e.status);
+        // Another stack of a stacking poison is still worth something.
+        if (had && sd?.stacks && !g.def(o).structure && (had.stacks ?? 1) < (sd.maxStacks ?? Infinity)) { score += isHarmful(sd) === enemy ? 2 : -2; continue; }
+        if (g.def(o).structure || had) continue;
         const harmful = isHarmful(sd);
         const heavy = sd?.preventsAction ? 2 : sd?.preventsMove ? 1.4 : 1;
         if (harmful === enemy) score += 3 * heavy * Math.min(2, e.duration) / 1.5;
@@ -239,7 +329,7 @@ function scoreEffects(g: Game, team: number, effects: Effect[], hit: Unit[],
     }
   }
   for (const e of effects) {
-    if (e.type === 'summon') score += 4 * (e.count ?? 1);
+    if (e.type === 'summon') score += summonValue(g, team, e.unit, at, e.count ?? 1);
     if (e.type === 'essence') score += Math.abs(e.amount) / 5;
   }
   return score;
@@ -247,6 +337,7 @@ function scoreEffects(g: Game, team: number, effects: Effect[], hit: Unit[],
 
 function bestPlan(g: Game, u: Unit, th: Threat, it: Intel): Plan | undefined {
   const reach = g.reachable(u);
+  const tick = actTick(g, u);
   const vip = isVip(u, it.guard);
   let best: Plan | undefined;
   for (const [k, node] of reach) {
@@ -256,13 +347,16 @@ function bestPlan(g: Game, u: Unit, th: Threat, it: Intel): Plan | undefined {
     const hazard = enterPenalty(g, u, from) - turnStartValue(g, u, from) * 0.6 - rangeTileBonus(g, u, from) * 0.4;
     // A drying unit left off wet ground loses HP next turn.
     const risk = danger(g, th, u, from, vip) + g.dryingLoss(u, from) * 1.3;
+    // Venom bites after every action: a walk and an ability are two bites. Never act into a Venom death.
+    const bites = tick * ((x !== u.x || y !== u.y) && !g.def(u).flying ? 2 : 1); // a flyer's walk does not bite
+    if (tick > 0 && bites >= u.hp) continue;
     for (const ab of g.abilitiesOf(u)) {
       const a = g.ability(ab);
       if (!a || a.apCost > left || (u.cooldowns[ab] ?? 0) > 0 || g.usedThisTurn(u, ab) || g.hasFlag(u, 'preventsAction') || u.summonedThisTurn) continue;
       if (a.passive || a.effects.some(e => e.type === 'teleport' || e.type === 'swap' || e.type === 'sacrifice')) continue;
       for (const t of g.targetsFrom(u, ab, from)) {
         // Risk is discounted when the action is a kill: trading into danger for a kill is often right.
-        const s = scoreAbility(g, u, ab, t, from, it) - node.cost * 0.05 - hazard - a.apCost * 0.1 - risk * 0.6 + wellBonus(g, u, from) * 0.5 + dropBonus(g, from) * 0.5 + jitter(g);
+        const s = scoreAbility(g, u, ab, t, from, it) - node.cost * 0.05 - hazard - a.apCost * 0.1 - risk * 0.6 - bites * 1.2 + wellBonus(g, u, from) * 0.5 + dropBonus(g, from) * 0.5 + jitter(g);
         if (!best || s > best.score) best = { score: s, to: from, ability: ab, target: t };
       }
     }
@@ -284,7 +378,10 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
   const reach = g.reachable(u);
   const vip = isVip(u, it.guard);
   const goal = it.goals.find(gl => gl.tag === '*' || gl.tag === u.tag);
-  const enemies = g.aliveUnits().filter(o => o.team !== u.team);
+  const enemies = g.aliveUnits().filter(o => o.team !== u.team && !isDecoy(g, o));
+  // Walking under Venom costs HP: never walk into a Venom death, and only walk when it is worth the bite.
+  const tick = g.def(u).flying ? 0 : actTick(g, u); // a flyer's walk does not bite
+  if (tick > 0 && tick >= u.hp) return;
   if (!enemies.length && !goal) return;
   const want = desiredRange(g, u);
   const value = (p: Pos) => {
@@ -314,7 +411,7 @@ function approach(g: Game, u: Unit, th: Threat, it: Intel): Pos | undefined {
   let best: { p: Pos; d: number } | undefined;
   for (const [k, node] of reach) {
     const [x, y] = k.split(',').map(Number);
-    const d = cost({ x, y }, node.cost) + jitter(g) * 0.5;
+    const d = cost({ x, y }, node.cost) + tick * 1.5 + jitter(g) * 0.5;
     if (!best || d < best.d) best = { p: { x, y }, d };
   }
   return best && best.d < here - 0.5 ? best.p : undefined;
@@ -358,6 +455,22 @@ function tryDeploy(g: Game): boolean {
   return g.deploy(g.current, pick.i, tile.x, tile.y);
 }
 
+/** A spell that turns ground into a shell source: worth what the best bare ally in reach would gain by climbing in. */
+function shellSourceValue(g: Game, team: number, sp: SpellDef, p: Pos): number {
+  const terr = sp.effects.find((e): e is Extract<Effect, { type: 'terrain' }> => e.type === 'terrain');
+  const src = terr && g.content.terrain[terr.terrain]?.shellSource;
+  if (!src) return 0;
+  const size = sp.area?.size ?? 0;
+  let best = 0;
+  for (const o of g.aliveUnits(team)) {
+    const od = g.def(o);
+    if (od.structure || od.shell || manhattan(o, p) > g.stat(o, 'ap') + size) continue;
+    if (!g.abilitiesOf(o).some(id => g.ability(id)?.effects.some(e => e.type === 'rehouse'))) continue;
+    best = Math.max(best, rehouseValue(g, o, src));
+  }
+  return best;
+}
+
 function tryCards(g: Game, it: Intel): boolean {
   const team = g.current;
   const hand = g.teams[team].hand;
@@ -374,11 +487,12 @@ function tryCards(g: Game, it: Intel): boolean {
     const sp: SpellDef = g.content.spells[hand[i]];
     let best: { p: Pos; s: number } | undefined;
     for (const p of targets) {
-      const s = scoreEffects(g, team, sp.effects, g.spellAffected(team, sp, p), (o, e) => g.previewSpellDamage(o, e), it);
+      const s = scoreEffects(g, team, sp.effects, g.spellAffected(team, sp, p), (o, e) => g.previewSpellDamage(o, e), it, p) + shellSourceValue(g, team, sp, p);
       if (!best || s > best.s) best = { p, s };
     }
     // Only cast when worth roughly its cost.
-    if (best && best.s >= sp.cost / 6 && !sp.effects.some(e => e.type === 'terrain')) return g.playCard(team, i, best.p.x, best.p.y);
+    // Terrain spells are skipped (hard to judge), except ground that bare crabs can climb into.
+    if (best && best.s >= sp.cost / 6 && !sp.effects.some(e => e.type === 'terrain' && !g.content.terrain[e.terrain]?.shellSource)) return g.playCard(team, i, best.p.x, best.p.y);
   }
   return false;
 }

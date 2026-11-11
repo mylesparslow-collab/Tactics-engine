@@ -28,6 +28,10 @@ export interface SpriteOpts {
   glow: number;                   // 0..1 caster glow
   lampGlow?: number;              // structures: 0..1 lamp intensity
   reduced: boolean;
+  /** Shelled units: shell points left and the shell's full size (a rust bar over the HP bar). */
+  shell?: { hp: number; max: number };
+  /** Props (husks, empty shells, tail segments): no lighthouse placeholder, no lamp glow. */
+  prop?: boolean;
 }
 
 export function statusColor(id: string) {
@@ -37,17 +41,46 @@ export function statusColor(id: string) {
 }
 
 /** Height of the drawn figure in world px (for bars, picking and crown placement). */
-export function figureHeight(o: { frame: Frame | null; def: UnitDef }) {
+const topCache = new Map<string, number>();
+/** World height of a frame's opaque pixels above its anchor. Low props (tail segments, husks, empty shells) sit in the
+ *  same tall frame as a standing unit, so measuring the frame alone would float their bars far above them. */
+function opaqueHeight(f: Frame): number {
+  const src = f.img.src;
+  const key = `${(src as HTMLImageElement).src ?? ''}|${(src as HTMLCanvasElement).width}|${f.sx},${f.sy},${f.sw},${f.sh}`;
+  const hit = topCache.get(key);
+  if (hit !== undefined) return hit * f.scale;
+  let top = 0;
+  try {
+    const kx = src instanceof HTMLImageElement ? 1 : (src as HTMLCanvasElement).width / f.img.naturalWidth;
+    const w = Math.max(1, Math.ceil(f.sw * kx)), h = Math.max(1, Math.ceil(f.sh * kx));
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    const g = cv.getContext('2d', { willReadFrequently: true });
+    if (g) {
+      g.drawImage(src, f.sx * kx, f.sy * kx, f.sw * kx, f.sh * kx, 0, 0, w, h);
+      const a = g.getImageData(0, 0, w, h).data;
+      let row = 0;
+      scan: for (; row < h; row++) for (let x = 0; x < w; x++) if (a[(row * w + x) * 4 + 3] > 24) break scan;
+      top = Math.max(8, f.ay - row / kx);
+    } else top = f.ay;
+  } catch { top = f.ay; }
+  topCache.set(key, top);
+  return top * f.scale;
+}
+
+export function figureHeight(o: { frame: Frame | null; def: UnitDef; prop?: boolean }) {
+  if (o.frame && o.prop) return opaqueHeight(o.frame);
   if (o.frame) return o.frame.sh * o.frame.scale * (o.frame.ay / o.frame.sh);
   return o.def.structure ? 120 : 92;
 }
 
+let flashScratch: HTMLCanvasElement | undefined;
+
 function placeholderFigure(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
   const def = o.def, base = def.sprite.color ?? o.factionColor ?? o.teamColor;
   const fill = o.dim ? shade(base, 0.6) : base;
-  const H = def.structure ? 120 : 92;
+  const H = def.structure && !o.prop ? 120 : 92;
   const light = mix(fill, '#fff6e0', 0.35), dark = shade(fill, 0.55);
-  if (def.structure) {
+  if (def.structure && !o.prop) {
     // a stranded lighthouse: tapered tower, gallery, lamp
     const g = ctx.createLinearGradient(-18, 0, 18, 0);
     g.addColorStop(0, light); g.addColorStop(0.45, fill); g.addColorStop(1, dark);
@@ -190,8 +223,18 @@ export function drawUnitSprite(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
     const kx = f.img.src instanceof HTMLImageElement ? 1 : (f.img.src as HTMLCanvasElement).width / f.img.naturalWidth;
     ctx.drawImage(f.img.src, f.sx * kx, f.sy * kx, f.sw * kx, f.sh * kx, -f.ax * f.scale, -f.ay * f.scale, w, h);
     if (o.flash > 0) {
-      ctx.save(); ctx.globalCompositeOperation = 'source-atop'; ctx.fillStyle = `rgba(255,255,255,${0.85 * o.flash})`;
-      ctx.fillRect(-f.ax * f.scale, -f.ay * f.scale, w, h); ctx.restore();
+      // Tint only the sprite's own pixels: source-atop on the board canvas would whiten the whole frame rectangle (tile included).
+      const tw = Math.max(1, Math.ceil(f.sw * kx)), th = Math.max(1, Math.ceil(f.sh * kx));
+      const sc = (flashScratch ??= document.createElement('canvas'));
+      if (sc.width !== tw || sc.height !== th) { sc.width = tw; sc.height = th; }
+      const sg = sc.getContext('2d');
+      if (sg) {
+        sg.clearRect(0, 0, tw, th);
+        sg.globalCompositeOperation = 'source-over';
+        sg.drawImage(f.img.src, f.sx * kx, f.sy * kx, f.sw * kx, f.sh * kx, 0, 0, tw, th);
+        sg.globalCompositeOperation = 'source-atop'; sg.fillStyle = `rgba(255,255,255,${0.85 * o.flash})`; sg.fillRect(0, 0, tw, th);
+        ctx.drawImage(sc, 0, 0, tw, th, -f.ax * f.scale, -f.ay * f.scale, w, h);
+      }
     }
   } else {
     placeholderFigure(ctx, o);
@@ -200,7 +243,7 @@ export function drawUnitSprite(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
   ctx.restore();
 
   // structures: lamp glow tied to HP
-  if (def.structure) {
+  if (def.structure && o.lampGlow !== undefined) {
     const k = o.lampGlow ?? 1;
     const ly = y - o.lift - fh + 10;
     const g = ctx.createRadialGradient(x, ly, 2, x, ly, 40 + 30 * k);
@@ -238,9 +281,17 @@ export function drawUnitSprite(ctx: CanvasRenderingContext2D, o: SpriteOpts) {
         ctx.fillRect(x - bw / 2 + i * (tw + gap), ay, tw, ah);
       }
     }
+    let pipY = by - 9;
+    if (o.shell && o.shell.max > 0) { // shell points: a thin rust bar just above the HP bar
+      const sy = by - 5, sh = 3, k = Math.max(0, Math.min(1, o.shell.hp / o.shell.max));
+      ctx.fillStyle = 'rgba(8,8,12,0.85)'; ctx.fillRect(x - bw / 2 - 1.5, sy - 1.5, bw + 3, sh + 3);
+      ctx.fillStyle = 'rgba(217,130,43,0.22)'; ctx.fillRect(x - bw / 2, sy, bw, sh);
+      ctx.fillStyle = '#d9822b'; ctx.fillRect(x - bw / 2, sy, bw * k, sh);
+      pipY -= 5;
+    }
     const st = o.statuses.slice(0, 5);
     st.forEach((s, i) => {
-      const sx = x - (st.length - 1) * 6 + i * 12, sy = by - 9;
+      const sx = x - (st.length - 1) * 6 + i * 12, sy = pipY;
       ctx.fillStyle = statusColor(s.id);
       ctx.beginPath(); ctx.arc(sx, sy, 5, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = 'rgba(0,0,0,0.75)'; ctx.lineWidth = 1; ctx.stroke();

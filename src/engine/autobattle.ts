@@ -4,6 +4,7 @@
 import { Game, rng } from './game';
 import { playAiTurn } from './ai';
 import { playableFactions } from './skirmish';
+import { isCardUnit } from './content';
 import type { Content, MapDef, MissionDef, MissionEvent, Pos, UnitDef } from './types';
 import relicsJson from '../../content/relics.json';
 
@@ -150,6 +151,20 @@ export function ensureTempered(c: Content, def: string, rank: number): string {
     for (const [k, v] of Object.entries(t.statMods ?? {})) u.stats[k as 'hp'] += v ?? 0;
     if (t.addAbility && c.abilities[t.addAbility] && !u.abilities.includes(t.addAbility)) u.abilities.push(t.addAbility);
   }
+  // A shelled champion's evicted form keeps its Tempering (stats and rank abilities) as its own tempered token.
+  const ev = u.shell?.evicted;
+  if (ev && c.units[ev] && !isTempered(ev)) {
+    const evId = `tw:${ev}:${r}:${def}`;
+    if (!c.units[evId]) {
+      const e: UnitDef = structuredClone(c.units[ev]);
+      for (const t of temperingOf(def).slice(0, r)) {
+        for (const [k, v] of Object.entries(t.statMods ?? {})) e.stats[k as 'hp'] += v ?? 0;
+        if (t.addAbility && c.abilities[t.addAbility] && !e.abilities.includes(t.addAbility)) e.abilities.push(t.addAbility);
+      }
+      c.units[evId] = e;
+    }
+    u.shell = { ...u.shell!, evicted: evId };
+  }
   c.units[id] = u;
   return id;
 }
@@ -186,7 +201,7 @@ interface Pool { units: string[]; heroes: string[]; spells: string[]; equipment:
 export function poolFor(c: Content, charter: string[], watch: number): Pool {
   const cap = tierCap(watch);
   const inCharter = (f?: string) => !!f && charter.includes(f);
-  const units = Object.entries(c.units).filter(([id, u]) => !isTempered(id) && inCharter(u.faction) && !u.structure && u.cost > 0);
+  const units = Object.entries(c.units).filter(([id, u]) => !isTempered(id) && inCharter(u.faction) && isCardUnit(c, id) && u.cost > 0);
   return {
     units: units.filter(([, u]) => !u.hero && u.cost <= cap).map(([id]) => id),
     heroes: watch >= TW.heroFromWatch ? units.filter(([, u]) => u.hero).map(([id]) => id) : [],
@@ -352,7 +367,7 @@ export function enemyCrew(c: Content, run: Run, watch = run.watch): EnemyCrew {
   const size = berthsAt(watch);
   const rank = (watch >= 9 ? 2 : watch >= 6 ? 1 : 0) + (lampEater ? 1 : 0);
   const cap = tierCap(watch);
-  const units = Object.entries(c.units).filter(([id, u]) => !isTempered(id) && u.faction === faction && !u.structure && u.cost > 0);
+  const units = Object.entries(c.units).filter(([id, u]) => !isTempered(id) && u.faction === faction && isCardUnit(c, id) && u.cost > 0);
   const regular = units.filter(([, u]) => !u.hero && u.cost <= cap);
   const minPrice = Math.min(...regular.map(([, u]) => priceOf(u.cost)));
   const members: EnemyMember[] = [];

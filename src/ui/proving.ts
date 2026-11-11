@@ -5,7 +5,7 @@ import type { AbilityDef, Content, MapDef, MissionDef, PlacedUnit, Pos } from '.
 import { Game } from '../engine/game';
 import { Renderer } from '../render/renderer';
 import { playCue } from '../audio/sfx';
-import { label } from '../engine/content';
+import { isCardUnit, label } from '../engine/content';
 import { h } from './dom';
 
 const W = 7, H = 5, MID = 2;
@@ -30,13 +30,13 @@ function provingMap(): MapDef {
 function rivalDummy(c: Content, faction: string | undefined): string {
   const fids = Object.keys(c.factions ?? {});
   const rival = fids[(Math.max(0, fids.indexOf(faction ?? '')) + 1) % Math.max(1, fids.length)];
-  const pool = Object.entries(c.units).filter(([, u]) => !u.structure && !u.hero && u.faction === rival).sort((a, b) => a[1].cost - b[1].cost);
-  return pool[0]?.[0] ?? Object.keys(c.units).find(k => !c.units[k].structure)!;
+  const pool = Object.entries(c.units).filter(([k, u]) => isCardUnit(c, k) && !u.hero && u.faction === rival).sort((a, b) => a[1].cost - b[1].cost);
+  return pool[0]?.[0] ?? Object.keys(c.units).find(k => isCardUnit(c, k))!;
 }
 
 /** A face for spells and a wearer for equipment: the faction's first hero (or cheapest champion). */
 function factionUnit(c: Content, faction: string | undefined, restrict?: string[]): string {
-  const all = Object.entries(c.units).filter(([, u]) => !u.structure && u.faction === faction);
+  const all = Object.entries(c.units).filter(([k, u]) => isCardUnit(c, k) && u.faction === faction);
   const ok = restrict?.length ? all.filter(([k, u]) => restrict.includes(k) || restrict.includes(u.role ?? '')) : all;
   const pool = ok.length ? ok : all;
   return (pool.find(([, u]) => u.hero && !restrict?.length) ?? [...pool].sort((a, b) => a[1].cost - b[1].cost)[0])?.[0] ?? rivalDummy(c, undefined);
@@ -109,7 +109,7 @@ function spellScene(c: Content, id: string): Scene {
   const area = sp.area?.size ?? 0;
   switch (sp.target) {
     case 'ally': {
-      const patient = Object.entries(c.units).find(([k, u]) => u.faction === sp.faction && !u.structure && !u.hero && k !== caster)?.[0] ?? caster;
+      const patient = Object.entries(c.units).find(([k, u]) => u.faction === sp.faction && isCardUnit(c, k) && !u.hero && k !== caster)?.[0] ?? caster;
       ally.push({ unit: patient, ...at, tag: 'patient' }); wounded.push('patient', 'caster');
       foe.push({ unit: dummy, x: Math.min(W - 1, at.x + 2), y: MID }); break;
     }

@@ -5,10 +5,13 @@ export type StatKey = keyof StatBlock;
 
 /** Only units whose flags match are affected. Currently just `flying`. */
 /** Restricts who an effect touches. All present keys must match; `faction` / `notFaction` compare UnitDef.faction. */
-export interface EffectFilter { flying?: boolean; faction?: string[]; notFaction?: string[] }
+export interface EffectFilter { flying?: boolean; faction?: string[]; notFaction?: string[];
+  /** true: only targets whose shell is up (shellHp > 0); false: only targets without one. */
+  shelled?: boolean }
 
-/** Any effect may also carry `ifTargetStatus`: it only applies to targets that had that status when the use began. */
-export type Effect = EffectBody & { ifTargetStatus?: string };
+/** Any effect may also carry `ifTargetStatus`: it only applies to targets that had that status when the use began,
+ *  and `ifTargetStacks`: only targets that had at least `min` stacks of `status` when the use began. */
+export type Effect = EffectBody & { ifTargetStatus?: string; ifTargetStacks?: { status: string; min: number } };
 type EffectBody =
   | { type: 'damage'; amount: number; damageType?: string; ignoreAttack?: boolean; pierce?: boolean;
       /** +`bonus` to the amount (before defense/resist) when the target's current HP is below `below` x its max HP. */
@@ -32,10 +35,18 @@ type EffectBody =
       /** Multiply statMods by the number of allies adjacent to the affected unit (swarm bonus), capped at maxStacks. */
       perAdjacentAlly?: boolean; maxStacks?: number; filter?: EffectFilter;
       /** Units inside this aura count as wet for the `dries` rule. */
-      keepsWet?: boolean };
+      keepsWet?: boolean }
+  /** Resets the target's Shed so it can trigger again this battle. */
+  | { type: 'reshed' }
+  /** Repairs the target's shell by `amount` (up to its UnitDef.shell.hp). No effect on units without a shell. */
+  | { type: 'shell'; amount: number }
+  /** Cast-level, target "tile", range 1: an unshelled caster climbs into a friendly empty shell or a shellSource tile. */
+  | { type: 'rehouse' }
+  /** Cast-level, target "empty", range 1: a shelled caster steps out as its `shell.evicted` form, leaving `shell.leaves`. */
+  | { type: 'moveOut' };
 
 /** Effects applied once per cast (at the target tile) rather than once per affected unit. */
-export const CAST_LEVEL_EFFECTS = ['teleport', 'summon', 'terrain', 'essence', 'swap', 'sacrifice', 'draw'] as const;
+export const CAST_LEVEL_EFFECTS = ['teleport', 'summon', 'terrain', 'essence', 'swap', 'sacrifice', 'draw', 'rehouse', 'moveOut'] as const;
 
 export type TargetKind = 'enemy' | 'ally' | 'unit' | 'tile' | 'empty' | 'self';
 export type Affects = 'enemies' | 'allies' | 'all';
@@ -112,6 +123,10 @@ export interface StatusDef {
   untargetable?: boolean;
   /** Live visual effect clinging to the unit while it has the status (src/render/fx.ts preset). */
   vfx?: string;
+  /** Damage effects applied to the carrier after each of its actions (one walk or one ability use), x stacks. */
+  onAct?: Effect[];
+  /** At the end of its owner's turn, a carrier that took no action that turn loses one stack (removed at 0). */
+  shedsWhenIdle?: boolean;
 }
 
 export interface TerrainDef {
@@ -134,6 +149,8 @@ export interface TerrainDef {
   factionMoveCost?: Record<string, number>;
   /** Terrain drawn beneath this tile's art (renderer hint). */
   underlay?: string;
+  /** A `rehouse` aimed at this (unoccupied) tile turns the caster into this shelled unit; the tile becomes salt_flat. */
+  shellSource?: string;
 }
 
 export interface UnitDef {
@@ -160,6 +177,24 @@ export interface UnitDef {
   ignoresEngagement?: boolean;
   /** Every passable tile costs 1 AP, no jump limit, may cross (not end on) impassable tiles, ignores onEnter, holds no Wells. */
   flying?: boolean;
+  /** Never a card: not in decks, rosters, the collection or the gallery (evicted forms, empty shells, husks, segments). */
+  token?: boolean;
+  /** A decoy (husk): does not count for elimination, holds no Wells, drops no Tide, vanishes at the start of its
+   *  owner's 3rd turn after it appeared. Must also be a structure. */
+  decoy?: boolean;
+  /** Once per battle, the first time damage leaves it alive below 50% max HP: statuses cleared, `husk` left behind,
+   *  slides up to `slide` (default 2) steps away from the nearest enemy. */
+  shed?: { husk: string; slide?: number };
+  /** If it used no ability during its own last turn, the first enemy walking next to it during an enemy turn is hit by `ability`. */
+  coiled?: { ability: string };
+  /** Enters play with `hp` shell points that soak damage first; at 0 the unit becomes `evicted`. */
+  shell?: { hp: number; evicted: string; leaves?: string;
+    /** Cast-level effects (essence, summon, terrain, draw) run for the owner at the unit's tile when the shell breaks (forced eviction only). */
+    onBreak?: Effect[] };
+  /** An empty shell (structure, token): a friendly `rehouse` onto it turns the caster into `becomes`. */
+  emptyShell?: { becomes: string };
+  /** Long body: walking leaves `length` (1-3) `segment` structures on the tiles behind it. */
+  tail?: { segment: string; length: number };
 }
 
 export interface MapDef {
@@ -287,6 +322,24 @@ export interface Unit {
   equipment?: string;
   /** Deployed from the hand (or landed by skyfall): goes on cooldown and returns to the hand when it dies. */
   fromCard?: boolean;
+  /** The unit id it entered play as (card cooldowns use this even after an eviction or rehouse changed defId). */
+  deployedAs?: string;
+  /** Remaining shell points (UnitDef.shell). */
+  shellHp?: number;
+  /** Shed already used (reset by the `reshed` effect). */
+  shedUsed?: boolean;
+  /** Walked or used an ability this turn (Venom onAct / shedsWhenIdle bookkeeping). */
+  acted?: boolean;
+  /** Coiled: armed at the end of its own turn if it used no ability; cleared when its next turn begins. */
+  coiled?: boolean;
+  /** Game turn counter value at which its coiled strike was spent (once per enemy turn). */
+  coilSpent?: number;
+  /** Decoys: owner turn-starts left before it vanishes. */
+  decoyTurns?: number;
+  /** Tail segment: uid of the head it belongs to. */
+  tailOf?: number;
+  /** Head of a long body: uids of its tail segments, nearest first. */
+  tail?: number[];
 }
 
 /** Tide spilled where a unit died; the first unit to step on the tile collects it for its team. */
@@ -315,7 +368,8 @@ export type Phase = 'playing' | 'victory' | 'defeat';
 export type GameEvent =
   | { kind: 'move'; uid: number; path: Pos[] }
   | { kind: 'ability'; uid: number; ability: string; target: Pos }
-  | { kind: 'damage'; uid: number; amount: number; damageType?: string }
+  /** `shell: true`: the damage landed on the unit's shell, not its body HP. */
+  | { kind: 'damage'; uid: number; amount: number; damageType?: string; shell?: boolean }
   | { kind: 'heal'; uid: number; amount: number }
   | { kind: 'status'; uid: number; status: string }
   | { kind: 'push'; uid: number; from: Pos; to: Pos }
@@ -335,4 +389,16 @@ export type GameEvent =
   | { kind: 'drop'; x: number; y: number; amount: number }
   | { kind: 'pickup'; uid: number; team: number; x: number; y: number; amount: number }
   | { kind: 'message'; text: string; speaker?: string }
+  /** Shed: statuses dropped, a husk left at `from` (uid `husk`), the unit slid to `to`. */
+  | { kind: 'shed'; uid: number; from: Pos; to: Pos; husk?: number }
+  /** The unit's definition changed: forced eviction (shell broke) or a voluntary moveOut (`voluntary: true`). */
+  | { kind: 'evict'; uid: number; from: string; to: string; voluntary?: boolean; at: Pos }
+  /** The unit climbed into a shell at `at` and became `to`. */
+  | { kind: 'rehouse'; uid: number; from: string; to: string; at: Pos }
+  /** Shell repaired by `amount`. */
+  | { kind: 'shell'; uid: number; amount: number }
+  /** Coiled reaction strike: `uid` hits the walker `target` with `ability`. */
+  | { kind: 'react'; uid: number; target: number; ability: string }
+  /** Removed from the board without dying (an expired decoy, a used empty shell, an old tail segment). */
+  | { kind: 'vanish'; uid: number }
   | { kind: 'end'; phase: Phase };

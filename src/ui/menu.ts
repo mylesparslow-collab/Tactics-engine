@@ -366,7 +366,7 @@ export function showBriefing(root: HTMLElement, content: Content, choice: Missio
 /** Each faction's face: the campaign lead where there is one, else the first hero. */
 const LEADS: Record<string, string> = { salt_concord: 'salt_concord_tamsin_orrel', hadal_court: 'hadal_court_herald_vhaal', returning_tide: 'returning_tide_maren_ketch',
   salvage_compact: 'salvage_compact_ketta_vane', reef_ascendant: 'reef_ascendant_coralspire', lanternkeepers: 'lanternkeepers_captain_hollis_drenn',
-  overcurrent: 'overcurrent_the_undersinging', gyre: 'gyre_wren_halloway' };
+  overcurrent: 'overcurrent_the_undersinging', gyre: 'gyre_wren_halloway', hermitage: 'hermitage_mother_harrow', slough: 'slough_eldest_skin' };
 function heroOf(content: Content, fid: string): string | undefined {
   if (LEADS[fid] && content.units[LEADS[fid]]) return LEADS[fid];
   return Object.keys(content.units).find(id => content.units[id].faction === fid && content.units[id].hero);

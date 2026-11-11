@@ -22,6 +22,8 @@ PAL = {
     'lanternkeepers':  dict(sea=(10, 14, 30), top=(18, 20, 36), hor=(92, 82, 100), land=(46, 44, 56), gn=(34, 32, 40), gf=(56, 52, 62), key=(255, 204, 116), acc=(227, 176, 75), prop=(24, 22, 30)),
     'overcurrent':     dict(sea=(6, 20, 46), top=(14, 34, 66), hor=(118, 184, 218), land=(40, 70, 96), gn=(28, 48, 70), gf=(58, 92, 118), key=(160, 238, 240), acc=(95, 224, 230), prop=(18, 34, 56)),
     'gyre':            dict(sea=(32, 40, 50), top=(54, 60, 70), hor=(184, 178, 132), land=(96, 100, 104), gn=(82, 86, 90), gf=(122, 124, 120), key=(242, 216, 162), acc=(232, 137, 47), prop=(44, 48, 56)),
+    'slough':          dict(sea=(14, 22, 18), top=(30, 40, 28), hor=(150, 166, 104), land=(60, 74, 46), gn=(58, 66, 40), gf=(92, 104, 62), key=(226, 236, 150), acc=(181, 201, 52), prop=(22, 26, 20)),
+    'hermitage':       dict(sea=(30, 20, 40), top=(52, 34, 66), hor=(214, 140, 80), land=(110, 72, 100), gn=(90, 60, 76), gf=(130, 88, 100), key=(255, 206, 150), acc=(217, 130, 43), prop=(44, 28, 46)),
 }
 
 def A(c): return np.asarray(c, np.float32)
@@ -399,10 +401,36 @@ def L_gyre(cv, p, hz, seed):
     for k in range(2):
         birds(cv, p, 22, W * (0.2 + 0.6 * g.random()), H * (0.24 + g.random() * 0.12), 60 + g.random() * 40, seed + 195 + k, col=(28, 31, 38), size=(4, 9))
 
+def L_slough(cv, p, hz, seed):
+    g = np.random.default_rng(seed + 150)
+    # brine marsh at the trench edge: reed stands, shed skins hanging from reed frames, ground fog
+    for k in range(2):  # skin frames: two posts, a crossbar and long pale skins hanging from it
+        fx = W * (0.12 + 0.5 * k + g.random() * 0.25); fy = hz + 8 + k * 10; fw = 70 + g.random() * 40; fh = 80 + g.random() * 20
+        def frame(d, s, fx=fx, fy=fy, fw=fw, fh=fh):
+            d.line([(fx * s, fy * s), (fx * s, (fy - fh) * s)], fill=255, width=int(3 * s))
+            d.line([((fx + fw) * s, fy * s), ((fx + fw) * s, (fy - fh) * s)], fill=255, width=int(3 * s))
+            d.line([((fx - 6) * s, (fy - fh) * s), ((fx + fw + 6) * s, (fy - fh) * s)], fill=255, width=int(3 * s))
+            for j in range(5):
+                x = fx + 8 + j * (fw - 16) / 4; L = fh * (0.55 + 0.35 * g.random())
+                d.polygon([((x - 4) * s, (fy - fh) * s), ((x + 4) * s, (fy - fh) * s), ((x + 2) * s, (fy - fh + L) * s), ((x - 1) * s, (fy - fh + L + 6) * s)], fill=255)
+        m = silhouette(frame)
+        cv.put(m, A(haze_col(p, 0.5 - k * 0.2)) * 1.0)
+    for i in range(46):  # reeds
+        rx = g.random() * W; rh = 30 + g.random() * 60; lean = (g.random() - 0.5) * 14; ry = hz + 4 + g.random() * 40
+        def reed(d, s, rx=rx, rh=rh, lean=lean, ry=ry):
+            d.line([(rx * s, ry * s), ((rx + lean) * s, (ry - rh) * s)], fill=255, width=max(1, int(1.6 * s)))
+            d.ellipse([(rx + lean - 2) * s, (ry - rh - 9) * s, (rx + lean + 2) * s, (ry - rh + 2) * s], fill=255)
+        cv.put(silhouette(reed), haze_col(p, 0.3 + 0.4 * (ry - hz) / 44))
+    for i in range(3):  # fog
+        fy = hz + 6 + i * 22 + g.random() * 8
+        cv.add(np.exp(-np.abs(yy - fy) / 12) * (0.25 + 0.25 * fbm(H, W, 3, 60, seed + 160 + i)), p['hor'], 0.5)
+
 LANDMARKS = {
     'salt_concord': L_salt_concord, 'hadal_court': L_hadal_court, 'returning_tide': L_returning_tide,
     'salvage_compact': L_salvage_compact, 'reef_ascendant': L_reef_ascendant, 'lanternkeepers': L_lanternkeepers,
     'overcurrent': L_overcurrent, 'gyre': L_gyre,
+    'slough': L_slough,
+    'hermitage': L_salvage_compact,  # wreck field on the Hulks; give it its own landmarks when the faction gets painted scenes
 }
 
 def scene(fid, seed):
