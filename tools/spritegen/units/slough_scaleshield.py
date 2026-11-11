@@ -44,6 +44,9 @@ def _fit(row, i, P):
         P['hood'] = min(P['hood'], 1.05)
         if i >= 2:
             P['head'] = P['head'] - E1 * 0.10 * P['s']
+    if row == 'death' and i >= 1:   # the slumping coil spreads toward the camera: keep it off the bottom edge
+        k = [0, 0.6, 1.0, 1.0][i]
+        P['mid'] = P['mid'] - E2 * 0.22 * k
 
 
 ROWS, frames = naga_rows(neutral_pose, attack='bash', hook=_fit)

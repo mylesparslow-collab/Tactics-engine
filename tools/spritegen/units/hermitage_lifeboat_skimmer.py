@@ -97,7 +97,7 @@ def _rows(R):
         P['stride'] *= 0.6
         P['bob'] = [0.03, 0.05, 0.03, 0.05][i]
         P['lean'] = -0.05
-    fit_rows(R, snap=0.45, drum=0.6, limp=0.5, death_back=0.34, death_slide=0.16, death_yaw=-0.4, cast_back=0.04)   # keep claws and the death topple inside the frame
+    fit_rows(R, snap=0.35, drum=0.6, limp=0.5, death_back=0.42, death_slide=0.16, death_yaw=-0.4, cast_back=0.04)   # keep claws and the death topple inside the frame
     return R
 
 

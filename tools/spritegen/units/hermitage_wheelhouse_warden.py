@@ -128,7 +128,7 @@ def _rows(R):
     for P, o in R['death']:
         P['recoil'] = 0.60 * P['tip']
         P['limp'] *= 0.5
-    fit_rows(R, snap=0.7, drum=0.5, death_back=0.10, death_slide=0.06, cast_back=0.12)   # keep claws and the death topple inside the frame
+    fit_rows(R, snap=0.7, drum=0.5, death_back=0.10, death_slide=0.14, cast_back=0.20)   # keep claws and the death topple inside the frame
     return R
 
 

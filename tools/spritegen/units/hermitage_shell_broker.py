@@ -126,7 +126,7 @@ def _rows(R):
         P['raise_'] = 0.9
     for row in ('attack', 'hit', 'cast', 'death'):
         for P, o in R[row]:
-            P['snap'] *= 0.7
+            P['snap'] *= 0.5
     for P, o in R['death']:
         P['raise_'] = max(P['raise_'], 0.0) * 0.5
     return R

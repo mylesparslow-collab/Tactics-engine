@@ -230,7 +230,8 @@ def _rows(R):
         for P, o in R[row]:
             P['snap'] *= 0.6
             P['drum'] *= 0.6
-    fit_rows(R, limp=0.5, death_yaw=-0.9, death_back=0.50, death_slide=0.30, cast_back=0.06)   # keep claws and the death topple inside the frame
+    R['death'][1][0]['slide'] += 0.06      # the half-fallen frame swings wide: nudge it in
+    fit_rows(R, limp=0.5, death_yaw=-0.9, death_back=0.50, death_slide=0.38, cast_back=0.06)   # keep claws and the death topple inside the frame
     return R
 
 
